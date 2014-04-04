@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: me# | 玉令天下的Blog]]></title>
-  <link href="http://yulingtianxia.github.io/blog/categories/me-number/atom.xml" rel="self"/>
+  <title><![CDATA[Category: about-me | 玉令天下的Blog]]></title>
+  <link href="http://yulingtianxia.github.io/blog/categories/about-me/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-04T22:25:00+08:00</updated>
+  <updated>2014-04-04T22:27:06+08:00</updated>
   <id>http://yulingtianxia.github.io/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
