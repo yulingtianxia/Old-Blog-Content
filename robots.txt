@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://yulingtianxia.github.io/sitemap.xml 
