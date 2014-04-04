@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "test"
+title: "About me"
 date: 2014-04-04 16:07:09 +0800
 author: 玉令天下
 comments: true
-categories: fuck#
+categories: about me#
 ---
-
+HIT software

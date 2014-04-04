@@ -7,7 +7,7 @@ title: 玉令天下的Blog
 subtitle: I'm not a hacker.
 author: 玉令天下
 simple_search: https://www.google.com/search
-description:
+description: yulingtianxia
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
@@ -19,7 +19,7 @@ date_format: "ordinal"
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email:
+email: yulingtianxia@gmail.com
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -63,22 +63,25 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 # ----------------------- #
 
 # Github repositories
-github_user:
+github_user: yulingtianxia
 github_repo_count: 0
 github_show_profile_link: true
 github_skip_forks: true
 
+# Weibo
+weibo_user: yulingtianxia
+
 # Twitter
-twitter_user:
+twitter_user: yulingtianxia
 twitter_tweet_button: true
 
 # Google +1
-google_plus_one: false
+google_plus_one: true
 google_plus_one_size: medium
 
 # Google Plus Profile
 # Hidden: No visible button, just add author information to search results
-googleplus_user:
+googleplus_user: yulingtianxia
 googleplus_hidden: false
 
 # Pinboard
@@ -90,11 +93,15 @@ delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name:
-disqus_show_comment_count: false
+disqus_short_name: yulingtianxia
+disqus_show_comment_count: true
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-49704553-1
 
 # Facebook Like
-facebook_like: false
+facebook_like: true
+
+# Weibo Share
+weibo_share: true
+
