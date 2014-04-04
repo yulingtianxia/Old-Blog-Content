@@ -73,7 +73,7 @@ twitter_user:
 twitter_tweet_button: true
 
 # Google +1
-google_plus_one: true
+google_plus_one: false
 google_plus_one_size: medium
 
 # Google Plus Profile
@@ -94,10 +94,7 @@ disqus_short_name:
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id: UA-49704553-1
+google_analytics_tracking_id:
 
 # Facebook Like
-facebook_like: true
-
-＃ 新浪微博
-weibo_share: true
+facebook_like: false
