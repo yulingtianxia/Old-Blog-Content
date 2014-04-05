@@ -71,9 +71,22 @@ github_skip_forks: true
 # Weibo
 weibo_user: yulingtianxia
 
+# DouBan
+douban_user: 53279288
+
+#Instagram
+instagram_user: yulingtianxia
+
 # Twitter
 twitter_user: yulingtianxia
 twitter_tweet_button: true
+
+# FaceBook
+facebook_user: yulingtianxia
+
+#Stackoverflow
+stackoverflow_user_id: 2374982
+stackoverflow_user: yangxiaoyu
 
 # Google +1
 google_plus_one: true
