@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MacOSX,Octopress | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.github.io/blog/categories/macosx-octopress/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-05T18:38:50+08:00</updated>
+  <updated>2014-04-05T18:40:10+08:00</updated>
   <id>http://yulingtianxia.github.io/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -126,7 +126,7 @@ git push origin source
 </code></pre>
 
 <p>修改_config.yml文件，可以配置博客的参数，网上有很多详细的教程来说明每个属性是干什么的，需要注意的一点就是冒号后面一定要加空格，否则编译不通过。建议下载一个Sublime Text来打开这些前台文件，增加效率。博客头像和Github一样采用<a href="www.gravatar.com">gravatar</a>的头像托管服务，在_config.yml文件中的email属性中填入你在gravatar的邮件或者在email_md5属性中填入md5码也可。<br/>
-诸如添加Google Analyse和百度分析，添加分享和评论系统，还有版权信息，网上的教程也很多，参考<a href="http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html">oec2003</a>和<a href="http://beyondvincent.com/blog/2013/07/27/107-hello-page-of-github/">破船</a>的文章，本文主要是介绍MacOSX上面的部署工作。</p>
+诸如添加Google Analyse和百度统计，添加分享和评论系统，还有版权信息，网上的教程也很多，参考<a href="http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html">oec2003</a>和<a href="http://beyondvincent.com/blog/2013/07/27/107-hello-page-of-github/">破船</a>的文章，本文主要是介绍MacOSX上面的部署工作。</p>
 ]]></content>
   </entry>
   
