@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MacOSX,Octopress | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.github.io/blog/categories/macosx-octopress/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-05T18:14:33+08:00</updated>
+  <updated>2014-04-05T18:20:40+08:00</updated>
   <id>http://yulingtianxia.github.io/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[MacOSX10.9上用octopress和Github搭建个人博客]]></title>
+    <title type="html"><![CDATA[MacOSX10.9上用Octopress和Github搭建个人博客]]></title>
     <link href="http://yulingtianxia.github.io/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/"/>
     <updated>2014-04-05T14:28:54+08:00</updated>
     <id>http://yulingtianxia.github.io/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke</id>
@@ -25,7 +25,7 @@
 <ul>
 <li>Octopress搭建</li>
 <li>Github Page 部署</li>
-<li>博客的美化工作</li>
+<li>Blog的美化工作</li>
 </ul>
 
 
@@ -117,7 +117,7 @@ git push origin source
 
 <p>如果你有自己的域名，可以通过在仓库中新建CNAME文件进行配置映射，这里不再细说。</p>
 
-<h1>博客的美化工作</h1>
+<h1>Blog的美化工作</h1>
 
 <p>可以用<a href="https://github.com/shashankmehta/greyshade">greyshade</a>或者<a href="https://github.com/tommy351/Octopress-Theme-Slash">slash</a>主题美化博客，根据个人喜好了。需要注意的是，greyshade这个主题有些不足之处，比如，disqus实效，还有如何添加新浪微博链接，请看<a href="http://bryanone.com/blog/2014/03/01/problem-with-greyshade/">这里</a>和<a href="http://imallen.com/blog/2013/05/12/add-support-for-weibo-and-dribbble-to-greyshade.html">这里</a>。如果首页左侧没有显示title和subtitle等信息，可以修改/source/_includes/header.html文件，添加</p>
 
