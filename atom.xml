@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.github.io/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-06T19:06:06+08:00</updated>
+  <updated>2014-04-06T19:20:41+08:00</updated>
   <id>http://yulingtianxia.github.io/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,24 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[XCode和Objective-C Cheat Sheet]]></title>
-    <link href="http://yulingtianxia.github.io/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
-    <updated>2014-04-06T18:38:24+08:00</updated>
-    <id>http://yulingtianxia.github.io/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
-    <content type="html"><![CDATA[<p>关于XCode和OC的速查，方便记忆，以后会更新</p>
-
-<!-- more-->
-
-
-<p>XCode5 Cheat Sheet:(<a href="http://www.git-tower.com/blog/xcode-cheat-sheet/">作者</a>)<br/>
-<img src="http://yulingtianxia.github.io/images/blog/xcode-cheat-sheet_页面_1.jpg"> <br/>
-<img src="http://yulingtianxia.github.io/images/blog/xcode-cheat-sheet_页面_2.jpg">
-Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(<a href="http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5">作者</a>) <br/>
-<img src="http://yulingtianxia.github.io/images/blog/RW-Objective-C-Cheatsheet-v-1-5.jpg"></p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[MacOSX10.9上用Octopress和Github搭建个人博客]]></title>
