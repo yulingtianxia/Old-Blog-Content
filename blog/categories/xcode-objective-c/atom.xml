@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: XCode,Objective-C | 玉令天下的Blog]]></title>
+  <link href="http://yulingtianxia.github.io/blog/categories/xcode-objective-c/atom.xml" rel="self"/>
+  <link href="http://yulingtianxia.github.io/"/>
+  <updated>2014-04-06T18:50:35+08:00</updated>
+  <id>http://yulingtianxia.github.io/</id>
+  <author>
+    <name><![CDATA[玉令天下]]></name>
+    <email><![CDATA[yulingtianxia@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[XCode和Objective-C Cheat Sheet]]></title>
+    <link href="http://yulingtianxia.github.io/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
+    <updated>2014-04-06T18:38:24+08:00</updated>
+    <id>http://yulingtianxia.github.io/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
+    <content type="html"><![CDATA[<p><img src="/images/rss.png"></p>
+]]></content>
+  </entry>
+  
+</feed>
