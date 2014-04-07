@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.github.io/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-07T17:35:07+08:00</updated>
+  <updated>2014-04-07T17:37:14+08:00</updated>
   <id>http://yulingtianxia.github.io/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -32,8 +32,9 @@
 
 <h1>iOS的单例模式</h1>
 
-<p>提起单例模式大家都不陌生，什么懒汉式，饿汉式，老汉式。。。扯远了
-一开始觉得Objective－C中没有绝对的私有方法，该如何实现单例模式呢？后来觉得想多了，限制构造方法的使用式徒劳的，因为程序是人写的，既然是单例了，那就老老实实调用自己写的getInstance吧。Java笑了？一个反射打趴下！
+<p>提起单例模式大家都不陌生，什么懒汉式，饿汉式，老汉式。。。扯远了</p>
+
+<p>一开始觉得Objective－C中没有绝对的私有方法，该如何实现单例模式呢？后来觉得想多了，限制构造方法的使用式徒劳的，因为程序是人写的，既然是单例了，那就老老实实调用自己写的getInstance吧。Java笑了？一个反射打趴下！
 在ARC时代，程序员不用费心计算static的实例被引用多少次，需要release巴拉巴拉。。。而自从有了GCD，iOS的单例模式变得超级简单了：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -56,12 +57,12 @@
 
 
 <p>
-instance为将被实例化的对象，为了让instance只被实例化一次，用到了GCD(Grand Central Dispatch)中的dispatch_once方法。该方法有两个参数，第二个参数是一个block，只会被执行一次。而第一个参数是一个谓词，用于判断代码块（block）是否执行完，这个谓词只能是全局或静态变量，类型为dispatch_once_t，其实dispatch_once_t就是long类型。你可以理解为第一个参数是个标识位，能保证记录第二个参数block的执行情况，即使是在最复杂的多线程并发执行的情况下，也就是说，GCD的这个方法是线程安全的。如果你对block这种类型比较陌生，可以把它暂时当作函数指针，当然，它比函数指针还要强大。<br/>
+instance为将被实例化的对象，为了让instance只被实例化一次，用到了GCD(Grand Central Dispatch)中的<code>dispatch_once</code>方法。该方法有两个参数，第二个参数是一个block，只会被执行一次。而第一个参数是一个谓词，用于判断代码块（block）是否执行完，这个谓词只能是全局或静态变量，类型为dispatch_once_t，其实dispatch_once_t就是long类型。你可以理解为第一个参数是个标识位，能保证记录第二个参数block的执行情况，即使是在最复杂的多线程并发执行的情况下，也就是说，GCD的这个方法是线程安全的。如果你对block这种类型比较陌生，可以把它暂时当作函数指针，当然，它比函数指针还要强大。<br/>
 你可以重写init方法来实现饿汉式单例，也可以自定义initwithXXX来在需要实例化的时候调用之，实现懒汉式单例。</p>
 
 <h1>NSUserDefaults</h1>
 
-<p>很多APP启动时需要读取上次运行保存的一些状态，如何保存呢？Core Data，SQlite和UIDocuments未免杀鸡用牛刀了，而NSUserDefaults很适用于快速读取小规模的数据</p>
+<p>很多APP启动时需要读取上次运行保存的一些状态，如何保存呢？Core Data，SQlite和UIDocuments未免杀鸡用牛刀了，而<code>NSUserDefaults</code>很适用于快速读取小规模的数据</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">standardDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
@@ -89,7 +90,7 @@ instance为将被实例化的对象，为了让instance只被实例化一次，�
 
 
 <p>
-NSUserDefaults可以很好地理解成键值对</p>
+<code>NSUserDefaults</code>可以很好地理解成键值对</p>
 
 <p>有时在写数据之前，想判断下这个健是否已经设置过默认值</p>
 
@@ -180,7 +181,7 @@ NSUserDefaults可以很好地理解成键值对</p>
 
 <p></p>
 
-<p>然后再存取时通过NSData做载体：<br/>
+<p>然后再存取时通过<code>NSData</code>做载体：<br/>
 存入</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
