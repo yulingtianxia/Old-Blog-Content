@@ -162,7 +162,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 一开始觉得Objective－C中没有绝对的私有方法，该如何实现单例模式呢？后来觉得想多了，限制构造方法的使用式徒劳的，因为程序是人写的，既然是单例了，那就老老实实调用自己写的getInstance吧。Java笑了？一个反射打趴下！
 在ARC时代，程序员不用费心计算static的实例被引用多少次，需要release巴拉巴拉。。。而自从有了GCD，iOS的单例模式变得超级简单了：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -170,15 +170,14 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">Singleton</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedInstance</span><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="kt">id</span> <span class="n">instance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">instance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>+ (Singleton *)sharedInstance{
+</span><span class='line'>    static id instance = nil;
+</span><span class='line'>    static dispatch_once_t onceToken;
+</span><span class='line'>    dispatch_once(&onceToken, ^{
+</span><span class='line'>        instance = [[self alloc] init];
+</span><span class='line'>    });
+</span><span class='line'>    return instance;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -189,29 +188,26 @@ instance为将被实例化的对象，为了让instance只被实例化一次，�
 
 <p>很多APP启动时需要读取上次运行保存的一些状态，如何保存呢？Core Data，SQlite和UIDocuments未免杀鸡用牛刀了，而NSUserDefaults很适用于快速读取小规模的数据</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">standardDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults]; </span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 写入数据</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="n">stringWithString</span> <span class="s">@&quot;hahaha&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">setObject:</span><span class="n">string</span> <span class="nl">forKey:</span><span class="s">@&quot;myKey&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="n">synchronize</span><span class="p">];</span><span class="c1">//写完别忘了同步</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NSString *string = [NSString stringWithString @"hahaha"];
+</span><span class='line'>[standardDefaults setObject:string forKey:@"myKey"];
+</span><span class='line'>[standardDefaults synchronize];//写完别忘了同步</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 读取数据</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">objectForKey:</span><span class="s">&quot;myKey&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NSString *value = [standardDefaults objectForKey:"myKey"];  </span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -219,29 +215,27 @@ NSUserDefaults可以很好地理解成键值对</p>
 
 <p>有时在写数据之前，想判断下这个健是否已经设置过默认值</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">standardDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">standardDefaults</span> <span class="nl">stringForKey:</span><span class="s">@&quot;favoriteColor&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">setObject:</span><span class="s">@&quot;Green&quot;</span> <span class="nl">forKey:</span><span class="s">@&quot;favoriteColor&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+</span><span class='line'>if ([standardDefaults stringForKey:@"favoriteColor"] == nil) {
+</span><span class='line'>[standardDefaults setObject:@"Green" forKey:@"favoriteColor"];
+</span><span class='line'>[standardDefaults synchronize];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 其实大可不必这么麻烦，摘自<a href="http://beyondvincent.com/blog/2013/04/20/13/">破船</a>推荐的方法<code>registerDefaults:</code></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">standardDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">registerDefaults:</span><span class="err">@</span><span class="p">{</span><span class="s">@&quot;favoriteColor&quot;</span><span class="o">:</span> <span class="s">@&quot;Green&quot;</span><span class="p">}];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+</span><span class='line'>[standardDefaults registerDefaults:@{@"favoriteColor": @"Green"}];
+</span><span class='line'>[standardDefaults synchronize];</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -249,7 +243,7 @@ NSUserDefaults可以很好地理解成键值对</p>
 但是并不是所有类型的对象都能够直接放入NSUserDefaults，NSUserDefaults只支持： NSString, NSNumber, NSDate, NSArray, NSDictionary<br/>
 解决方法：让这个自定义的类实现<NSCoding>协议，举个例子：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -275,32 +269,32 @@ NSUserDefaults可以很好地理解成键值对</p>
 <span class='line-number'>24</span>
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//SNShops.h</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//SNShops.h
 </span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">SNShops</span> : <span class="nc">NSObject</span><span class="o">&lt;</span><span class="n">NSCoding</span><span class="o">&gt;</span>
+</span><span class='line'>@interface SNShops : NSObject&lt;NSCoding&gt;
 </span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">strong</span><span class="p">)</span> <span class="n">NSString</span><span class="o">*</span> <span class="n">sid</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">strong</span><span class="p">)</span> <span class="n">NSString</span><span class="o">*</span> <span class="n">name</span><span class="p">;</span>
+</span><span class='line'>@property (nonatomic,strong) NSString* sid;
+</span><span class='line'>@property (nonatomic,strong) NSString* name;
 </span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="nf">initWithCoder:</span> <span class="p">(</span><span class="n">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">coder</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">encodeWithCoder:</span> <span class="p">(</span><span class="n">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">coder</span><span class="p">;</span>
+</span><span class='line'>- (id) initWithCoder: (NSCoder *)coder;
+</span><span class='line'>- (void) encodeWithCoder: (NSCoder *)coder;
 </span><span class='line'>
-</span><span class='line'><span class="c1">//SNShops.m</span>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">SNShops</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="nf">initWithCoder:</span> <span class="p">(</span><span class="n">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">coder</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">])</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">sid</span> <span class="o">=</span> <span class="p">[</span><span class="n">coder</span> <span class="nl">decodeObjectForKey:</span><span class="s">@&quot;sid&quot;</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="p">[</span><span class="n">coder</span> <span class="nl">decodeObjectForKey:</span><span class="s">@&quot;name&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">encodeWithCoder:</span> <span class="p">(</span><span class="n">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">coder</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">coder</span> <span class="nl">encodeObject:</span><span class="n">self</span><span class="p">.</span><span class="n">sid</span> <span class="nl">forKey:</span><span class="s">@&quot;sid&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">coder</span> <span class="nl">encodeObject:</span><span class="n">self</span><span class="p">.</span><span class="n">name</span> <span class="nl">forKey:</span><span class="s">@&quot;name&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
+</span><span class='line'>//SNShops.m
+</span><span class='line'>@implementation SNShops
+</span><span class='line'>- (id) initWithCoder: (NSCoder *)coder
+</span><span class='line'>{
+</span><span class='line'>    if (self = [super init])
+</span><span class='line'>    {
+</span><span class='line'>        self.sid = [coder decodeObjectForKey:@"sid"];
+</span><span class='line'>        self.name = [coder decodeObjectForKey:@"name"];
+</span><span class='line'>    }
+</span><span class='line'>    return self;
+</span><span class='line'>}
+</span><span class='line'>- (void) encodeWithCoder: (NSCoder *)coder
+</span><span class='line'>{
+</span><span class='line'>    [coder encodeObject:self.sid forKey:@"sid"];
+</span><span class='line'>    [coder encodeObject:self.name forKey:@"name"];
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -309,27 +303,26 @@ NSUserDefaults可以很好地理解成键值对</p>
 <p>然后再存取时通过NSData做载体：<br/>
 存入</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">standardDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'><span class="n">SNShops</span> <span class="o">*</span><span class="n">shop</span> <span class="o">=</span> <span class="p">[[</span><span class="n">SNShops</span> <span class="n">alloc</span><span class="p">]</span><span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSData</span> <span class="o">*</span><span class="n">shopData</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSKeyedArchiver</span> <span class="nl">archivedDataWithRootObject:</span><span class="n">shop</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">setObject:</span><span class="n">shopData</span> <span class="nl">forKey:</span><span class="s">@&quot;myshop&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+</span><span class='line'>SNShops *shop = [[SNShops alloc]init];
+</span><span class='line'>NSData *shopData = [NSKeyedArchiver archivedDataWithRootObject:shop];
+</span><span class='line'>[standardDefaults setObject:shopData forKey:@"myshop"];
+</span><span class='line'>[standardDefaults synchronize];
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 读取</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSData</span> <span class="o">*</span><span class="n">newshopData</span> <span class="o">=</span> <span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">objectForKey:</span><span class="s">&quot;myshop&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="n">SNShops</span> <span class="o">*</span><span class="n">newshop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSKeyedUnarchiver</span> <span class="nl">unarchiveObjectWithData:</span><span class="n">newshopData</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NSData *newshopData = [standardDefaults objectForKey:"myshop"];
+</span><span class='line'>SNShops *newshop = [NSKeyedUnarchiver unarchiveObjectWithData:newshopData];</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
