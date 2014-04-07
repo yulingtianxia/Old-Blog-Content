@@ -162,170 +162,151 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 一开始觉得Objective－C中没有绝对的私有方法，该如何实现单例模式呢？后来觉得想多了，限制构造方法的使用式徒劳的，因为程序是人写的，既然是单例了，那就老老实实调用自己写的getInstance吧。Java笑了？一个反射打趴下！
 在ARC时代，程序员不用费心计算static的实例被引用多少次，需要release巴拉巴拉。。。而自从有了GCD，iOS的单例模式变得超级简单了：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>+ (Singleton *)sharedInstance{
-</span><span class='line'>    static id instance = nil;
-</span><span class='line'>    static dispatch_once_t onceToken;
-</span><span class='line'>    dispatch_once(&onceToken, ^{
-</span><span class='line'>        instance = [[self alloc] init];
-</span><span class='line'>    });
-</span><span class='line'>    return instance;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-instance为将被实例化的对象，为了让instance只被实例化一次，用到了GCD(Grand Central Dispatch)中的dispatch_once方法。该方法有两个参数，第二个参数是一个block，只会被执行一次。而第一个参数是一个谓词，用于判断代码块（block）是否执行完，这个谓词只能是全局或静态变量，类型为dispatch_once_t，其实dispatch_once_t就是long类型。你可以理解为第一个参数是个标识位，能保证记录第二个参数block的执行情况，即使是在最复杂的多线程并发执行的情况下，也就是说，GCD的这个方法是线程安全的。如果你对block这种类型比较陌生，可以把它暂时当作函数指针，当然，它比函数指针还要强大。<br/>
-你可以重写init方法来实现饿汉式单例，也可以自定义initwithXXX来在需要实例化的时候调用之，实现懒汉式单例。</p>
-
-<h1>NSUserDefaults</h1>
-
-<p>很多APP启动时需要读取上次运行保存的一些状态，如何保存呢？Core Data，SQlite和UIDocuments未免杀鸡用牛刀了，而NSUserDefaults很适用于快速读取小规模的数据</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults]; </span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-写入数据</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NSString *string = [NSString stringWithString @"hahaha"];
-</span><span class='line'>[standardDefaults setObject:string forKey:@"myKey"];
-</span><span class='line'>[standardDefaults synchronize];//写完别忘了同步</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-读取数据</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NSString *value = [standardDefaults objectForKey:"myKey"];  </span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-NSUserDefaults可以很好地理解成键值对</p>
-
-<p>有时在写数据之前，想判断下这个健是否已经设置过默认值</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-</span><span class='line'>if ([standardDefaults stringForKey:@"favoriteColor"] == nil) {
-</span><span class='line'>[standardDefaults setObject:@"Green" forKey:@"favoriteColor"];
-</span><span class='line'>[standardDefaults synchronize];
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-其实大可不必这么麻烦，摘自<a href="http://beyondvincent.com/blog/2013/04/20/13/">破船</a>推荐的方法<code>registerDefaults:</code></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-</span><span class='line'>[standardDefaults registerDefaults:@{@"favoriteColor": @"Green"}];
-</span><span class='line'>[standardDefaults synchronize];</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-每次程序启动的时候调用<code>registerDefaults:</code> 方法都是安全的。完全可以将这个方法的调用放到<code>applicationDidFinishLaunching:</code>方法中. 这个方法永远都不会覆盖用户设置的值。<br/>
-但是并不是所有类型的对象都能够直接放入NSUserDefaults，NSUserDefaults只支持： NSString, NSNumber, NSDate, NSArray, NSDictionary<br/>
-解决方法：让这个自定义的类实现<NSCoding>协议，举个例子：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>//SNShops.h
-</span><span class='line'>
-</span><span class='line'>@interface SNShops : NSObject&lt;NSCoding&gt;
-</span><span class='line'>
-</span><span class='line'>@property (nonatomic,strong) NSString* sid;
-</span><span class='line'>@property (nonatomic,strong) NSString* name;
-</span><span class='line'>
-</span><span class='line'>- (id) initWithCoder: (NSCoder *)coder;
-</span><span class='line'>- (void) encodeWithCoder: (NSCoder *)coder;
-</span><span class='line'>
-</span><span class='line'>//SNShops.m
-</span><span class='line'>@implementation SNShops
-</span><span class='line'>- (id) initWithCoder: (NSCoder *)coder
-</span><span class='line'>{
-</span><span class='line'>    if (self = [super init])
-</span><span class='line'>    {
-</span><span class='line'>        self.sid = [coder decodeObjectForKey:@"sid"];
-</span><span class='line'>        self.name = [coder decodeObjectForKey:@"name"];
-</span><span class='line'>    }
-</span><span class='line'>    return self;
-</span><span class='line'>}
-</span><span class='line'>- (void) encodeWithCoder: (NSCoder *)coder
-</span><span class='line'>{
-</span><span class='line'>    [coder encodeObject:self.sid forKey:@"sid"];
-</span><span class='line'>    [coder encodeObject:self.name forKey:@"name"];
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>然后再存取时通过NSData做载体：<br/>
-存入</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-</span><span class='line'>SNShops *shop = [[SNShops alloc]init];
-</span><span class='line'>NSData *shopData = [NSKeyedArchiver archivedDataWithRootObject:shop];
-</span><span class='line'>[standardDefaults setObject:shopData forKey:@"myshop"];
-</span><span class='line'>[standardDefaults synchronize];
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">```</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>
-读取</p>
++ (Singleton *)sharedInstance{</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<pre><code>static id instance = nil;
+static dispatch_once_t onceToken;
+dispatch_once(&amp;onceToken, ^{
+    instance = [[self alloc] init];
+});
+return instance;
+</code></pre>
+
+<p>}</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NSData *newshopData = [standardDefaults objectForKey:"myshop"];
-</span><span class='line'>SNShops *newshop = [NSKeyedUnarchiver unarchiveObjectWithData:newshopData];</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">instance</span><span class="err">为将被实例化的对象，为了让</span><span class="n">instance</span><span class="err">只被实例化一次，用到了</span><span class="n">GCD</span><span class="p">(</span><span class="n">Grand</span> <span class="n">Central</span> <span class="n">Dispatch</span><span class="p">)</span><span class="err">中的</span><span class="n">dispatch_once</span><span class="err">方法。该方法有两个参数，第二个参数是一个</span><span class="n">block</span><span class="err">，只会被执行一次。而第一个参数是一个谓词，用于判断代码块（</span><span class="n">block</span><span class="err">）是否执行完，这个谓词只能是全局或静态变量，类型为</span><span class="n">dispatch_once_t</span><span class="err">，其实</span><span class="n">dispatch_once_t</span><span class="err">就是</span><span class="kt">long</span><span class="err">类型。你可以理解为第一个参数是个标识位，能保证记录第二个参数</span><span class="n">block</span><span class="err">的执行情况，即使是在最复杂的多线程并发执行的情况下，也就是说，</span><span class="n">GCD</span><span class="err">的这个方法是线程安全的。如果你对</span><span class="n">block</span><span class="err">这种类型比较陌生，可以把它暂时当作函数指针，当然，它比函数指针还要强大。</span>
+</span><span class='line'><span class="err">你可以重写</span><span class="n">init</span><span class="err">方法来实现饿汉式单例，也可以自定义</span><span class="n">initwithXXX</span><span class="err">来在需要实例化的时候调用之，实现懒汉式单例。</span>
+</span><span class='line'><span class="cp">#NSUserDefaults</span>
+</span><span class='line'><span class="err">很多</span><span class="n">APP</span><span class="err">启动时需要读取上次运行保存的一些状态，如何保存呢？</span><span class="n">Core</span> <span class="n">Data</span><span class="err">，</span><span class="n">SQlite</span><span class="err">和</span><span class="n">UIDocuments</span><span class="err">未免杀鸡用牛刀了，而</span><span class="n">NSUserDefaults</span><span class="err">很适用于快速读取小规模的数据</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<p></p>
+<p>
+NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">写入数据</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+NSString *string = [NSString stringWithString @&ldquo;hahaha&rdquo;];
+[standardDefaults setObject:string forKey:@&ldquo;myKey&rdquo;];
+[standardDefaults synchronize];//写完别忘了同步</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">读取数据</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+NSString *value = [standardDefaults objectForKey:&ldquo;myKey&rdquo;];</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span><span class="err">可以很好地理解成键值对</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">有时在写数据之前，想判断下这个健是否已经设置过默认值</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+if ([standardDefaults stringForKey:@&ldquo;favoriteColor&rdquo;] == nil) {
+[standardDefaults setObject:@&ldquo;Green&rdquo; forKey:@&ldquo;favoriteColor&rdquo;];
+[standardDefaults synchronize];
+}</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">其实大可不必这么麻烦，摘自</span><span class="p">[</span><span class="err">破船</span><span class="p">](</span><span class="nl">http:</span><span class="c1">//beyondvincent.com/blog/2013/04/20/13/)推荐的方法`registerDefaults:`  </span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+[standardDefaults registerDefaults:@{@&ldquo;favoriteColor&rdquo;: @&ldquo;Green&rdquo;}];
+[standardDefaults synchronize];</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">每次程序启动的时候调用`</span><span class="nl">registerDefaults:</span><span class="err">`</span> <span class="err">方法都是安全的。完全可以将这个方法的调用放到`</span><span class="nl">applicationDidFinishLaunching:</span><span class="err">`方法中</span><span class="p">.</span> <span class="err">这个方法永远都不会覆盖用户设置的值。</span>
+</span><span class='line'><span class="err">但是并不是所有类型的对象都能够直接放入</span><span class="n">NSUserDefaults</span><span class="err">，</span><span class="n">NSUserDefaults</span><span class="err">只支持：</span> <span class="n">NSString</span><span class="p">,</span> <span class="n">NSNumber</span><span class="p">,</span> <span class="n">NSDate</span><span class="p">,</span> <span class="n">NSArray</span><span class="p">,</span> <span class="n">NSDictionary</span>
+</span><span class='line'><span class="err">解决方法：让这个自定义的类实现</span><span class="o">&lt;</span><span class="n">NSCoding</span><span class="o">&gt;</span><span class="err">协议，举个例子：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+//SNShops.h</p>
+
+<p>@interface SNShops : NSObject<NSCoding></p>
+
+<p>@property (nonatomic,strong) NSString<em> sid;
+@property (nonatomic,strong) NSString</em> name;</p>
+
+<ul>
+<li>(id) initWithCoder: (NSCoder *)coder;</li>
+<li>(void) encodeWithCoder: (NSCoder *)coder;</li>
+</ul>
+
+
+<p>//SNShops.m
+@implementation SNShops
+&ndash; (id) initWithCoder: (NSCoder *)coder
+{</p>
+
+<pre><code>if (self = [super init])
+{
+    self.sid = [coder decodeObjectForKey:@"sid"];
+    self.name = [coder decodeObjectForKey:@"name"];
+}
+return self;
+</code></pre>
+
+<p>}
+&ndash; (void) encodeWithCoder: (NSCoder *)coder
+{</p>
+
+<pre><code>[coder encodeObject:self.sid forKey:@"sid"];
+[coder encodeObject:self.name forKey:@"name"];
+</code></pre>
+
+<p>}</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">然后再存取时通过</span><span class="n">NSData</span><span class="err">做载体：</span>
+</span><span class='line'><span class="err">存入</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+NSUserDefaults <em>standardDefaults = [NSUserDefaults standardUserDefaults];
+SNShops </em>shop = [[SNShops alloc]init];
+NSData *shopData = [NSKeyedArchiver archivedDataWithRootObject:shop];
+[standardDefaults setObject:shopData forKey:@&ldquo;myshop&rdquo;];
+[standardDefaults synchronize];</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="err">读取</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+NSData <em>newshopData = [standardDefaults objectForKey:&ldquo;myshop&rdquo;];
+SNShops </em>newshop = [NSKeyedUnarchiver unarchiveObjectWithData:newshopData];
+&#8220;`</p>
 
 <h1>总结：iOS单例模式 and NSUserDefaults</h1>
 
