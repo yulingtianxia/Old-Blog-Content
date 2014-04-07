@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[玉令天下的Blog]]></title>
-  <link href="http://yulingtianxia.github.io/atom.xml" rel="self"/>
-  <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-07T17:37:14+08:00</updated>
-  <id>http://yulingtianxia.github.io/</id>
+  <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
+  <link href="http://yulingtianxia.com/"/>
+  <updated>2014-04-07T18:45:13+08:00</updated>
+  <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
     <email><![CDATA[yulingtianxia@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[iOS单例模式 or NSUserDefaults]]></title>
-    <link href="http://yulingtianxia.github.io/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults/"/>
+    <link href="http://yulingtianxia.com/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults/"/>
     <updated>2014-04-07T15:07:08+08:00</updated>
-    <id>http://yulingtianxia.github.io/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults</id>
+    <id>http://yulingtianxia.com/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults</id>
     <content type="html"><![CDATA[<p>本文内容：</p>
 
 <ul>
@@ -218,9 +218,9 @@ instance为将被实例化的对象，为了让instance只被实例化一次，�
   
   <entry>
     <title type="html"><![CDATA[iOS程序员必备网站]]></title>
-    <link href="http://yulingtianxia.github.io/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan/"/>
+    <link href="http://yulingtianxia.com/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan/"/>
     <updated>2014-04-07T13:50:00+08:00</updated>
-    <id>http://yulingtianxia.github.io/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan</id>
+    <id>http://yulingtianxia.com/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan</id>
     <content type="html"><![CDATA[<h1>前言</h1>
 
 <p>记得最早接触iOS开发是在大二，那时国内相关资源还很少，比较适合新手入门的文章和视频也很少，感觉斯坦福大学的iPhone开发公开课算是最喜欢的了，还有<a href="http://blog.csdn.net/nicktang">NickTang</a>和<a href="http://www.cnblogs.com/dotey/">宝玉</a>的博客也给了我很多启发。那时正逢Objective－C刚刚推出了ARC，正处于是否用ARC的讨论中，这让我更加迷茫。<br/>
@@ -265,27 +265,27 @@ instance为将被实例化的对象，为了让instance只被实例化一次，�
   
   <entry>
     <title type="html"><![CDATA[XCode和Objective-C Cheat Sheet]]></title>
-    <link href="http://yulingtianxia.github.io/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
+    <link href="http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
     <updated>2014-04-06T18:38:24+08:00</updated>
-    <id>http://yulingtianxia.github.io/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
+    <id>http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
     <content type="html"><![CDATA[<p>关于XCode和OC的速查，方便记忆，以后会更新</p>
 
 <!-- more-->
 
 
 <p>XCode5 Cheat Sheet:(<a href="http://www.git-tower.com/blog/xcode-cheat-sheet/">作者</a>)<br/>
-<img src="http://yulingtianxia.github.io/images/blog/xcode-cheat-sheet_页面_1.jpg"> <br/>
-<img src="http://yulingtianxia.github.io/images/blog/xcode-cheat-sheet_页面_2.jpg">
+<img src="http://yulingtianxia.com/images/blog/xcode-cheat-sheet_页面_1.jpg"> <br/>
+<img src="http://yulingtianxia.com/images/blog/xcode-cheat-sheet_页面_2.jpg">
 Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(<a href="http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5">作者</a>) <br/>
-<img src="http://yulingtianxia.github.io/images/blog/RW-Objective-C-Cheatsheet-v-1-5.jpg"></p>
+<img src="http://yulingtianxia.com/images/blog/RW-Objective-C-Cheatsheet-v-1-5.jpg"></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[MacOSX10.9上用Octopress和Github搭建个人博客]]></title>
-    <link href="http://yulingtianxia.github.io/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/"/>
+    <link href="http://yulingtianxia.com/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/"/>
     <updated>2014-04-05T14:28:54+08:00</updated>
-    <id>http://yulingtianxia.github.io/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke</id>
+    <id>http://yulingtianxia.com/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke</id>
     <content type="html"><![CDATA[<p>网上已经有很多关于搭建Octopress的文章了，但我写这篇文章的目的是帮助Mac新手们搭建自己的Octopress，尤其是最新的Mavericks系统</p>
 
 <p>这篇博文包括：</p>
@@ -389,7 +389,7 @@ git push origin source
 
 <p>可以用<a href="https://github.com/shashankmehta/greyshade">greyshade</a>或者<a href="https://github.com/tommy351/Octopress-Theme-Slash">slash</a>主题美化博客，根据个人喜好了。需要注意的是，greyshade这个主题有些不足之处，比如，disqus实效，还有如何添加新浪微博链接，请看<a href="http://bryanone.com/blog/2014/03/01/problem-with-greyshade/">这里</a>和<a href="http://imallen.com/blog/2013/05/12/add-support-for-weibo-and-dribbble-to-greyshade.html">这里</a>。如果首页左侧没有显示title和subtitle等信息，可以修改/source/_includes/header.html文件，添加</p>
 
-<pre><code>&lt;h1&gt;&lt;a href="http://yulingtianxia.github.io/"&gt;玉令天下的Blog&lt;/a&gt;&lt;/h1&gt;
+<pre><code>&lt;h1&gt;&lt;a href="http://yulingtianxia.com/"&gt;玉令天下的Blog&lt;/a&gt;&lt;/h1&gt;
 &lt;p class="subtitle"&gt;I'm not a hacker.&lt;/p&gt;
 </code></pre>
 

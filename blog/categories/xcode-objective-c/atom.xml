@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: XCode,Objective-C | 玉令天下的Blog]]></title>
-  <link href="http://yulingtianxia.github.io/blog/categories/xcode-objective-c/atom.xml" rel="self"/>
-  <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-07T17:37:14+08:00</updated>
-  <id>http://yulingtianxia.github.io/</id>
+  <link href="http://yulingtianxia.com/blog/categories/xcode-objective-c/atom.xml" rel="self"/>
+  <link href="http://yulingtianxia.com/"/>
+  <updated>2014-04-07T18:45:13+08:00</updated>
+  <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
     <email><![CDATA[yulingtianxia@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[XCode和Objective-C Cheat Sheet]]></title>
-    <link href="http://yulingtianxia.github.io/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
+    <link href="http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
     <updated>2014-04-06T18:38:24+08:00</updated>
-    <id>http://yulingtianxia.github.io/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
+    <id>http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
     <content type="html"><![CDATA[<p>关于XCode和OC的速查，方便记忆，以后会更新</p>
 
 <!-- more-->

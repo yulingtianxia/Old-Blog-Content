@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
-  <link href="http://yulingtianxia.github.io/blog/categories/ios/atom.xml" rel="self"/>
-  <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-07T17:37:14+08:00</updated>
-  <id>http://yulingtianxia.github.io/</id>
+  <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://yulingtianxia.com/"/>
+  <updated>2014-04-07T18:45:13+08:00</updated>
+  <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
     <email><![CDATA[yulingtianxia@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[iOS单例模式 or NSUserDefaults]]></title>
-    <link href="http://yulingtianxia.github.io/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults/"/>
+    <link href="http://yulingtianxia.com/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults/"/>
     <updated>2014-04-07T15:07:08+08:00</updated>
-    <id>http://yulingtianxia.github.io/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults</id>
+    <id>http://yulingtianxia.com/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults</id>
     <content type="html"><![CDATA[<p>本文内容：</p>
 
 <ul>
@@ -160,9 +160,9 @@ SNShops *newshop = [NSKeyedUnarchiver unarchiveObjectWithData:newshopData];
   
   <entry>
     <title type="html"><![CDATA[iOS程序员必备网站]]></title>
-    <link href="http://yulingtianxia.github.io/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan/"/>
+    <link href="http://yulingtianxia.com/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan/"/>
     <updated>2014-04-07T13:50:00+08:00</updated>
-    <id>http://yulingtianxia.github.io/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan</id>
+    <id>http://yulingtianxia.com/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan</id>
     <content type="html"><![CDATA[<h1>前言</h1>
 
 <p>记得最早接触iOS开发是在大二，那时国内相关资源还很少，比较适合新手入门的文章和视频也很少，感觉斯坦福大学的iPhone开发公开课算是最喜欢的了，还有<a href="http://blog.csdn.net/nicktang">NickTang</a>和<a href="http://www.cnblogs.com/dotey/">宝玉</a>的博客也给了我很多启发。那时正逢Objective－C刚刚推出了ARC，正处于是否用ARC的讨论中，这让我更加迷茫。<br/>

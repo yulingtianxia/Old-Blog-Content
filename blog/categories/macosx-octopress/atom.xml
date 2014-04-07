@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: MacOSX,Octopress | 玉令天下的Blog]]></title>
-  <link href="http://yulingtianxia.github.io/blog/categories/macosx-octopress/atom.xml" rel="self"/>
-  <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-07T17:37:14+08:00</updated>
-  <id>http://yulingtianxia.github.io/</id>
+  <link href="http://yulingtianxia.com/blog/categories/macosx-octopress/atom.xml" rel="self"/>
+  <link href="http://yulingtianxia.com/"/>
+  <updated>2014-04-07T18:45:13+08:00</updated>
+  <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
     <email><![CDATA[yulingtianxia@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[MacOSX10.9上用Octopress和Github搭建个人博客]]></title>
-    <link href="http://yulingtianxia.github.io/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/"/>
+    <link href="http://yulingtianxia.com/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/"/>
     <updated>2014-04-05T14:28:54+08:00</updated>
-    <id>http://yulingtianxia.github.io/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke</id>
+    <id>http://yulingtianxia.com/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke</id>
     <content type="html"><![CDATA[<p>网上已经有很多关于搭建Octopress的文章了，但我写这篇文章的目的是帮助Mac新手们搭建自己的Octopress，尤其是最新的Mavericks系统</p>
 
 <p>这篇博文包括：</p>
