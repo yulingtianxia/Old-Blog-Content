@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.github.io/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.github.io/"/>
-  <updated>2014-04-07T17:27:27+08:00</updated>
+  <updated>2014-04-07T17:28:40+08:00</updated>
   <id>http://yulingtianxia.github.io/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[iOS单例模式orNSUserDefaults]]></title>
+    <title type="html"><![CDATA[iOS单例模式 or NSUserDefaults]]></title>
     <link href="http://yulingtianxia.github.io/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults/"/>
     <updated>2014-04-07T15:07:08+08:00</updated>
     <id>http://yulingtianxia.github.io/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults</id>
@@ -23,7 +23,7 @@
 <ul>
 <li>iOS的单例模式</li>
 <li>NSUserDefaults的使用</li>
-<li>总结</li>
+<li>总结：iOS单例模式 and NSUserDefaults</li>
 </ul>
 
 
@@ -198,7 +198,7 @@ NSUserDefaults可以很好地理解成键值对</p>
 
 <p></p>
 
-<h1>总结</h1>
+<h1>总结：iOS单例模式 and NSUserDefaults</h1>
 
 <p>单例模式虽然能存入任何类型的对象，但是它会随着程序的挂起而消亡。而NSUserDefaults在读取自定义类型时有些繁琐，降低编码效率和可读性，好处是程序下次启动依然能读取到上次的状态。<br/>
 笔者在实际应用中采取了二者结合的模式：让单例模式的类实现<NSCoding>协议，程序第一次启动的时候通过NSData做载体读取单例类的实例，并存入单例，程序运行中一直对单例做存储操作，当程序快要进入到后台挂起的时候，通过NSData做载体存入NSUserDefaults，一举两得。</p>
