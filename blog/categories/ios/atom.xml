@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-08T22:10:23+08:00</updated>
+  <updated>2014-04-08T22:13:56+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -488,7 +488,7 @@ SNShops *newshop = [NSKeyedUnarchiver unarchiveObjectWithData:newshopData];
     <link href="http://yulingtianxia.com/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan/"/>
     <updated>2014-04-07T13:50:00+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan</id>
-    <content type="html"><![CDATA[<h1>前言</h1>
+    <content type="html"><![CDATA[<h2>前言</h2>
 
 <p>记得最早接触iOS开发是在大二，那时国内相关资源还很少，比较适合新手入门的文章和视频也很少，感觉斯坦福大学的iPhone开发公开课算是最喜欢的了，还有<a href="http://blog.csdn.net/nicktang">NickTang</a>和<a href="http://www.cnblogs.com/dotey/">宝玉</a>的博客也给了我很多启发。那时正逢Objective－C刚刚推出了ARC，正处于是否用ARC的讨论中，这让我更加迷茫。<br/>
 英文菜成渣的我开始看Apple官方的文档，download官方的demo，光是一个OC内存管理就看了好久；而如今国内中文的开发资源可以说比那时多很多了，所以想总结一下，方便大家。（PS：其实发现写博客最大的好处就是免得以后再用到某些东西的时候重复的查找，以前一直觉得应该把经验记录下来，但是一直懒得写，这次终于动手了^_^）</p>
@@ -496,9 +496,9 @@ SNShops *newshop = [NSKeyedUnarchiver unarchiveObjectWithData:newshopData];
 <!-- more-->
 
 
-<h1>正题</h1>
+<h2>正题</h2>
 
-<h2>比较适合入门的 </h2>
+<h3>比较适合入门的</h3>
 
 <ul>
 <li><a href="http://www.cocoachina.com/">CocoaChina</a>创立于2008年3月，是一个苹果产品和 iOS 开发的中文社区网站，主要为苹果产品开发者提供资讯、信息及服务。</li>
@@ -506,7 +506,7 @@ SNShops *newshop = [NSKeyedUnarchiver unarchiveObjectWithData:newshopData];
 </ul>
 
 
-<h2>学习进阶参考</h2>
+<h3>学习进阶参考</h3>
 
 <ul>
 <li><a href="http://beyondvincent.com">破船之家</a> 翻译和汇总了很多来自<a href="http://www.raywenderlich.com">Ray</a>的教程，很经典实用，也有大量原创文章</li>
@@ -518,7 +518,7 @@ SNShops *newshop = [NSKeyedUnarchiver unarchiveObjectWithData:newshopData];
 </ul>
 
 
-<h2>工具类网站</h2>
+<h3>工具类网站</h3>
 
 <ul>
 <li><a href="https://github.com/">Github</a> 代码托管版本控制，不解释</li>
