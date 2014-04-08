@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-08T18:29:23+08:00</updated>
+  <updated>2014-04-08T19:10:45+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -308,9 +308,61 @@ typedef double (^SpeedFunction)(double);
 <p>提起单例模式大家都不陌生，什么懒汉式，饿汉式，老汉式。。。扯远了</p>
 
 <p>一开始觉得Objective－C中没有绝对的私有方法，该如何实现单例模式呢？后来觉得想多了，限制构造方法的使用式徒劳的，因为程序是人写的，既然是单例了，那就老老实实调用自己写的getInstance吧。Java笑了？一个反射打趴下！
-在ARC时代，程序员不用费心计算static的实例被引用多少次，需要release巴拉巴拉。。。而自从有了GCD，iOS的单例模式变得超级简单了：</p>
+在ARC诞生之前，可以通过重写<code>allocWithZone</code>方法等来实现，下面是苹果官方的单例写法：<br/>
+``` objectivec
+static MyGizmoClass <em>sharedGizmoManager = nil;
++ (MyGizmoClass</em>)sharedManager
+{</p>
 
-<p>``` objectivec
+<pre><code>@synchronized(self) {
+    if (sharedGizmoManager == nil) {
+        [[self alloc] init]; // assignment not done here
+    }
+}
+return sharedGizmoManager;
+</code></pre>
+
+<p>}</p>
+
+<ul>
+<li><p>(id)allocWithZone:(NSZone *)zone
+{
+  @synchronized(self) {
+      if (sharedGizmoManager == nil) {
+          sharedGizmoManager = [super allocWithZone:zone];
+          return sharedGizmoManager;  // assignment and return on first allocation
+      }
+  }
+  return nil; //on subsequent allocation attempts return nil
+}</p></li>
+<li><p>(id)copyWithZone:(NSZone *)zone
+{
+  return self;
+}</p></li>
+<li><p>(id)retain
+{
+  return self;
+}</p></li>
+<li><p>(unsigned)retainCount
+{
+  return UINT_MAX;  //denotes an object that cannot be released
+}</p></li>
+<li><p>(void)release
+{
+  //do nothing
+}</p></li>
+<li><p>(id)autorelease
+{
+  return self;
+}</p></li>
+</ul>
+
+
+<p>```</p>
+
+<p>在ARC时代，程序员不用费心计算static的实例被引用多少次，需要release巴拉巴拉。。。而自从有了GCD，iOS的单例模式变得超级简单了：</p>
+
+<p>```
 + (Singleton *)sharedInstance{</p>
 
 <pre><code>static id instance = nil;
