@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-08T17:23:11+08:00</updated>
+  <updated>2014-04-08T17:26:56+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -28,12 +28,12 @@
 
 <p>本文由<strong><span style="color: #339966;">破船</span></strong>译自<strong><span style="text-decoration: underline;"><span style="color: #339966;"><a href="http://rypress.com/tutorials/objective-c/blocks.html" target="_blank"><span style="color: #339966; text-decoration: underline;">rypress</span></a></span></span></strong></p>
 
+<!--more-->
+
+
 <h2><strong><span style="color: #339966;">小引</span></strong></h2>
 
 <p>本周末微博上朋友发了一个关于block的MV，只能说老外太逗了。大家也可以去看看怎么回事：<a href="http://blog.bignerdranch.com/3001-cocoa-got-blocks/" target="_blank"> <strong><span style="text-decoration: underline;"><span style="color: #339966; text-decoration: underline;">Cocoa Got Blocks</span></span></strong></a>。虽然之前也有接触过block，不过没有深入完整的学习过，借此机会来学习一下，顺便翻译几篇block相关的文章，本文是第一篇，算是block的入门。本文的最后延伸阅读给出了4篇相关文章，不出意外的话，本周大家能看到对应的中文版。</p>
-
-<!--more-->
-
 
 <h2><strong><span style="color: #339966;">目录：</span></strong></h2>
 
