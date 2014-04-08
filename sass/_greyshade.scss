@@ -22,7 +22,8 @@ body {
 	height: auto;
 	border-bottom: none;
 	.subtitle {
-		color: #999;
+		//color: #999;
+		color: #FF1493;
 		font-style: italic;
 	}
 	#sub-nav {
@@ -134,7 +135,8 @@ body {
 						}
 						h2 {
 							font-size: 1.3em;
-							color: #333;
+							color: #FF1493;
+							//color: #333;
 							margin-top: 30px;
 							font-weight: bold;
 						}
@@ -143,7 +145,7 @@ body {
 						}
 						blockquote {
 							border-left: 5px solid $greyshade;
-							background: #F7F7F7;
+							background: #FCFCFC;
 							p {
 								margin-top: 0px;
 							}
@@ -175,14 +177,16 @@ body {
 					}
 					h1.title{
 						a {
-							color: #333;
+							color: #FF1493;
+							//color: #333;
 							-webkit-transition: color 0.3s;
 							-moz-transition: color 0.3s;
 							-o-transition: color 0.3s;
 							transition: color 0.3s;
 						}
 						a:hover {
-							color: $greyshade;
+							//color: $greyshade;
+							color: FF1493;
 							-webkit-transition: color 0.3s;
 							-moz-transition: color 0.3s;
 							-o-transition: color 0.3s;
@@ -272,11 +276,13 @@ body {
 }
 
 a {
-	color: $greyshade;
+	//color: $greyshade;
+	color: #339966;
 }
 
 a:hover {
-	color: $greyshade;
+	//color: $greyshade;
+	color: #339966;
 }
 
 body {

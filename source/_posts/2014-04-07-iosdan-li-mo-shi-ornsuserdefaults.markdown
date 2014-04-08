@@ -3,7 +3,10 @@ layout: post
 title: "iOS单例模式 or NSUserDefaults"
 date: 2014-04-07 15:07:08 +0800
 comments: true
-categories: iOS
+categories: 
+- iOS
+- 设计模式
+
 ---
 本文内容：  
 
@@ -17,9 +20,60 @@ categories: iOS
 提起单例模式大家都不陌生，什么懒汉式，饿汉式，老汉式。。。扯远了  
 
 一开始觉得Objective－C中没有绝对的私有方法，该如何实现单例模式呢？后来觉得想多了，限制构造方法的使用式徒劳的，因为程序是人写的，既然是单例了，那就老老实实调用自己写的getInstance吧。Java笑了？一个反射打趴下！
+在ARC诞生之前，可以通过重写`allocWithZone`方法等来实现，下面是苹果官方的单例写法：  
+``` objectivec 
+static MyGizmoClass *sharedGizmoManager = nil; 
++ (MyGizmoClass*)sharedManager
+{
+    @synchronized(self) {
+        if (sharedGizmoManager == nil) {
+            [[self alloc] init]; // assignment not done here
+        }
+    }
+    return sharedGizmoManager;
+}
+ 
++ (id)allocWithZone:(NSZone *)zone
+{
+    @synchronized(self) {
+        if (sharedGizmoManager == nil) {
+            sharedGizmoManager = [super allocWithZone:zone];
+            return sharedGizmoManager;  // assignment and return on first allocation
+        }
+    }
+    return nil; //on subsequent allocation attempts return nil
+}
+ 
+- (id)copyWithZone:(NSZone *)zone
+{
+    return self;
+}
+ 
+- (id)retain
+{
+    return self;
+}
+ 
+- (unsigned)retainCount
+{
+    return UINT_MAX;  //denotes an object that cannot be released
+}
+ 
+- (void)release
+{
+    //do nothing
+}
+ 
+- (id)autorelease
+{
+    return self;
+}
+
+``` 
+
 在ARC时代，程序员不用费心计算static的实例被引用多少次，需要release巴拉巴拉。。。而自从有了GCD，iOS的单例模式变得超级简单了：  
 
-``` objectivec
+``` 
 + (Singleton *)sharedInstance{
     static id instance = nil;
     static dispatch_once_t onceToken;

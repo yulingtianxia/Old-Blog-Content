@@ -4,7 +4,11 @@ layout: post
 title: "MacOSX10.9上用Octopress和Github搭建个人博客"
 date: 2014-04-05 14:28:54 +0800
 comments: true
-categories: MacOSX,Octopress
+categories: 
+- MacOSX
+- Octopress
+- Github
+
 ---
 网上已经有很多关于搭建Octopress的文章了，但我写这篇文章的目的是帮助Mac新手们搭建自己的Octopress，尤其是最新的Mavericks系统
 

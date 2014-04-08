@@ -3,7 +3,10 @@ layout: post
 title: "XCode和Objective-C Cheat Sheet"
 date: 2014-04-06 18:38:24 +0800
 comments: true
-categories: XCode,Objective-C
+categories: 
+- XCode
+- Objective-C  
+
 ---
 关于XCode和OC的速查，方便记忆，以后会更新  
 <!-- more-->
