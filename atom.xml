@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-09T17:09:33+08:00</updated>
+  <updated>2014-04-09T17:11:32+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -19,6 +19,9 @@
     <updated>2014-04-09T16:59:19+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/04/09/iosde-dot-gitignore</id>
     <content type="html"><![CDATA[<p>在多人一起开发XCode项目的时候，很多中间生成的临时文件并不需要加入到版本控制当中，所以记录下XCode需要用到的<code>.gitignore</code>文件</p>
+
+<!-- more-->
+
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
