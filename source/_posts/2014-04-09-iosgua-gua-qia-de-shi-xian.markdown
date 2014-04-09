@@ -17,7 +17,7 @@ categories:
 首先需要使用IB在你的工程的某个ViewController中加入一个UIImageView，任选一张图片赋予它image属性，并在Identity Inspector中将其类型设置成我们的自定义类`ImageMaskView`  
 ![QQ20140409-0@2x](/images/blog/QQ20140409-0@2x.png)  
 我选的是一个美女图片，这张图片将会作为一个Mask来遮挡住它“底下”的View（在这之前我已经在美女图片底下放置了一个UIImageView作为背景，当然你也可以根据你的需要自定义其他的背景） 
-我的背景图片（左）和遮罩图片（右）
+上素材！下面分别是我的背景图片和遮罩图片    
  ![QQ20140409-2@2x](/images/blog/QQ20140409-2@2x.png)![QQ20140409-3@2x](/images/blog/QQ20140409-3@2x.png)  
 下面就是通过IB将ImageMaskView按住Ctrl拖拽到ViewController.h中作为一个新的属性，属性名自己起，并将其设置为strong类型  
 ![QQ20140409-1@2x](/images/blog/QQ20140409-1@2x.png)  
