@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-09T13:16:55+08:00</updated>
+  <updated>2014-04-09T16:45:45+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,77 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS刮刮卡的实现]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/"/>
+    <updated>2014-04-09T15:38:52+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/09/iosgua-gua-qia-de-shi-xian</id>
+    <content type="html"><![CDATA[<h2>前言</h2>
+
+<p>去年在实习的期间，需要写一个类似刮刮乐的小功能，当时是从网上下载的demo，后来经过自己研读代码和debug后，终于整理出了一套比较easy的实现方法</p>
+
+<!-- more-->
+
+
+<h2>正文</h2>
+
+<p>需要源码的可以在<a href="https://github.com/yulingtianxia/ImageMask">这里</a>下载<br/>
+我用的是从网上下载的<code>ImageMaskView</code>类，这个类还调用了工具类<code>Matrix</code>以及<code>PointTransforms.h</code>,使用非ARC实现并且在<code>ImageMaskView</code>类中使用了Objective－C和C＋＋混编，废话不多说，介绍下具体搭建方法吧<br/>
+首先需要使用IB在你的工程的某个ViewController中加入一个UIImageView，任选一张图片赋予它image属性，并在Identity Inspector中将其类型设置成我们的自定义类<code>ImageMaskView</code><br/>
+<img src="/images/blog/QQ20140409-0@2x.png" alt="QQ20140409-0@2x" /><br/>
+我选的是一个美女图片，这张图片将会作为一个Mask来遮挡住它“底下”的View（在这之前我已经在美女图片底下放置了一个UIImageView作为背景，当然你也可以根据你的需要自定义其他的背景）<br/>
+下面就是通过IB将ImageMaskView按住Ctrl拖拽到ViewController.h中作为一个新的属性，属性名自己起，并将其设置为strong类型<br/>
+<img src="/images/blog/QQ20140409-1@2x.png" alt="QQ20140409-1@2x" />
+然后在ViewController.m中重写viewDidLoad</p>
+
+<p>``` objc
+@synthesize FengjieMask;//是的，它是个ImageMaskView类的对象，名字很古怪吧
+&ndash; (void)viewDidLoad
+{</p>
+
+<pre><code>[super viewDidLoad];
+// Do any additional setup after loading the view, typically from a nib.
+FengjieMask.radius = 20;//设置画笔半径
+[FengjieMask beginInteraction];//初始化方法
+FengjieMask.imageMaskFilledDelegate = self;//将代理设置为当前的VC
+</code></pre>
+
+<p>}
+```</p>
+
+<p>这里需要特别说明的是，<code>radius</code>是刮刮卡刮奖的时候画笔的半径，<code>imageMaskFilledDelegate</code>是一个代理，协议类型为<code>ImageMaskFilledDelegate</code>，只声明了一个方法<code>- (void) imageMaskView:(ImageMaskView *)maskView clearPercentDidChanged:(float)clearPercent</code>，这个方法在刮刮卡被刮下的面积变化时被调用，下面让我们的VC实现这个协议，并实现这个方法<br/>
+先在VC头文件增加<code>&lt;ImageMaskFilledDelegate&gt;</code><br/>
+<code>
+@interface YXYViewController : UIViewController&lt;ImageMaskFilledDelegate&gt;
+</code>
+然后实现协议方法 <br/>
+```
+ #pragma mark ImageMaskFilledDelegate
+&ndash; (void) imageMaskView:(ImageMaskView *)maskView clearPercentDidChanged:(float)clearPercent{</p>
+
+<pre><code>if (clearPercent &gt; 50) {
+    [UIView animateWithDuration:2
+                     animations:^{
+                         FengjieMask.userInteractionEnabled = NO;
+                         FengjieMask.alpha = 0;
+                         FengjieMask.imageMaskFilledDelegate = nil;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+}
+</code></pre>
+
+<p>}</p>
+
+<p>``` <br/>
+上面的代码先是做了个判断，当被涂刮的面积超过50%的时候，产生一个时长2秒的动画，让ImageMaskView渐渐变透明，传入的animations参数是个block块</p>
+
+<h2>后记</h2>
+
+<p>对iOS的Core Graphics不是很熟悉，还没有去深入看代码中的实现过程，不过修复了一个小bug：在UITouchPhaseBegan的时候刮开的圆形面积坐标错位了，并针对Retina和非Retina进行测试，效果都不错。以前用过其他的刮刮乐的代码，缺点是跟图片像素比之类的有关，显示效果很不好；但这个demo可以适配任意大小的Image而不用更改代码。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[初识block]]></title>
