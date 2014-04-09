@@ -158,6 +158,90 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
   
 
 
+<time datetime="2014-04-09T16:59:19+08:00" data-updated="true" itemprop="datePublished">Apr 9<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/github/'>Github</a>, <a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+			<span class="comments"><a href="/blog/2014/04/09/iosde-dot-gitignore/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/09/iosde-dot-gitignore/" itemprop="url">iOS的.gitignore</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>在多人一起开发XCode项目的时候，很多中间生成的临时文件并不需要加入到版本控制当中，所以记录下XCode需要用到的<code>.gitignore</code>文件</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Xcode
+</span><span class='line'>.DS_Store
+</span><span class='line'>*/build/*
+</span><span class='line'>*.pbxuser
+</span><span class='line'>!default.pbxuser
+</span><span class='line'>*.mode1v3
+</span><span class='line'>!default.mode1v3
+</span><span class='line'>*.mode2v3
+</span><span class='line'>!default.mode2v3
+</span><span class='line'>*.perspectivev3
+</span><span class='line'>!default.perspectivev3
+</span><span class='line'>xcuserdata
+</span><span class='line'>profile
+</span><span class='line'>*.moved-aside
+</span><span class='line'>DerivedData
+</span><span class='line'>.idea/
+</span><span class='line'>*.hmap
+</span><span class='line'>*.xccheckout
+</span><span class='line'>
+</span><span class='line'>#CocoaPods
+</span><span class='line'>Pods</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+还有需要记住一点的是，使用IB进行界面设计，无论是xib文件还是storyboard，同一时间只能右一个人更改一个Window或VC，虽然XCode5之后xib和storyboard可读性大大增强，但是仍不像Android开发界面的xml格式那么普及，还是小心谨慎为好</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
 <time datetime="2014-04-09T15:38:52+08:00" data-updated="true" itemprop="datePublished">Apr 9<span>th</span>, 2014</time></div>
 		<div class="tags">
 
