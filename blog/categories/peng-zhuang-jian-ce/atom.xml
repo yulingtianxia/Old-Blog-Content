@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
-  <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
+  <title><![CDATA[Category: 碰撞检测 | 玉令天下的Blog]]></title>
+  <link href="http://yulingtianxia.com/blog/categories/peng-zhuang-jian-ce/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
   <updated>2014-04-13T18:15:16+08:00</updated>
   <id>http://yulingtianxia.com/</id>
@@ -500,24 +500,6 @@ VisitablePhysicsBody *visitableBodyA = [[VisitablePhysicsBody alloc] initWithBod
 ```
 物理老师总说力的作用时相互的，所以我们需要两次访问：A访问B和B访问A，但是这样会调用两次visitXXX方法，原则上这两个逻辑上对称的方法我们只需要实现其中一个就可以，但必须得像上面代码一样，A->B和B->A缺一不可，因为碰撞的时候我们不知道bodyA和bodyB的类型，也就无法判断visitXXX方法是A->B时能调用还是B->A时能调用到<br/>
 当然，你也可以两个visit方法都实现，但只对visitor的node做操作，或只对visitable的node操作，总之仁者见仁智者见智啦</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[XCode和Objective-C Cheat Sheet]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
-    <updated>2014-04-06T18:38:24+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
-    <content type="html"><![CDATA[<p>关于XCode和OC的速查，方便记忆，以后会更新</p>
-
-<!-- more-->
-
-
-<p>XCode5 Cheat Sheet:(<a href="http://www.git-tower.com/blog/xcode-cheat-sheet/">作者</a>)<br/>
-<img src="/images/blog/xcode-cheat-sheet<em>页面</em>1.jpg"> <br/>
-<img src="/images/blog/xcode-cheat-sheet<em>页面</em>2.jpg">
-Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(<a href="http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5">作者</a>) <br/>
-<img src="/images/blog/RW-Objective-C-Cheatsheet-v-1-5.jpg"></p>
 ]]></content>
   </entry>
   
