@@ -5,11 +5,11 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Double Dispatch模式及其在iOS开发中实战 - 玉令天下的Blog</title>
+	<title>Double Dispatch模式及其在iOS开发中实践 - 玉令天下的Blog</title>
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="Double Dispatch模式及其在iOS开发中实战 引子 在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了4*3/2+4种情形（一枚导弹撞上另一枚导弹）。 &hellip;">
+	<meta name="description" content="Double Dispatch模式及其在iOS开发中实践 引子 在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了4*3/2+4种情形（一枚导弹撞上另一枚导弹）。 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -141,13 +141,22 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 			
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">Double Dispatch模式及其在iOS开发中实战</h1>
+	<h1 class="title" itemprop="name">Double Dispatch模式及其在iOS开发中实践</h1>
 	<div class="entry-content" itemprop="articleBody"><h2>引子</h2>
 
 <p>在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了<code>4*3/2+4</code>种情形（一枚导弹撞上另一枚导弹）。这种排列组合计算出的结果会随着物体种类N的增多爆炸性增长，如果这个时候还用一堆if－else来检测碰撞，那真是<code>Naive</code>了。这时我们可以利用面向对象语言的多态性质来在程序运行时动态绑定，因为碰撞检测是一种“双向选择”，所以我们需要<code>double dispatch</code>（双分派），<code>Visitor</code>模式就是<code>double dispatch</code>的一种应用。<br/>
-DD模式适合于处理多个对象之间的相互作用。假如不用DD模式的话，那么每个对象跟别的对象发生关系时，就必须辛辛苦苦的进行if&hellip;else&hellip;枚举，因为它并不知道对方是何神圣。DD模式的引入解决了这个问题，其实说白了就是利用语言内置的虚函数机制来替你干活，把工作移交给编译器去做了。</p>
+<img src="/images/blog/doubledispatch.jpg" alt="Visitor模式" /></p>
 
-<p><img src="/images/blog/doubledispatch.jpg" alt="Visitor模式" /></p>
+<p>DD模式适合于处理多个对象之间的相互作用。假如不用DD模式的话，那么每个对象跟别的对象发生关系时，就必须辛辛苦苦的进行if&hellip;else&hellip;枚举，因为它并不知道对方是何神圣。DD模式的引入解决了这个问题，其实说白了就是利用语言内置的虚函数机制来替你干活，把工作移交给编译器去做了。</p>
+
+<h2>本文内容</h2>
+
+<ul>
+<li>C++中的Double Dispatch实例</li>
+<li>Java中的Double Dispatch实例</li>
+<li>Objective-C中实现碰撞检测用到的Visitor模式</li>
+</ul>
+
 
 <!-- more-->
 
@@ -471,7 +480,7 @@ DD模式适合于处理多个对象之间的相互作用。假如不用DD模式�
 
 <p></p>
 
-<h2>Objective-C中的Visitor模式</h2>
+<h2>Objective-C中实现碰撞检测用到的Visitor模式</h2>
 
 <p>虽然OC不支持函数重载，但是其独有的SEL类型可以很好的解决这个问题<br/>
 感谢kouky提供的iOS上碰撞检测的<a href="https://github.com/kouky/iOS-SpriteKit-Pong">Demo</a>，这里他用到了Visitor模式<br/>
