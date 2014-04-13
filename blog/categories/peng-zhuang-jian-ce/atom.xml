@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 碰撞检测 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/peng-zhuang-jian-ce/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-13T18:16:07+08:00</updated>
+  <updated>2014-04-13T18:19:33+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -174,8 +174,9 @@ pEvent-&gt;RecordEvent(pRecorder);
 <h2>Java中的Double Dispatch实例</h2>
 
 <p>本节参考自<a href="http://www.blogjava.net/chaocai/archive/2009/02/19/255640.html">这里</a>
-相对于C++中使用继承来说，Java提供的接口和函数重载让Double Dispatch模式更容易实现<br/>
-1 根据对象来选择行为问题</p>
+相对于C++中使用继承来说，Java提供的接口和函数重载让Double Dispatch模式更容易实现</p>
+
+<h3>1 根据对象来选择行为问题</h3>
 
 <p><code>java
 public interface Event {
@@ -201,12 +202,15 @@ Event evt=new BlueEvent();
 new Handler().handle(evt);
 }
 }
-</code>
-你认为运行结果是什么呢？<br/>
+</code></p>
+
+<p>你认为运行结果是什么呢？<br/>
 结果：It is event<br/>
-是不是有点出乎意料，不是It is BlueEvent，<strong>这是因为Overload并不支持在运行时根据参数的运行时类型来绑定方法</strong>，所以要执行哪个方法是在编译时就选定了的。  <br/>
-2 Double Dispatch Pattern<br/>
-由于Java,C++及C#都具有上述局限，通常我们只能通过Switch或if结构来实现，当然这种实现方式既不优雅而且影响代码的可维护性。<br/>
+是不是有点出乎意料，不是It is BlueEvent，<strong>这是因为Overload并不支持在运行时根据参数的运行时类型来绑定方法</strong>，所以要执行哪个方法是在编译时就选定了的。</p>
+
+<h3>2 Double Dispatch Pattern</h3>
+
+<p>由于Java,C++及C#都具有上述局限，通常我们只能通过Switch或if结构来实现，当然这种实现方式既不优雅而且影响代码的可维护性。<br/>
 通过以下的Double Dispatch Pattern便可以优雅的实现。</p>
 
 <p><code>
