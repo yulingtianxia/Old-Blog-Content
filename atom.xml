@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-09T17:11:32+08:00</updated>
+  <updated>2014-04-13T18:05:38+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,744 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Double Dispatch模式及其在iOS开发中实战]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/"/>
+    <updated>2014-04-13T15:51:03+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan</id>
+    <content type="html"><![CDATA[<h2>引子</h2>
+
+<p>在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了<code>4*3/2+4</code>种情形（一枚导弹撞上另一枚导弹）。这种排列组合计算出的结果会随着物体种类N的增多爆炸性增长，如果这个时候还用一堆if－else来检测碰撞，那真是<code>Naive</code>了。这时我们可以利用面向对象语言的多态性质来在程序运行时动态绑定，因为碰撞检测是一种“双向选择”，所以我们需要<code>double dispatch</code>（双分派），<code>Visitor</code>模式就是<code>double dispatch</code>的一种应用。<br/>
+DD模式适合于处理多个对象之间的相互作用。假如不用DD模式的话，那么每个对象跟别的对象发生关系时，就必须辛辛苦苦的进行if&hellip;else&hellip;枚举，因为它并不知道对方是何神圣。DD模式的引入解决了这个问题，其实说白了就是利用语言内置的虚函数机制来替你干活，把工作移交给编译器去做了。</p>
+
+<p><img src="http://yulingtianxia.com/images/blog/doubledispatch.jpg" alt="Visitor模式" /></p>
+
+<h2>C++中的Double Dispatch实例</h2>
+
+<p>本节内容摘自<a href="http://www.cnblogs.com/west-link/archive/2011/07/26/2116887.html">这里</a><br/>
+我们先从字面上去理解它吧，直观地说，它指的是两次dispatch。这里的dispatch指的是什么呢？举个例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="k">class</span> <span class="nc">Event</span>
+</span><span class='line'>   <span class="p">{</span>
+</span><span class='line'>       <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>           <span class="k">virtual</span> <span class="kt">void</span> <span class="n">PrintName</span><span class="p">()</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>                <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;我是通用事件&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">class</span> <span class="nc">KeyEvent</span><span class="o">:</span><span class="k">public</span> <span class="n">Event</span>
+</span><span class='line'>   <span class="p">{</span>
+</span><span class='line'>      <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>           <span class="k">virtual</span> <span class="kt">void</span> <span class="n">PrintName</span><span class="p">()</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>                <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;我是按键事件&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">class</span> <span class="nc">ClickEvent</span><span class="o">:</span><span class="k">public</span> <span class="n">Event</span>
+</span><span class='line'>   <span class="p">{</span>
+</span><span class='line'>       <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>           <span class="k">virtual</span> <span class="kt">void</span> <span class="n">PrintName</span><span class="p">()</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>                <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;我是单击事件&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>   <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>多态性是动态的，被调用的方法由对象的真正类型确定，这个过程就被称之为dispatch。例如在C++中，每个对象都有一个虚函数表，当用基类的类型引用子类对象时，虚函数指针指向的是子类的虚函数表，调用的虚函数都是子类中的版本，所以下面代码输出的是：“我是按键事件”，这就算是一次dispatch的过程，即根据对象类型来动态确定调用哪个函数的过程。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="n">Event</span><span class="o">*</span> <span class="n">pEvent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KeyEvent</span><span class="p">();</span>
+</span><span class='line'><span class="n">pEvent</span><span class="o">-&gt;</span><span class="n">PrintName</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>什么时候会用到两次dispatch呢? 继续往下看：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="k">class</span> <span class="nc">EventRecorder</span>
+</span><span class='line'>   <span class="p">{</span>
+</span><span class='line'>       <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>           <span class="k">virtual</span> <span class="kt">void</span> <span class="n">RecordEvent</span><span class="p">(</span><span class="n">Event</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>               <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;使用EventRecorder记录通用事件&quot;</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>           <span class="k">virtual</span> <span class="kt">void</span> <span class="n">RecordEvent</span><span class="p">(</span><span class="n">KeyEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>               <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;使用EventRecorder记录按键事件&quot;</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>           <span class="k">virtual</span> <span class="kt">void</span> <span class="n">RecordEvent</span><span class="p">(</span><span class="n">ClickEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>               <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;使用EventRecorder记录单击事件&quot;</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">class</span> <span class="nc">AdvanceEventRecorder</span><span class="o">:</span><span class="k">public</span> <span class="n">EventRecorder</span>
+</span><span class='line'>   <span class="p">{</span>
+</span><span class='line'>       <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>           <span class="k">virtual</span> <span class="kt">void</span> <span class="n">RecordEvent</span><span class="p">(</span><span class="n">Event</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>               <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;使用高级EventRecorder记录通用事件&quot;</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>           <span class="k">virtual</span> <span class="kt">void</span> <span class="n">RecordEvent</span><span class="p">(</span><span class="n">KeyEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>               <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;使用高级EventRecorder记录按键事件&quot;</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>           <span class="k">virtual</span> <span class="kt">void</span> <span class="n">RecordEvent</span><span class="p">(</span><span class="n">ClickEvent</span><span class="o">*</span> <span class="n">event</span><span class="p">)</span>
+</span><span class='line'>           <span class="p">{</span>
+</span><span class='line'>               <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;使用高级EventRecorder记录单击事件&quot;</span><span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>   <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>这两个类中分别包含三个重载函数，多态是动态的，而函数重载则是静态的，它在编译时期就确定下来了，所以，下面代码片段的运行结果并不是我们所期望的:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="n">EventRecorder</span><span class="o">*</span> <span class="n">pRecorder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdvanceEventRecorder</span><span class="p">();</span>
+</span><span class='line'><span class="n">Event</span><span class="o">*</span> <span class="n">pEvent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KeyEvent</span><span class="p">();</span>
+</span><span class='line'><span class="n">pRecorder</span><span class="o">-&gt;</span><span class="n">RecordEvent</span><span class="p">(</span><span class="n">pEvent</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+输出内容为：使用高级EventRecorder记录通用事件<br/>
+实际上，在这个场景中，我们期望调用的是：AdvanceEventRecorder::RecordEvent(KeyEvent* event)<br/>
+下面我们使用Double Dispatch设计模式来达到上面的代码片段的目的，在所有Event对象中增加下面的函数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'>   <span class="k">virtual</span> <span class="kt">void</span> <span class="n">RecordEvent</span><span class="p">(</span><span class="n">EventRecorder</span><span class="o">*</span> <span class="n">recorder</span><span class="p">)</span>
+</span><span class='line'>   <span class="p">{</span>
+</span><span class='line'>      <span class="n">recorder</span><span class="o">-&gt;</span><span class="n">RecordEvent</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>   <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+下面的代码片段将输出：使用高级EventRecorder记录按键事件</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="n">EventRecorder</span><span class="o">*</span> <span class="n">pRecorder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdvanceEventRecorder</span><span class="p">();</span>
+</span><span class='line'>      <span class="n">Event</span><span class="o">*</span> <span class="n">pEvent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KeyEvent</span><span class="p">();</span>
+</span><span class='line'>      <span class="n">pEvent</span><span class="o">-&gt;</span><span class="n">RecordEvent</span><span class="p">(</span><span class="n">pRecorder</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+可以看出，第一次dispatch正确地找到了<code>KeyEvent</code>的<code>RecordEvent(EventRecorder* recorder)</code>，第二次dispatch找到了<code>AdvanceEventRecorder</code>的<code>RecordEvent(KeyEvent* event)</code>。
+   Visitor模式就是对Double Dispatch的应用，另外，在碰撞检测算法中也会经常用到。</p>
+
+<h2>Java中的Double Dispatch实例</h2>
+
+<p>本节参考自<a href="http://www.blogjava.net/chaocai/archive/2009/02/19/255640.html">这里</a>
+相对于C++中使用继承来说，Java提供的接口和函数重载让Double Dispatch模式更容易实现<br/>
+1 根据对象来选择行为问题</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Event</span> <span class="o">{</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BlueEvent</span> <span class="kd">implements</span> <span class="n">Event</span> <span class="o">{</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">RedEvent</span> <span class="kd">implements</span> <span class="n">Event</span> <span class="o">{</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Handler</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="n">Event</span> <span class="n">event</span><span class="o">){</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;It is event&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="n">RedEvent</span> <span class="n">event</span><span class="o">){</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;It is RedEvent&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="n">BlueEvent</span> <span class="n">event</span><span class="o">){</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;It is BlueEvent&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'><span class="n">Event</span> <span class="n">evt</span><span class="o">=</span><span class="k">new</span> <span class="n">BlueEvent</span><span class="o">();</span>
+</span><span class='line'><span class="k">new</span> <span class="nf">Handler</span><span class="o">().</span><span class="na">handle</span><span class="o">(</span><span class="n">evt</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+你认为运行结果是什么呢？<br/>
+结果：It is event<br/>
+是不是有点出乎意料，不是It is BlueEvent，<strong>这是因为Overload并不支持在运行时根据参数的运行时类型来绑定方法</strong>，所以要执行哪个方法是在编译时就选定了的。  <br/>
+2 Double Dispatch Pattern<br/>
+由于Java,C++及C#都具有上述局限，通常我们只能通过Switch或if结构来实现，当然这种实现方式既不优雅而且影响代码的可维护性。<br/>
+通过以下的Double Dispatch Pattern便可以优雅的实现。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Event</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">injectHandler</span><span class="o">(</span><span class="n">EventHandler</span> <span class="n">v</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BlueEvent</span> <span class="kd">implements</span> <span class="n">Event</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">injectHandler</span><span class="o">(</span><span class="n">EventHandler</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'><span class="n">v</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">RedEvent</span> <span class="kd">implements</span> <span class="n">Event</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">injectHandler</span><span class="o">(</span><span class="n">EventHandler</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'><span class="n">v</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EventHandler</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="n">BlueEvent</span> <span class="n">e</span><span class="o">){</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;It is BlueEvent&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="n">RedEvent</span> <span class="n">e</span><span class="o">){</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;It is RedEvent&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'><span class="n">Event</span> <span class="n">evt</span><span class="o">=</span><span class="k">new</span> <span class="n">BlueEvent</span><span class="o">();</span>
+</span><span class='line'><span class="n">evt</span><span class="o">.</span><span class="na">injectHandler</span><span class="o">(</span><span class="k">new</span> <span class="n">EventHandler</span><span class="o">());</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h2>Objective-C中的Visitor模式</h2>
+
+<p>虽然OC不支持函数重载，但是其独有的SEL类型可以很好的解决这个问题<br/>
+感谢kouky提供的iOS上碰撞检测的<a href="https://github.com/kouky/iOS-SpriteKit-Pong">Demo</a>，这里他用到了Visitor模式<br/>
+由于判断物体类型是用一个32位掩码来标记，所以这里不可避免的要用到if语句，这不代表它不是动态绑定，因为if语句是在初始化方法<code>+ (id)contactVisitorWithBody:(SKPhysicsBody *)body forContact:(SKPhysicsContact *)contact</code>中其作用的，只是为了判断物体类型，而不是判断碰撞两者的组合类型<br/>
+可以参考我写的例子<a href="https://github.com/yulingtianxia/MyFirstGame/tree/master/ColorAtom">ColorAtom</a></p>
+
+<p>首先新建一个访问者基本类<code>ContactVisitor</code>，其本质为对SKPhysicsBody和SKPhysicsContact对象的封装，而SKPhysicsContact在本例中虽未用到（因为碰撞检测后啥也没干，只输出了碰撞双方name），但其保存着碰撞坐标等信息，也很重要。两次dispatch都是在访问者基本类实现的，而碰撞后具体操作则卸载了访问者具体类（如AtomNodeContactVisitor）</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//  ContactVisitor.h</span>
+</span><span class='line'><span class="c1">//  ColorAtom</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  Created by 杨萧玉 on 14-4-13.</span>
+</span><span class='line'><span class="c1">//  Copyright (c) 2014年 杨萧玉. All rights reserved.</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'><span class="cp">#import &lt;SpriteKit/SpriteKit.h&gt;</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ContactVisitor</span> : <span class="nc">NSObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">SKPhysicsBody</span> <span class="o">*</span><span class="n">body</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">SKPhysicsContact</span> <span class="o">*</span><span class="n">contact</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">contactVisitorWithBody:</span><span class="p">(</span><span class="n">SKPhysicsBody</span> <span class="o">*</span><span class="p">)</span><span class="nv">body</span> <span class="nf">forContact:</span><span class="p">(</span><span class="n">SKPhysicsContact</span> <span class="o">*</span><span class="p">)</span><span class="nv">contact</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">visit:</span><span class="p">(</span><span class="n">SKPhysicsBody</span> <span class="o">*</span><span class="p">)</span><span class="nv">body</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>属性body即为访问者的SKPhysicsBody，而方法<code>visit:</code>的参数为被访问者的SKPhysicsBody<br/>
+<code>contactVisitorWithBody:forContact:</code>方法的作用是根据掩码类型初始化对应类型的访问者具体类</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  ContactVisitor.m</span>
+</span><span class='line'><span class="c1">//  ColorAtom</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  Created by 杨萧玉 on 14-4-13.</span>
+</span><span class='line'><span class="c1">//  Copyright (c) 2014年 杨萧玉. All rights reserved.</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;ContactVisitor.h&quot;</span>
+</span><span class='line'><span class="cp">#import &lt;objc/runtime.h&gt;</span>
+</span><span class='line'><span class="cp">#import &quot;NodeCategories.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;AtomNodeContactVisitor.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;PlayFieldSceneContactVisitor.h&quot;</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ContactVisitor</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">contactVisitorWithBody:</span><span class="p">(</span><span class="n">SKPhysicsBody</span> <span class="o">*</span><span class="p">)</span><span class="nv">body</span> <span class="nf">forContact:</span><span class="p">(</span><span class="n">SKPhysicsContact</span> <span class="o">*</span><span class="p">)</span><span class="nv">contact</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//第一次dispatch，通过node类别返回对应的实例</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">((</span><span class="n">body</span><span class="p">.</span><span class="n">categoryBitMask</span><span class="o">&amp;</span><span class="n">AtomCategory</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[[</span><span class="n">AtomNodeContactVisitor</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithBody:</span><span class="n">body</span> <span class="nl">forContact:</span><span class="n">contact</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">((</span><span class="n">body</span><span class="p">.</span><span class="n">categoryBitMask</span><span class="o">&amp;</span><span class="n">PlayFieldCategory</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[[</span><span class="n">PlayFieldSceneContactVisitor</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithBody:</span><span class="n">body</span> <span class="nl">forContact:</span><span class="n">contact</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithBody:</span><span class="p">(</span><span class="n">SKPhysicsBody</span> <span class="o">*</span><span class="p">)</span><span class="nv">body</span> <span class="nf">forContact:</span><span class="p">(</span><span class="n">SKPhysicsContact</span> <span class="o">*</span><span class="p">)</span><span class="nv">contact</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_contact</span> <span class="o">=</span> <span class="n">contact</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">_body</span> <span class="o">=</span> <span class="n">body</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">visit:</span><span class="p">(</span><span class="n">SKPhysicsBody</span> <span class="o">*</span><span class="p">)</span><span class="nv">body</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//第二次dispatch，通过构造方法名来执行对应方法</span>
+</span><span class='line'>    <span class="c1">// 生成node的名字，比如&quot;AtomNode&quot;</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">bodyClassName</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithUTF8String:</span><span class="n">class_getName</span><span class="p">(</span><span class="n">body</span><span class="p">.</span><span class="n">node</span><span class="p">.</span><span class="n">class</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 生成方法名，比如&quot;visitAtomBody&quot;</span>
+</span><span class='line'>    <span class="n">NSMutableString</span> <span class="o">*</span><span class="n">contactSelectorString</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;visit&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">contactSelectorString</span> <span class="nl">appendString:</span><span class="n">bodyClassName</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">contactSelectorString</span> <span class="nl">appendString:</span><span class="s">@&quot;:&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">SEL</span> <span class="n">selector</span> <span class="o">=</span> <span class="n">NSSelectorFromString</span><span class="p">(</span><span class="n">contactSelectorString</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//判断是否存在此方法</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="nl">respondsToSelector:</span><span class="n">selector</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">performSelector:</span><span class="n">selector</span> <span class="nl">withObject:</span><span class="n">body</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>以访问者具体类以<code>AtomNodeContactVisitor</code>类为例，它继承自访问者基本类ContactVisitor</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  AtomNodeContactVisitor.h</span>
+</span><span class='line'><span class="c1">//  ColorAtom</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  Created by 杨萧玉 on 14-4-13.</span>
+</span><span class='line'><span class="c1">//  Copyright (c) 2014年 杨萧玉. All rights reserved.</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;ContactVisitor.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">AtomNodeContactVisitor</span> : <span class="nc">ContactVisitor</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*Atom访问了Atom，同类碰撞*/</span>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">visitAtomNode:</span><span class="p">(</span><span class="n">SKPhysicsBody</span><span class="o">*</span><span class="p">)</span> <span class="n">anotherAtomBody</span><span class="p">;</span>
+</span><span class='line'><span class="cm">/*Atom访问了边界，也就是球撞墙上了*/</span>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">visitPlayFieldScene:</span><span class="p">(</span><span class="n">SKPhysicsBody</span><span class="o">*</span><span class="p">)</span> <span class="n">playfieldBody</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>在处理碰撞后的visitXXX方法中，我将碰撞双方的访问者和被访问者的关系输出</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  AtomNodeContactVisitor.m</span>
+</span><span class='line'><span class="c1">//  ColorAtom</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  Created by 杨萧玉 on 14-4-13.</span>
+</span><span class='line'><span class="c1">//  Copyright (c) 2014年 杨萧玉. All rights reserved.</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;AtomNodeContactVisitor.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;AtomNode.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;PlayFieldScene.h&quot;</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">AtomNodeContactVisitor</span>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">visitAtomNode:</span><span class="p">(</span><span class="n">SKPhysicsBody</span><span class="o">*</span><span class="p">)</span> <span class="n">anotherAtomBody</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">AtomNode</span> <span class="o">*</span><span class="n">thisAtom</span> <span class="o">=</span> <span class="p">(</span><span class="n">AtomNode</span><span class="o">*</span><span class="p">)</span><span class="n">self</span><span class="p">.</span><span class="n">body</span><span class="p">.</span><span class="n">node</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">AtomNode</span> <span class="o">*</span><span class="n">anotherAtom</span> <span class="o">=</span> <span class="p">(</span><span class="n">AtomNode</span><span class="o">*</span><span class="p">)</span><span class="n">anotherAtomBody</span><span class="p">.</span><span class="n">node</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//处理碰撞后的结果</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@-&gt;%@&quot;</span><span class="p">,</span><span class="n">thisAtom</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="n">anotherAtom</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nl">visitPlayFieldScene:</span><span class="p">(</span><span class="n">SKPhysicsBody</span><span class="o">*</span><span class="p">)</span> <span class="n">playfieldBody</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">AtomNode</span> <span class="o">*</span><span class="n">atom</span> <span class="o">=</span> <span class="p">(</span><span class="n">AtomNode</span><span class="o">*</span><span class="p">)</span><span class="n">self</span><span class="p">.</span><span class="n">body</span><span class="p">.</span><span class="n">node</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">PlayFieldScene</span> <span class="o">*</span><span class="n">playfield</span> <span class="o">=</span> <span class="p">(</span><span class="n">PlayFieldScene</span><span class="o">*</span><span class="p">)</span> <span class="n">playfieldBody</span><span class="p">.</span><span class="n">node</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@-&gt;%@&quot;</span><span class="p">,</span><span class="n">atom</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="n">playfield</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+下面建立被访问者类，其本质就是对SKPhysicsBody的封装，并接受Visitor的注入</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  VisitablePhysicsBody.h</span>
+</span><span class='line'><span class="c1">//  ColorAtom</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  Created by 杨萧玉 on 14-4-13.</span>
+</span><span class='line'><span class="c1">//  Copyright (c) 2014年 杨萧玉. All rights reserved.</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'><span class="cp">#import &quot;ContactVisitor.h&quot;</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">VisitablePhysicsBody</span> : <span class="nc">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">SKPhysicsBody</span> <span class="o">*</span><span class="n">body</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="nf">initWithBody:</span><span class="p">(</span><span class="n">SKPhysicsBody</span> <span class="o">*</span><span class="p">)</span><span class="nv">body</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">acceptVisitor:</span><span class="p">(</span><span class="n">ContactVisitor</span> <span class="o">*</span><span class="p">)</span><span class="nv">visitor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>关键的一步：在<code>acceptVisitor:</code>方法中调用访问者的<code>visit:</code>方法</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  VisitablePhysicsBody.m</span>
+</span><span class='line'><span class="c1">//  ColorAtom</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//  Created by 杨萧玉 on 14-4-13.</span>
+</span><span class='line'><span class="c1">//  Copyright (c) 2014年 杨萧玉. All rights reserved.</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;VisitablePhysicsBody.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">VisitablePhysicsBody</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithBody:</span><span class="p">(</span><span class="n">SKPhysicsBody</span> <span class="o">*</span><span class="p">)</span><span class="nv">body</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_body</span> <span class="o">=</span> <span class="n">body</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">acceptVisitor:</span><span class="p">(</span><span class="n">ContactVisitor</span> <span class="o">*</span><span class="p">)</span><span class="nv">visitor</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">visitor</span> <span class="nl">visit:</span><span class="n">self</span><span class="p">.</span><span class="n">body</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>可能有人会有疑问，<code>visit:</code>方法穿入的参数类型永远是<code>SKPhysicsBody</code>，这哪里是动态绑定啊，其实是由于本例的特殊性，碰撞检测时区分物体类型不是靠<code>SKPhysicsBody</code>子类化来区分和绑定，而是靠SKPhysicsBody类中的<code>categoryBitMask</code>属性来区分，这也就免不了需要在<code>ContactVisitor</code>初始化的时候通过if语句来判断具体初始化哪个子类<br/>
+最后，在Scene实现SKPhysicsContactDelegate协议</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#pragma mark SKPhysicsContactDelegate</span>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didBeginContact:</span><span class="p">(</span><span class="n">SKPhysicsContact</span> <span class="o">*</span><span class="p">)</span><span class="nv">contact</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//A-&gt;B</span>
+</span><span class='line'>    <span class="n">ContactVisitor</span> <span class="o">*</span><span class="n">visitorA</span> <span class="o">=</span> <span class="p">[</span><span class="n">ContactVisitor</span> <span class="nl">contactVisitorWithBody:</span><span class="n">contact</span><span class="p">.</span><span class="n">bodyA</span> <span class="nl">forContact:</span><span class="n">contact</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">VisitablePhysicsBody</span> <span class="o">*</span><span class="n">visitableBodyB</span> <span class="o">=</span> <span class="p">[[</span><span class="n">VisitablePhysicsBody</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithBody:</span><span class="n">contact</span><span class="p">.</span><span class="n">bodyB</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">visitableBodyB</span> <span class="nl">acceptVisitor:</span><span class="n">visitorA</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//B-&gt;A</span>
+</span><span class='line'>    <span class="n">ContactVisitor</span> <span class="o">*</span><span class="n">visitorB</span> <span class="o">=</span> <span class="p">[</span><span class="n">ContactVisitor</span> <span class="nl">contactVisitorWithBody:</span><span class="n">contact</span><span class="p">.</span><span class="n">bodyB</span> <span class="nl">forContact:</span><span class="n">contact</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">VisitablePhysicsBody</span> <span class="o">*</span><span class="n">visitableBodyA</span> <span class="o">=</span> <span class="p">[[</span><span class="n">VisitablePhysicsBody</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithBody:</span><span class="n">contact</span><span class="p">.</span><span class="n">bodyA</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">visitableBodyA</span> <span class="nl">acceptVisitor:</span><span class="n">visitorB</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+物理老师总说力的作用时相互的，所以我们需要两次访问：A访问B和B访问A，但是这样会调用两次visitXXX方法，原则上这两个逻辑上对称的方法我们只需要实现其中一个就可以，但必须得像上面代码一样，A->B和B->A缺一不可，因为碰撞的时候我们不知道bodyA和bodyB的类型，也就无法判断visitXXX方法是A->B时能调用还是B->A时能调用到<br/>
+当然，你也可以两个visit方法都实现，但只对visitor的node做操作，或只对visitable的node操作，总之仁者见仁智者见智啦</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS的.gitignore]]></title>
