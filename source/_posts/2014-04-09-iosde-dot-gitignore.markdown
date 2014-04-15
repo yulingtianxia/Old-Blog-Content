@@ -9,6 +9,7 @@ categories:
 
 ---
 在多人一起开发XCode项目的时候，很多中间生成的临时文件并不需要加入到版本控制当中，所以记录下XCode需要用到的`.gitignore`文件
+<!-- more-->
 ``` 
 # Xcode
 .DS_Store
