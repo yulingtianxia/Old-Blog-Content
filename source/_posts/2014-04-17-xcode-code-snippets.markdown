@@ -1,0 +1,182 @@
+---
+layout: post
+title: "Xcode Code Snippets"
+date: 2014-04-17 13:18:02 +0800
+comments: true
+categories: 
+- Xcode
+- Code Snippets
+- 转载
+
+---
+
+**本文转载自[破船](http://beyondvincent.com)**  
+
+---
+
+[<img class="alignnone size-full wp-image-734" alt="fend_off_rsi" src="http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg" width="1200" height="620" />][1]
+<!--more-->
+在Double Encore，我们写的代码都是干净，可重用的——不过，有时候并不能完全做到。如在使用pragma mark的时候。下面就是一个示例：
+
+<pre class="wp-code-highlight prettyprint linenums:1">#pragma mark - UIViewController overrides</pre>
+
+通过pragma mark，可以让代码看起来既整洁又有组织。虽然这很重要，但是会带来额外的输入操作和时间。
+
+此时，我们可以使用code snippets。
+
+通过code snippets，我们可以创建一些可重用的代码块，并且在任何需要的地方很容易的就可以使用这些代码块。这可以节省输入需要的操作和时间。并且，一旦你学会使用code snippets，会发现你可以创建并扩充自己的code snippet library。
+
+创建一个code snippet非常简单。首先，打开Xcode并在utilities panel中选择code snippet library。
+
+[<img class="alignnone size-full wp-image-736" alt="1-1024x768" src="http://www.doubleencore.com/wp-content/uploads/2013/04/1-1024x768.png" width="1024" height="768" />][2]
+
+上图中，可以看到在code snippet library中已经有一些数据了。
+
+接着，输入希望创建的code snippet。在这里，我为pragma mark创建一个code snippet。如下图所示，在代码编辑器中输入 “#pragma mark – UIViewController overrides”。
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/2-1024x768.png" width="1024" height="768" />
+
+选中代码块，如下图所示：
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/3-1024x768.png" width="1024" height="768" />
+
+然后单击并按住代码块，知道文本光标变为箭头光标。接着将代码块拖放到code snippet library中，然后松开鼠标。如下图所示
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/4-1024x768.png" width="1024" height="768" />
+
+此时会弹出一个popover，通过该popover可以对新的code snippet进行编辑，如下图所示。
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/5-1024x768.png" width="1024" height="768" />
+
+首先，是定snippet的名字。这里我指定为“Pragma Mark”
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/6-1024x768.png" width="1024" height="768" />
+
+然后，指定该snippet的completion shortcut（可选项）。这里我指定为“pm”。这样设置以后，在Xcode的代码编辑器中只需要输入快捷方式（pm），就能简单的将这个snippet添加到代码中。非常有用！
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/7-1024x768.png" width="1024" height="768" />
+
+接着，可以看到在上面的示例中，pragma mark的标题是“UIViewController overrides”，不过我们是希望对其修改一下，以能够很容易的输入任意标题。
+
+我们可以简单的将code snippet包含的文本内容修改为“#pragma mark – “即可。不过，这里还有更好的一个办法——将文本块封装到“<#” 和 “#>”中间，这样code snippet将指出我们可以插入自定义文本的完整范围。
+
+下面，将“UIViewController overrides”替换…
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/8-1024x768.png" width="1024" height="768" />
+
+&#8230;为“<#Title#>”。
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/9-1024x768.png" width="1024" height="768" />
+
+注意，completion scopes字段在这里并没有做修改，通过该字段可以指定completion shortcut的有效范围。
+
+最后，点击edit按钮，以完成snippet的编辑。之后可以在这个popover画面中看到最终结果的一个预览效果。
+
+&nbsp;
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/10-1024x768.png" width="1024" height="768" />
+
+然后点击popover中的done按钮。下面，你可以将我们在代码编辑器中为创建snippet而写入的文本行删除掉。
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/11-1024x768.png" width="1024" height="768" />
+
+现在来试用一下刚刚创建的snippet！有两种方法。第一种是在code snippet library中找到snippet，然后用鼠标将其拖拽到代码编辑器中&#8230;
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/12-1024x768.png" width="1024" height="768" />
+
+&#8230;然后松开鼠标。
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/13-1024x768.png" width="1024" height="768" />
+
+一旦将snippet拖放到代码编辑器之后，就可以通过点击键盘上的tab键在不同的completion字段间移动焦点。
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/14-1024x768.png" width="1024" height="768" />
+
+第二种方法是在代码编辑器里简单的输入completion shortcut中设置的内容即可。我们这里是“pm”。
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/15-1024x768.png" width="1024" height="768" />
+
+然后点击键盘中的return键，就可以将snippet插入到代码编辑器中。
+
+<img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/141-1024x768.png" width="1024" height="768" />
+
+很简单吧！现在你已经知道如何创建自己的snippet了，你将发现这非常的有用。任何时候，你都遇到重复输入的相同代码块，都可以考虑将其添加到你的code snippets library中。
+
+&nbsp;
+
+下面是我经常使用到的一些snippet：
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Animation Block
+Completion Shortcut: ab
+Completion Scopes: Function or Method
+ 
+void (^&lt;#Title#&gt;)(void) = ^{ };
+</pre>
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Animation Completion Block
+Completion Shortcut: acb
+Completion Scopes: Function or Method
+ 
+void (^&lt;#Title#&gt;)(BOOL) = ^(BOOL finished) { };
+</pre>
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Notification Add
+Completion Shortcut: na
+Completion Scopes: Function or Method
+ 
+[[NSNotificationCenter defaultCenter] addObserver:&lt;#Observer#&gt; selector:&lt;#Selector#&gt; name:&lt;#Name#&gt; object:&lt;#Object#&gt;];
+</pre>
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Notification Remove
+Completion Shortcut: nr
+Completion Scopes: Function or Method
+ 
+[[NSNotificationCenter defaultCenter] removeObserver:&lt;#Observer#&gt; name:&lt;#Name#&gt; object:&lt;#Object#&gt;];
+</pre>
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: NSLog
+Completion Shortcut: log
+Completion Scopes: Function or Method
+ 
+NSLog(@"&lt;#Log#&gt;");
+</pre>
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Private Interface
+Completion Shortcut: pi
+Completion Scopes: Top Level
+ 
+@interface &lt;#Title#&gt; ()
+
+@end
+</pre>
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Assign
+Completion Shortcut: pa
+Completion Scopes: All
+ 
+@property (assign, nonatomic)
+</pre>
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Strong
+Completion Shortcut: ps
+Completion Scopes: All
+ 
+@property (strong, nonatomic)
+</pre>
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Unsafe Unretained
+Completion Shortcut: pu
+Completion Scopes: All
+ 
+@property (unsafe_unretained, nonatomic)
+</pre>
+
+<div style="text-align: left;">
+</div>
+
+<div style="text-align: left;">
+</div>
+
+
+ [1]: http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg
+ [2]: http://beyondvincent.com/wp-content/uploads/2013/05/1-1024x768.png
