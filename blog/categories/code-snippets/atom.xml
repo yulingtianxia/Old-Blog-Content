@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Xcode | 玉令天下的Blog]]></title>
-  <link href="http://yulingtianxia.com/blog/categories/xcode/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Code Snippets | 玉令天下的Blog]]></title>
+  <link href="http://yulingtianxia.com/blog/categories/code-snippets/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
   <updated>2014-04-17T13:38:05+08:00</updated>
   <id>http://yulingtianxia.com/</id>

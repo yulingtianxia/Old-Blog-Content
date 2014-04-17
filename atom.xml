@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-16T08:54:19+08:00</updated>
+  <updated>2014-04-17T13:38:05+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,629 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[XCode中断点的威力]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/"/>
+    <updated>2014-04-17T13:34:26+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li</id>
+    <content type="html"><![CDATA[<p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
+
+<hr />
+
+<p>本文目录：</p>
+
+<p><strong><span style="color: #339966;">1、添加一个特殊的断点</span></strong><br/>
+<strong><span style="color: #339966;">    异常断点(Exception breakpoint)</span></strong><br/>
+<strong><span style="color: #339966;">    符号断点(Symbolic breakpoint)</span></strong><br/>
+<strong><span style="color: #339966;">2、打印到控制台</span></strong><br/>
+<strong><span style="color: #339966;">    使用NSLog打印字符串</span></strong><br/>
+<strong><span style="color: #339966;">    使用NSLog打印对象(po)</span></strong><br/>
+<strong><span style="color: #339966;">    带条件的打印</span></strong><br/>
+<strong><span style="color: #339966;">    在循环里面打印一些东西</span></strong><br/>
+<strong><span style="color: #339966;">3、运行时设置断点</span></strong><br/>
+<strong><span style="color: #339966;">4、调试中播放声音</span></strong><br/>
+<strong><span style="color: #339966;">5、LLDB中有用的一些命令</span></strong><br/>
+<strong><span style="color: #339966;">    打印帮助</span></strong><br/>
+<strong><span style="color: #339966;">    打印调用栈</span></strong><br/>
+<strong><span style="color: #339966;">    打印最基本的内容 (p)</span></strong><br/>
+<strong><span style="color: #339966;">    打印对象(po)</span></strong><br/>
+<strong><span style="color: #339966;">    打印表达式(expr)</span></strong><br/>
+<strong><span style="color: #339966;">    打印线程中的一些东西</span></strong></p>
+
+<p>&nbsp;</p>
+
+<!--more-->
+
+
+<p>正文</p>
+
+<p>下面是非常有用的一些Xcode调试技术(使用断点和LLDB调试器)</p>
+
+<p>1、添加一个特殊的断点</p>
+
+<ul>
+<li>异常断点(Exception breakpoint)</li>
+</ul>
+
+
+<p>如果添加了异常断点，当程序每次发生了异常，都会被中断。<strong><span style="color: #339966;">一般用来捕获未知异常</span></strong>。如下示例：</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">*** Terminating app due to uncaught exception ’NSRangeException’, reason:
+’-[__NSCFArray objectAtIndex:]: index (10) beyond bounds (3)</pre>
+
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-01.png"><img class="alignnone size-full wp-image-1497" alt="xcode-debug-01" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-01.png" width="1049" height="654" /></a></p>
+
+<ul>
+<li>符号断点(Symbolic breakpoint)</li>
+</ul>
+
+
+<p>符号断点可以中断某个函数的调用。</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">- [UIViewController viewDidLoad]
+- [__NSCFArray objectAtIndex:]</pre>
+
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-02.png"><img class="alignnone size-full wp-image-1498" alt="xcode-debug-02" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-02.png" width="1049" height="654" /></a></p>
+
+<p>&nbsp;</p>
+
+<p>2、打印到控制台</p>
+
+<ul>
+<li>使用NSLog打印字符串</li>
+</ul>
+
+
+<p>使用断点来替换NSLog代码(或者在运行时添加一个NSLog)——与代码写NSLog的效果相同。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-04.png"><img class="alignnone size-full wp-image-1499" alt="xcode-debug-04" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-04.png" width="1030" height="654" /></a></p>
+
+<p>&nbsp;</p>
+
+<ul>
+<li>使用NSLog打印对象(po)</li>
+</ul>
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">NSLog(@"obj: %@", obj);</pre>
+
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-05.png"><img class="alignnone size-full wp-image-1500" alt="xcode-debug-05" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-05.png" width="1030" height="654" /></a></p>
+
+<ul>
+<li>带条件的打印</li>
+</ul>
+
+
+<p>例如：当aNumber大于10才打印出“str”的内容。</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">expr (void)NSLog(@"Ok, print a log: %@", str)</pre>
+
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-07.png"><img class="alignnone size-full wp-image-1501" alt="xcode-debug-07" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-07.png" width="1030" height="681" /></a></p>
+
+<p>&nbsp;</p>
+
+<ul>
+<li>在循环里面打印一些东西</li>
+</ul>
+
+
+<p>例如，在循环中希望i大于5才开始打印。</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">for ( int i=0; i&lt;10; i++ )
+{
+[self self]; // something
+}</pre>
+
+
+<p>使用“ignore”值，并利用下面的代码进行打印：</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">expr (void)NSLog(@"Ok, print a log: %@", str)</pre>
+
+
+<p><img class="alignnone size-full wp-image-1502" alt="xcode-debug-08" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-08.png" width="1030" height="681" /></p>
+
+<p>3、运行时设置断点</p>
+
+<p>在运行的时候，根据条件设置断点有时候非常有用。</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">breakpoint set -f APViewController.m -l 33</pre>
+
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-09.png"><img class="alignnone size-full wp-image-1503" alt="xcode-debug-09" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-09.png" width="1030" height="681" /></a></p>
+
+<p>4、调试中播放声音</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Schermata-06-2456470-alle-15.43.13.png"><img class="alignnone size-full wp-image-1504" alt="Schermata-06-2456470-alle-15.43.13" src="http://beyondvincent.com/wp-content/uploads/2013/07/Schermata-06-2456470-alle-15.43.13.png" width="475" height="304" /></a></p>
+
+<p>5、LLDB中有用的一些命令</p>
+
+<p>当Xcode停留在某个断点时，我们可以通过控制台(console)与<strong><span style="color: #339966;">lldb</span></strong>进行交互。</p>
+
+<ul>
+<li>打印帮助</li>
+</ul>
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">(lldb) help</pre>
+
+
+<ul>
+<li>打印调用栈(bt)</li>
+</ul>
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">(lldb) bt
+* thread #1: tid = 0x1c03, 0x00003146 Debug`-[APViewController callMe:andANumber:](self=0x07187e50, _cmd=0x000038b9, str=0x0715aa40, aNum=38) + 230 at APViewController.m:33, stop reason = breakpoint 3.1
+frame #0: 0x00003146 Debug`-[APViewController callMe:andANumber:](self=0x07187e50, _cmd=0x000038b9, str=0x0715aa40, aNum=38) + 230 at APViewController.m:33
+frame #1: 0x0000304a Debug`-[APViewController viewDidLoad](self=0x07187e50, _cmd=0x005c5a77) + 122 at APViewController.m:16
+frame #2: 0x000f41c7 UIKit`-[UIViewController loadViewIfRequired] + 536
+frame #3: 0x000f4232 UIKit`-[UIViewController view] + 33
+frame #4: 0x000433d5 UIKit`-[UIWindow addRootViewControllerViewIfPossible] + 66
+frame #5: 0x0004376f UIKit`-[UIWindow _setHidden:forced:] + 368
+frame #6: 0x00043905 UIKit`-[UIWindow _orderFrontWithoutMakingKey] + 49
+frame #7: 0x0004c917 UIKit`-[UIWindow makeKeyAndVisible] + 65
+frame #8: 0x00002e1b Debug`-[APAppDelegate application:didFinishLaunchingWithOptions:](self=0x07560750, _cmd=0x005a9c21, application=0x0716a640, launchOptions=0x00000000) + 571 at APAppDelegate.m:28
+frame #9: 0x00010157 UIKit`-[UIApplication _handleDelegateCallbacksWithOptions:isSuspended:restoreState:] + 266
+frame #10: 0x00010747 UIKit`-[UIApplication _callInitializationDelegatesForURL:payload:suspended:] + 1248
+frame #11: 0x0001194b UIKit`-[UIApplication _runWithURL:payload:launchOrientation:statusBarStyle:statusBarHidden:] + 805
+frame #12: 0x00022cb5 UIKit`-[UIApplication handleEvent:withNewEvent:] + 1022
+frame #13: 0x00023beb UIKit`-[UIApplication sendEvent:] + 85
+frame #14: 0x00015698 UIKit`_UIApplicationHandleEvent + 9874
+frame #15: 0x01becdf9 GraphicsServices`_PurpleEventCallback + 339
+frame #16: 0x01becad0 GraphicsServices`PurpleEventCallback + 46
+frame #17: 0x01c06bf5 CoreFoundation`__CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE1_PERFORM_FUNCTION__ + 53
+frame #18: 0x01c06962 CoreFoundation`__CFRunLoopDoSource1 + 146
+frame #19: 0x01c37bb6 CoreFoundation`__CFRunLoopRun + 2118
+frame #20: 0x01c36f44 CoreFoundation`CFRunLoopRunSpecific + 276
+frame #21: 0x01c36e1b CoreFoundation`CFRunLoopRunInMode + 123
+frame #22: 0x0001117a UIKit`-[UIApplication _run] + 774
+frame #23: 0x00012ffc UIKit`UIApplicationMain + 1211
+frame #24: 0x00002b22 Debug`main(argc=1, argv=0xbffff3a4) + 130 at main.m:16
+frame #25: 0x00002a55 Debug`start + 53
+(lldb)</pre>
+
+
+<ul>
+<li>打印最基本的内容 (p)</li>
+</ul>
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">(lldb) print anInt</pre>
+
+
+<ul>
+<li>打印对象(po)</li>
+</ul>
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">(lldb) po anObj
+(lldb) po 0x0715aa40</pre>
+
+
+<ul>
+<li>打印表达式(expr)</li>
+</ul>
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">(lldb) expr 5+2
+(lldb) expr aString = @"aNewValue"</pre>
+
+
+<ul>
+<li>打印线程中的一些东西</li>
+</ul>
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">(lldb) help frame</pre>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS调试 — 基本技巧]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/"/>
+    <updated>2014-04-17T13:32:00+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao</id>
+    <content type="html"><![CDATA[<p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
+
+<hr />
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/ios_debug.png"><img class="alignnone size-full wp-image-628" alt="ios_debug" src="http://beyondvincent.com/wp-content/uploads/2013/05/ios_debug.png" width="976" height="313" /></a></p>
+
+<!--more-->
+
+
+<p>在程序中，无论是你想弄清楚为什么数组中有3个对象而不是5个，或者为什么一个新的玩家开始之后，游戏在倒退——调试在这些处理过程中是比较重要的一部分。通过本文的学习，我们将知道在程序中，可以使用的大多数重要调试功能，并如何利用这些调试功能来帮助你以更少的时间解决bug。</p>
+
+<p>本文将介绍如下内容：</p>
+
+<ul>
+<li>使用控制台检查程序的状态</li>
+<li>进行日志记录，并熟练的驾驭NSLog</li>
+<li>利用对象的生命周期跟踪内存的使用</li>
+</ul>
+
+
+<h2><strong><span style="color: #339966;">使用控制台进行检查</span></strong></h2>
+
+<p>在进行调试程序的时候，可能Xcode底部的小黑框会是你最好的朋友。它能输出日志信息，错误信息以及其它各种有用的内容——这可以帮助你进行错误的跟踪。除了可以在看到日志的输出，我们还可以在某个断点出停留住，并检查程序中的变量信息。</p>
+
+<h3><strong><span style="color: #339966;">带条件的断点</span></strong></h3>
+
+<p>本文假设你以及知道断点是如何工作的了（即使不知道的话，也不用担心，看完本文之后，你将明白！）。</p>
+
+<p>在某个特定的时间点命中断点是非常重要的，在有些断点中，有些时候需要通过一个痛苦的循环或者递归函数才能让我们的对象等于某个确定的值。此时我们可以使用条件断点！</p>
+
+<p>条件断点是这样的一类断点：只有当满足某个确定的条件时，才会命中断点。可以想象一下：我们只希望当对象在某个确定的状态，或者循环迭代到第nth次时才命中断点。单击Xcode editor中的‘gutter’可以添加一个断点，在断点上单击右键，然后选择‘edit breakpoint’，就可以设置特定的条件了。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/conditionalBreakpoints.png"><img class="alignnone size-full wp-image-617" alt="conditionalBreakpoints" src="http://beyondvincent.com/wp-content/uploads/2013/05/conditionalBreakpoints.png" width="513" height="223" /></a></p>
+
+<p>可以提供一个条件（例如i==12），或者断点忽略次数。另外还可以添加动作，该动作可根据断点自动发生，例如一个debugger command——打印一个值。</p>
+
+<p><span style="color: #339966;"><strong>提示</strong></span>：添加/删除断点的键盘快捷键是command+\</p>
+
+<p>另外一个重要的断点技巧是添加一个异常断点(exception breakpoint)。当遇到异常时，基本99%次Xcode都会自动转到main方法中的autorelease pool中。</p>
+
+<div id="attachment_618" class="wp-caption alignnone" style="width: 682px">
+  <a href="http://beyondvincent.com/wp-content/uploads/2013/05/unhelpful_break.png"><img class="size-full wp-image-618 " alt="unhelpful_break" src="http://beyondvincent.com/wp-content/uploads/2013/05/unhelpful_break.png" width="672" height="179" /></a><p class="wp-caption-text">
+    感谢Xcode&#8230;真的太有用了！
+  </p>
+</div>
+
+
+<p>通过异常断点，可以方便的定位到引起异常发生的具体代码行。异常断点的添加方法：打开异常断点tab（command+6）。选择窗口左下角的&#8221;+&#8221;按钮，并添加一个‘exception breakpoint’，这样，当Xcode遇到异常时，将会在引起异常代码的地方发生断点停留。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/Exception-breakpoint.png"><img class="alignnone size-full wp-image-619" alt="Exception-breakpoint" src="http://beyondvincent.com/wp-content/uploads/2013/05/Exception-breakpoint.png" width="501" height="194" /></a></p>
+
+<h2><strong><span style="color: #339966;">在控制台进行手动打印</span></strong></h2>
+
+<p>一般情况下，我们在程序代码中添加断点，是为了通过Xcode提供的‘variables view’（该view在Xcode底部console旁边）来查看变量的状态 。理论上，该窗口可以显示出与当前上下文相关的所有值的状态。实际上，这有点小问题，有时候断点过了之后，该窗口并不会进行相关的更新。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/variables-view.png"><img class="alignnone size-full wp-image-620" alt="variables view" src="http://beyondvincent.com/wp-content/uploads/2013/05/variables-view.png" width="579" height="210" /></a></p>
+
+<p>&nbsp;</p>
+
+<p>很不错的一个功能是：我们可以使用控制台的命令来检查某个特定的对象——这非常有用。在控制台输入‘<span style="color: #339966;">po</span>’就可以打印出指定对象的即时信息（处理scalar值时使用‘p’）。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/po_command.png"><img class="alignnone size-full wp-image-621" alt="po_command" src="http://beyondvincent.com/wp-content/uploads/2013/05/po_command.png" width="818" height="92" /></a></p>
+
+<p>&nbsp;</p>
+
+<p>在查看一个已经存在的对象时，这非常有用（如果对象不存在的话会打印出nil）——确定对象的值，查看数组/字典在运行时的信息，甚至是两个对象的比较（这个命令可以打印出相关对象的内存地址，我们可以打印出两个对象的信息，然后看看它们的内存地址是否相同）。</p>
+
+<p>另外非常有用（但是被隐藏的命令）可以非常容易的对view进行检查——<span style="color: #339966;">the<em>recursiveDescription</em></span>命令——在view上调用这个命令可以打印出view的继承关系。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/recursiveDescription.png"><img class="alignnone size-full wp-image-622" alt="recursiveDescription" src="http://beyondvincent.com/wp-content/uploads/2013/05/recursiveDescription.png" width="607" height="89" /></a></p>
+
+<h2><strong><span style="color: #339966;"> 有效的进行Log</span></strong></h2>
+
+<p>&nbsp;</p>
+
+<p>有时候在进行程序调试的某个确定时间里，我们希望将消息打印到控制台，此时可以使用<span style="color: #339966;">NSLog</span>函数，通过该函数可以将任意的输出打印到控制台。在不使用断点时，这个功能非常有用。NSLog遵从的格式与<em>[NSString StringWithFormat]</em>方法遵从的格式一样。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_use.png"><img class="alignnone size-full wp-image-623" alt="nslog_use" src="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_use.png" width="595" height="78" /></a></p>
+
+<p><strong>提示</strong>：这里可以看到Objective-C中关于字符串格式化的信息：<span style="text-decoration: underline;"><span style="color: #339966; text-decoration: underline;"> <a title="String Programming Guide" href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/Strings/Articles/FormatStrings.html"><span style="color: #339966; text-decoration: underline;">String Programming Guide</span></a></span></span></p>
+
+<h3><strong><span style="color: #339966;">让NSLog更加智能</span></strong></h3>
+
+<p>虽然NSLog非常有用，但是在真机上，从NSLog打印出来的任何内容都会被保留，隐藏所有人都可以看到——只需要将设备连接到电脑，然后打开XCode中的organiser，并定位到console，就可以看到每条log信息。可能你会意识到，这会带来一些严重的影响！想一下，如果你将一些保密的算法逻辑，或者用户密码打印到控制台！因此，如果苹果检测到在production build中，输出许多内容到控制台时，你的应用可能会被苹果拒绝上架到商店。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_public.png"><img class="alignnone size-full wp-image-624" alt="nslog_public" src="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_public.png" width="981" height="292" /></a></p>
+
+<p>&nbsp;</p>
+
+<p>幸运的是，这里有一个最简单的办法进行log——通过一个宏，让NSLog只在debug build的时候起作用。将这个功能添加到全局都能访问得到的头文件中。这样你就可以尽情的使用log了，并且当进行production时，不会包含log相关代码。如下代码：</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">#ifdef DEBUG
+#define DMLog(...) NSLog(@"%s %@", __PRETTY_FUNCTION__, [NSString stringWithFormat:__VA_ARGS__])
+#else
+#define DMLog(...) do { } while (0)</pre>
+
+
+<p>现在如果使用DMLog，那么将只会在debug build期间打印出log。而production build时则不会有任何log。通过<em>__PRETTY_FUNCTION\__</em> 可以打印出打印log所在的函数。</p>
+
+<h3><strong><span style="color: #339966;">下一步</span></strong></h3>
+
+<p>虽然NSLog非常出色，但它也有一些限制：</p>
+
+<ul>
+<li>只能在本地打印</li>
+<li>不支持带级别的log（例如严重、警告等）</li>
+<li>NSLog效率低。在进行大量处理时，NSLog会严重影响程序的执行效率</li>
+</ul>
+
+
+<p>互联网上也有一些框架可以进行日志记录，通过这些框架可以避免NSLog的一些限制。下面有两个不错的：</p>
+
+<ul>
+<li><span style="text-decoration: underline;"><span style="color: #339966; text-decoration: underline;"><a href="https://github.com/robbiehanson/CocoaLumberjack" target="_blank"><span style="color: #339966; text-decoration: underline;">Cocoa LumberJack</span></a> </span></span>– 这是针对Cocoa非常出名的一个日志框架。虽然刚开始用的时候会费劲点，但是它非常强大。</li>
+<li><span style="text-decoration: underline; color: #339966;"><a href="https://www.assembla.com/wiki/show/snlog" target="_blank"><span style="color: #339966; text-decoration: underline;">SNLog</span></a></span> – NSLog的一个替代品。</li>
+</ul>
+
+
+<h2><strong><span style="color: #339966;">跟踪对象的生命周期</span></strong></h2>
+
+<p>虽然ARC可以对内存进行有效的管理，不过在对象的生命周期内跟踪一些重要的事件仍然是重要的。毕竟ARC并不能完全消除内存泄露的可能性，或者确保访问的是一个被release掉的对象（ARC只是尽量避免这样的情况发生）。为此，我们可以使用一些方法和工具来观察并留意对象在做些什么。</p>
+
+<h3><strong><span style="color: #339966;"> Log一些重要的事件</span></strong></h3>
+
+<p>在一个Objective-C对象的生命周期中有两个重要的方法：init和dealloc。将这两个方法调用的事件log到控制台是不错的选择——你可以通过控制台观察到对象生命的开始，更重要的是，可以确保对象的释放。</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        NSLog(@"%@: %@", NSStringFromSelector(_cmd), self);
+    }
+    return self;
+}
+- (void)dealloc
+{
+    NSLog(@"%@: %@", NSStringFromSelector(_cmd), self);
+}</pre>
+
+
+<h3><strong><span style="color: #339966;">静态分析器(Analyzer) 和检查器</span></strong></h3>
+
+<p>在Xcode中有两个工具可以用来清理代码，以减少代码的错误率。静态分析器工具可以对我们的代码提出改进意见，比如检测出没有使用过的对象，没有release对象（针对Core Foundation对象，ARC仍然会有这样的问题）。通过选择Product菜单中的‘Anlayze’可以查看到相关建议。</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/analyse.png"><img class="alignnone size-full wp-image-633" alt="analyse" src="http://beyondvincent.com/wp-content/uploads/2013/05/analyse.png" width="987" height="115" /></a></p>
+
+<p>&nbsp;</p>
+
+<p>检查器是非常强大的一组工具，通过检查器不仅可以从不同的角度检查我们程序对内存的使用情况，文件系统的使用情况（增加、删除、修改等），甚至还提供了自动UI交互的方法。通过选择Product菜单中的‘Profile’可以查看到这些检查器。</p>
+
+<p>选择‘Profile’会打开一个Instrument窗口，这里可以选择一个配置模板进行运行。最常用的模板有zombies（稍后会讨论），activity monitor和leaks。在程序运行时，对内存泄露进行捕捉时，Leaks可能是最有用的一个模板。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/Screen-Shot-2012-12-09-at-1.23.38-PM.png"><img class="alignnone size-full wp-image-634" alt="Screen-Shot-2012-12-09-at-1.23.38-PM" src="http://beyondvincent.com/wp-content/uploads/2013/05/Screen-Shot-2012-12-09-at-1.23.38-PM.png" width="513" height="193" /></a></p>
+
+<p><strong style="font-size: 1.17em;"><span style="color: #339966;">Zombies是你的朋友</span></strong></p>
+
+<p>虽然在有ARC的地方很难再遇到让人难受的EXC_BAD_ACCESS错误了，但是在某些确定的情况下，该错误还是会发生的。当在处理UIPopoverController或者core foundation对象时，我们可以访问一个已经被release掉的对象。一般，当我们release内存中的一个对象时，该对象将被销毁。但是，当Zombies开启时，只是将对象标记为release，实际上该对象还停留在内存中。当我们访问一个Zombie对象时，Xcode可以告诉我们正在访问的对象是一个不应该存在的对象了。因为Xcode知道这个对象是什么，所以可以让我们知道这个对象在哪里，以及这是什么时候发生的。</p>
+
+<p>这里有两种方法可以查找出Zombies对象。使用检查器中的Zombie配置模板，或者在‘Run’ build选项中开启Zombie诊断选项。在Stop按钮的旁边，点击scheme名称，然后选择‘Edit Scheme’，点击diagnostic tab项，并勾选上‘Enable Zombie Objects’。注意，Zombie只能用在模拟器调试中，真机上不能使用。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/Enabling-Zombies.png"><img class="alignnone size-full wp-image-635" alt="Enabling-Zombies" src="http://beyondvincent.com/wp-content/uploads/2013/05/Enabling-Zombies.png" width="613" height="227" /></a></p>
+
+<h2><strong><span style="color: #339966;">结论</span></strong></h2>
+
+<p>希望上面的这些关于调试技巧能给你带来帮助。通过上面的这些技巧，可以帮助你减少修改bug的时间，从而把更多的时间用在重要的地方——构建出色的程序！</p>
+
+<p>上面列出来的不是一个完整的调试技巧。另外还有许多技术没有进行讨论，例如在真机中调试问题，远程bug报告，crash报告等。</p>
+
+<p>祝编程愉快！</p>
+
+<p>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_____</p>
+
+<p>本文由破船译自：<span style="text-decoration: underline;"><span style="color: #339966;"><a href="http://mobile.tutsplus.com/tutorials/iphone/debugging-in-ios-essential-tips/" target="_blank"><span style="color: #339966; text-decoration: underline;">tutsplus</span></a></span></span><br/>
+转载请注明出处：<span style="text-decoration: underline;"><span style="color: #339966;"><strong><a href="http://www.beyondvincent.com/" target="_blank"><span style="color: #339966; text-decoration: underline;">BeyondVincent的博客</span></a></strong></span></span><br/>
+_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_____</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode Code Snippets]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/17/xcode-code-snippets/"/>
+    <updated>2014-04-17T13:18:02+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/17/xcode-code-snippets</id>
+    <content type="html"><![CDATA[<p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
+
+<hr />
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg"><img class="alignnone size-full wp-image-734" alt="fend_off_rsi" src="http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg" width="1200" height="620" /></a></p>
+
+<!--more-->
+
+
+<p>在Double Encore，我们写的代码都是干净，可重用的——不过，有时候并不能完全做到。如在使用pragma mark的时候。下面就是一个示例：</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">#pragma mark - UIViewController overrides</pre>
+
+
+<p>通过pragma mark，可以让代码看起来既整洁又有组织。虽然这很重要，但是会带来额外的输入操作和时间。</p>
+
+<p>此时，我们可以使用code snippets。</p>
+
+<p>通过code snippets，我们可以创建一些可重用的代码块，并且在任何需要的地方很容易的就可以使用这些代码块。这可以节省输入需要的操作和时间。并且，一旦你学会使用code snippets，会发现你可以创建并扩充自己的code snippet library。</p>
+
+<p>创建一个code snippet非常简单。首先，打开Xcode并在utilities panel中选择code snippet library。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/1-1024x768.png"><img class="alignnone size-full wp-image-736" alt="1-1024x768" src="http://beyondvincent.com/wp-content/uploads/2013/05/1-1024x768.png" width="1024" height="768" /></a></p>
+
+<p>上图中，可以看到在code snippet library中已经有一些数据了。</p>
+
+<p>接着，输入希望创建的code snippet。在这里，我为pragma mark创建一个code snippet。如下图所示，在代码编辑器中输入 “#pragma mark – UIViewController overrides”。</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/2-1024x768.png" width="1024" height="768" /></p>
+
+<p>选中代码块，如下图所示：</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/3-1024x768.png" width="1024" height="768" /></p>
+
+<p>然后单击并按住代码块，知道文本光标变为箭头光标。接着将代码块拖放到code snippet library中，然后松开鼠标。如下图所示</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/4-1024x768.png" width="1024" height="768" /></p>
+
+<p>此时会弹出一个popover，通过该popover可以对新的code snippet进行编辑，如下图所示。</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/5-1024x768.png" width="1024" height="768" /></p>
+
+<p>首先，是定snippet的名字。这里我指定为“Pragma Mark”</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/6-1024x768.png" width="1024" height="768" /></p>
+
+<p>然后，指定该snippet的completion shortcut（可选项）。这里我指定为“pm”。这样设置以后，在Xcode的代码编辑器中只需要输入快捷方式（pm），就能简单的将这个snippet添加到代码中。非常有用！</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/7-1024x768.png" width="1024" height="768" /></p>
+
+<p>接着，可以看到在上面的示例中，pragma mark的标题是“UIViewController overrides”，不过我们是希望对其修改一下，以能够很容易的输入任意标题。</p>
+
+<p>我们可以简单的将code snippet包含的文本内容修改为“#pragma mark – “即可。不过，这里还有更好的一个办法——将文本块封装到“&lt;#” 和 “#>”中间，这样code snippet将指出我们可以插入自定义文本的完整范围。</p>
+
+<p>下面，将“UIViewController overrides”替换…</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/8-1024x768.png" width="1024" height="768" /></p>
+
+<p>&#8230;为“&lt;#Title#>”。</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/9-1024x768.png" width="1024" height="768" /></p>
+
+<p>注意，completion scopes字段在这里并没有做修改，通过该字段可以指定completion shortcut的有效范围。</p>
+
+<p>最后，点击edit按钮，以完成snippet的编辑。之后可以在这个popover画面中看到最终结果的一个预览效果。</p>
+
+<p>&nbsp;</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/10-1024x768.png" width="1024" height="768" /></p>
+
+<p>然后点击popover中的done按钮。下面，你可以将我们在代码编辑器中为创建snippet而写入的文本行删除掉。</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/11-1024x768.png" width="1024" height="768" /></p>
+
+<p>现在来试用一下刚刚创建的snippet！有两种方法。第一种是在code snippet library中找到snippet，然后用鼠标将其拖拽到代码编辑器中&#8230;</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/12-1024x768.png" width="1024" height="768" /></p>
+
+<p>&#8230;然后松开鼠标。</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/13-1024x768.png" width="1024" height="768" /></p>
+
+<p>一旦将snippet拖放到代码编辑器之后，就可以通过点击键盘上的tab键在不同的completion字段间移动焦点。</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/14-1024x768.png" width="1024" height="768" /></p>
+
+<p>第二种方法是在代码编辑器里简单的输入completion shortcut中设置的内容即可。我们这里是“pm”。</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/15-1024x768.png" width="1024" height="768" /></p>
+
+<p>然后点击键盘中的return键，就可以将snippet插入到代码编辑器中。</p>
+
+<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/141-1024x768.png" width="1024" height="768" /></p>
+
+<p>很简单吧！现在你已经知道如何创建自己的snippet了，你将发现这非常的有用。任何时候，你都遇到重复输入的相同代码块，都可以考虑将其添加到你的code snippets library中。</p>
+
+<p>&nbsp;</p>
+
+<p>下面是我经常使用到的一些snippet：</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Animation Block
+Completion Shortcut: ab
+Completion Scopes: Function or Method
+ 
+void (^&lt;#Title#&gt;)(void) = ^{ };
+</pre>
+
+
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Animation Completion Block
+Completion Shortcut: acb
+Completion Scopes: Function or Method
+ 
+void (^&lt;#Title#&gt;)(BOOL) = ^(BOOL finished) { };
+</pre>
+
+
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Notification Add
+Completion Shortcut: na
+Completion Scopes: Function or Method
+ 
+[[NSNotificationCenter defaultCenter] addObserver:&lt;#Observer#&gt; selector:&lt;#Selector#&gt; name:&lt;#Name#&gt; object:&lt;#Object#&gt;];
+</pre>
+
+
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Notification Remove
+Completion Shortcut: nr
+Completion Scopes: Function or Method
+ 
+[[NSNotificationCenter defaultCenter] removeObserver:&lt;#Observer#&gt; name:&lt;#Name#&gt; object:&lt;#Object#&gt;];
+</pre>
+
+
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: NSLog
+Completion Shortcut: log
+Completion Scopes: Function or Method
+ 
+NSLog(@"&lt;#Log#&gt;");
+</pre>
+
+
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Private Interface
+Completion Shortcut: pi
+Completion Scopes: Top Level
+ 
+@interface &lt;#Title#&gt; ()
+
+@end
+</pre>
+
+
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Assign
+Completion Shortcut: pa
+Completion Scopes: All
+ 
+@property (assign, nonatomic)
+</pre>
+
+
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Strong
+Completion Shortcut: ps
+Completion Scopes: All
+ 
+@property (strong, nonatomic)
+</pre>
+
+
+
+
+<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Unsafe Unretained
+Completion Shortcut: pu
+Completion Scopes: All
+ 
+@property (unsafe_unretained, nonatomic)
+</pre>
+
+
+
+
+<div style="text-align: left;">
+</div>
+
+
+
+
+<div style="text-align: left;">
+</div>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Double Dispatch模式及其在iOS开发中实践]]></title>

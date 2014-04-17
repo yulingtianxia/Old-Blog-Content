@@ -1,0 +1,425 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>iOS调试 — 基本技巧 - 玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="iOS调试 — 基本技巧 本文转载自破船 在程序中，无论是你想弄清楚为什么数组中有3个对象而不是5个，或者为什么一个新的玩家开始之后，游戏在倒退——调试在这些处理过程中是比较重要的一部分。通过本文的学习，我们将知道在程序中，可以使用的大多数重要调试功能， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I'm not a hacker.</p>
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+    <li><a href="/about">关于我</a></li>
+    <li><a href="/blog/archives">所有文章</a></li>
+</ul>
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">iOS调试 — 基本技巧</h1>
+	<div class="entry-content" itemprop="articleBody"><p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
+
+<hr />
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/ios_debug.png"><img class="alignnone size-full wp-image-628" alt="ios_debug" src="http://beyondvincent.com/wp-content/uploads/2013/05/ios_debug.png" width="976" height="313" /></a></p>
+
+<!--more-->
+
+
+<p>在程序中，无论是你想弄清楚为什么数组中有3个对象而不是5个，或者为什么一个新的玩家开始之后，游戏在倒退——调试在这些处理过程中是比较重要的一部分。通过本文的学习，我们将知道在程序中，可以使用的大多数重要调试功能，并如何利用这些调试功能来帮助你以更少的时间解决bug。</p>
+
+<p>本文将介绍如下内容：</p>
+
+<ul>
+<li>使用控制台检查程序的状态</li>
+<li>进行日志记录，并熟练的驾驭NSLog</li>
+<li>利用对象的生命周期跟踪内存的使用</li>
+</ul>
+
+
+<h2><strong><span style="color: #339966;">使用控制台进行检查</span></strong></h2>
+
+<p>在进行调试程序的时候，可能Xcode底部的小黑框会是你最好的朋友。它能输出日志信息，错误信息以及其它各种有用的内容——这可以帮助你进行错误的跟踪。除了可以在看到日志的输出，我们还可以在某个断点出停留住，并检查程序中的变量信息。</p>
+
+<h3><strong><span style="color: #339966;">带条件的断点</span></strong></h3>
+
+<p>本文假设你以及知道断点是如何工作的了（即使不知道的话，也不用担心，看完本文之后，你将明白！）。</p>
+
+<p>在某个特定的时间点命中断点是非常重要的，在有些断点中，有些时候需要通过一个痛苦的循环或者递归函数才能让我们的对象等于某个确定的值。此时我们可以使用条件断点！</p>
+
+<p>条件断点是这样的一类断点：只有当满足某个确定的条件时，才会命中断点。可以想象一下：我们只希望当对象在某个确定的状态，或者循环迭代到第nth次时才命中断点。单击Xcode editor中的‘gutter’可以添加一个断点，在断点上单击右键，然后选择‘edit breakpoint’，就可以设置特定的条件了。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/conditionalBreakpoints.png"><img class="alignnone size-full wp-image-617" alt="conditionalBreakpoints" src="http://beyondvincent.com/wp-content/uploads/2013/05/conditionalBreakpoints.png" width="513" height="223" /></a></p>
+
+<p>可以提供一个条件（例如i==12），或者断点忽略次数。另外还可以添加动作，该动作可根据断点自动发生，例如一个debugger command——打印一个值。</p>
+
+<p><span style="color: #339966;"><strong>提示</strong></span>：添加/删除断点的键盘快捷键是command+\</p>
+
+<p>另外一个重要的断点技巧是添加一个异常断点(exception breakpoint)。当遇到异常时，基本99%次Xcode都会自动转到main方法中的autorelease pool中。</p>
+
+<div id="attachment_618" class="wp-caption alignnone" style="width: 682px">
+  <a href="http://beyondvincent.com/wp-content/uploads/2013/05/unhelpful_break.png"><img class="size-full wp-image-618 " alt="unhelpful_break" src="http://beyondvincent.com/wp-content/uploads/2013/05/unhelpful_break.png" width="672" height="179" /></a><p class="wp-caption-text">
+    感谢Xcode&#8230;真的太有用了！
+  </p>
+</div>
+
+
+<p>通过异常断点，可以方便的定位到引起异常发生的具体代码行。异常断点的添加方法：打开异常断点tab（command+6）。选择窗口左下角的&#8221;+&#8221;按钮，并添加一个‘exception breakpoint’，这样，当Xcode遇到异常时，将会在引起异常代码的地方发生断点停留。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/Exception-breakpoint.png"><img class="alignnone size-full wp-image-619" alt="Exception-breakpoint" src="http://beyondvincent.com/wp-content/uploads/2013/05/Exception-breakpoint.png" width="501" height="194" /></a></p>
+
+<h2><strong><span style="color: #339966;">在控制台进行手动打印</span></strong></h2>
+
+<p>一般情况下，我们在程序代码中添加断点，是为了通过Xcode提供的‘variables view’（该view在Xcode底部console旁边）来查看变量的状态 。理论上，该窗口可以显示出与当前上下文相关的所有值的状态。实际上，这有点小问题，有时候断点过了之后，该窗口并不会进行相关的更新。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/variables-view.png"><img class="alignnone size-full wp-image-620" alt="variables view" src="http://beyondvincent.com/wp-content/uploads/2013/05/variables-view.png" width="579" height="210" /></a></p>
+
+<p>&nbsp;</p>
+
+<p>很不错的一个功能是：我们可以使用控制台的命令来检查某个特定的对象——这非常有用。在控制台输入‘<span style="color: #339966;">po</span>’就可以打印出指定对象的即时信息（处理scalar值时使用‘p’）。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/po_command.png"><img class="alignnone size-full wp-image-621" alt="po_command" src="http://beyondvincent.com/wp-content/uploads/2013/05/po_command.png" width="818" height="92" /></a></p>
+
+<p>&nbsp;</p>
+
+<p>在查看一个已经存在的对象时，这非常有用（如果对象不存在的话会打印出nil）——确定对象的值，查看数组/字典在运行时的信息，甚至是两个对象的比较（这个命令可以打印出相关对象的内存地址，我们可以打印出两个对象的信息，然后看看它们的内存地址是否相同）。</p>
+
+<p>另外非常有用（但是被隐藏的命令）可以非常容易的对view进行检查——<span style="color: #339966;">the<em>recursiveDescription</em></span>命令——在view上调用这个命令可以打印出view的继承关系。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/recursiveDescription.png"><img class="alignnone size-full wp-image-622" alt="recursiveDescription" src="http://beyondvincent.com/wp-content/uploads/2013/05/recursiveDescription.png" width="607" height="89" /></a></p>
+
+<h2><strong><span style="color: #339966;"> 有效的进行Log</span></strong></h2>
+
+<p>&nbsp;</p>
+
+<p>有时候在进行程序调试的某个确定时间里，我们希望将消息打印到控制台，此时可以使用<span style="color: #339966;">NSLog</span>函数，通过该函数可以将任意的输出打印到控制台。在不使用断点时，这个功能非常有用。NSLog遵从的格式与<em>[NSString StringWithFormat]</em>方法遵从的格式一样。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_use.png"><img class="alignnone size-full wp-image-623" alt="nslog_use" src="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_use.png" width="595" height="78" /></a></p>
+
+<p><strong>提示</strong>：这里可以看到Objective-C中关于字符串格式化的信息：<span style="text-decoration: underline;"><span style="color: #339966; text-decoration: underline;"> <a title="String Programming Guide" href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/Strings/Articles/FormatStrings.html"><span style="color: #339966; text-decoration: underline;">String Programming Guide</span></a></span></span></p>
+
+<h3><strong><span style="color: #339966;">让NSLog更加智能</span></strong></h3>
+
+<p>虽然NSLog非常有用，但是在真机上，从NSLog打印出来的任何内容都会被保留，隐藏所有人都可以看到——只需要将设备连接到电脑，然后打开XCode中的organiser，并定位到console，就可以看到每条log信息。可能你会意识到，这会带来一些严重的影响！想一下，如果你将一些保密的算法逻辑，或者用户密码打印到控制台！因此，如果苹果检测到在production build中，输出许多内容到控制台时，你的应用可能会被苹果拒绝上架到商店。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_public.png"><img class="alignnone size-full wp-image-624" alt="nslog_public" src="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_public.png" width="981" height="292" /></a></p>
+
+<p>&nbsp;</p>
+
+<p>幸运的是，这里有一个最简单的办法进行log——通过一个宏，让NSLog只在debug build的时候起作用。将这个功能添加到全局都能访问得到的头文件中。这样你就可以尽情的使用log了，并且当进行production时，不会包含log相关代码。如下代码：</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">#ifdef DEBUG
+#define DMLog(...) NSLog(@"%s %@", __PRETTY_FUNCTION__, [NSString stringWithFormat:__VA_ARGS__])
+#else
+#define DMLog(...) do { } while (0)</pre>
+
+
+<p>现在如果使用DMLog，那么将只会在debug build期间打印出log。而production build时则不会有任何log。通过<em>__PRETTY_FUNCTION\__</em> 可以打印出打印log所在的函数。</p>
+
+<h3><strong><span style="color: #339966;">下一步</span></strong></h3>
+
+<p>虽然NSLog非常出色，但它也有一些限制：</p>
+
+<ul>
+<li>只能在本地打印</li>
+<li>不支持带级别的log（例如严重、警告等）</li>
+<li>NSLog效率低。在进行大量处理时，NSLog会严重影响程序的执行效率</li>
+</ul>
+
+
+<p>互联网上也有一些框架可以进行日志记录，通过这些框架可以避免NSLog的一些限制。下面有两个不错的：</p>
+
+<ul>
+<li><span style="text-decoration: underline;"><span style="color: #339966; text-decoration: underline;"><a href="https://github.com/robbiehanson/CocoaLumberjack" target="_blank"><span style="color: #339966; text-decoration: underline;">Cocoa LumberJack</span></a> </span></span>– 这是针对Cocoa非常出名的一个日志框架。虽然刚开始用的时候会费劲点，但是它非常强大。</li>
+<li><span style="text-decoration: underline; color: #339966;"><a href="https://www.assembla.com/wiki/show/snlog" target="_blank"><span style="color: #339966; text-decoration: underline;">SNLog</span></a></span> – NSLog的一个替代品。</li>
+</ul>
+
+
+<h2><strong><span style="color: #339966;">跟踪对象的生命周期</span></strong></h2>
+
+<p>虽然ARC可以对内存进行有效的管理，不过在对象的生命周期内跟踪一些重要的事件仍然是重要的。毕竟ARC并不能完全消除内存泄露的可能性，或者确保访问的是一个被release掉的对象（ARC只是尽量避免这样的情况发生）。为此，我们可以使用一些方法和工具来观察并留意对象在做些什么。</p>
+
+<h3><strong><span style="color: #339966;"> Log一些重要的事件</span></strong></h3>
+
+<p>在一个Objective-C对象的生命周期中有两个重要的方法：init和dealloc。将这两个方法调用的事件log到控制台是不错的选择——你可以通过控制台观察到对象生命的开始，更重要的是，可以确保对象的释放。</p>
+
+<pre class="wp-code-highlight prettyprint linenums:1">- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        NSLog(@"%@: %@", NSStringFromSelector(_cmd), self);
+    }
+    return self;
+}
+- (void)dealloc
+{
+    NSLog(@"%@: %@", NSStringFromSelector(_cmd), self);
+}</pre>
+
+
+<h3><strong><span style="color: #339966;">静态分析器(Analyzer) 和检查器</span></strong></h3>
+
+<p>在Xcode中有两个工具可以用来清理代码，以减少代码的错误率。静态分析器工具可以对我们的代码提出改进意见，比如检测出没有使用过的对象，没有release对象（针对Core Foundation对象，ARC仍然会有这样的问题）。通过选择Product菜单中的‘Anlayze’可以查看到相关建议。</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/analyse.png"><img class="alignnone size-full wp-image-633" alt="analyse" src="http://beyondvincent.com/wp-content/uploads/2013/05/analyse.png" width="987" height="115" /></a></p>
+
+<p>&nbsp;</p>
+
+<p>检查器是非常强大的一组工具，通过检查器不仅可以从不同的角度检查我们程序对内存的使用情况，文件系统的使用情况（增加、删除、修改等），甚至还提供了自动UI交互的方法。通过选择Product菜单中的‘Profile’可以查看到这些检查器。</p>
+
+<p>选择‘Profile’会打开一个Instrument窗口，这里可以选择一个配置模板进行运行。最常用的模板有zombies（稍后会讨论），activity monitor和leaks。在程序运行时，对内存泄露进行捕捉时，Leaks可能是最有用的一个模板。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/Screen-Shot-2012-12-09-at-1.23.38-PM.png"><img class="alignnone size-full wp-image-634" alt="Screen-Shot-2012-12-09-at-1.23.38-PM" src="http://beyondvincent.com/wp-content/uploads/2013/05/Screen-Shot-2012-12-09-at-1.23.38-PM.png" width="513" height="193" /></a></p>
+
+<p><strong style="font-size: 1.17em;"><span style="color: #339966;">Zombies是你的朋友</span></strong></p>
+
+<p>虽然在有ARC的地方很难再遇到让人难受的EXC_BAD_ACCESS错误了，但是在某些确定的情况下，该错误还是会发生的。当在处理UIPopoverController或者core foundation对象时，我们可以访问一个已经被release掉的对象。一般，当我们release内存中的一个对象时，该对象将被销毁。但是，当Zombies开启时，只是将对象标记为release，实际上该对象还停留在内存中。当我们访问一个Zombie对象时，Xcode可以告诉我们正在访问的对象是一个不应该存在的对象了。因为Xcode知道这个对象是什么，所以可以让我们知道这个对象在哪里，以及这是什么时候发生的。</p>
+
+<p>这里有两种方法可以查找出Zombies对象。使用检查器中的Zombie配置模板，或者在‘Run’ build选项中开启Zombie诊断选项。在Stop按钮的旁边，点击scheme名称，然后选择‘Edit Scheme’，点击diagnostic tab项，并勾选上‘Enable Zombie Objects’。注意，Zombie只能用在模拟器调试中，真机上不能使用。</p>
+
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/Enabling-Zombies.png"><img class="alignnone size-full wp-image-635" alt="Enabling-Zombies" src="http://beyondvincent.com/wp-content/uploads/2013/05/Enabling-Zombies.png" width="613" height="227" /></a></p>
+
+<h2><strong><span style="color: #339966;">结论</span></strong></h2>
+
+<p>希望上面的这些关于调试技巧能给你带来帮助。通过上面的这些技巧，可以帮助你减少修改bug的时间，从而把更多的时间用在重要的地方——构建出色的程序！</p>
+
+<p>上面列出来的不是一个完整的调试技巧。另外还有许多技术没有进行讨论，例如在真机中调试问题，远程bug报告，crash报告等。</p>
+
+<p>祝编程愉快！</p>
+
+<p>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_____</p>
+
+<p>本文由破船译自：<span style="text-decoration: underline;"><span style="color: #339966;"><a href="http://mobile.tutsplus.com/tutorials/iphone/debugging-in-ios-essential-tips/" target="_blank"><span style="color: #339966; text-decoration: underline;">tutsplus</span></a></span></span><br/>
+转载请注明出处：<span style="text-decoration: underline;"><span style="color: #339966;"><strong><a href="http://www.beyondvincent.com/" target="_blank"><span style="color: #339966; text-decoration: underline;">BeyondVincent的博客</span></a></strong></span></span><br/>
+_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_____</p>
+</div>
+
+</article>
+
+
+<DIV style="font-size:12px;BORDER-BOTTOM: #bbbbbb 1px solid; BORDER-LEFT: #bbbbbb 1px solid; BACKGROUND: #f6f6f6; HEIGHT: 120px; BORDER-TOP: #bbbbbb 1px solid; BORDER-RIGHT: #bbbbbb 1px solid" class=yulingtianxiaright> 
+<DIV style="MARGIN-TOP: 10px; FLOAT: left; MARGIN-LEFT: 5px; MARGIN-RIGHT: 10px" class="pic"> 
+
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.pic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' width=100 height=100 />");
+		});
+	</script>
+	
+</DIV> 
+<DIV style="LINE-HEIGHT: 200%; MARGIN-TOP: 10px; COLOR: #000000"> 
+作者： <A href="http://yulingtianxia.com/">杨萧玉</A> <BR> 
+出处： <A href="http://yulingtianxia.com/">http://yulingtianxia.github.io/</A> 
+<BR>本文基于<a target="_blank" title="Creative Commons Attribution 2.5 China Mainland License" href="http://creativecommons.org/licenses/by/2.5/cn/"> 
+署名 2.5 中国大陆</a>许可协议发布，欢迎转载，演绎或用于商业目的，但是必须保留本文的署名 
+<a href="http://yulingtianxia.com/">杨萧玉</a>（包含链接）。 </DIV></DIV> 
+
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+  	
+     <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_xiaoyou"></a>
+	<a href="http://www.jiathis.com/share?uid=1912336" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1912336" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1912336"></script>
+<!-- UY END -->
+
+ 	
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    玉令天下
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'yulingtianxia';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+		</div>
+	</div>
+</body>
+</html>
