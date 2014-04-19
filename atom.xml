@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-19T23:03:08+08:00</updated>
+  <updated>2014-04-19T23:12:44+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -18,7 +18,9 @@
     <link href="http://yulingtianxia.com/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/"/>
     <updated>2014-04-19T19:11:18+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/04/19/grand-central-dispatch-in-depth-part-1</id>
-    <content type="html"><![CDATA[<p>本文翻译至 <a href="http://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1">http://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1</a></p>
+    <content type="html"><![CDATA[<p><strong>本文转载自<a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md">NIX</a></strong></p>
+
+<p>本文翻译至 <a href="http://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1">http://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1</a></p>
 
 <p>原作者：<a href="http://www.raywenderlich.com/u/Lolgrep">Derek Selander</a></p>
 
