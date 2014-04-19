@@ -4,7 +4,7 @@
   <title><![CDATA[Category: GCD | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/gcd/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-19T23:20:31+08:00</updated>
+  <updated>2014-04-19T23:21:36+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -28,7 +28,7 @@
 
 <p>译者：<a href="https://twitter.com/nixzhu">@nixzhu</a></p>
 
-<p>==========================================</p>
+<hr />
 
 <p>虽然 GCD 已经出现过一段时间了，但不是每个人都明了其主要内容。这是可以理解的；并发一直很棘手，而 GCD 是基于 C 的 API ，它们就像一组尖锐的棱角戳进 Objective-C 的平滑世界。我们将分两个部分的教程来深入学习 GCD 。</p>
 
