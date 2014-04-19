@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-19T18:59:14+08:00</updated>
+  <updated>2014-04-19T19:16:42+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -518,10 +518,10 @@ VisitablePhysicsBody *visitableBodyA = [[VisitablePhysicsBody alloc] initWithBod
 
 
 <p>XCode5 Cheat Sheet:(<a href="http://www.git-tower.com/blog/xcode-cheat-sheet/">作者</a>)<br/>
-{%img /images/blog/xcode-cheat-sheet<em>页面</em>1.jpg %} <br/>
-{%img /images/blog/xcode-cheat-sheet<em>页面</em>2.jpg %}
+<img src="/images/blog/xcode-cheat-sheet<em>页面</em>1.jpg"> <br/>
+<img src="/images/blog/xcode-cheat-sheet<em>页面</em>2.jpg">
 Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(<a href="http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5">作者</a>) <br/>
-{%img /images/blog/RW-Objective-C-Cheatsheet-v-1-5.jpg %}</p>
+<img src="/images/blog/RW-Objective-C-Cheatsheet-v-1-5.jpg"></p>
 ]]></content>
   </entry>
   

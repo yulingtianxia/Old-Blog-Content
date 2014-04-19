@@ -4,7 +4,7 @@
   <title><![CDATA[Category: GCD | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/gcd/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-19T18:59:14+08:00</updated>
+  <updated>2014-04-19T19:16:42+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[GCD 深入理解：第一部分]]></title>
     <link href="http://yulingtianxia.com/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/"/>
-    <updated>2014-04-19T18:34:26+08:00</updated>
+    <updated>2014-04-19T19:11:18+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/04/19/grand-central-dispatch-in-depth-part-1</id>
     <content type="html"><![CDATA[<h1>GCD 深入理解：第一部分</h1>
 
@@ -182,7 +182,7 @@
 
 <p>打开 <code>PhotoDetailViewController</code> 并用下面的实现替换 <code>viewDidLoad</code> ：</p>
 
-<p>```Objective-C
+<p>``` objc
 &ndash; (void)viewDidLoad
 {</p>
 
@@ -241,7 +241,7 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{ //
 
 <p>添加如下代码到到 PhotoCollectionViewController.m 中 showOrHideNavPrompt 的废止实现里：</p>
 
-<p>```Objective-C
+<p>```objc
 &ndash; (void)showOrHideNavPrompt
 {</p>
 
@@ -291,7 +291,7 @@ dispatch_after(popTime, dispatch_get_main_queue(), ^(void){ // 2
 
 <p>导航到 <code>PhotoManager.m</code> 并找到 <code>sharedManager</code> ；它看起来如下：</p>
 
-<p>```Objective-C
+<p>```objc
 + (instancetype)sharedManager  <br/>
 {</p>
 
@@ -314,7 +314,7 @@ return sharedPhotoManager;
 
 <p>要强制这个（竞态）条件发生，替换 <code>PhotoManager.m</code> 中的 <code>sharedManager</code> 为下面的实现：</p>
 
-<p>```Objective-C
+<p>```objc
 + (instancetype)sharedManager<br/>
 {</p>
 
@@ -336,7 +336,7 @@ return sharedPhotoManager;
 
 <p>打开 <code>AppDelegate.m</code> 并添加如下代码到 <code>application:didFinishLaunchingWithOptions:</code> 的最开始处：</p>
 
-<p>```Objective-C
+<p>```objc
 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{</p>
 
 <pre><code>[PhotoManager sharedManager];
@@ -368,7 +368,7 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{</p
 
 <p>在单例初始化方法中用 <code>dispatch_once</code> 取代 <code>if</code> 条件判断，如下所示：</p>
 
-<p>```Objective-C
+<p>```objc
 + (instancetype)sharedManager
 {</p>
 
@@ -391,7 +391,7 @@ return sharedPhotoManager;
 
 <p>现在你明白了防止竞态条件的重要性，从 <code>AppDelegate.m</code> 中移除 <code>dispatch_async</code> 语句，并用下面的实现替换 <code>PhotoManager</code> 单例的初始化：</p>
 
-<p>```Objective-C
+<p>```objc
 + (instancetype)sharedManager
 {</p>
 
@@ -423,7 +423,7 @@ return sharedPhotoManager;
 
 <p>要分析这个问题，看看 <code>PhotoManager.m</code> 中的 <code>addPhoto:</code>，转载如下：</p>
 
-<p>```Objective-C
+<p>```objc
 &ndash; (void)addPhoto:(Photo *)photo
 {</p>
 
@@ -442,7 +442,7 @@ return sharedPhotoManager;
 
 <p>现在看看 <code>photos</code> ，转载如下：</p>
 
-<p><code>Objective-C
+<p><code>objc
 - (NSArray *)photos
 {
   return [NSArray arrayWithArray:_photosArray];
@@ -476,7 +476,7 @@ return sharedPhotoManager;
 
 <p>打开 <code>PhotoManager.m</code>，添加如下私有属性到类扩展中：</p>
 
-<p><code>Objective-C
+<p><code>objc
 @interface PhotoManager ()
 @property (nonatomic,strong,readonly) NSMutableArray *photosArray;
 @property (nonatomic, strong) dispatch_queue_t concurrentPhotoQueue; ///&lt; Add this
@@ -485,7 +485,7 @@ return sharedPhotoManager;
 
 <p>找到 <code>addPhoto:</code> 并用下面的实现替换它：</p>
 
-<p>```Objective-C
+<p>```objc
 &ndash; (void)addPhoto:(Photo *)photo
 {</p>
 
@@ -533,7 +533,7 @@ return sharedPhotoManager;
 
 <p>继续在 <code>PhotoManager.m</code> 上工作，用下面的实现替换 <code>photos</code> ：</p>
 
-<p>```Objective-C
+<p>```objc
 &ndash; (NSArray *)photos
 {</p>
 
@@ -558,7 +558,7 @@ return array;
 
 <p>最后，你需要实例化你的 <code>concurrentPhotoQueue</code> 属性。修改 <code>sharedManager</code> 以便像下面这样初始化队列：</p>
 
-<p>```Objective-C
+<p>```objc
 + (instancetype)sharedManager
 {</p>
 
@@ -593,7 +593,7 @@ return sharedPhotoManager;
 
 <h3>dispatch_sync 回顾</h3>
 
-<p>```Objective-C
+<p>```objc
 &ndash; (void)viewDidLoad
 {
   [super viewDidLoad];</p>
@@ -629,7 +629,7 @@ return sharedPhotoManager;
 
 <h3>dispatch_async 回顾</h3>
 
-<p>```Objective-C
+<p>```objc
 &ndash; (void)viewDidLoad
 {
   [super viewDidLoad];</p>
