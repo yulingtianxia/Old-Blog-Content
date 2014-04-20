@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-20T10:06:11+08:00</updated>
+  <updated>2014-04-20T10:11:48+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -3175,6 +3175,7 @@ instance为将被实例化的对象，为了让instance只被实例化一次，�
 <li><a href="http://blog.devtang.com/">唐巧的博客</a> 大神人物，总怀疑当初启蒙我的Nick Tang就是他</li>
 <li><a href="http://onevcat.com">王巍的博客</a> 精力充沛的大神，工作之余还上架了一些App，他的博客令我大开眼界</li>
 <li><a href="http://www.cocos2d-x.org">cocos2d-x</a> 跨平台游戏制作神器，虽然我已经用上了Sprite Kit，但是这种重量级的游戏引擎还是必须mark下</li>
+<li><a href="http://objccn.io">objccn</a> objc中文翻译，比较经典</li>
 </ul>
 
 
