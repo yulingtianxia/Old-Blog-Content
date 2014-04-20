@@ -28,6 +28,7 @@ categories:
 + [唐巧的博客](http://blog.devtang.com/) 大神人物，总怀疑当初启蒙我的Nick Tang就是他
 + [王巍的博客](http://onevcat.com) 精力充沛的大神，工作之余还上架了一些App，他的博客令我大开眼界
 + [cocos2d-x](http://www.cocos2d-x.org) 跨平台游戏制作神器，虽然我已经用上了Sprite Kit，但是这种重量级的游戏引擎还是必须mark下  
++ [objccn](http://objccn.io) objc中文翻译，比较经典
 
 ###工具类网站
 
