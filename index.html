@@ -178,9 +178,11 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 	</div>
 	<h1 class="title" itemprop="name"><a href="/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/" itemprop="url">用DFS算法计算SpriteKit中复合体的构成</a></h1>
 	<div class="entry-content" itemprop="articleBody">
-		<p>在使用Sprite Kit开发iOS游戏的时候，有时我们需要把一些<code>SKNode</code>(或者其子类)的物理体(<code>SKPhysicsBody</code>)通过某种方式连在一起组合成一个<code>SKPhysicsJoint</code>，这样就可以让这个连接体在物理世界一起被模拟。例如我们可以将两个<code>SKNode</code>用绳子(<code>SKPhysicsJointLimit</code>)，弹簧(<code>SKPhysicsJointSpring</code>)，胶水(<code>SKPhysicsJointFixed</code>)，钉子(<code>SKPhysicsJointPin</code>)，滑轨(<code>SKPhysicsJointSliding</code>)组合在一起。<br/>
-想象一些复杂的情况，比如玩家需要将游戏中多个相同的<code>SKNode</code>按照某种规则组合到一起，每个组合体包含<code>SKNode</code>的多少甚至形状(树或是环)都是游戏衡量玩家得分的标准。举个简单的例子：游戏里有好多彩色的球，玩家操作小球把它们粘在一起，将5个球粘在一起那么就能获得一份奖励<br/>
-但是每个<code>SKPhysicsJoint</code>只负责将两个<code>SKPhysicsBody</code>连在一起</p>
+		<p>在使用Sprite Kit开发iOS游戏的时候，有时我们需要把一些<code>SKNode</code>(或者其子类)的物理体(<code>SKPhysicsBody</code>)通过某种方式连在一起组合成一个<code>SKPhysicsJoint</code>，这样就可以让这个连接体在物理世界一起被模拟。例如我们可以将两个<code>SKNode</code>用绳子(<code>SKPhysicsJointLimit</code>)，弹簧(<code>SKPhysicsJointSpring</code>)，胶水(<code>SKPhysicsJointFixed</code>)，钉子(<code>SKPhysicsJointPin</code>)，滑轨(<code>SKPhysicsJointSliding</code>)组合在一起。</p>
+
+<p>想象一些复杂的情况，比如玩家需要将游戏中多个相同的<code>SKNode</code>按照某种规则组合到一起，每个组合体包含<code>SKNode</code>的多少甚至形状(树或是环)都是游戏衡量玩家得分的标准。举个简单的例子：游戏里有好多彩色的球，玩家操作小球把它们粘在一起，将5个球粘在一起那么就能获得一份奖励</p>
+
+<p>但是每个<code>SKPhysicsJoint</code>只负责将两个<code>SKPhysicsBody</code>连在一起</p>
 
 
 		
