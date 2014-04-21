@@ -301,7 +301,7 @@ instance为将被实例化的对象，为了让instance只被实例化一次，�
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="n">stringWithString</span> <span class="s">@&quot;hahaha&quot;</span><span class="p">];</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="s">@&quot;hahaha&quot;</span><span class="p">;</span>
 </span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">setObject:</span><span class="n">string</span> <span class="nl">forKey:</span><span class="s">@&quot;myKey&quot;</span><span class="p">];</span>
 </span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="n">synchronize</span><span class="p">];</span><span class="c1">//写完别忘了同步</span>
 </span></code></pre></td></tr></table></div></figure>
