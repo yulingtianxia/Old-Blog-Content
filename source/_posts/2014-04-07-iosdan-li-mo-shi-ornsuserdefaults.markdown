@@ -94,14 +94,14 @@ NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
 写入数据  
 
 ``` 
-NSString *string = [NSString stringWithString @"hahaha"];
+NSString *string = @"hahaha";
 [standardDefaults setObject:string forKey:@"myKey"];
 [standardDefaults synchronize];//写完别忘了同步
 ``` 
 读取数据  
 
 ``` 
-NSString *value = [standardDefaults objectForKey:"myKey"];  
+NSString *value = [standardDefaults objectForKey:@"myKey"];  
 ``` 
 `NSUserDefaults`可以很好地理解成键值对  
 
