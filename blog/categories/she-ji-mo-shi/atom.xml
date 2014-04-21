@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 设计模式 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/she-ji-mo-shi/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-20T10:11:48+08:00</updated>
+  <updated>2014-04-21T10:24:42+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -616,7 +616,7 @@ NSString *string = [NSString stringWithString @"hahaha"];
 读取数据</p>
 
 <p><code>
-NSString *value = [standardDefaults objectForKey:"myKey"];  
+NSString *value = [standardDefaults objectForKey:@"myKey"];  
 </code>
 <code>NSUserDefaults</code>可以很好地理解成键值对</p>
 
