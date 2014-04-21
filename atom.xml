@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-21T16:43:32+08:00</updated>
+  <updated>2014-04-21T21:48:58+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,62 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[用DFS算法计算SpriteKit中复合体的构成]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/"/>
+    <updated>2014-04-21T21:06:55+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng</id>
+    <content type="html"><![CDATA[<p>在使用Sprite Kit开发iOS游戏的时候，有时我们需要把一些<code>SKNode</code>(或者其子类)的物理体(<code>SKPhysicsBody</code>)通过某种方式连在一起组合成一个<code>SKPhysicsJoint</code>，这样就可以让这个连接体在物理世界一起被模拟。例如我们可以将两个<code>SKNode</code>用绳子(<code>SKPhysicsJointLimit</code>)，弹簧(<code>SKPhysicsJointSpring</code>)，胶水(<code>SKPhysicsJointFixed</code>)，钉子(<code>SKPhysicsJointPin</code>)，滑轨(<code>SKPhysicsJointSliding</code>)组合在一起。<br/>
+想象一些复杂的情况，比如玩家需要将游戏中多个相同的<code>SKNode</code>按照某种规则组合到一起，每个组合体包含<code>SKNode</code>的多少甚至形状(树或是环)都是游戏衡量玩家得分的标准。举个简单的例子：游戏里有好多彩色的球，玩家操作小球把它们粘在一起，将5个球粘在一起那么就能获得一份奖励<br/>
+但是每个<code>SKPhysicsJoint</code>只负责将两个<code>SKPhysicsBody</code>连在一起</p>
+
+<!--more-->
+
+
+<p>其实这个问题可以简单归结为图论中的联通图<br/>
+我写了个Graph类，只需在初始化的时候传入想要参加计算的SKNode数组即可，主要是用递归实现DFS(深度优先搜索)，维护N个集合(NSSet)，N的个数就是游戏中子图的个数，最小的子图就是一个SKNode。</p>
+
+<p>代码：</p>
+
+<script src="https://gist.github.com/yulingtianxia/11142742.js"></script>
+
+
+<p>可以在任意你需要的时候获取联通图信息：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">thisAtom</span><span class="p">.</span><span class="n">scene</span> <span class="nl">enumerateChildNodesWithName:</span><span class="n">AtomName</span> <span class="nl">usingBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">SKNode</span> <span class="o">*</span><span class="n">node</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">nodes</span> <span class="nl">addObject:</span><span class="n">node</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="n">Graph</span> <span class="o">*</span><span class="n">graph</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Graph</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithNodes:</span><span class="n">nodes</span><span class="p">];</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="p">[</span><span class="n">graph</span><span class="p">.</span><span class="n">sets</span> <span class="n">count</span><span class="p">];</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span><span class="n">graph</span><span class="p">.</span><span class="n">sets</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>完整代码在<a href="https://github.com/yulingtianxia/MyFirstGame.git">这里</a>的ColorAtom工程<br/>
+在向SKSpriteNode.userdata写键值对的时候，发现写进去后再读取依然是nil，这是因为userdata属性完全归用户随意使用，苹果甚至在SKSpriteNode初始化的时候干脆默认userdata是nil，所以需要初始化下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">((</span><span class="n">SKSpriteNode</span> <span class="o">*</span><span class="p">)</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]).</span><span class="n">userData</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="n">dictionary</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+感谢StackOverFlow网友的回答：<a href="http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values">http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GCD 深入理解：第一部分]]></title>
