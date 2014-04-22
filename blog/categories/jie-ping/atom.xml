@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 截屏 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/jie-ping/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-22T18:30:49+08:00</updated>
+  <updated>2014-04-22T18:43:13+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -142,8 +142,11 @@ return nodeSnapshot;
                        animated:YES completion:nil];
 </code></pre>
 
-<p><code>``
-</code>[self.view nextResponder]`的作用是获取当前SKScene的UIViewController</p>
+<p>```</p>
+
+<p><code>[self.view nextResponder]</code>的作用是获取当前<code>SKScene</code>的<code>UIViewController</code></p>
+
+<p>如果想系统的学一下<code>UIActivityViewController</code>，建立看看这篇翻译自<a href="http://nshipster.com/uiactivityviewcontroller/">Mattt Thompson</a>的<a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-22-ui-activity-viewcontroller.md">博文</a></p>
 
 <h3>使用SLComposeViewController</h3>
 
