@@ -13,3 +13,7 @@ footer: true
 >长期扎根于JavaEE和移动开发  
 
 [这里](http://about.me/yulingtianxia/)有我的名片
+
+
+[畅游导航](http://yulingtianxia.com/ChangYou/)  
+[ColorAtom](http://yulingtianxia.com/ColorAtom/)

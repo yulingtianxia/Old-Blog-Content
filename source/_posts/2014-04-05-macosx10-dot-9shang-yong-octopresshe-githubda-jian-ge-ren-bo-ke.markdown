@@ -92,6 +92,21 @@ Blog的美化工作
     <h1><a href="{{ root_url }}/">{{ site.title }}</a></h1>
     <p class="subtitle">{{ site.subtitle }}</p>
 修改\_config.yml文件，可以配置博客的参数，网上有很多详细的教程来说明每个属性是干什么的，需要注意的一点就是冒号后面一定要加空格，否则编译不通过。建议下载一个Sublime Text来打开这些前台文件，增加效率。博客头像和Github一样采用[gravatar](www.gravatar.com)的头像托管服务，在_config.yml文件中的email属性中填入你在gravatar的邮件或者在email_md5属性中填入md5码也可。  
+**关于添加标签云效果**  
+1. 将[category_cloud.rb](https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/plugins/category_cloud.rb)复制到你的`/octopress/plugins/`文件夹下  
+2. 拷贝[category_cloud.html](https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/source/_includes/custom/asides/category_cloud.html)到你的`octopress/source/_includes/custom/asides/`目录  
+3. 在你的 `octopress/_config.yml` 文件中的`default_asides`项中加入第二步添加的路径：`custom/asides/category_cloud.html`  
+4. 拷贝[tagcloud.swf](https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/source/javascripts/tagcloud.swf)到`source/javascripts/`文件夹  
+如果想修改标签云的颜色可以在`category_cloud.rb`文件中改变：  
+``` 
+		@opts['bgcolor'] = '#3D4349'
+      @opts['tcolor1'] = '#8B85C3'
+      @opts['tcolor2'] = '#C03999'
+      @opts['hicolor'] = '#ffffff'
+``` 
+`tcolor1`为文章数量比较多的分类颜色  
+`tcolor2`为普通分类颜色  
+`hicolor`为鼠标高亮颜色  
 诸如添加Google Analyse和百度统计，添加分享和评论系统，还有版权信息，网上的教程也很多，参考[oec2003](http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html)和[破船](http://beyondvincent.com/blog/2013/07/27/107-hello-page-of-github/)的文章，本文主要是介绍MacOSX上面的部署工作。
 
 
