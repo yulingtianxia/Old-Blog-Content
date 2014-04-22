@@ -4,7 +4,7 @@ title: "Xcode Code Snippets"
 date: 2014-04-17 13:18:02 +0800
 comments: true
 categories: 
-- Xcode
+- XCode
 - Code Snippets
 - 转载
 
