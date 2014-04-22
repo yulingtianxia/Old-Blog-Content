@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Github | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-22T11:52:37+08:00</updated>
+  <updated>2014-04-22T14:47:59+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -166,6 +166,24 @@ git push origin source
 </code></pre>
 
 <p>修改_config.yml文件，可以配置博客的参数，网上有很多详细的教程来说明每个属性是干什么的，需要注意的一点就是冒号后面一定要加空格，否则编译不通过。建议下载一个Sublime Text来打开这些前台文件，增加效率。博客头像和Github一样采用<a href="www.gravatar.com">gravatar</a>的头像托管服务，在_config.yml文件中的email属性中填入你在gravatar的邮件或者在email_md5属性中填入md5码也可。<br/>
+<strong>关于添加标签云效果</strong><br/>
+1. 将<a href="https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/plugins/category_cloud.rb">category_cloud.rb</a>复制到你的<code>/octopress/plugins/</code>文件夹下<br/>
+2. 拷贝<a href="https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/source/_includes/custom/asides/category_cloud.html">category_cloud.html</a>到你的<code>octopress/source/_includes/custom/asides/</code>目录<br/>
+3. 在你的 <code>octopress/_config.yml</code> 文件中的<code>default_asides</code>项中加入第二步添加的路径：<code>custom/asides/category_cloud.html</code><br/>
+4. 拷贝<a href="https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/source/javascripts/tagcloud.swf">tagcloud.swf</a>到<code>source/javascripts/</code>文件夹<br/>
+如果想修改标签云的颜色可以在<code>category_cloud.rb</code>文件中改变：<br/>
+```</p>
+
+<pre><code>    @opts['bgcolor'] = '#3D4349'
+  @opts['tcolor1'] = '#8B85C3'
+  @opts['tcolor2'] = '#C03999'
+  @opts['hicolor'] = '#ffffff'
+</code></pre>
+
+<p><code>``
+</code>tcolor1<code>为文章数量比较多的分类颜色  
+</code>tcolor2<code>为普通分类颜色  
+</code>hicolor`为鼠标高亮颜色<br/>
 诸如添加Google Analyse和百度统计，添加分享和评论系统，还有版权信息，网上的教程也很多，参考<a href="http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html">oec2003</a>和<a href="http://beyondvincent.com/blog/2013/07/27/107-hello-page-of-github/">破船</a>的文章，本文主要是介绍MacOSX上面的部署工作。</p>
 ]]></content>
   </entry>
