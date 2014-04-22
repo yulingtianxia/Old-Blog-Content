@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-22T17:15:56+08:00</updated>
+  <updated>2014-04-22T18:30:49+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,286 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[SpriteKit截屏并分享至社交网络]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/"/>
+    <updated>2014-04-22T17:36:25+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo</id>
+    <content type="html"><![CDATA[<p>本文讲述在用<code>SpriteKit</code>制作iOS游戏的时候，如何让在用户在达到某种成就后分享自己的成就或分数，并附上一张游戏截屏，然后发到社交网络上</p>
+
+<!--more-->
+
+
+<h2>SpriteKit截屏</h2>
+
+<p>传统的截屏方法是用UIView的layer来读取渲染上下文，生成图片</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UIGraphicsBeginImageContext</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">);</span> <span class="c1">//currentView 当前的view</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">layer</span> <span class="nl">renderInContext:</span><span class="n">UIGraphicsGetCurrentContext</span><span class="p">()];</span>
+</span><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">viewImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'><span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>viewImage就是获取的截图，如果要将图片存入相册，只需在后面调用</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UIImageWriteToSavedPhotosAlbum</span><span class="p">(</span><span class="n">viewImage</span><span class="p">,</span><span class="nb">nil</span><span class="p">,</span><span class="nb">nil</span><span class="p">,</span><span class="nb">nil</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+而这一切都是基于<code>UIKit</code>的，在<code>SpriteKit</code>中，上面的方法是实效的，截屏的效果就是一张白色图片
+但在苹果的官方文档中，明确提到了<code>SKTexture</code>的作用，最后一条是说可以将节点树渲染成纹理，可以应用于对游戏截屏。苹果还告诉了我们<code>SKView</code>的一个方法：<code>textureFromNode:</code>，该方法将以node包含的内容渲染成一个纹理，但是如何将<code>SKTexture</code>转换为<code>UIView</code>呢？我在workoverflow的一个<a href="http://stackoverflow.com/questions/21061248/uiimage-from-sktexture">提问</a>中找到了答案：</p>
+
+<h3>方法一：</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIImage</span><span class="o">*</span><span class="p">)</span> <span class="nf">imageWithView:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="n">view</span><span class="p">.</span><span class="n">opaque</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">view</span> <span class="nl">drawViewHierarchyInRect:</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span> <span class="nl">afterScreenUpdates:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span> <span class="n">img</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">img</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIImage</span><span class="o">*</span><span class="p">)</span> <span class="nf">imageFromNode:</span><span class="p">(</span><span class="n">SKNode</span><span class="o">*</span><span class="p">)</span><span class="nv">node</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">SKTexture</span><span class="o">*</span>      <span class="n">tex</span>     <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">scene</span><span class="p">.</span><span class="n">view</span> <span class="nl">textureFromNode:</span><span class="n">node</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">SKView</span><span class="o">*</span>         <span class="n">view</span>    <span class="o">=</span> <span class="p">[[</span><span class="n">SKView</span> <span class="n">alloc</span><span class="p">]</span><span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tex</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">tex</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)];</span>
+</span><span class='line'>    <span class="n">SKScene</span><span class="o">*</span>        <span class="n">scene</span>   <span class="o">=</span> <span class="p">[</span><span class="n">SKScene</span> <span class="nl">sceneWithSize:</span><span class="n">tex</span><span class="p">.</span><span class="n">size</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">SKSpriteNode</span><span class="o">*</span>   <span class="n">sprite</span>  <span class="o">=</span> <span class="p">[</span><span class="n">SKSpriteNode</span> <span class="nl">spriteNodeWithTexture:</span><span class="n">tex</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">sprite</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span> <span class="n">CGRectGetMidX</span><span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">),</span> <span class="n">CGRectGetMidY</span><span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">)</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scene</span> <span class="nl">addChild:</span><span class="n">sprite</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">view</span> <span class="nl">presentScene:</span><span class="n">scene</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">self</span> <span class="nl">imageWithView:</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+1. get the SKTexture for your node using the current SKView
+2. make another SKView that is just big enough for your texture
+3. add a SKSpriteNode with the texture into your new scene, placing it in the middle
+4. render the view into a graphics context</p>
+
+<h3>方法二:</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageFromNode:</span><span class="p">(</span><span class="n">SKNode</span> <span class="o">*</span><span class="p">)</span><span class="nv">node</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">SKView</span> <span class="o">*</span><span class="n">view</span> <span class="o">=</span> <span class="n">node</span><span class="p">.</span><span class="n">scene</span><span class="p">.</span><span class="n">view</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">].</span><span class="n">scale</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGRect</span> <span class="n">nodeFrame</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="n">calculateAccumulatedFrame</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// render SKView into UIImage</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="n">YES</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">view</span> <span class="nl">drawViewHierarchyInRect:</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span> <span class="nl">afterScreenUpdates:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">sceneSnapshot</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// crop to the requested node (making sure to flip the y-coordinate)</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">originY</span> <span class="o">=</span> <span class="n">sceneSnapshot</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="o">*</span><span class="n">scale</span> <span class="o">-</span> <span class="n">nodeFrame</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span><span class="o">*</span><span class="n">scale</span> <span class="o">-</span> <span class="n">nodeFrame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="o">*</span><span class="n">scale</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGRect</span> <span class="n">cropRect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">nodeFrame</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="n">originY</span><span class="p">,</span> <span class="n">nodeFrame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="o">*</span><span class="n">scale</span><span class="p">,</span> <span class="n">nodeFrame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="o">*</span><span class="n">scale</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGImageRef</span> <span class="n">croppedSnapshot</span> <span class="o">=</span> <span class="n">CGImageCreateWithImageInRect</span><span class="p">(</span><span class="n">sceneSnapshot</span><span class="p">.</span><span class="n">CGImage</span><span class="p">,</span> <span class="n">cropRect</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">nodeSnapshot</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageWithCGImage:</span><span class="n">croppedSnapshot</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">CGImageRelease</span><span class="p">(</span><span class="n">croppedSnapshot</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">nodeSnapshot</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+<strong>以上两个方法亲测好使！</strong></p>
+
+<h2>使用Social.Framework分享游戏战绩</h2>
+
+<p>因为比较懒不想在各种第三方社交网站申请APP注册然后使用SDK等，有点复杂，所以暂时用了苹果自带的Social.Framework</p>
+
+<p>首先推荐一个比较好的<a href="https://github.com/yulingtianxia/ios6ShareDemo.git">Demo</a>，代码很容易读，容易上手</p>
+
+<p>首先到target，Build Phases->link binary with libraries，添加social.framework，然后在要使用这个framework的文件头添加<code>@import Social;</code></p>
+
+<p>记得要到iphone或者simulator里设置好对应社交网络的账号，填上用户名密码登录上，不然找不到account，不能post。如果找不到新浪微博，把系统语言调到中文。如果没有预先设置好账号，social.framework在真机和simulator上表现会不同。</p>
+
+<h3>使用UIActivityViewController</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//某个SKScene中添加的代码</span>
+</span><span class='line'>      <span class="n">sharingImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">imageFromNode:</span><span class="n">self</span><span class="p">];</span><span class="c1">//获取截屏图片</span>
+</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">activityItems</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">sharingImage</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">activityItems</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="n">sharingText</span><span class="p">,</span> <span class="n">sharingImage</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">activityItems</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="n">sharingText</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">UIActivityViewController</span> <span class="o">*</span><span class="n">activityController</span> <span class="o">=</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">UIActivityViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithActivityItems:</span><span class="n">activityItems</span>
+</span><span class='line'>                                          <span class="nl">applicationActivities:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="n">nextResponder</span><span class="p">]</span> <span class="nl">presentViewController:</span><span class="n">activityController</span>
+</span><span class='line'>                           <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+<code>[self.view nextResponder]</code>的作用是获取当前SKScene的UIViewController</p>
+
+<h3>使用SLComposeViewController</h3>
+
+<p>这个就相当于上面里介绍的单个分享service
+目前支持的平台有以下这些：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">SOCIAL_EXTERN</span> <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">SLServiceTypeTwitter</span> <span class="nf">NS_AVAILABLE</span><span class="p">(</span><span class="mi">10</span><span class="n">_8</span><span class="p">,</span> <span class="mi">6</span><span class="n">_0</span><span class="p">);</span>
+</span><span class='line'><span class="n">SOCIAL_EXTERN</span> <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">SLServiceTypeFacebook</span> <span class="nf">NS_AVAILABLE</span><span class="p">(</span><span class="mi">10</span><span class="n">_8</span><span class="p">,</span> <span class="mi">6</span><span class="n">_0</span><span class="p">);</span>
+</span><span class='line'><span class="n">SOCIAL_EXTERN</span> <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">SLServiceTypeSinaWeibo</span> <span class="nf">NS_AVAILABLE</span><span class="p">(</span><span class="mi">10</span><span class="n">_8</span><span class="p">,</span> <span class="mi">6</span><span class="n">_0</span><span class="p">);</span>
+</span><span class='line'><span class="n">SOCIAL_EXTERN</span> <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">SLServiceTypeTencentWeibo</span> <span class="nf">NS_AVAILABLE</span><span class="p">(</span><span class="mi">10</span><span class="n">_9</span><span class="p">,</span> <span class="mi">7</span><span class="n">_0</span><span class="p">);</span>
+</span><span class='line'><span class="n">SOCIAL_EXTERN</span> <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">SLServiceTypeLinkedIn</span> <span class="nf">NS_AVAILABLE</span><span class="p">(</span><span class="mi">10</span><span class="n">_9</span><span class="p">,</span> <span class="n">NA</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+先声明一个<code>SLComposeViewController *slComposerSheet;</code>，然后在需要添加分享逻辑的地方加入下面代码：(依然以微博为例子)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">slComposerSheet</span> <span class="nl">setCompletionHandler:</span><span class="o">^</span><span class="p">(</span><span class="n">SLComposeViewControllerResult</span> <span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;start completion block&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">output</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">SLComposeViewControllerResultCancelled:</span>
+</span><span class='line'>            <span class="n">output</span> <span class="o">=</span> <span class="s">@&quot;Action Cancelled&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">SLComposeViewControllerResultDone:</span>
+</span><span class='line'>            <span class="n">output</span> <span class="o">=</span> <span class="s">@&quot;Post Successfull&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">!=</span> <span class="n">SLComposeViewControllerResultCancelled</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="s">@&quot;Weibo Message&quot;</span> <span class="nl">message:</span><span class="n">output</span> <span class="nl">delegate:</span><span class="nb">nil</span> <span class="nl">cancelButtonTitle:</span><span class="s">@&quot;Ok&quot;</span> <span class="nl">otherButtonTitles:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span><span class="p">([</span><span class="n">SLComposeViewController</span> <span class="nl">isAvailableForServiceType:</span><span class="n">SLServiceTypeSinaWeibo</span><span class="p">])</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">slComposerSheet</span> <span class="o">=</span> <span class="p">[</span><span class="n">SLComposeViewController</span> <span class="nl">composeViewControllerForServiceType:</span><span class="n">SLServiceTypeSinaWeibo</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">slComposerSheet</span> <span class="nl">setInitialText:</span><span class="n">self</span><span class="p">.</span><span class="n">sharingText</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">slComposerSheet</span> <span class="nl">addImage:</span><span class="n">self</span><span class="p">.</span><span class="n">sharingImage</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">slComposerSheet</span> <span class="nl">addURL:</span><span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://www.weibo.com/&quot;</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">slComposerSheet</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+这种方法我没试过，代码是照抄自前面提到的<a href="https://github.com/yulingtianxia/ios6ShareDemo.git">Demo</a>里</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[用DFS算法计算SpriteKit中复合体的构成]]></title>
