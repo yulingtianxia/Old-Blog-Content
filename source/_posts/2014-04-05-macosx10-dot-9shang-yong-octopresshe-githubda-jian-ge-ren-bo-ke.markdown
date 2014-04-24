@@ -61,8 +61,14 @@ Octopress搭建
 问题解决  
 最后安装默认的主题
 
-    rake install
-关于创建博文
+    rake install    
+如果出现“You have already activated rake 10.3.1, but your Gemfile requires rake 0.9.6. Prepending `bundle exec` to your command may solve this.”这样的提示，有三种解决方法：  
+1. 运行`bundle update`
+2. 按照提示在前面加上`bundle exec`，即运行`bundle exec rake install`
+3. 卸载不一样的版本 gem uninstall rake -v=10.3.1 
+这三种方法建议先用方法1，如果不行再用方法3，方法2是无奈之举  
+
+**关于创建博文**
     
     rake new_post["first post"]＃双引号中为博文标题，可以自己定义，生成markdown文件
     rake generate ＃生成HTML文件
