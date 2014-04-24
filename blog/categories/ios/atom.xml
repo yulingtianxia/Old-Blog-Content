@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-24T18:15:52+08:00</updated>
+  <updated>2014-04-24T18:27:12+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,343 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS7字体汇总]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/24/ios7zi-ti-hui-zong/"/>
+    <updated>2014-04-24T18:12:43+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/24/ios7zi-ti-hui-zong</id>
+    <content type="html"><![CDATA[<p>运行下面的代码可以获得所有的字体样式</p>
+
+<p>``` objc</p>
+
+<pre><code>    NSArray *familyNames = [UIFont familyNames];
+
+    for( NSString *familyName in familyNames ){
+
+        NSLog(@"Family: %@",familyName);
+
+        NSArray *fontNames = [UIFont fontNamesForFamilyName:familyName];
+        for( NSString *fontName in fontNames ){
+            NSLog(@"Font: %@",fontName);
+        }
+
+    } 
+</code></pre>
+
+<p>```</p>
+
+<p>在iOS7运行，获得结果如下：</p>
+
+<p> Family: Marion<br/>
+ Font: Marion-Italic<br/>
+ Font: Marion-Bold<br/>
+ Font: Marion-Regular<br/>
+ Family: Copperplate<br/>
+ Font: Copperplate-Light<br/>
+ Font: Copperplate<br/>
+ Font: Copperplate-Bold<br/>
+ Family: Heiti SC<br/>
+ Font: STHeitiSC-Medium<br/>
+ Font: STHeitiSC-Light<br/>
+ Family: Iowan Old Style<br/>
+ Font: IowanOldStyle-Italic<br/>
+ Font: IowanOldStyle-Roman<br/>
+ Font: IowanOldStyle-BoldItalic<br/>
+ Font: IowanOldStyle-Bold<br/>
+ Family: Courier New<br/>
+ Font: CourierNewPS-BoldMT<br/>
+ Font: CourierNewPS-ItalicMT<br/>
+ Font: CourierNewPSMT<br/>
+ Font: CourierNewPS-BoldItalicMT<br/>
+ Family: Apple SD Gothic Neo<br/>
+ Font: AppleSDGothicNeo-Bold<br/>
+ Font: AppleSDGothicNeo-Thin<br/>
+ Font: AppleSDGothicNeo-Regular<br/>
+ Font: AppleSDGothicNeo-Light<br/>
+ Font: AppleSDGothicNeo-Medium<br/>
+ Font: AppleSDGothicNeo-SemiBold<br/>
+ Family: Heiti TC<br/>
+ Font: STHeitiTC-Medium<br/>
+ Font: STHeitiTC-Light<br/>
+ Family: Gill Sans<br/>
+ Font: GillSans-Italic<br/>
+ Font: GillSans-Bold  <br/>
+ Font: GillSans-BoldItalic<br/>
+ Font: GillSans-LightItalic<br/>
+ Font: GillSans<br/>
+ Font: GillSans-Light<br/>
+ Family: Thonburi<br/>
+ Font: Thonburi<br/>
+ Font: Thonburi-Bold<br/>
+ Font: Thonburi-Light<br/>
+ Family: Marker Felt<br/>
+ Font: MarkerFelt-Thin
+ Font: MarkerFelt-Wide<br/>
+ Family: Avenir Next Condensed<br/>
+ Font: AvenirNextCondensed-BoldItalic<br/>
+ Font: AvenirNextCondensed-Heavy<br/>
+ Font: AvenirNextCondensed-Medium<br/>
+ Font: AvenirNextCondensed-Regular<br/>
+ Font: AvenirNextCondensed-HeavyItalic<br/>
+ Font: AvenirNextCondensed-MediumItalic<br/>
+ Font: AvenirNextCondensed-Italic<br/>
+ Font: AvenirNextCondensed-UltraLightItalic<br/>
+ Font: AvenirNextCondensed-UltraLight<br/>
+ Font: AvenirNextCondensed-DemiBold<br/>
+ Font: AvenirNextCondensed-Bold<br/>
+ Font: AvenirNextCondensed-DemiBoldItalic<br/>
+ Family: Tamil Sangam MN<br/>
+ Font: TamilSangamMN<br/>
+ Font: TamilSangamMN-Bold<br/>
+ Family: Helvetica Neue<br/>
+ Font: HelveticaNeue-Italic<br/>
+ Font: HelveticaNeue-Bold<br/>
+ Font: HelveticaNeue-UltraLight<br/>
+ Font: HelveticaNeue-CondensedBlack<br/>
+ Font: HelveticaNeue-BoldItalic<br/>
+ Font: HelveticaNeue-CondensedBold<br/>
+ Font: HelveticaNeue-Medium<br/>
+ Font: HelveticaNeue-Light  <br/>
+ Font: HelveticaNeue-Thin<br/>
+ Font: HelveticaNeue-ThinItalic<br/>
+ Font: HelveticaNeue-LightItalic<br/>
+ Font: HelveticaNeue-UltraLightItalic<br/>
+ Font: HelveticaNeue-MediumItalicv
+ Font: HelveticaNeue<br/>
+ Family: Gurmukhi MN<br/>
+ Font: GurmukhiMN-Bold<br/>
+ Font: GurmukhiMN<br/>
+ Family: Times New Roman<br/>
+ Font: TimesNewRomanPSMTv
+ Font: TimesNewRomanPS-BoldItalicMT<br/>
+ Font: TimesNewRomanPS-ItalicMT<br/>
+ Font: TimesNewRomanPS-BoldMT<br/>
+ Family: Georgia<br/>
+ Font: Georgia-BoldItalic<br/>
+ Font: Georgia  <br/>
+ Font: Georgia-Italic<br/>
+ Font: Georgia-Bold<br/>
+ Family: Apple Color Emoji<br/>
+ Font: AppleColorEmoji<br/>
+ Family: Arial Rounded MT Bold<br/>
+ Font: ArialRoundedMTBold<br/>
+ Family: Kailasa<br/>
+ Font: Kailasa-Bold<br/>
+ Font: Kailasa<br/>
+ Family: Sinhala Sangam MN<br/>
+ Font: SinhalaSangamMN-Bold<br/>
+ Font: SinhalaSangamMN<br/>
+ Family: Chalkboard SE<br/>
+ Font: ChalkboardSE-Bold<br/>
+ Font: ChalkboardSE-Light<br/>
+ Font: ChalkboardSE-Regular<br/>
+ Family: Superclarendon<br/>
+ Font: Superclarendon-Italic<br/>
+ Font: Superclarendon-Black<br/>
+ Font: Superclarendon-LightItalic
+ Font: Superclarendon-BlackItalic<br/>
+ Font: Superclarendon-BoldItalic<br/>
+ Font: Superclarendon-Light<br/>
+ Font: Superclarendon-Regular<br/>
+ Font: Superclarendon-Bold<br/>
+ Family: Gujarati Sangam MN<br/>
+ Font: GujaratiSangamMN-Bold<br/>
+ Font: GujaratiSangamMN<br/>
+ Family: Geeza Pro<br/>
+ Font: GeezaPro-Light<br/>
+ Font: GeezaPro<br/>
+ Font: GeezaPro-Bold<br/>
+ Family: Noteworthy<br/>
+ Font: Noteworthy-Light<br/>
+ Font: Noteworthy-Bold<br/>
+ Family: Damascus<br/>
+ Font: DamascusBold<br/>
+ Font: DamascusSemiBold<br/>
+ Font: DamascusMedium<br/>
+ Font: Damascus
+ Family: Avenir<br/>
+ Font: Avenir-Medium<br/>
+ Font: Avenir-HeavyOblique<br/>
+ Font: Avenir-Book<br/>
+ Font: Avenir-Light<br/>
+ Font: Avenir-Roman<br/>
+ Font: Avenir-BookOblique<br/>
+ Font: Avenir-Black<br/>
+ Font: Avenir-MediumOblique<br/>
+ Font: Avenir-BlackOblique<br/>
+ Font: Avenir-Heavy<br/>
+ Font: Avenir-LightOblique<br/>
+ Font: Avenir-Oblique<br/>
+ Family: Academy Engraved LET<br/>
+ Font: AcademyEngravedLetPlain<br/>
+ Family: Mishafi<br/>
+ Font: DiwanMishafi<br/>
+ Family: Futura<br/>
+ Font: Futura-CondensedMedium<br/>
+ Font: Futura-CondensedExtraBold<br/>
+ Font: Futura-Medium<br/>
+ Font: Futura-MediumItalicv
+ Family: Farah<br/>
+ Font: Farah<br/>
+ Family: Kannada Sangam MN<br/>
+ Font: KannadaSangamMN<br/>
+ Font: KannadaSangamMN-Bold<br/>
+ Family: Arial Hebrew<br/>
+ Font: ArialHebrew-Bold<br/>
+ Font: ArialHebrew-Light<br/>
+ Font: ArialHebrew<br/>
+ Family: Arial<br/>
+ Font: ArialMT<br/>
+ Font: Arial-BoldItalicMT<br/>
+ Font: Arial-BoldMT<br/>
+ Font: Arial-ItalicMT<br/>
+ Family: Party LET<br/>
+ Font: PartyLetPlain<br/>
+ Family: Chalkduster<br/>
+ Font: Chalkduster<br/>
+ Family: Hiragino Kaku Gothic ProN<br/>
+ Font: HiraKakuProN-W6<br/>
+ Font: HiraKakuProN-W3  <br/>
+ Family: Hoefler Text<br/>
+ Font: HoeflerText-Italicv
+ Font: HoeflerText-Regular<br/>
+ Font: HoeflerText-Black<br/>
+ Font: HoeflerText-BlackItalicv
+ Family: Optima<br/>
+ Font: Optima-Regular<br/>
+ Font: Optima-ExtraBlack<br/>
+ Font: Optima-BoldItalic<br/>
+ Font: Optima-Italic<br/>
+ Font: Optima-Bold<br/>
+ Family: Palatino<br/>
+ Font: Palatino-Bold<br/>
+ Font: Palatino-Roman<br/>
+ Font: Palatino-BoldItalic<br/>
+ Font: Palatino-Italic<br/>
+ Family: Malayalam Sangam MN<br/>
+ Font: MalayalamSangamMN-Bold<br/>
+ Font: MalayalamSangamMN<br/>
+ Family: Al Nile<br/>
+ Font: AlNile-Bold<br/>
+ Font: AlNile<br/>
+ Family: Bradley Hand<br/>
+ Font: BradleyHandITCTT-Bold<br/>
+ Family: Hiragino Mincho ProN<br/>
+ Font: HiraMinProN-W6<br/>
+ Font: HiraMinProN-W3<br/>
+ Family: Trebuchet MS<br/>
+ Font: Trebuchet-BoldItalic<br/>
+ Font: TrebuchetMS<br/>
+ Font: TrebuchetMS-Bold<br/>
+ Font: TrebuchetMS-Italic<br/>
+ Family: Helvetica<br/>
+ Font: Helvetica-Bold<br/>
+ Font: Helvetica<br/>
+ Font: Helvetica-LightOblique<br/>
+ Font: Helvetica-Oblique<br/>
+ Font: Helvetica-BoldOblique<br/>
+ Font: Helvetica-Light<br/>
+ Family: Courier<br/>
+ Font: Courier-BoldObliquev
+ Font: Courier<br/>
+ Font: Courier-Bold<br/>
+ Font: Courier-Oblique<br/>
+ Family: Cochin<br/>
+ Font: Cochin-Bold<br/>
+ Font: Cochin<br/>
+ Font: Cochin-Italic<br/>
+ Font: Cochin-BoldItalic<br/>
+ Family: Devanagari Sangam MNv
+ Font: DevanagariSangamMN<br/>
+ Font: DevanagariSangamMN-Bold<br/>
+ Family: Oriya Sangam MN<br/>
+ Font: OriyaSangamMN<br/>
+ Font: OriyaSangamMN-Bold<br/>
+ Family: Snell Roundhand<br/>
+ Font: SnellRoundhand-Bold<br/>
+ Font: SnellRoundhand<br/>
+ Font: SnellRoundhand-Black<br/>
+ Family: Zapf Dingbats<br/>
+ Font: ZapfDingbatsITC<br/>
+ Family: Bodoni 72<br/>
+ Font: BodoniSvtyTwoITCTT-Bold<br/>
+ Font: BodoniSvtyTwoITCTT-Book<br/>
+ Font: BodoniSvtyTwoITCTT-BookIta<br/>
+ Family: Verdana<br/>
+ Font: Verdana-Italic<br/>
+ Font: Verdana-BoldItalic<br/>
+ Font: Verdana<br/>
+ Font: Verdana-Bold<br/>
+ Family: American Typewriter<br/>
+ Font: AmericanTypewriter-CondensedLight<br/>
+ Font: AmericanTypewriter<br/>
+ Font: AmericanTypewriter-CondensedBold<br/>
+ Font: AmericanTypewriter-Light<br/>
+ Font: AmericanTypewriter-Bold<br/>
+ Font: AmericanTypewriter-Condensed<br/>
+ Family: Avenir Next<br/>
+ Font: AvenirNext-UltraLight<br/>
+ Font: AvenirNext-UltraLightItalic<br/>
+ Font: AvenirNext-Bold<br/>
+ Font: AvenirNext-BoldItalic<br/>
+ Font: AvenirNext-DemiBold<br/>
+ Font: AvenirNext-DemiBoldItalic<br/>
+ Font: AvenirNext-Medium<br/>
+ Font: AvenirNext-HeavyItalic<br/>
+ Font: AvenirNext-Heavy<br/>
+ Font: AvenirNext-Italic<br/>
+ Font: AvenirNext-Regular<br/>
+ Font: AvenirNext-MediumItalic<br/>
+ Family: Baskerville<br/>
+ Font: Baskerville-Italic<br/>
+ Font: Baskerville-SemiBold<br/>
+ Font: Baskerville-BoldItalic<br/>
+ Font: Baskerville-SemiBoldItalic<br/>
+ Font: Baskerville-Bold<br/>
+ Font: Baskerville<br/>
+ Family: Didot<br/>
+ Font: Didot-Italicv
+ Font: Didot-Bold<br/>
+ Font: Didot<br/>
+ Family: Savoye LET<br/>
+ Font: SavoyeLetPlain<br/>
+ Family: Bodoni Ornaments<br/>
+ Font: BodoniOrnamentsITCTT<br/>
+ Family: Symbol<br/>
+ Font: Symbol<br/>
+ Family: Menlo<br/>
+ Font: Menlo-Italic<br/>
+ Font: Menlo-Bold<br/>
+ Font: Menlo-Regular<br/>
+ Font: Menlo-BoldItalic<br/>
+ Family: Bodoni 72 Smallcaps<br/>
+ Font: BodoniSvtyTwoSCITCTT-Book<br/>
+ Family: DIN Alternate<br/>
+ Font: DINAlternate-Bold<br/>
+ Family: Papyrus<br/>
+ Font: Papyrus<br/>
+ Font: Papyrus-Condensed<br/>
+ Family: Euphemia UCAS<br/>
+ Font: EuphemiaUCAS-Italic<br/>
+ Font: EuphemiaUCAS<br/>
+ Font: EuphemiaUCAS-Bold<br/>
+ Family: Telugu Sangam MN<br/>
+ Font: TeluguSangamMN<br/>
+ Font: TeluguSangamMN-Bold<br/>
+ Family: Bangla Sangam MN<br/>
+ Font: BanglaSangamMN-Bold<br/>
+ Font: BanglaSangamMN<br/>
+ Family: Zapfino<br/>
+ Font: Zapfino<br/>
+ Family: Bodoni 72 Oldstyle<br/>
+ Font: BodoniSvtyTwoOSITCTT-Book<br/>
+ Font: BodoniSvtyTwoOSITCTT-Bold<br/>
+ Font: BodoniSvtyTwoOSITCTT-BookIt<br/>
+ Family: DIN Condensed<br/>
+ Font: DINCondensed-Bold</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SpriteKit截屏并分享至社交网络]]></title>
@@ -930,46 +1267,6 @@ VisitablePhysicsBody *visitableBodyA = [[VisitablePhysicsBody alloc] initWithBod
 ```
 物理老师总说力的作用时相互的，所以我们需要两次访问：A访问B和B访问A，但是这样会调用两次visitXXX方法，原则上这两个逻辑上对称的方法我们只需要实现其中一个就可以，但必须得像上面代码一样，A->B和B->A缺一不可，因为碰撞的时候我们不知道bodyA和bodyB的类型，也就无法判断visitXXX方法是A->B时能调用还是B->A时能调用到<br/>
 当然，你也可以两个visit方法都实现，但只对visitor的node做操作，或只对visitable的node操作，总之仁者见仁智者见智啦</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS的.gitignore]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/09/iosde-dot-gitignore/"/>
-    <updated>2014-04-09T16:59:19+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/09/iosde-dot-gitignore</id>
-    <content type="html"><![CDATA[<p>在多人一起开发XCode项目的时候，很多中间生成的临时文件并不需要加入到版本控制当中，所以记录下XCode需要用到的<code>.gitignore</code>文件</p>
-
-<!-- more-->
-
-
-<p>```</p>
-
-<h1>Xcode</h1>
-
-<p>.DS_Store
-<em>/build/</em>
-<em>.pbxuser
-!default.pbxuser
-</em>.mode1v3
-!default.mode1v3
-<em>.mode2v3
-!default.mode2v3
-</em>.perspectivev3
-!default.perspectivev3
-xcuserdata
-profile
-<em>.moved-aside
-DerivedData
-.idea/
-</em>.hmap
-*.xccheckout</p>
-
-<h1>CocoaPods</h1>
-
-<p>Pods
-```
-还有需要记住一点的是，使用IB进行界面设计，无论是xib文件还是storyboard，同一时间只能右一个人更改一个Window或VC，虽然XCode5之后xib和storyboard可读性大大增强，但是仍不像Android开发界面的xml格式那么普及，还是小心谨慎为好</p>
 ]]></content>
   </entry>
   
