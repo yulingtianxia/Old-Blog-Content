@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Octopress | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-24T18:27:12+08:00</updated>
+  <updated>2014-04-24T18:37:47+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -87,10 +87,16 @@ gem install bundler
 <p>问题解决<br/>
 最后安装默认的主题</p>
 
-<pre><code>rake install
+<pre><code>rake install    
 </code></pre>
 
-<p>关于创建博文</p>
+<p>如果出现“You have already activated rake 10.3.1, but your Gemfile requires rake 0.9.6. Prepending <code>bundle exec</code> to your command may solve this.”这样的提示，有三种解决方法：<br/>
+1. 运行<code>bundle update</code>
+2. 按照提示在前面加上<code>bundle exec</code>，即运行<code>bundle exec rake install</code>
+3. 卸载不一样的版本 gem uninstall rake -v=10.3.1
+这三种方法建议先用方法1，如果不行再用方法3，方法2是无奈之举</p>
+
+<p><strong>关于创建博文</strong></p>
 
 <pre><code>rake new_post["first post"]＃双引号中为博文标题，可以自己定义，生成markdown文件
 rake generate ＃生成HTML文件

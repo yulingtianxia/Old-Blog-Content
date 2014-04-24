@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 字体 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/zi-ti/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-24T18:27:12+08:00</updated>
+  <updated>2014-04-24T18:37:47+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -18,7 +18,12 @@
     <link href="http://yulingtianxia.com/blog/2014/04/24/ios7zi-ti-hui-zong/"/>
     <updated>2014-04-24T18:12:43+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/04/24/ios7zi-ti-hui-zong</id>
-    <content type="html"><![CDATA[<p>运行下面的代码可以获得所有的字体样式</p>
+    <content type="html"><![CDATA[<p>本文列举了iOS7所有字体以及获取字体的方式</p>
+
+<!--more-->
+
+
+<p>运行下面的代码可以获得所有的字体样式</p>
 
 <p>``` objc</p>
 
