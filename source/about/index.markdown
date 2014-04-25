@@ -15,5 +15,5 @@ footer: true
 [这里](http://about.me/yulingtianxia/)有我的名片
 
 
-[畅游导航](http://yulingtianxia.com/ChangYou/)  
-[ColorAtom](http://yulingtianxia.com/ColorAtom/)
+[畅游导航](http://changyou.yulingtianxia.com)  
+[ColorAtom](http://coloratom.yulingtianxia.com)
