@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-25T23:12:33+08:00</updated>
+  <updated>2014-04-27T14:20:51+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,148 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[在游戏的SKScene中添加Button]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/"/>
+    <updated>2014-04-27T13:18:04+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button</id>
+    <content type="html"><![CDATA[<p>偶然发现<code>SpriteKit</code>中的<code>SKNode</code>也有<code>userInteractionEnabled</code>属性，就像<code>UIKit</code>中的<code>userInteractionEnabled</code>一样，于是我对以前的代码进行重构，发现了在游戏中添加交互button的新的方式（估计很多大神们早就发现了）</p>
+
+<!--more-->
+
+
+<h2>在SKScene中添加SKNode对象作为Button</h2>
+
+<p>不得不承认，我以前在<code>SKScene</code>中添加一个<code>Button</code>的过程是这样的：</p>
+
+<p><strong>添加一个<code>SKNode</code>（一般都是它的子类：<code>SKLabelNode</code>和<code>SKSpriteNode</code>）属性</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>SKLabelNode *button = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"]; </span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><strong>设置其填充的内容和放置位置，还有<code>SKNode</code>的<code>name</code></strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>button.text = @"Click me";
+</span><span class='line'>button.name = @"button";
+</span><span class='line'>button.fontSize = 40;
+</span><span class='line'>button.fontColor = [SKColor purpleColor];
+</span><span class='line'>button.position = CGPointMake(self.size.width/2, self.size.height/2);
+</span><span class='line'>[self addChild:button]; </span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>在<code>SKScene</code>重写<code>touchesEnded: withEvent:</code>方法，并在方法中判断触摸到哪个<code>SKNode</code></strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+</span><span class='line'>    UITouch * touch = [touches anyObject];
+</span><span class='line'>    CGPoint location = [touch locationInNode:self];
+</span><span class='line'>    SKSpriteNode *touchedNode = (SKSpriteNode *)[self nodeAtPoint:location];
+</span><span class='line'>    if ([touchedNode.name isEqualToString:@"button"]) {
+</span><span class='line'>        //TODO:
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+如果某个场景中需要设置很多Button，比如游戏设置界面，那么在<code>touchesEnded: withEvent:</code>方法中就会出现好多if判断，这么多分支，每个分支可能还有很多操作，这样增加了SKScene的体积，使得代码可读性变差，维护也困难</p>
+
+<h2>通过继承来封装自己的Button</h2>
+
+<p><code>UIKit</code>中的<code>userInteractionEnabled</code>大家一定都很熟悉，它默认值是<code>YES</code>，也就是默认接受触摸事件，偶然发现<code>SKNode</code>也有<code>userInteractionEnabled</code>属性，但是默认值是<code>NO</code>，而且<code>SKNode</code>是继承<code>UIResponder</code>的，这么说，我们可以在SKNode中一展拳脚了，不必再麻烦SKScene了<br/>
+下面添加一个用于跳转到主菜单场景页面的Button为例：<br/>
+<strong>新建一个类，名字叫MainSceneButton，继承<code>SKLabelNode</code>，并构造出时候方法</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-(id)init{
+</span><span class='line'>    if (self = [super initWithFontNamed:@"Chalkduster"]) {
+</span><span class='line'>        self.text = @"MENU";
+</span><span class='line'>        self.fontSize = 20;
+</span><span class='line'>        self.userInteractionEnabled = YES;
+</span><span class='line'>    }
+</span><span class='line'>    return self;
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+这里碰到一个问题：如果用上面的代码初始化，将会出现 <code>EXC_BAD_ACCESS</code> 错误，问题的解决方法是在超类初始化时用init方法代替，然后再设置字体：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-(id)init{
+</span><span class='line'>    if (self = [super init]) {
+</span><span class='line'>        self.fontName = @"Chalkduster";
+</span><span class='line'>        self.text = @"MENU";
+</span><span class='line'>        self.fontSize = 20;
+</span><span class='line'>        self.userInteractionEnabled = YES;
+</span><span class='line'>    }
+</span><span class='line'>    return self;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+至于原因，我也没弄清楚，估计是<code>SKLabelNode</code>的bug吧，因为初始化<code>SKSpriteNode</code>时用<code>initWithTexture: color: size:</code>方法就不会报错<br/>
+<strong>在MainSceneButton中重写<code>touchesEnded: withEvent:</code>方法</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+</span><span class='line'>    SKTransition *reveal = [SKTransition flipHorizontalWithDuration:0.5];
+</span><span class='line'>    SKScene * myScene = [[MainScene alloc] initWithSize:self.scene.size];
+</span><span class='line'>    [self.scene.view presentScene:myScene transition: reveal];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainScene<br/>
+<strong>最后在某个场景中将button添加上去，跟之前的类似</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>MainSceneButton *mainScene = [[MainSceneButton alloc] init];
+</span><span class='line'>mainScene.position = CGPointMake(self.size.width/2, self.size.height/2);
+</span><span class='line'>[self addChild:mainScene];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+感觉这样做是不是很像以前继承一个UIView然后封装自己的Custom View呢？给SKScene瘦身的方法还有很多，参照给UIViewController瘦身的方法，我们还可以把其他SKNode也从SKScene中剥离出去，一些用于设置SKNode的方法也会随之剥离到自定义的类中，便于以后维护代码</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Objective-C交叉引用解决方法]]></title>
