@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-27T14:20:51+08:00</updated>
+  <updated>2014-04-27T14:31:02+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -29,7 +29,7 @@
 
 <p><strong>添加一个<code>SKNode</code>（一般都是它的子类：<code>SKLabelNode</code>和<code>SKSpriteNode</code>）属性</strong></p>
 
-<p><code>
+<p><code>objc
 SKLabelNode *button = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
 </code></p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-27T14:20:51+08:00</updated>
+  <updated>2014-04-27T14:31:02+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -29,31 +29,33 @@
 
 <p><strong>添加一个<code>SKNode</code>（一般都是它的子类：<code>SKLabelNode</code>和<code>SKSpriteNode</code>）属性</strong></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>SKLabelNode *button = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"]; </span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">SKLabelNode</span> <span class="o">*</span><span class="n">button</span> <span class="o">=</span> <span class="p">[</span><span class="n">SKLabelNode</span> <span class="nl">labelNodeWithFontNamed:</span><span class="s">@&quot;Chalkduster&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
 <p><strong>设置其填充的内容和放置位置，还有<code>SKNode</code>的<code>name</code></strong></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>button.text = @"Click me";
-</span><span class='line'>button.name = @"button";
-</span><span class='line'>button.fontSize = 40;
-</span><span class='line'>button.fontColor = [SKColor purpleColor];
-</span><span class='line'>button.position = CGPointMake(self.size.width/2, self.size.height/2);
-</span><span class='line'>[self addChild:button]; </span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">button</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;Click me&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">button</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">@&quot;button&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">button</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="mi">40</span><span class="p">;</span>
+</span><span class='line'><span class="n">button</span><span class="p">.</span><span class="n">fontColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">SKColor</span> <span class="n">purpleColor</span><span class="p">];</span>
+</span><span class='line'><span class="n">button</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">addChild:</span><span class="n">button</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p><strong>在<code>SKScene</code>重写<code>touchesEnded: withEvent:</code>方法，并在方法中判断触摸到哪个<code>SKNode</code></strong></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -61,14 +63,15 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-</span><span class='line'>    UITouch * touch = [touches anyObject];
-</span><span class='line'>    CGPoint location = [touch locationInNode:self];
-</span><span class='line'>    SKSpriteNode *touchedNode = (SKSpriteNode *)[self nodeAtPoint:location];
-</span><span class='line'>    if ([touchedNode.name isEqualToString:@"button"]) {
-</span><span class='line'>        //TODO:
-</span><span class='line'>    }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span><span class="p">{</span>
+</span><span class='line'>    <span class="n">UITouch</span> <span class="o">*</span> <span class="n">touch</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">anyObject</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">CGPoint</span> <span class="n">location</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch</span> <span class="nl">locationInNode:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">SKSpriteNode</span> <span class="o">*</span><span class="n">touchedNode</span> <span class="o">=</span> <span class="p">(</span><span class="n">SKSpriteNode</span> <span class="o">*</span><span class="p">)[</span><span class="n">self</span> <span class="nl">nodeAtPoint:</span><span class="n">location</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">touchedNode</span><span class="p">.</span><span class="n">name</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;button&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//TODO:</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -80,7 +83,7 @@
 下面添加一个用于跳转到主菜单场景页面的Button为例：<br/>
 <strong>新建一个类，名字叫MainSceneButton，继承<code>SKLabelNode</code>，并构造出时候方法</strong></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -88,21 +91,21 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>-(id)init{
-</span><span class='line'>    if (self = [super initWithFontNamed:@"Chalkduster"]) {
-</span><span class='line'>        self.text = @"MENU";
-</span><span class='line'>        self.fontSize = 20;
-</span><span class='line'>        self.userInteractionEnabled = YES;
-</span><span class='line'>    }
-</span><span class='line'>    return self;
-</span><span class='line'>}
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithFontNamed:</span><span class="s">@&quot;Chalkduster&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;MENU&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 这里碰到一个问题：如果用上面的代码初始化，将会出现 <code>EXC_BAD_ACCESS</code> 错误，问题的解决方法是在超类初始化时用init方法代替，然后再设置字体：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -111,43 +114,46 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>-(id)init{
-</span><span class='line'>    if (self = [super init]) {
-</span><span class='line'>        self.fontName = @"Chalkduster";
-</span><span class='line'>        self.text = @"MENU";
-</span><span class='line'>        self.fontSize = 20;
-</span><span class='line'>        self.userInteractionEnabled = YES;
-</span><span class='line'>    }
-</span><span class='line'>    return self;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">fontName</span> <span class="o">=</span> <span class="s">@&quot;Chalkduster&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;MENU&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 至于原因，我也没弄清楚，估计是<code>SKLabelNode</code>的bug吧，因为初始化<code>SKSpriteNode</code>时用<code>initWithTexture: color: size:</code>方法就不会报错<br/>
 <strong>在MainSceneButton中重写<code>touchesEnded: withEvent:</code>方法</strong></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-</span><span class='line'>    SKTransition *reveal = [SKTransition flipHorizontalWithDuration:0.5];
-</span><span class='line'>    SKScene * myScene = [[MainScene alloc] initWithSize:self.scene.size];
-</span><span class='line'>    [self.scene.view presentScene:myScene transition: reveal];
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span><span class="p">{</span>
+</span><span class='line'>    <span class="n">SKTransition</span> <span class="o">*</span><span class="n">reveal</span> <span class="o">=</span> <span class="p">[</span><span class="n">SKTransition</span> <span class="nl">flipHorizontalWithDuration:</span><span class="mf">0.5</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">SKScene</span> <span class="o">*</span> <span class="n">myScene</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MainScene</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithSize:</span><span class="n">self</span><span class="p">.</span><span class="n">scene</span><span class="p">.</span><span class="n">size</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">scene</span><span class="p">.</span><span class="n">view</span> <span class="nl">presentScene:</span><span class="n">myScene</span> <span class="nl">transition:</span> <span class="n">reveal</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainScene<br/>
 <strong>最后在某个场景中将button添加上去，跟之前的类似</strong></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>MainSceneButton *mainScene = [[MainSceneButton alloc] init];
-</span><span class='line'>mainScene.position = CGPointMake(self.size.width/2, self.size.height/2);
-</span><span class='line'>[self addChild:mainScene];</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">MainSceneButton</span> <span class="o">*</span><span class="n">mainScene</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MainSceneButton</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="n">mainScene</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">addChild:</span><span class="n">mainScene</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
