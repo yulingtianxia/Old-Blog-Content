@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-27T14:31:02+08:00</updated>
+  <updated>2014-04-28T14:19:20+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,111 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS单元测试－XCTest]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-%5Bnil%5Dxctest/"/>
+    <updated>2014-04-28T13:25:12+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-[nil]xctest</id>
+    <content type="html"><![CDATA[<p>第一次接触单元测试还是在SQA课程上，那时我用的是JUnit来对Java程序进行单元测试。如今XCode自带的单元测试工具已经从OCUnit演变到了XCTest，但其本质还是差不多的，其好处在于XCode集成，简单方便</p>
+
+<!--more-->
+
+
+<p>在XCode5中新建一个工程的时候，会默认带一个用于单元测试的target，其名字为工程名加Test后缀，并且文件名也以Test结尾。你会发现已经有了一个默认的测试用例，其中有三个方法：<code>setUp</code>,<code>tearDown</code>,<code>testExample</code>。其中<code>testExample</code>方法左侧有一个播放按钮，点击它就会对这个方法进行测试，而在整个文件的<code>@implementation</code>那行也有个同样的按钮，点击后会对当前测试用例的所有方法进行测试，也可通过Command＋U快捷键来触发。这个测试用例类没有头文件，因为测试用例不需要给外部暴漏接口。按照苹果官方的文档，建立一个测试用例的过程应该是这样的：<br/>
+1. 建立一个<code>XCTestCase</code>的子类
+2. 实现测试方法
+3. 选择性的定义一些实例变量来存储fixture的状态
+4. 通过重写<code>setUp</code>方法选择性的实例化fixture
+5. 通过重写<code>tearDown</code>方法来在测试后清除
+测试方法没有参数和返回值，用test作为前缀，比如：</p>
+
+<p><code>objc
+ - (void) testSomething;
+</code>
+会自动被<code>XCTest</code>架构识别为测试用例，每个<code>XCTestCase</code>的子类中的<code>defaultTestSuite</code>都是一个<code>XCTestSuite</code>，它包含了这些测试用例。<br/>
+测试方法的实现经常包含断言，必须通过验证才能通过测试，举个例子：</p>
+
+<p>```
+ @interface MathTest : XCTestCase {
+ @private</p>
+
+<pre><code>float f1;
+float f2;
+</code></pre>
+
+<p> }</p>
+
+<ul>
+<li>(void) testAddition;</li>
+</ul>
+
+
+<p> @end</p>
+
+<p> @implementation MathTest</p>
+
+<ul>
+<li><p>(void) setUp
+{
+ f1 = 2.0;
+ f2 = 3.0;
+}</p></li>
+<li><p>(void) testAddition
+{
+ XCTAssertTrue (f1 + f2 == 5.0, @&ldquo;%f + %f should equal 5.0&rdquo;, f1, f2);
+}
+@end
+```
+感觉这根JUnit很像的，下面列出所有的断言：<br/>
+XCTFail(format…) 生成一个失败的测试；</p></li>
+</ul>
+
+
+<p>XCTAssertNil(a1, format&hellip;)为空判断，a1为空时通过，反之不通过；</p>
+
+<p>XCTAssertNotNil(a1, format…)不为空判断，a1不为空时通过，反之不通过；</p>
+
+<p>XCTAssert(expression, format&hellip;)当expression求值为TRUE时通过；</p>
+
+<p>XCTAssertTrue(expression, format&hellip;)当expression求值为TRUE时通过；</p>
+
+<p>XCTAssertFalse(expression, format&hellip;)当expression求值为False时通过；</p>
+
+<p>XCTAssertEqualObjects(a1, a2, format&hellip;)判断相等，[a1 isEqual:a2]值为TRUE时通过，其中一个不为空时，不通过；</p>
+
+<p>XCTAssertNotEqualObjects(a1, a2, format&hellip;)判断不等，[a1 isEqual:a2]值为False时通过，</p>
+
+<p>XCTAssertEqual(a1, a2, format&hellip;)判断相等（当a1和a2是 C语言标量、结构体或联合体时使用,实际测试发现NSString也可以）；</p>
+
+<p>XCTAssertNotEqual(a1, a2, format&hellip;)判断不等（当a1和a2是 C语言标量、结构体或联合体时使用）；</p>
+
+<p>XCTAssertEqualWithAccuracy(a1, a2, accuracy, format&hellip;)判断相等，（double或float类型）提供一个误差范围，当在误差范围（+/-accuracy）以内相等时通过测试；</p>
+
+<p>XCTAssertNotEqualWithAccuracy(a1, a2, accuracy, format&hellip;) 判断不等，（double或float类型）提供一个误差范围，当在误差范围以内不等时通过测试；</p>
+
+<p>XCTAssertThrows(expression, format&hellip;)异常测试，当expression发生异常时通过；反之不通过；（很变态）</p>
+
+<p>XCTAssertThrowsSpecific(expression, specificException, format&hellip;) 异常测试，当expression发生specificException异常时通过；反之发生其他异常或不发生异常均不通过；</p>
+
+<p>XCTAssertThrowsSpecificNamed(expression, specificException, exception_name, format&hellip;)异常测试，当expression发生具体异常、具体异常名称的异常时通过测试，反之不通过；</p>
+
+<p>XCTAssertNoThrow(expression, format…)异常测试，当expression没有发生异常时通过测试；</p>
+
+<p>XCTAssertNoThrowSpecific(expression, specificException, format&hellip;)异常测试，当expression没有发生具体异常、具体异常名称的异常时通过测试，反之不通过；</p>
+
+<p>XCTAssertNoThrowSpecificNamed(expression, specificException, exception_name, format&hellip;)异常测试，当expression没有发生具体异常、具体异常名称的异常时通过测试，反之不通过</p>
+
+<p>关于测试函数执行的顺序：以函数名中test后面的字符大小有关，比如-（void）test001XXX会先于-（void）test002XXX执行；</p>
+
+<p>这里只是Mark下单元测试的基本知识，具体应用的话这里推荐几篇不错的教程：<br/>
+<a href="http://objccn.io/issue-1-3/">测试 View Controllers</a><br/>
+<a href="http://blog.csdn.net/jymn_chen/article/details/21552941">Xcode 5 单元测试（一）使用XCTest进行单元测试</a><br/>
+<a href="http://blog.csdn.net/jymn_chen/article/details/21562869">Xcode 5 单元测试（二）OCMock和GHUnit</a><br/>
+可能有的测试工具会用到CocoaPods来管理，给出一篇入门文章：<br/>
+<a href="http://blog.csdn.net/mysevenmi/article/details/17878421">iOS中使用cocoaPods管理第三方类库</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[在游戏的SKScene中添加Button]]></title>
@@ -699,194 +804,6 @@ for (int i=0; i&lt;[graph.sets count]; i++) {</p>
 ((SKSpriteNode *)nodes[i]).userData = [NSMutableDictionary dictionary];
 </code>
 感谢StackOverFlow网友的回答：<a href="http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values">http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS调试 — 基本技巧]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/"/>
-    <updated>2014-04-17T13:32:00+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao</id>
-    <content type="html"><![CDATA[<p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
-
-<hr />
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/ios_debug.png"><img class="alignnone size-full wp-image-628" alt="ios_debug" src="http://beyondvincent.com/wp-content/uploads/2013/05/ios_debug.png" width="976" height="313" /></a></p>
-
-<!--more-->
-
-
-<p>在程序中，无论是你想弄清楚为什么数组中有3个对象而不是5个，或者为什么一个新的玩家开始之后，游戏在倒退——调试在这些处理过程中是比较重要的一部分。通过本文的学习，我们将知道在程序中，可以使用的大多数重要调试功能，并如何利用这些调试功能来帮助你以更少的时间解决bug。</p>
-
-<p>本文将介绍如下内容：</p>
-
-<ul>
-<li>使用控制台检查程序的状态</li>
-<li>进行日志记录，并熟练的驾驭NSLog</li>
-<li>利用对象的生命周期跟踪内存的使用</li>
-</ul>
-
-
-<h2><strong><span style="color: #339966;">使用控制台进行检查</span></strong></h2>
-
-<p>在进行调试程序的时候，可能Xcode底部的小黑框会是你最好的朋友。它能输出日志信息，错误信息以及其它各种有用的内容——这可以帮助你进行错误的跟踪。除了可以在看到日志的输出，我们还可以在某个断点出停留住，并检查程序中的变量信息。</p>
-
-<h3><strong><span style="color: #339966;">带条件的断点</span></strong></h3>
-
-<p>本文假设你以及知道断点是如何工作的了（即使不知道的话，也不用担心，看完本文之后，你将明白！）。</p>
-
-<p>在某个特定的时间点命中断点是非常重要的，在有些断点中，有些时候需要通过一个痛苦的循环或者递归函数才能让我们的对象等于某个确定的值。此时我们可以使用条件断点！</p>
-
-<p>条件断点是这样的一类断点：只有当满足某个确定的条件时，才会命中断点。可以想象一下：我们只希望当对象在某个确定的状态，或者循环迭代到第nth次时才命中断点。单击Xcode editor中的‘gutter’可以添加一个断点，在断点上单击右键，然后选择‘edit breakpoint’，就可以设置特定的条件了。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/conditionalBreakpoints.png"><img class="alignnone size-full wp-image-617" alt="conditionalBreakpoints" src="http://beyondvincent.com/wp-content/uploads/2013/05/conditionalBreakpoints.png" width="513" height="223" /></a></p>
-
-<p>可以提供一个条件（例如i==12），或者断点忽略次数。另外还可以添加动作，该动作可根据断点自动发生，例如一个debugger command——打印一个值。</p>
-
-<p><span style="color: #339966;"><strong>提示</strong></span>：添加/删除断点的键盘快捷键是command+\</p>
-
-<p>另外一个重要的断点技巧是添加一个异常断点(exception breakpoint)。当遇到异常时，基本99%次Xcode都会自动转到main方法中的autorelease pool中。</p>
-
-<div id="attachment_618" class="wp-caption alignnone" style="width: 682px">
-  <a href="http://beyondvincent.com/wp-content/uploads/2013/05/unhelpful_break.png"><img class="size-full wp-image-618 " alt="unhelpful_break" src="http://beyondvincent.com/wp-content/uploads/2013/05/unhelpful_break.png" width="672" height="179" /></a><p class="wp-caption-text">
-    感谢Xcode&#8230;真的太有用了！
-  </p>
-</div>
-
-
-<p>通过异常断点，可以方便的定位到引起异常发生的具体代码行。异常断点的添加方法：打开异常断点tab（command+6）。选择窗口左下角的&#8221;+&#8221;按钮，并添加一个‘exception breakpoint’，这样，当Xcode遇到异常时，将会在引起异常代码的地方发生断点停留。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/Exception-breakpoint.png"><img class="alignnone size-full wp-image-619" alt="Exception-breakpoint" src="http://beyondvincent.com/wp-content/uploads/2013/05/Exception-breakpoint.png" width="501" height="194" /></a></p>
-
-<h2><strong><span style="color: #339966;">在控制台进行手动打印</span></strong></h2>
-
-<p>一般情况下，我们在程序代码中添加断点，是为了通过Xcode提供的‘variables view’（该view在Xcode底部console旁边）来查看变量的状态 。理论上，该窗口可以显示出与当前上下文相关的所有值的状态。实际上，这有点小问题，有时候断点过了之后，该窗口并不会进行相关的更新。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/variables-view.png"><img class="alignnone size-full wp-image-620" alt="variables view" src="http://beyondvincent.com/wp-content/uploads/2013/05/variables-view.png" width="579" height="210" /></a></p>
-
-<p>&nbsp;</p>
-
-<p>很不错的一个功能是：我们可以使用控制台的命令来检查某个特定的对象——这非常有用。在控制台输入‘<span style="color: #339966;">po</span>’就可以打印出指定对象的即时信息（处理scalar值时使用‘p’）。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/po_command.png"><img class="alignnone size-full wp-image-621" alt="po_command" src="http://beyondvincent.com/wp-content/uploads/2013/05/po_command.png" width="818" height="92" /></a></p>
-
-<p>&nbsp;</p>
-
-<p>在查看一个已经存在的对象时，这非常有用（如果对象不存在的话会打印出nil）——确定对象的值，查看数组/字典在运行时的信息，甚至是两个对象的比较（这个命令可以打印出相关对象的内存地址，我们可以打印出两个对象的信息，然后看看它们的内存地址是否相同）。</p>
-
-<p>另外非常有用（但是被隐藏的命令）可以非常容易的对view进行检查——<span style="color: #339966;">the<em>recursiveDescription</em></span>命令——在view上调用这个命令可以打印出view的继承关系。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/recursiveDescription.png"><img class="alignnone size-full wp-image-622" alt="recursiveDescription" src="http://beyondvincent.com/wp-content/uploads/2013/05/recursiveDescription.png" width="607" height="89" /></a></p>
-
-<h2><strong><span style="color: #339966;"> 有效的进行Log</span></strong></h2>
-
-<p>&nbsp;</p>
-
-<p>有时候在进行程序调试的某个确定时间里，我们希望将消息打印到控制台，此时可以使用<span style="color: #339966;">NSLog</span>函数，通过该函数可以将任意的输出打印到控制台。在不使用断点时，这个功能非常有用。NSLog遵从的格式与<em>[NSString StringWithFormat]</em>方法遵从的格式一样。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_use.png"><img class="alignnone size-full wp-image-623" alt="nslog_use" src="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_use.png" width="595" height="78" /></a></p>
-
-<p><strong>提示</strong>：这里可以看到Objective-C中关于字符串格式化的信息：<span style="text-decoration: underline;"><span style="color: #339966; text-decoration: underline;"> <a title="String Programming Guide" href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/Strings/Articles/FormatStrings.html"><span style="color: #339966; text-decoration: underline;">String Programming Guide</span></a></span></span></p>
-
-<h3><strong><span style="color: #339966;">让NSLog更加智能</span></strong></h3>
-
-<p>虽然NSLog非常有用，但是在真机上，从NSLog打印出来的任何内容都会被保留，隐藏所有人都可以看到——只需要将设备连接到电脑，然后打开XCode中的organiser，并定位到console，就可以看到每条log信息。可能你会意识到，这会带来一些严重的影响！想一下，如果你将一些保密的算法逻辑，或者用户密码打印到控制台！因此，如果苹果检测到在production build中，输出许多内容到控制台时，你的应用可能会被苹果拒绝上架到商店。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_public.png"><img class="alignnone size-full wp-image-624" alt="nslog_public" src="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_public.png" width="981" height="292" /></a></p>
-
-<p>&nbsp;</p>
-
-<p>幸运的是，这里有一个最简单的办法进行log——通过一个宏，让NSLog只在debug build的时候起作用。将这个功能添加到全局都能访问得到的头文件中。这样你就可以尽情的使用log了，并且当进行production时，不会包含log相关代码。如下代码：</p>
-
-<pre class="wp-code-highlight prettyprint linenums:1">#ifdef DEBUG
-#define DMLog(...) NSLog(@"%s %@", __PRETTY_FUNCTION__, [NSString stringWithFormat:__VA_ARGS__])
-#else
-#define DMLog(...) do { } while (0)</pre>
-
-
-<p>现在如果使用DMLog，那么将只会在debug build期间打印出log。而production build时则不会有任何log。通过<em>__PRETTY_FUNCTION\__</em> 可以打印出打印log所在的函数。</p>
-
-<h3><strong><span style="color: #339966;">下一步</span></strong></h3>
-
-<p>虽然NSLog非常出色，但它也有一些限制：</p>
-
-<ul>
-<li>只能在本地打印</li>
-<li>不支持带级别的log（例如严重、警告等）</li>
-<li>NSLog效率低。在进行大量处理时，NSLog会严重影响程序的执行效率</li>
-</ul>
-
-
-<p>互联网上也有一些框架可以进行日志记录，通过这些框架可以避免NSLog的一些限制。下面有两个不错的：</p>
-
-<ul>
-<li><span style="text-decoration: underline;"><span style="color: #339966; text-decoration: underline;"><a href="https://github.com/robbiehanson/CocoaLumberjack" target="_blank"><span style="color: #339966; text-decoration: underline;">Cocoa LumberJack</span></a> </span></span>– 这是针对Cocoa非常出名的一个日志框架。虽然刚开始用的时候会费劲点，但是它非常强大。</li>
-<li><span style="text-decoration: underline; color: #339966;"><a href="https://www.assembla.com/wiki/show/snlog" target="_blank"><span style="color: #339966; text-decoration: underline;">SNLog</span></a></span> – NSLog的一个替代品。</li>
-</ul>
-
-
-<h2><strong><span style="color: #339966;">跟踪对象的生命周期</span></strong></h2>
-
-<p>虽然ARC可以对内存进行有效的管理，不过在对象的生命周期内跟踪一些重要的事件仍然是重要的。毕竟ARC并不能完全消除内存泄露的可能性，或者确保访问的是一个被release掉的对象（ARC只是尽量避免这样的情况发生）。为此，我们可以使用一些方法和工具来观察并留意对象在做些什么。</p>
-
-<h3><strong><span style="color: #339966;"> Log一些重要的事件</span></strong></h3>
-
-<p>在一个Objective-C对象的生命周期中有两个重要的方法：init和dealloc。将这两个方法调用的事件log到控制台是不错的选择——你可以通过控制台观察到对象生命的开始，更重要的是，可以确保对象的释放。</p>
-
-<pre class="wp-code-highlight prettyprint linenums:1">- (id)init
-{
-    self = [super init];
-    if (self)
-    {
-        NSLog(@"%@: %@", NSStringFromSelector(_cmd), self);
-    }
-    return self;
-}
-- (void)dealloc
-{
-    NSLog(@"%@: %@", NSStringFromSelector(_cmd), self);
-}</pre>
-
-
-<h3><strong><span style="color: #339966;">静态分析器(Analyzer) 和检查器</span></strong></h3>
-
-<p>在Xcode中有两个工具可以用来清理代码，以减少代码的错误率。静态分析器工具可以对我们的代码提出改进意见，比如检测出没有使用过的对象，没有release对象（针对Core Foundation对象，ARC仍然会有这样的问题）。通过选择Product菜单中的‘Anlayze’可以查看到相关建议。</p>
-
-<p>&nbsp;</p>
-
-<p>&nbsp;</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/analyse.png"><img class="alignnone size-full wp-image-633" alt="analyse" src="http://beyondvincent.com/wp-content/uploads/2013/05/analyse.png" width="987" height="115" /></a></p>
-
-<p>&nbsp;</p>
-
-<p>检查器是非常强大的一组工具，通过检查器不仅可以从不同的角度检查我们程序对内存的使用情况，文件系统的使用情况（增加、删除、修改等），甚至还提供了自动UI交互的方法。通过选择Product菜单中的‘Profile’可以查看到这些检查器。</p>
-
-<p>选择‘Profile’会打开一个Instrument窗口，这里可以选择一个配置模板进行运行。最常用的模板有zombies（稍后会讨论），activity monitor和leaks。在程序运行时，对内存泄露进行捕捉时，Leaks可能是最有用的一个模板。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/Screen-Shot-2012-12-09-at-1.23.38-PM.png"><img class="alignnone size-full wp-image-634" alt="Screen-Shot-2012-12-09-at-1.23.38-PM" src="http://beyondvincent.com/wp-content/uploads/2013/05/Screen-Shot-2012-12-09-at-1.23.38-PM.png" width="513" height="193" /></a></p>
-
-<p><strong style="font-size: 1.17em;"><span style="color: #339966;">Zombies是你的朋友</span></strong></p>
-
-<p>虽然在有ARC的地方很难再遇到让人难受的EXC_BAD_ACCESS错误了，但是在某些确定的情况下，该错误还是会发生的。当在处理UIPopoverController或者core foundation对象时，我们可以访问一个已经被release掉的对象。一般，当我们release内存中的一个对象时，该对象将被销毁。但是，当Zombies开启时，只是将对象标记为release，实际上该对象还停留在内存中。当我们访问一个Zombie对象时，Xcode可以告诉我们正在访问的对象是一个不应该存在的对象了。因为Xcode知道这个对象是什么，所以可以让我们知道这个对象在哪里，以及这是什么时候发生的。</p>
-
-<p>这里有两种方法可以查找出Zombies对象。使用检查器中的Zombie配置模板，或者在‘Run’ build选项中开启Zombie诊断选项。在Stop按钮的旁边，点击scheme名称，然后选择‘Edit Scheme’，点击diagnostic tab项，并勾选上‘Enable Zombie Objects’。注意，Zombie只能用在模拟器调试中，真机上不能使用。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/Enabling-Zombies.png"><img class="alignnone size-full wp-image-635" alt="Enabling-Zombies" src="http://beyondvincent.com/wp-content/uploads/2013/05/Enabling-Zombies.png" width="613" height="227" /></a></p>
-
-<h2><strong><span style="color: #339966;">结论</span></strong></h2>
-
-<p>希望上面的这些关于调试技巧能给你带来帮助。通过上面的这些技巧，可以帮助你减少修改bug的时间，从而把更多的时间用在重要的地方——构建出色的程序！</p>
-
-<p>上面列出来的不是一个完整的调试技巧。另外还有许多技术没有进行讨论，例如在真机中调试问题，远程bug报告，crash报告等。</p>
-
-<p>祝编程愉快！</p>
-
-<p>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_____</p>
-
-<p>本文由破船译自：<span style="text-decoration: underline;"><span style="color: #339966;"><a href="http://mobile.tutsplus.com/tutorials/iphone/debugging-in-ios-essential-tips/" target="_blank"><span style="color: #339966; text-decoration: underline;">tutsplus</span></a></span></span><br/>
-转载请注明出处：<span style="text-decoration: underline;"><span style="color: #339966;"><strong><a href="http://www.beyondvincent.com/" target="_blank"><span style="color: #339966; text-decoration: underline;">BeyondVincent的博客</span></a></strong></span></span><br/>
-_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_____</p>
 ]]></content>
   </entry>
   
