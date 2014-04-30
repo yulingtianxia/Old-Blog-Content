@@ -5,11 +5,11 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>XCode中断点的威力 - 玉令天下的Blog</title>
+	<title>Xcode中断点的威力 - 玉令天下的Blog</title>
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="XCode中断点的威力 本文转载自破船 本文目录： 1、添加一个特殊的断点
+	<meta name="description" content="Xcode中断点的威力 本文转载自破船 本文目录： 1、添加一个特殊的断点
     异常断点(Exception breakpoint)
     符号断点(Symbolic breakpoint)
 2、打印到控制台
@@ -121,7 +121,7 @@
 	</div>
 </nav>
 
-<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+16.666666666666668%25%27%3EC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcode-snippets%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ECode+Snippets%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdfssuan-fa%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EDFS%E7%AE%97%E6%B3%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EGCD%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+16.666666666666668%25%27%3EGithub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3EiOS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EMacOSX%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+20.0%25%27%3EObjective-C%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsksprite%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ESKSprite%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ESocial+Framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+16.666666666666668%25%27%3ESpriteKit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+20.0%25%27%3EXCode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdan-yuan-ce-shi%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fji-chu-zhi-shi%27+style%3D%27font-size%3A+16.666666666666668%25%27%3E%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjie-ping%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E6%88%AA%E5%B1%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+16.666666666666668%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+30.0%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+16.666666666666668%25%27%3EC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcode-snippets%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ECode+Snippets%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdfssuan-fa%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EDFS%E7%AE%97%E6%B3%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EGCD%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+16.666666666666668%25%27%3EGithub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3EiOS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EMacOSX%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+20.0%25%27%3EObjective-C%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsksprite%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ESKSprite%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ESocial+Framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+16.666666666666668%25%27%3ESpriteKit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+16.666666666666668%25%27%3EXcode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EXCode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdan-yuan-ce-shi%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fji-chu-zhi-shi%27+style%3D%27font-size%3A+16.666666666666668%25%27%3E%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjie-ping%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E6%88%AA%E5%B1%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+16.666666666666668%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+30.0%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
 <script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
 <br>
 <script type="text/javascript">
@@ -151,7 +151,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 			
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">XCode中断点的威力</h1>
+	<h1 class="title" itemprop="name">Xcode中断点的威力</h1>
 	<div class="entry-content" itemprop="articleBody"><p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
 
 <hr />
@@ -198,7 +198,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 ’-[__NSCFArray objectAtIndex:]: index (10) beyond bounds (3)</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-01.png"><img class="alignnone size-full wp-image-1497" alt="xcode-debug-01" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-01.png" width="1049" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-01.png"><img class="alignnone size-full wp-image-1497" alt="Xcode-debug-01" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-01.png" width="1049" height="654" /></a></p>
 
 <ul>
 <li>符号断点(Symbolic breakpoint)</li>
@@ -211,7 +211,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 - [__NSCFArray objectAtIndex:]</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-02.png"><img class="alignnone size-full wp-image-1498" alt="xcode-debug-02" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-02.png" width="1049" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-02.png"><img class="alignnone size-full wp-image-1498" alt="Xcode-debug-02" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-02.png" width="1049" height="654" /></a></p>
 
 <p>&nbsp;</p>
 
@@ -224,7 +224,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>使用断点来替换NSLog代码(或者在运行时添加一个NSLog)——与代码写NSLog的效果相同。</p>
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-04.png"><img class="alignnone size-full wp-image-1499" alt="xcode-debug-04" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-04.png" width="1030" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-04.png"><img class="alignnone size-full wp-image-1499" alt="Xcode-debug-04" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-04.png" width="1030" height="654" /></a></p>
 
 <p>&nbsp;</p>
 
@@ -236,7 +236,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <pre class="wp-code-highlight prettyprint linenums:1">NSLog(@"obj: %@", obj);</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-05.png"><img class="alignnone size-full wp-image-1500" alt="xcode-debug-05" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-05.png" width="1030" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-05.png"><img class="alignnone size-full wp-image-1500" alt="Xcode-debug-05" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-05.png" width="1030" height="654" /></a></p>
 
 <ul>
 <li>带条件的打印</li>
@@ -248,7 +248,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <pre class="wp-code-highlight prettyprint linenums:1">expr (void)NSLog(@"Ok, print a log: %@", str)</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-07.png"><img class="alignnone size-full wp-image-1501" alt="xcode-debug-07" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-07.png" width="1030" height="681" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-07.png"><img class="alignnone size-full wp-image-1501" alt="Xcode-debug-07" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-07.png" width="1030" height="681" /></a></p>
 
 <p>&nbsp;</p>
 
@@ -270,7 +270,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <pre class="wp-code-highlight prettyprint linenums:1">expr (void)NSLog(@"Ok, print a log: %@", str)</pre>
 
 
-<p><img class="alignnone size-full wp-image-1502" alt="xcode-debug-08" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-08.png" width="1030" height="681" /></p>
+<p><img class="alignnone size-full wp-image-1502" alt="Xcode-debug-08" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-08.png" width="1030" height="681" /></p>
 
 <p>3、运行时设置断点</p>
 
@@ -279,7 +279,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <pre class="wp-code-highlight prettyprint linenums:1">breakpoint set -f APViewController.m -l 33</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-09.png"><img class="alignnone size-full wp-image-1503" alt="xcode-debug-09" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-09.png" width="1030" height="681" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-09.png"><img class="alignnone size-full wp-image-1503" alt="Xcode-debug-09" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-09.png" width="1030" height="681" /></a></p>
 
 <p>4、调试中播放声音</p>
 

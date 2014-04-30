@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-28T14:19:20+08:00</updated>
+  <updated>2014-04-30T21:06:49+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -2019,7 +2019,7 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[XCode中断点的威力]]></title>
+    <title type="html"><![CDATA[Xcode中断点的威力]]></title>
     <link href="http://yulingtianxia.com/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/"/>
     <updated>2014-04-17T13:34:26+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li</id>
@@ -2069,7 +2069,7 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 ’-[__NSCFArray objectAtIndex:]: index (10) beyond bounds (3)</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-01.png"><img class="alignnone size-full wp-image-1497" alt="xcode-debug-01" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-01.png" width="1049" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-01.png"><img class="alignnone size-full wp-image-1497" alt="Xcode-debug-01" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-01.png" width="1049" height="654" /></a></p>
 
 <ul>
 <li>符号断点(Symbolic breakpoint)</li>
@@ -2082,7 +2082,7 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 - [__NSCFArray objectAtIndex:]</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-02.png"><img class="alignnone size-full wp-image-1498" alt="xcode-debug-02" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-02.png" width="1049" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-02.png"><img class="alignnone size-full wp-image-1498" alt="Xcode-debug-02" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-02.png" width="1049" height="654" /></a></p>
 
 <p>&nbsp;</p>
 
@@ -2095,7 +2095,7 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 
 <p>使用断点来替换NSLog代码(或者在运行时添加一个NSLog)——与代码写NSLog的效果相同。</p>
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-04.png"><img class="alignnone size-full wp-image-1499" alt="xcode-debug-04" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-04.png" width="1030" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-04.png"><img class="alignnone size-full wp-image-1499" alt="Xcode-debug-04" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-04.png" width="1030" height="654" /></a></p>
 
 <p>&nbsp;</p>
 
@@ -2107,7 +2107,7 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 <pre class="wp-code-highlight prettyprint linenums:1">NSLog(@"obj: %@", obj);</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-05.png"><img class="alignnone size-full wp-image-1500" alt="xcode-debug-05" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-05.png" width="1030" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-05.png"><img class="alignnone size-full wp-image-1500" alt="Xcode-debug-05" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-05.png" width="1030" height="654" /></a></p>
 
 <ul>
 <li>带条件的打印</li>
@@ -2119,7 +2119,7 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 <pre class="wp-code-highlight prettyprint linenums:1">expr (void)NSLog(@"Ok, print a log: %@", str)</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-07.png"><img class="alignnone size-full wp-image-1501" alt="xcode-debug-07" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-07.png" width="1030" height="681" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-07.png"><img class="alignnone size-full wp-image-1501" alt="Xcode-debug-07" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-07.png" width="1030" height="681" /></a></p>
 
 <p>&nbsp;</p>
 
@@ -2141,7 +2141,7 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 <pre class="wp-code-highlight prettyprint linenums:1">expr (void)NSLog(@"Ok, print a log: %@", str)</pre>
 
 
-<p><img class="alignnone size-full wp-image-1502" alt="xcode-debug-08" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-08.png" width="1030" height="681" /></p>
+<p><img class="alignnone size-full wp-image-1502" alt="Xcode-debug-08" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-08.png" width="1030" height="681" /></p>
 
 <p>3、运行时设置断点</p>
 
@@ -2150,7 +2150,7 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 <pre class="wp-code-highlight prettyprint linenums:1">breakpoint set -f APViewController.m -l 33</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-09.png"><img class="alignnone size-full wp-image-1503" alt="xcode-debug-09" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-09.png" width="1030" height="681" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-09.png"><img class="alignnone size-full wp-image-1503" alt="Xcode-debug-09" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-09.png" width="1030" height="681" /></a></p>
 
 <p>4、调试中播放声音</p>
 
@@ -2330,7 +2330,7 @@ frame #25: 0x00002a55 Debug`start + 53
 
 <h3><strong><span style="color: #339966;">让NSLog更加智能</span></strong></h3>
 
-<p>虽然NSLog非常有用，但是在真机上，从NSLog打印出来的任何内容都会被保留，隐藏所有人都可以看到——只需要将设备连接到电脑，然后打开XCode中的organiser，并定位到console，就可以看到每条log信息。可能你会意识到，这会带来一些严重的影响！想一下，如果你将一些保密的算法逻辑，或者用户密码打印到控制台！因此，如果苹果检测到在production build中，输出许多内容到控制台时，你的应用可能会被苹果拒绝上架到商店。</p>
+<p>虽然NSLog非常有用，但是在真机上，从NSLog打印出来的任何内容都会被保留，隐藏所有人都可以看到——只需要将设备连接到电脑，然后打开Xcode中的organiser，并定位到console，就可以看到每条log信息。可能你会意识到，这会带来一些严重的影响！想一下，如果你将一些保密的算法逻辑，或者用户密码打印到控制台！因此，如果苹果检测到在production build中，输出许多内容到控制台时，你的应用可能会被苹果拒绝上架到商店。</p>
 
 <p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_public.png"><img class="alignnone size-full wp-image-624" alt="nslog_public" src="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_public.png" width="981" height="292" /></a></p>
 
@@ -4218,7 +4218,7 @@ Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(<a href="http:/
 <h1>Octopress搭建</h1>
 
 <p>众所周知，MacOSX自带Ruby，10.9系统带了两个版本的Ruby：1.8和2.0，因为Octopress需要Ruby1.9.3以上的支持，所以Mavericks自带的Ruby2.0是可以胜任的，新手们可以松一口气了。<br/>
-如果没有安装command line tools，可以直接安装XCode。XCode5之后，command line tools都是跟随XCode自带的，不用单独安装，想卸载也就麻烦了，可以在XCode中Preferences->Locations中查看command line tools版本。</p>
+如果没有安装command line tools，可以直接安装Xcode。Xcode5之后，command line tools都是跟随Xcode自带的，不用单独安装，想卸载也就麻烦了，可以在Xcode中Preferences->Locations中查看command line tools版本。</p>
 
 <p>系统没升级到最新版的童鞋，可以打开终端（terminal）通过下面的命令查看自己的Ruby版本：</p>
 

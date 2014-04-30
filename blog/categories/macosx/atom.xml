@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MacOSX | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/macosx/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-28T14:19:20+08:00</updated>
+  <updated>2014-04-30T21:06:49+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -37,7 +37,7 @@
 <h1>Octopress搭建</h1>
 
 <p>众所周知，MacOSX自带Ruby，10.9系统带了两个版本的Ruby：1.8和2.0，因为Octopress需要Ruby1.9.3以上的支持，所以Mavericks自带的Ruby2.0是可以胜任的，新手们可以松一口气了。<br/>
-如果没有安装command line tools，可以直接安装XCode。XCode5之后，command line tools都是跟随XCode自带的，不用单独安装，想卸载也就麻烦了，可以在XCode中Preferences->Locations中查看command line tools版本。</p>
+如果没有安装command line tools，可以直接安装Xcode。Xcode5之后，command line tools都是跟随Xcode自带的，不用单独安装，想卸载也就麻烦了，可以在Xcode中Preferences->Locations中查看command line tools版本。</p>
 
 <p>系统没升级到最新版的童鞋，可以打开终端（terminal）通过下面的命令查看自己的Ruby版本：</p>
 

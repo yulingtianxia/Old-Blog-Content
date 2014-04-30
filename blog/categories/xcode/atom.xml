@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: XCode | 玉令天下的Blog]]></title>
+  <title><![CDATA[Category: Xcode | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/xcode/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-04-28T14:19:20+08:00</updated>
+  <updated>2014-04-30T21:06:49+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[XCode中断点的威力]]></title>
+    <title type="html"><![CDATA[Xcode中断点的威力]]></title>
     <link href="http://yulingtianxia.com/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/"/>
     <updated>2014-04-17T13:34:26+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li</id>
@@ -64,7 +64,7 @@
 ’-[__NSCFArray objectAtIndex:]: index (10) beyond bounds (3)</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-01.png"><img class="alignnone size-full wp-image-1497" alt="xcode-debug-01" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-01.png" width="1049" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-01.png"><img class="alignnone size-full wp-image-1497" alt="Xcode-debug-01" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-01.png" width="1049" height="654" /></a></p>
 
 <ul>
 <li>符号断点(Symbolic breakpoint)</li>
@@ -77,7 +77,7 @@
 - [__NSCFArray objectAtIndex:]</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-02.png"><img class="alignnone size-full wp-image-1498" alt="xcode-debug-02" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-02.png" width="1049" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-02.png"><img class="alignnone size-full wp-image-1498" alt="Xcode-debug-02" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-02.png" width="1049" height="654" /></a></p>
 
 <p>&nbsp;</p>
 
@@ -90,7 +90,7 @@
 
 <p>使用断点来替换NSLog代码(或者在运行时添加一个NSLog)——与代码写NSLog的效果相同。</p>
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-04.png"><img class="alignnone size-full wp-image-1499" alt="xcode-debug-04" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-04.png" width="1030" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-04.png"><img class="alignnone size-full wp-image-1499" alt="Xcode-debug-04" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-04.png" width="1030" height="654" /></a></p>
 
 <p>&nbsp;</p>
 
@@ -102,7 +102,7 @@
 <pre class="wp-code-highlight prettyprint linenums:1">NSLog(@"obj: %@", obj);</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-05.png"><img class="alignnone size-full wp-image-1500" alt="xcode-debug-05" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-05.png" width="1030" height="654" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-05.png"><img class="alignnone size-full wp-image-1500" alt="Xcode-debug-05" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-05.png" width="1030" height="654" /></a></p>
 
 <ul>
 <li>带条件的打印</li>
@@ -114,7 +114,7 @@
 <pre class="wp-code-highlight prettyprint linenums:1">expr (void)NSLog(@"Ok, print a log: %@", str)</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-07.png"><img class="alignnone size-full wp-image-1501" alt="xcode-debug-07" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-07.png" width="1030" height="681" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-07.png"><img class="alignnone size-full wp-image-1501" alt="Xcode-debug-07" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-07.png" width="1030" height="681" /></a></p>
 
 <p>&nbsp;</p>
 
@@ -136,7 +136,7 @@
 <pre class="wp-code-highlight prettyprint linenums:1">expr (void)NSLog(@"Ok, print a log: %@", str)</pre>
 
 
-<p><img class="alignnone size-full wp-image-1502" alt="xcode-debug-08" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-08.png" width="1030" height="681" /></p>
+<p><img class="alignnone size-full wp-image-1502" alt="Xcode-debug-08" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-08.png" width="1030" height="681" /></p>
 
 <p>3、运行时设置断点</p>
 
@@ -145,7 +145,7 @@
 <pre class="wp-code-highlight prettyprint linenums:1">breakpoint set -f APViewController.m -l 33</pre>
 
 
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-09.png"><img class="alignnone size-full wp-image-1503" alt="xcode-debug-09" src="http://beyondvincent.com/wp-content/uploads/2013/07/xcode-debug-09.png" width="1030" height="681" /></a></p>
+<p><a href="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-09.png"><img class="alignnone size-full wp-image-1503" alt="Xcode-debug-09" src="http://beyondvincent.com/wp-content/uploads/2013/07/Xcode-debug-09.png" width="1030" height="681" /></a></p>
 
 <p>4、调试中播放声音</p>
 
@@ -445,24 +445,6 @@ Completion Scopes: All
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[XCode和Objective-C Cheat Sheet]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
-    <updated>2014-04-06T18:38:24+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
-    <content type="html"><![CDATA[<p>关于XCode和OC的速查，方便记忆，以后会更新</p>
-
-<!-- more-->
-
-
-<p>XCode5 Cheat Sheet:(<a href="http://www.git-tower.com/blog/xcode-cheat-sheet/">作者</a>)<br/>
-<img src="/images/blog/xcode-cheat-sheet<em>页面</em>1.jpg"> <br/>
-<img src="/images/blog/xcode-cheat-sheet<em>页面</em>2.jpg">
-Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(<a href="http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5">作者</a>) <br/>
-<img src="/images/blog/RW-Objective-C-Cheatsheet-v-1-5.jpg"></p>
 ]]></content>
   </entry>
   
