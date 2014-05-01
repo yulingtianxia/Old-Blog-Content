@@ -23,7 +23,7 @@ categories:
 Octopress搭建
 ==
 众所周知，MacOSX自带Ruby，10.9系统带了两个版本的Ruby：1.8和2.0，因为Octopress需要Ruby1.9.3以上的支持，所以Mavericks自带的Ruby2.0是可以胜任的，新手们可以松一口气了。  
-如果没有安装command line tools，可以直接安装XCode。XCode5之后，command line tools都是跟随XCode自带的，不用单独安装，想卸载也就麻烦了，可以在XCode中Preferences->Locations中查看command line tools版本。  
+如果没有安装command line tools，可以直接安装Xcode。Xcode5之后，command line tools都是跟随Xcode自带的，不用单独安装，想卸载也就麻烦了，可以在Xcode中Preferences->Locations中查看command line tools版本。  
 
 系统没升级到最新版的童鞋，可以打开终端（terminal）通过下面的命令查看自己的Ruby版本：
 

@@ -85,7 +85,7 @@ categories:
 
 ### **<span style="color: #339966;">让NSLog更加智能</span>**
 
-虽然NSLog非常有用，但是在真机上，从NSLog打印出来的任何内容都会被保留，隐藏所有人都可以看到——只需要将设备连接到电脑，然后打开XCode中的organiser，并定位到console，就可以看到每条log信息。可能你会意识到，这会带来一些严重的影响！想一下，如果你将一些保密的算法逻辑，或者用户密码打印到控制台！因此，如果苹果检测到在production build中，输出许多内容到控制台时，你的应用可能会被苹果拒绝上架到商店。
+虽然NSLog非常有用，但是在真机上，从NSLog打印出来的任何内容都会被保留，隐藏所有人都可以看到——只需要将设备连接到电脑，然后打开Xcode中的organiser，并定位到console，就可以看到每条log信息。可能你会意识到，这会带来一些严重的影响！想一下，如果你将一些保密的算法逻辑，或者用户密码打印到控制台！因此，如果苹果检测到在production build中，输出许多内容到控制台时，你的应用可能会被苹果拒绝上架到商店。
 
 [<img class="alignnone size-full wp-image-624" alt="nslog_public" src="http://beyondvincent.com/wp-content/uploads/2013/05/nslog_public.png" width="981" height="292" />][8]
 
