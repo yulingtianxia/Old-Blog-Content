@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Core Data | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/core-data/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-02T01:00:20+08:00</updated>
+  <updated>2014-05-02T01:08:03+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -18,7 +18,16 @@
     <link href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data%281%29/"/>
     <updated>2014-05-01T19:58:00+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data(1)</id>
-    <content type="html"><![CDATA[<h2>Core Data概述</h2>
+    <content type="html"><![CDATA[<p>本文内容：<br/>
+1. Core Data概述<br/>
+2. 新建一个Core Data工程</p>
+
+<hr />
+
+<!--more-->
+
+
+<h2>Core Data概述</h2>
 
 <p>Core Data本身既不是数据库也不是数据库访问框架。相反，Core Data是一个完整的数据模型解决方案。我简单理解为对持久层的封装，使得我们可以通过可视化建立数据模型，简化数据存取。有人会联想到Hibernate，其实Core Data比Hibernate强大得多，它不仅支持SQLite数据库，还能对XML文件、二进制文件、用户自定义文件进行操作。</p>
 
