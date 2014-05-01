@@ -1,0 +1,923 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>初识Core Data(1) - 玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="初识Core Data(1) Core Data概述 Core Data本身既不是数据库也不是数据库访问框架。相反，Core Data是一个完整的数据模型解决方案。我简单理解为对持久层的封装，使得我们可以通过可视化建立数据模型，简化数据存取。有人会联想到Hibernate，其实Core &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data%281%29/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I'm not a hacker.</p>
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+    <li><a href="/blog/archives">所有文章</a></li>
+    <li><a href="/about">关于我</a></li>
+    
+</ul>
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+16.666666666666668%25%27%3EC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcode-snippets%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ECode+Snippets%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ECore+Data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdfssuan-fa%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EDFS%E7%AE%97%E6%B3%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EGCD%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+16.666666666666668%25%27%3EGithub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3EiOS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EMacOSX%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+23.333333333333336%25%27%3EObjective-C%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsksprite%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ESKSprite%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+13.333333333333334%25%27%3ESocial+Framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+16.666666666666668%25%27%3ESpriteKit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+16.666666666666668%25%27%3EXcode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+13.333333333333334%25%27%3EXCode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdan-yuan-ce-shi%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fji-chu-zhi-shi%27+style%3D%27font-size%3A+16.666666666666668%25%27%3E%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjie-ping%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E6%88%AA%E5%B1%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+16.666666666666668%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+13.333333333333334%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+30.0%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
+<br>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">初识Core Data(1)</h1>
+	<div class="entry-content" itemprop="articleBody"><h2>Core Data概述</h2>
+
+<p>Core Data本身既不是数据库也不是数据库访问框架。相反，Core Data是一个完整的数据模型解决方案。我简单理解为对持久层的封装，使得我们可以通过可视化建立数据模型，简化数据存取。有人会联想到Hibernate，其实Core Data比Hibernate强大得多，它不仅支持SQLite数据库，还能对XML文件、二进制文件、用户自定义文件进行操作。</p>
+
+<p>即使不懂SQL语句，也依然可以使用Core Data。因为Core Data将底层的数据库SQL语句封装成了一套API，并可通过可视化操作来建立数据库的模型和表之间的关系，它甚至在数据变化时会帮你自动处理关系（比如删除了一门课程，所有选这门课程的学生也会自动解除与此门课程的关系），Core Data还能对非法数据进行过滤，还支持对数据操作的Undo/Redo功能。更重要的是，Core Data的<code>NSFetchRequest</code>类可以替代SQL中的Select语句，并提供了更高效的方法将查询结果显示在UITableView中。</p>
+
+<p>iOS 3.0和Mac OS X10.5都支持Core Data，但iOS上不支持XML文件存储。Core Data对读取性能做了大量优化，其中惰性加载（Faulting）就是一个例子，毕竟设备的内存是有限切珍贵的。<br/>
+在OSX上可以绑定利用KVO和KVC保持UI项与模型对象或属性之间的连接，无需编写任何代码，通过对象和数组控制器自动从Core Data存储区分批提取<code>NSManagedObject</code>对象。这就像在VS中用.Net构建基于SQLServer的桌面程序。<br/>
+苹果公司单独为iOS平台的Core Data引入了<code>NSFetchedResultsController</code>类帮助视图与从持久化存储文件提取的数据之间的交互。它主要是用来充当<code>UITableiView</code>的数据源，负责调整<code>UITableiView</code>行与节（section）的显示数目，以及为各表格行提供内容。</p>
+
+<h2>新建一个Core Data工程</h2>
+
+<p>在Xcode5中，只有Master-Detail Application，Utility Application以及Empty Application支持创建时使用Core Data模板，我们选择带有UITableView的Master-Detail Application吧。<br/>
+<img src="/images/blog/QQ20140501-1@2x.png" alt="" /><br/>
+一定要勾选Core Data选项，项目名称就叫MyCDDemo吧，嘿嘿<br/>
+<img src="/images/blog/QQ20140501-2@2x.png" alt="" /><br/>
+项目建立后会发现Frameworks中已经有了<code>CoreData.framework</code>一项，并且还多了一个MyCDDemo.xcdatamodeld文件，该文件定义了数据模型结构，你可以使用XCode内置的可视化建模工具进行构建。点开它你会发现左侧有三项：Entities，Fetch Request、Configurations。</p>
+
+<p><strong>Entities</strong></p>
+
+<p>在系统的学习Core Data前，可以简单的将Entity理解为数据库中的一张表，在代码中一个<code>NSEntityDescription</code>类的对象就代表了一个Entity。Entity也像类一样可以继承，如果你有若干个相似的实体，就可以抽离出它们的共有特性作为一个“父实体”，就省去了在多个实体中都指定相同的属性。甚至可以勾选Abstract Entitiy让其成为抽象实体，就像抽象类一样。<br/>
+<img src="/images/blog/xcodeparententity_2x.png" alt="" /><br/>
+现在已经有了一个现成的实体：Event，也就是在SQLite中有了一张叫做Event的表：<br/>
+<img src="/images/blog/QQ20140501-3@2x.png" alt="" /><br/>
+Attributes就相当于一张表的列属性，可以设置其数据类型，默认值，最大最小值等，类似数据库可视化建表。需要注意的是这里的空值是NULL，不等同于OC中的nil，更不等同于0和空字符串@“”。Event实体中已经有了一个叫timeStamp的属性，类型为Date，这是模版自动生成的，暂且别修改它。</p>
+
+<p>Relationships描述了Entity间的关系：多对一，一对一等。当你指定了一个关系后，苹果推荐我们也指定一个反转关系。比如A和B是多对多的关系，那么A指向B的关系Type为To Many，同时设定B指向A的关系Type为To Many。</p>
+
+<p>Fetched Property表示了一种弱的、单向的关系。因为Core Data不支持在persistent store之间建立Relationships，所以Fetched Property可用于建立cross-store关系，还用于建立“松耦合”关系，相似暂时的分组。（a fetched property of a department might be &ldquo;recent hires&rdquo; (employees do not have an inverse to the recent hires relationship)）</p>
+
+<p><strong>Fetch Request</strong></p>
+
+<p>我们使用<code>NSFetchRequest</code>类来描述数据请求，利用数据请求从持久存储（persistent store）中获取对象。经常碰到的情形是你经常需要多次执行同样的请求，或是执行遵循一个给定模式的请求，但是其中包含变量（如查找条件）——这些变量经常由用户提供。例如，在运行程序的时候，你要根据用户需要获取某个作者在用户指定日期后出版的所有出版物。</p>
+
+<p>你可以预定义请求，把它们作为模板存储在被管理对象模型中。预定义的模板在你需要的时候就可以取出使用。通常情况下，我们通过Xcode的data modeling tool工具创建请求模板。模板可以包含变量：<br/>
+<img src="/images/blog/variablelikepredicate_2x.png" alt="" /></p>
+
+<p><strong>Configurations</strong></p>
+
+<p>配置包含了一个名称和若干个相关的实体。实体的集合是可以重叠的——这就是说，一个实体可以出现在多个配置中。在代码中，我们使用<code>setEntities: forConfiguration:</code>的方法来指定配置。也可以用Xcode的建模工具来指定。要获取某项配置的实体，需要用<code>entitiesForConfiguration:</code>的方法。</p>
+
+<p>一般说来，如果你想把不同的实体存放在不同的存储中去，就可能用到配置。一个持久化存储协调器（persistent store coordinator，你暂且理解为负责数据库连接的东东）只能有一个被管理对象模型（managed object model，也就是把xcdatamodeld文件加载到代码中的内容啦）。所以，默认情况下，和协调器关联的某个存储必须包含同样的实体。要想绕过这个限制，你可以创建一个包含所有实体并集的模型，然后在模型中为每一个你想使用的实体子集创建配置，这样一来，使用这个模型创建协调器，当你需要添加存储（persistent store）时，可根据不同的配置来指定对应的存储属性。当你创建配置的时候，需要记住，不能创建跨存储的关系（cross-store relationships）。</p>
+
+<p>模版已经生成了一个叫Default的配置，但是在程序中并没有用到它（这在之后的内容会阐述）。</p>
+
+<p>在了解了xcdatamodeld类型文件之后，你可能对Core Data如何描述一个数据库有了一定的概念，下一步我们准备阅读模版自动生成的代码，你会体会到xcdatamodeld文件在程序中是如何被加载和使用的。</p>
+
+<p>先看看AppDelegate.h</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">AppDelegate</span> : <span class="nc">UIResponder</span> <span class="o">&lt;</span><span class="n">UIApplicationDelegate</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UIWindow</span> <span class="o">*</span><span class="n">window</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">managedObjectContext</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSManagedObjectModel</span> <span class="o">*</span><span class="n">managedObjectModel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSPersistentStoreCoordinator</span> <span class="o">*</span><span class="n">persistentStoreCoordinator</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">saveContext</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSURL</span> <span class="o">*</span><span class="p">)</span><span class="nf">applicationDocumentsDirectory</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+嗯，比平时的程序多出了三个属性嘛，而且后两个属性之前还提到过，这“三剑客“是Core Data中非常重要的三个类：</p>
+
+<ul>
+<li>Managed Object Model（管理数据模型）: 你可以将这个东西看作是数据库的轮廓，或者结构。这里包含了各个实体的定义信息，一般来说，你会使用我们刚刚看过的视觉编辑器来操作这个物体，添加属性，建立属性之间的关系等等，当然你也可以使用代码。</li>
+<li>Persistent Store Coordinator （持久性数据协调器）： 你可以将这个东西看作是数据库连接库，在这里，你将设置数据存储的名字和位置，以及数据存储的时机。</li>
+<li>Managed Object Context （管理数据内容）：你可以将这一部分看作是数据的实际内容，这也是整个数据库中对我们而言最重要的部分（这还用说），基本上，插入数据，查询数据，删除数据的工作都在这里完成。</li>
+</ul>
+
+
+<p>如果你还是不好理解，那么简单的把这“三剑客”理解为：数据定义语言 (DDL)、数据库连接（DBC）、数据操作语言 (DML)在Core Data中的另一种存在吧！</p>
+
+<p>下面该看看AppDelegate.m，了解下“三剑客”实例化的过程：
+首先是程序加载完毕的代理方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Override point for customization after application launch.</span>
+</span><span class='line'>    <span class="n">UINavigationController</span> <span class="o">*</span><span class="n">navigationController</span> <span class="o">=</span> <span class="p">(</span><span class="n">UINavigationController</span> <span class="o">*</span><span class="p">)</span><span class="n">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">MasterViewController</span> <span class="o">*</span><span class="n">controller</span> <span class="o">=</span> <span class="p">(</span><span class="n">MasterViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">navigationController</span><span class="p">.</span><span class="n">topViewController</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">controller</span><span class="p">.</span><span class="n">managedObjectContext</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">managedObjectContext</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+我们暂且只看<code>controller.managedObjectContext = self.managedObjectContext;</code>这句，调用<code>managedObjectContext</code>的getter方法并赋给程序启动后出现的<code>MasterViewController</code>，那么我们就看一下<code>managedObjectContext</code>的getter方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// Returns the managed object context for the application.</span>
+</span><span class='line'><span class="c1">// If the context doesn&#39;t already exist, it is created and bound to the persistent store coordinator for the application.</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="p">)</span><span class="nf">managedObjectContext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_managedObjectContext</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_managedObjectContext</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSPersistentStoreCoordinator</span> <span class="o">*</span><span class="n">coordinator</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">persistentStoreCoordinator</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">coordinator</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_managedObjectContext</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">_managedObjectContext</span> <span class="nl">setPersistentStoreCoordinator:</span><span class="n">coordinator</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_managedObjectContext</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>嗯，英文注释不错，第一次调用的时候会实例化一个<code>NSManagedObjectContext</code>对象，并使用<code>persistentStoreCoordinator</code>方法返回的<code>NSPersistentStoreCoordinator</code>对象配置上下文，最后返回新实例化的<code>NSManagedObjectContext</code>对象。<br/>
+顺藤摸瓜，我们再看看<code>persistentStoreCoordinator</code>的getter：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// Returns the persistent store coordinator for the application.</span>
+</span><span class='line'><span class="c1">// If the coordinator doesn&#39;t already exist, it is created and the application&#39;s store added to it.</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSPersistentStoreCoordinator</span> <span class="o">*</span><span class="p">)</span><span class="nf">persistentStoreCoordinator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_persistentStoreCoordinator</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_persistentStoreCoordinator</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">storeURL</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">applicationDocumentsDirectory</span><span class="p">]</span> <span class="nl">URLByAppendingPathComponent:</span><span class="s">@&quot;MyCDDemo.sqlite&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_persistentStoreCoordinator</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSPersistentStoreCoordinator</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithManagedObjectModel:</span><span class="p">[</span><span class="n">self</span> <span class="n">managedObjectModel</span><span class="p">]];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">_persistentStoreCoordinator</span> <span class="nl">addPersistentStoreWithType:</span><span class="n">NSSQLiteStoreType</span> <span class="nl">configuration:</span><span class="nb">nil</span> <span class="nl">URL:</span><span class="n">storeURL</span> <span class="nl">options:</span><span class="nb">nil</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/*</span>
+</span><span class='line'><span class="cm">         Replace this implementation with code to handle the error appropriately.</span>
+</span><span class='line'><span class="cm">         </span>
+</span><span class='line'><span class="cm">         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. </span>
+</span><span class='line'><span class="cm">         </span>
+</span><span class='line'><span class="cm">         Typical reasons for an error here include:</span>
+</span><span class='line'><span class="cm">         * The persistent store is not accessible;</span>
+</span><span class='line'><span class="cm">         * The schema for the persistent store is incompatible with current managed object model.</span>
+</span><span class='line'><span class="cm">         Check the error message to determine what the actual problem was.</span>
+</span><span class='line'><span class="cm">         </span>
+</span><span class='line'><span class="cm">         </span>
+</span><span class='line'><span class="cm">         If the persistent store is not accessible, there is typically something wrong with the file path. Often, a file URL is pointing into the application&#39;s resources directory instead of a writeable directory.</span>
+</span><span class='line'><span class="cm">         </span>
+</span><span class='line'><span class="cm">         If you encounter schema incompatibility errors during development, you can reduce their frequency by:</span>
+</span><span class='line'><span class="cm">         * Simply deleting the existing store:</span>
+</span><span class='line'><span class="cm">         [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil]</span>
+</span><span class='line'><span class="cm">         </span>
+</span><span class='line'><span class="cm">         * Performing automatic lightweight migration by passing the following dictionary as the options parameter:</span>
+</span><span class='line'><span class="cm">         @{NSMigratePersistentStoresAutomaticallyOption:@YES, NSInferMappingModelAutomaticallyOption:@YES}</span>
+</span><span class='line'><span class="cm">         </span>
+</span><span class='line'><span class="cm">         Lightweight migration will only work for a limited set of schema changes; consult &quot;Core Data Model Versioning and Data Migration Programming Guide&quot; for details.</span>
+</span><span class='line'><span class="cm">         </span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Unresolved error %@, %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="p">[</span><span class="n">error</span> <span class="n">userInfo</span><span class="p">]);</span>
+</span><span class='line'>        <span class="n">abort</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_persistentStoreCoordinator</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+为了访问documents目录中的SQLite存储文件MyCDDemo.sqlite，还定义了一个<code>applicationDocumentsDirectory</code>方法，它的作用是获取程序documents的路径，代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// Returns the URL to the application&#39;s Documents directory.</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSURL</span> <span class="o">*</span><span class="p">)</span><span class="nf">applicationDocumentsDirectory</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[[[</span><span class="n">NSFileManager</span> <span class="n">defaultManager</span><span class="p">]</span> <span class="nl">URLsForDirectory:</span><span class="n">NSDocumentDirectory</span> <span class="nl">inDomains:</span><span class="n">NSUserDomainMask</span><span class="p">]</span> <span class="n">lastObject</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生成的还有MyCDDemo.momd文件，后面会提到。
+<code>NSPersistentStoreCoordinator</code>初始化时需要传入<code>managedObjectModel</code>。<code>NSPersistentStoreCoordinator</code>对象在添加持久存储的时候不仅需要传入存储类型，还有配置，存储文件URL，选项以及错误类型。我们使用sqlite作为存储类型，配置为nil，还记得之前叫做default的配置么？这里我们只有一个持久存储，所以配置一项不需要。如果添加存储的时候出现错误，就会进入if判断，具体处理错误的细节可以看看模版生成的注释。<br/>
+既然<code>NSPersistentStoreCoordinator</code>又用到了<code>managedObjectModel</code>，我们再看看<code>managedObjectModel</code>方法吧：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// Returns the managed object model for the application.</span>
+</span><span class='line'><span class="c1">// If the model doesn&#39;t already exist, it is created from the application&#39;s model.</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSManagedObjectModel</span> <span class="o">*</span><span class="p">)</span><span class="nf">managedObjectModel</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_managedObjectModel</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_managedObjectModel</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">modelURL</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">URLForResource:</span><span class="s">@&quot;MyCDDemo&quot;</span> <span class="nl">withExtension:</span><span class="s">@&quot;momd&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_managedObjectModel</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectModel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfURL:</span><span class="n">modelURL</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_managedObjectModel</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+依然是跟之前一样的代码风格，这次<code>NSManagedObjectModel</code>类在初始化的时候用到了MyCDDemo.momd文件，前面提到过，当你编译项目时，MyCDDemo.xcdatamodeld数据模型将被编译成MyCDDemo.momd资源，并且保存到app的Bundle目录。</p>
+
+<p>最后，在程序退出时，会调用代理<code>applicationWillTerminate:</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">applicationWillTerminate:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Saves changes in the application&#39;s managed object context before the application terminates.</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">saveContext</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它调用了<code>saveContext</code>方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">saveContext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">managedObjectContext</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">managedObjectContext</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">managedObjectContext</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">([</span><span class="n">managedObjectContext</span> <span class="n">hasChanges</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">[</span><span class="n">managedObjectContext</span> <span class="nl">save:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>             <span class="c1">// Replace this implementation with code to handle the error appropriately.</span>
+</span><span class='line'>             <span class="c1">// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. </span>
+</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Unresolved error %@, %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="p">[</span><span class="n">error</span> <span class="n">userInfo</span><span class="p">]);</span>
+</span><span class='line'>            <span class="n">abort</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+<code>managedObjectContext</code>对象中的数据无论怎么修改，都是发生在内存中的，需要调用<code>save</code>方法来保存到存储文件当中。</p>
+
+<p>按理说接下来应该看看<code>MasterViewController中</code>被传入的<code>managedObjectContext</code>对象是如何使用的，但在这之前，我们先运行下程序，看看这个App有什么功能：<br/>
+<img src="/images/blog/QQ20140501-4@2x.png" alt="" /><br/>
+再普通不过的tableview了，点击加号便可添加一条记录，内容为时间戳，回想起之前看的名称为Event的Entity，是不是想起了什么，嘿嘿。再添加了四条记录后，不妨打开sqlite文件查看下，路径为<code>~/Library/Application Support/iPhone Simulator/[OS version]/Applications/[appGUID]/Documents/</code>，目录内包含了三个文件MyCDDemo.sqlite、MyCDDemo.sqlite-shm、MyCDDemo.sqlite-wal。如上文所述，根据AppDelegate.m文件中的<code>persistentStoreCoordinator</code>方法可知，时间戳记录被存储在MyCDDemo.sqlite文件中。我用Navicat Premium将其打开：<br/>
+<img src="/images/blog/QQ20140501-5@2x.png" alt="" /><br/>
+<img src="/images/blog/QQ20140501-6@2x.png" alt="" /><br/>
+相信你对“三剑客”有了更深的理解，再附上一张图加深下印象：<br/>
+<img src="/images/blog/coredata1.png" alt="" /><br/>
+一个<code>NSManagedObjectModel</code>对象处在<code>NSPersistentStoreCoordinator</code>对象和<code>NSManagedObjectContext</code>对象之间。Core Data根据<code>NSManagedObjectModel</code>对象确定如何将底层的持久化文件中的数据映射为<code>NSManagedObject</code>对象。一个<code>NSManagedObjectModel</code>对象用于表示数据的结构。<code>NSManagedObjectModel</code>对象也被称为对象图(object graph)。你可以简单的理解为：<strong>在数据库sqlite文件中，一张表中的一条数据（table row）就相当于代码中的一个NSManagedObject对象，他们之间的映射是通过<code>NSManagedObjectModel</code>对象完成的</strong></p>
+
+<p>下面让我们进入到<code>MasterViewController</code>中来认识一下这个新出现的<code>NSManagedObject</code>“小弟”</p>
+
+<p>既然数据库中的数据最终显示在了<code>UITableView</code>上，我们撇开<code>MasterViewController</code>中其他的方法，直奔<code>UITableViewDataSource</code>协议中已经实现的那几个方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">numberOfSectionsInTableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[[</span><span class="n">self</span><span class="p">.</span><span class="n">fetchedResultsController</span> <span class="n">sections</span><span class="p">]</span> <span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">numberOfRowsInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSFetchedResultsSectionInfo</span><span class="o">&gt;</span> <span class="n">sectionInfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">fetchedResultsController</span> <span class="n">sections</span><span class="p">][</span><span class="n">section</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">sectionInfo</span> <span class="n">numberOfObjects</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UITableViewCell</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="s">@&quot;Cell&quot;</span> <span class="nl">forIndexPath:</span><span class="n">indexPath</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">configureCell:</span><span class="n">cell</span> <span class="nl">atIndexPath:</span><span class="n">indexPath</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">cell</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">canEditRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Return NO if you do not want the specified item to be editable.</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">commitEditingStyle:</span><span class="p">(</span><span class="n">UITableViewCellEditingStyle</span><span class="p">)</span><span class="nv">editingStyle</span> <span class="nf">forRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">editingStyle</span> <span class="o">==</span> <span class="n">UITableViewCellEditingStyleDelete</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">fetchedResultsController</span> <span class="n">managedObjectContext</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">context</span> <span class="nl">deleteObject:</span><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">fetchedResultsController</span> <span class="nl">objectAtIndexPath:</span><span class="n">indexPath</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">context</span> <span class="nl">save:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>             <span class="c1">// Replace this implementation with code to handle the error appropriately.</span>
+</span><span class='line'>             <span class="c1">// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. </span>
+</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Unresolved error %@, %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="p">[</span><span class="n">error</span> <span class="n">userInfo</span><span class="p">]);</span>
+</span><span class='line'>            <span class="n">abort</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">canMoveRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// The table view should not be re-orderable.</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>如果你对<code>UITableView</code>的使用很有经验，一眼就可看出数据是由<code>fetchedResultsController</code>对象提供的。即使在<code>tableView: cellForRowAtIndexPath:</code>方法中没出现<code>fetchedResultsController</code>，但是在其调用的<code>configureCell: atIndexPath:</code>方法中依然用到了<code>fetchedResultsController</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">configureCell:</span><span class="p">(</span><span class="n">UITableViewCell</span> <span class="o">*</span><span class="p">)</span><span class="nv">cell</span> <span class="nf">atIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSManagedObject</span> <span class="o">*</span><span class="n">object</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">fetchedResultsController</span> <span class="nl">objectAtIndexPath:</span><span class="n">indexPath</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">cell</span><span class="p">.</span><span class="n">textLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[[</span><span class="n">object</span> <span class="nl">valueForKey:</span><span class="s">@&quot;timeStamp&quot;</span><span class="p">]</span> <span class="n">description</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+嗯看来NSManagedObject对象全都由这个fetchedResultsController提供咯，下面揭开它神秘的面纱：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nf">fetchedResultsController</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_fetchedResultsController</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">fetchRequest</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchRequest</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// Edit the entity name as appropriate.</span>
+</span><span class='line'>    <span class="n">NSEntityDescription</span> <span class="o">*</span><span class="n">entity</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSEntityDescription</span> <span class="nl">entityForName:</span><span class="s">@&quot;Event&quot;</span> <span class="nl">inManagedObjectContext:</span><span class="n">self</span><span class="p">.</span><span class="n">managedObjectContext</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">fetchRequest</span> <span class="nl">setEntity:</span><span class="n">entity</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Set the batch size to a suitable number.</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">fetchRequest</span> <span class="nl">setFetchBatchSize:</span><span class="mi">20</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Edit the sort key as appropriate.</span>
+</span><span class='line'>    <span class="n">NSSortDescriptor</span> <span class="o">*</span><span class="n">sortDescriptor</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSSortDescriptor</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithKey:</span><span class="s">@&quot;timeStamp&quot;</span> <span class="nl">ascending:</span><span class="n">NO</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">sortDescriptors</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="n">sortDescriptor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">fetchRequest</span> <span class="nl">setSortDescriptors:</span><span class="n">sortDescriptors</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Edit the section name key path and cache name if appropriate.</span>
+</span><span class='line'>    <span class="c1">// nil for section name key path means &quot;no sections&quot;.</span>
+</span><span class='line'>    <span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="n">aFetchedResultsController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSFetchedResultsController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFetchRequest:</span><span class="n">fetchRequest</span> <span class="nl">managedObjectContext:</span><span class="n">self</span><span class="p">.</span><span class="n">managedObjectContext</span> <span class="nl">sectionNameKeyPath:</span><span class="nb">nil</span> <span class="nl">cacheName:</span><span class="s">@&quot;Master&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">aFetchedResultsController</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">fetchedResultsController</span> <span class="o">=</span> <span class="n">aFetchedResultsController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">fetchedResultsController</span> <span class="nl">performFetch:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>       <span class="c1">// Replace this implementation with code to handle the error appropriately.</span>
+</span><span class='line'>       <span class="c1">// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. </span>
+</span><span class='line'>      <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Unresolved error %@, %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="p">[</span><span class="n">error</span> <span class="n">userInfo</span><span class="p">]);</span>
+</span><span class='line'>      <span class="n">abort</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_fetchedResultsController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>嗯，之前提到过，Core Data在iOS平台使用了<code>NSFetchedResultsController</code>对象来简化对提取结果和表格视图的处理。<code>NSFetchedResultsController</code>对象被惰性创建并只在表格视图数据源方法有需要时才提取数据。你会看到在<code>NSFetchRequest</code>对象的配置中，使用了Event实体，并提供了一个<code>NSSortDescriptor</code>对象以让提取结果按timeStamp进行排序。最后通过<code>NSFetchRequest</code>对象和<code>managedObjectContext</code>（在AppDelegate中传入的<code>NSManagedObjectContext</code>实例）作为参数传入<code>NSFetchedResultsController</code>的初始化方法。（<code>sectionNameKeyPath</code>参数传入nil时表示只有一个section，你会发现<code>NSFetchedResultsController</code>从数据库获取的结果跟<code>UITableView</code>需要的数据格式相同，都通过<code>NSIndexPath</code>地址来获取一条数据的内容）<br/>
+<code>NSFetchedResultsController</code>也有它的代理，将<code>MasterViewController</code>设置为其代理，这样在fetched results 发生变化时，<code>MasterViewController</code>中实现的<code>NSFetchedResultsControllerDelegate</code>方法会被调用：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">controllerWillChangeContent:</span><span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nv">controller</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="n">beginUpdates</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">controller:</span><span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nv">controller</span> <span class="nf">didChangeSection:</span><span class="p">(</span><span class="kt">id</span> <span class="o">&lt;</span><span class="n">NSFetchedResultsSectionInfo</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">sectionInfo</span>
+</span><span class='line'>           <span class="nf">atIndex:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">sectionIndex</span> <span class="nf">forChangeType:</span><span class="p">(</span><span class="n">NSFetchedResultsChangeType</span><span class="p">)</span><span class="nv">type</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">switch</span><span class="p">(</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">NSFetchedResultsChangeInsert:</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">insertSections:</span><span class="p">[</span><span class="n">NSIndexSet</span> <span class="nl">indexSetWithIndex:</span><span class="n">sectionIndex</span><span class="p">]</span> <span class="nl">withRowAnimation:</span><span class="n">UITableViewRowAnimationFade</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">NSFetchedResultsChangeDelete:</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">deleteSections:</span><span class="p">[</span><span class="n">NSIndexSet</span> <span class="nl">indexSetWithIndex:</span><span class="n">sectionIndex</span><span class="p">]</span> <span class="nl">withRowAnimation:</span><span class="n">UITableViewRowAnimationFade</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">controller:</span><span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nv">controller</span> <span class="nf">didChangeObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">anObject</span>
+</span><span class='line'>       <span class="nf">atIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="nf">forChangeType:</span><span class="p">(</span><span class="n">NSFetchedResultsChangeType</span><span class="p">)</span><span class="nv">type</span>
+</span><span class='line'>      <span class="nf">newIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">newIndexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UITableView</span> <span class="o">*</span><span class="n">tableView</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">switch</span><span class="p">(</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">NSFetchedResultsChangeInsert:</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">tableView</span> <span class="nl">insertRowsAtIndexPaths:</span><span class="err">@</span><span class="p">[</span><span class="n">newIndexPath</span><span class="p">]</span> <span class="nl">withRowAnimation:</span><span class="n">UITableViewRowAnimationFade</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">NSFetchedResultsChangeDelete:</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">tableView</span> <span class="nl">deleteRowsAtIndexPaths:</span><span class="err">@</span><span class="p">[</span><span class="n">indexPath</span><span class="p">]</span> <span class="nl">withRowAnimation:</span><span class="n">UITableViewRowAnimationFade</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">NSFetchedResultsChangeUpdate:</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">configureCell:</span><span class="p">[</span><span class="n">tableView</span> <span class="nl">cellForRowAtIndexPath:</span><span class="n">indexPath</span><span class="p">]</span> <span class="nl">atIndexPath:</span><span class="n">indexPath</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">NSFetchedResultsChangeMove:</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">tableView</span> <span class="nl">deleteRowsAtIndexPaths:</span><span class="err">@</span><span class="p">[</span><span class="n">indexPath</span><span class="p">]</span> <span class="nl">withRowAnimation:</span><span class="n">UITableViewRowAnimationFade</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">tableView</span> <span class="nl">insertRowsAtIndexPaths:</span><span class="err">@</span><span class="p">[</span><span class="n">newIndexPath</span><span class="p">]</span> <span class="nl">withRowAnimation:</span><span class="n">UITableViewRowAnimationFade</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">controllerDidChangeContent:</span><span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="nv">controller</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="n">endUpdates</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">/*</span>
+</span><span class='line'><span class="c1">// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. </span>
+</span><span class='line'>
+</span><span class='line'> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">controllerDidChangeContent:</span><span class="p">(</span><span class="n">NSFetchedResultsController</span> <span class="o">*</span><span class="p">)</span><span class="n">controller</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// In the simplest, most efficient, case, reload the table view.</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="n">reloadData</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>相对于之前<code>UITableViewDataSource</code>协议方法对<code>NSFetchedResultsController</code>对象中数据的修改（通过<code>NSManagedObject</code>对象做载体），<code>NSFetchedResultsControllerDelegate</code>协议方法会在察觉到数据修改后被调用，用于产生tableview操作数据后对应的动画效果。</p>
+
+<p>可能你会觉得有些混乱，这里贴上几张图梳理下各个类的关系和结构：<br/>
+<img src="/images/blog/coredata_doc_management_2x.png" alt="" /><br/>
+<img src="/images/blog/fetch_request_2x.png" alt="" /><br/>
+<img src="/images/blog/advanced_persistence_stack_2x.png" alt="" /><br/>
+<img src="/images/blog/managed_object_model_2x.png" alt="" /><br/>
+<img src="/images/blog/entity_description_2x.png" alt="" /></p>
+
+<p>最后，找到<code>insertNewObject</code>方法，当用户尝试加入一个对象到表视图时，该方法将被调用。接着你将看到如下的处理过程：</p>
+
+<ul>
+<li>获得一个<code>NSManagedObjectContext</code>对象；</li>
+<li>决定创建新对象的实体；</li>
+<li>根据实体名称创建一个新的<code>NSManagedObject</code>对象并将其插入到<code>NSManagedObjectContext</code>对象；</li>
+<li>对新创建的<code>NSManagedObject</code>对象设置timeStamp属性值</li>
+<li><code>NSManagedObjectContext</code>对象执行保存。</li>
+</ul>
+
+
+<p>当上下文执行保存，新的对象将被写到持久存储区中。这是如此简单！</p>
+
+<p>DetailViewController的内容比较简单，不在叙述，到此结束，新建Core Data的模版工程代码已经解析完毕了。在下一期文章中将会亲手修改代码，探索Core Data更多的使用技巧。</p>
+</div>
+
+</article>
+
+
+
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+  	
+     <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_xiaoyou"></a>
+	<a href="http://www.jiathis.com/share?uid=1912336" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1912336" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1912336"></script>
+<!-- UY END -->
+
+ 	
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    玉令天下
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'yulingtianxia';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data%281%29/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data%281%29/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+		</div>
+	</div>
+</body>
+</html>
