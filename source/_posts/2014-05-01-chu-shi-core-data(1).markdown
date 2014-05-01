@@ -8,6 +8,12 @@ categories:
 - Core Data
 
 ---
+本文内容：  
+1. Core Data概述  
+2. 新建一个Core Data工程  
+
+---
+<!--more-->
 ##Core Data概述
 Core Data本身既不是数据库也不是数据库访问框架。相反，Core Data是一个完整的数据模型解决方案。我简单理解为对持久层的封装，使得我们可以通过可视化建立数据模型，简化数据存取。有人会联想到Hibernate，其实Core Data比Hibernate强大得多，它不仅支持SQLite数据库，还能对XML文件、二进制文件、用户自定义文件进行操作。  
 
