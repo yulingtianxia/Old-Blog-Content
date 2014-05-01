@@ -170,19 +170,27 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <h2>新建一个Core Data工程</h2>
 
-<p>在Xcode5中，只有Master-Detail Application，Utility Application以及Empty Application支持创建时使用Core Data模板，我们选择带有UITableView的Master-Detail Application吧。<br/>
-<img src="/images/blog/QQ20140501-1@2x.png" alt="" /><br/>
-一定要勾选Core Data选项，项目名称就叫MyCDDemo吧，嘿嘿<br/>
-<img src="/images/blog/QQ20140501-2@2x.png" alt="" /><br/>
-项目建立后会发现Frameworks中已经有了<code>CoreData.framework</code>一项，并且还多了一个MyCDDemo.xcdatamodeld文件，该文件定义了数据模型结构，你可以使用XCode内置的可视化建模工具进行构建。点开它你会发现左侧有三项：Entities，Fetch Request、Configurations。</p>
+<p>在Xcode5中，只有Master-Detail Application，Utility Application以及Empty Application支持创建时使用Core Data模板，我们选择带有UITableView的Master-Detail Application吧。</p>
+
+<p><img src="/images/blog/QQ20140501-1@2x.png" alt="" /></p>
+
+<p>一定要勾选Core Data选项，项目名称就叫MyCDDemo吧，嘿嘿</p>
+
+<p><img src="/images/blog/QQ20140501-2@2x.png" alt="" /></p>
+
+<p>项目建立后会发现Frameworks中已经有了<code>CoreData.framework</code>一项，并且还多了一个MyCDDemo.xcdatamodeld文件，该文件定义了数据模型结构，你可以使用XCode内置的可视化建模工具进行构建。点开它你会发现左侧有三项：Entities，Fetch Request、Configurations。</p>
 
 <p><strong>Entities</strong></p>
 
-<p>在系统的学习Core Data前，可以简单的将Entity理解为数据库中的一张表，在代码中一个<code>NSEntityDescription</code>类的对象就代表了一个Entity。Entity也像类一样可以继承，如果你有若干个相似的实体，就可以抽离出它们的共有特性作为一个“父实体”，就省去了在多个实体中都指定相同的属性。甚至可以勾选Abstract Entitiy让其成为抽象实体，就像抽象类一样。<br/>
-<img src="/images/blog/xcodeparententity_2x.png" alt="" /><br/>
-现在已经有了一个现成的实体：Event，也就是在SQLite中有了一张叫做Event的表：<br/>
-<img src="/images/blog/QQ20140501-3@2x.png" alt="" /><br/>
-Attributes就相当于一张表的列属性，可以设置其数据类型，默认值，最大最小值等，类似数据库可视化建表。需要注意的是这里的空值是NULL，不等同于OC中的nil，更不等同于0和空字符串@“”。Event实体中已经有了一个叫timeStamp的属性，类型为Date，这是模版自动生成的，暂且别修改它。</p>
+<p>在系统的学习Core Data前，可以简单的将Entity理解为数据库中的一张表，在代码中一个<code>NSEntityDescription</code>类的对象就代表了一个Entity。Entity也像类一样可以继承，如果你有若干个相似的实体，就可以抽离出它们的共有特性作为一个“父实体”，就省去了在多个实体中都指定相同的属性。甚至可以勾选Abstract Entitiy让其成为抽象实体，就像抽象类一样。</p>
+
+<p><img src="/images/blog/xcodeparententity_2x.png" alt="" /></p>
+
+<p>现在已经有了一个现成的实体：Event，也就是在SQLite中有了一张叫做Event的表：</p>
+
+<p><img src="/images/blog/QQ20140501-3@2x.png" alt="" /></p>
+
+<p>Attributes就相当于一张表的列属性，可以设置其数据类型，默认值，最大最小值等，类似数据库可视化建表。需要注意的是这里的空值是NULL，不等同于OC中的nil，更不等同于0和空字符串@“”。Event实体中已经有了一个叫timeStamp的属性，类型为Date，这是模版自动生成的，暂且别修改它。</p>
 
 <p>Relationships描述了Entity间的关系：多对一，一对一等。当你指定了一个关系后，苹果推荐我们也指定一个反转关系。比如A和B是多对多的关系，那么A指向B的关系Type为To Many，同时设定B指向A的关系Type为To Many。</p>
 
@@ -192,8 +200,9 @@ Attributes就相当于一张表的列属性，可以设置其数据类型，默�
 
 <p>我们使用<code>NSFetchRequest</code>类来描述数据请求，利用数据请求从持久存储（persistent store）中获取对象。经常碰到的情形是你经常需要多次执行同样的请求，或是执行遵循一个给定模式的请求，但是其中包含变量（如查找条件）——这些变量经常由用户提供。例如，在运行程序的时候，你要根据用户需要获取某个作者在用户指定日期后出版的所有出版物。</p>
 
-<p>你可以预定义请求，把它们作为模板存储在被管理对象模型中。预定义的模板在你需要的时候就可以取出使用。通常情况下，我们通过Xcode的data modeling tool工具创建请求模板。模板可以包含变量：<br/>
-<img src="/images/blog/variablelikepredicate_2x.png" alt="" /></p>
+<p>你可以预定义请求，把它们作为模板存储在被管理对象模型中。预定义的模板在你需要的时候就可以取出使用。通常情况下，我们通过Xcode的data modeling tool工具创建请求模板。模板可以包含变量：</p>
+
+<p><img src="/images/blog/variablelikepredicate_2x.png" alt="" /></p>
 
 <p><strong>Configurations</strong></p>
 
@@ -498,14 +507,21 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 <p>
 <code>managedObjectContext</code>对象中的数据无论怎么修改，都是发生在内存中的，需要调用<code>save</code>方法来保存到存储文件当中。</p>
 
-<p>按理说接下来应该看看<code>MasterViewController中</code>被传入的<code>managedObjectContext</code>对象是如何使用的，但在这之前，我们先运行下程序，看看这个App有什么功能：<br/>
-<img src="/images/blog/QQ20140501-4@2x.png" alt="" /><br/>
-再普通不过的tableview了，点击加号便可添加一条记录，内容为时间戳，回想起之前看的名称为Event的Entity，是不是想起了什么，嘿嘿。再添加了四条记录后，不妨打开sqlite文件查看下，路径为<code>~/Library/Application Support/iPhone Simulator/[OS version]/Applications/[appGUID]/Documents/</code>，目录内包含了三个文件MyCDDemo.sqlite、MyCDDemo.sqlite-shm、MyCDDemo.sqlite-wal。如上文所述，根据AppDelegate.m文件中的<code>persistentStoreCoordinator</code>方法可知，时间戳记录被存储在MyCDDemo.sqlite文件中。我用Navicat Premium将其打开：<br/>
-<img src="/images/blog/QQ20140501-5@2x.png" alt="" /><br/>
-<img src="/images/blog/QQ20140501-6@2x.png" alt="" /><br/>
-相信你对“三剑客”有了更深的理解，再附上一张图加深下印象：<br/>
-<img src="/images/blog/coredata1.png" alt="" /><br/>
-一个<code>NSManagedObjectModel</code>对象处在<code>NSPersistentStoreCoordinator</code>对象和<code>NSManagedObjectContext</code>对象之间。Core Data根据<code>NSManagedObjectModel</code>对象确定如何将底层的持久化文件中的数据映射为<code>NSManagedObject</code>对象。一个<code>NSManagedObjectModel</code>对象用于表示数据的结构。<code>NSManagedObjectModel</code>对象也被称为对象图(object graph)。你可以简单的理解为：<strong>在数据库sqlite文件中，一张表中的一条数据（table row）就相当于代码中的一个NSManagedObject对象，他们之间的映射是通过<code>NSManagedObjectModel</code>对象完成的</strong></p>
+<p>按理说接下来应该看看<code>MasterViewController中</code>被传入的<code>managedObjectContext</code>对象是如何使用的，但在这之前，我们先运行下程序，看看这个App有什么功能：</p>
+
+<p><img src="/images/blog/QQ20140501-4@2x.png" alt="" /></p>
+
+<p>再普通不过的tableview了，点击加号便可添加一条记录，内容为时间戳，回想起之前看的名称为Event的Entity，是不是想起了什么，嘿嘿。再添加了四条记录后，不妨打开sqlite文件查看下，路径为<code>~/Library/Application Support/iPhone Simulator/[OS version]/Applications/[appGUID]/Documents/</code>，目录内包含了三个文件MyCDDemo.sqlite、MyCDDemo.sqlite-shm、MyCDDemo.sqlite-wal。如上文所述，根据AppDelegate.m文件中的<code>persistentStoreCoordinator</code>方法可知，时间戳记录被存储在MyCDDemo.sqlite文件中。我用Navicat Premium将其打开：</p>
+
+<p><img src="/images/blog/QQ20140501-5@2x.png" alt="" /></p>
+
+<p><img src="/images/blog/QQ20140501-6@2x.png" alt="" /></p>
+
+<p>相信你对“三剑客”有了更深的理解，再附上一张图加深下印象：</p>
+
+<p><img src="/images/blog/coredata1.png" alt="" /></p>
+
+<p>一个<code>NSManagedObjectModel</code>对象处在<code>NSPersistentStoreCoordinator</code>对象和<code>NSManagedObjectContext</code>对象之间。Core Data根据<code>NSManagedObjectModel</code>对象确定如何将底层的持久化文件中的数据映射为<code>NSManagedObject</code>对象。一个<code>NSManagedObjectModel</code>对象用于表示数据的结构。<code>NSManagedObjectModel</code>对象也被称为对象图(object graph)。你可以简单的理解为：<strong>在数据库sqlite文件中，一张表中的一条数据（table row）就相当于代码中的一个NSManagedObject对象，他们之间的映射是通过<code>NSManagedObjectModel</code>对象完成的</strong></p>
 
 <p>下面让我们进入到<code>MasterViewController</code>中来认识一下这个新出现的<code>NSManagedObject</code>“小弟”</p>
 
@@ -827,12 +843,17 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 
 <p>相对于之前<code>UITableViewDataSource</code>协议方法对<code>NSFetchedResultsController</code>对象中数据的修改（通过<code>NSManagedObject</code>对象做载体），<code>NSFetchedResultsControllerDelegate</code>协议方法会在察觉到数据修改后被调用，用于产生tableview操作数据后对应的动画效果。</p>
 
-<p>可能你会觉得有些混乱，这里贴上几张图梳理下各个类的关系和结构：<br/>
-<img src="/images/blog/coredata_doc_management_2x.png" alt="" /><br/>
-<img src="/images/blog/fetch_request_2x.png" alt="" /><br/>
-<img src="/images/blog/advanced_persistence_stack_2x.png" alt="" /><br/>
-<img src="/images/blog/managed_object_model_2x.png" alt="" /><br/>
-<img src="/images/blog/entity_description_2x.png" alt="" /></p>
+<p>可能你会觉得有些混乱，这里贴上几张图梳理下各个类的关系和结构：</p>
+
+<p><img src="/images/blog/coredata_doc_management_2x.png" alt="" /></p>
+
+<p><img src="/images/blog/fetch_request_2x.png" alt="" /></p>
+
+<p><img src="/images/blog/advanced_persistence_stack_2x.png" alt="" /></p>
+
+<p><img src="/images/blog/managed_object_model_2x.png" alt="" /></p>
+
+<p><img src="/images/blog/entity_description_2x.png" alt="" /></p>
 
 <p>最后，找到<code>insertNewObject</code>方法，当用户尝试加入一个对象到表视图时，该方法将被调用。接着你将看到如下的处理过程：</p>
 
