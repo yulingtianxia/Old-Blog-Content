@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Github | 玉令天下的Blog]]></title>
+  <title><![CDATA[Category: GitHub | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-02T13:53:45+08:00</updated>
+  <updated>2014-05-02T14:10:24+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[GitHub Page build warning]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/05/02/github-page-build-warning/"/>
+    <updated>2014-05-02T13:57:53+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/05/02/github-page-build-warning</id>
+    <content type="html"><![CDATA[<p>几天前博主的GitHub Page闹了些小情绪：</p>
+
+<blockquote><p>The page build completed successfully, but returned the following warning:</p>
+
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that yulingtianxia.com isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#58;&#x73;&#x75;&#x70;&#x70;&#111;&#114;&#x74;&#64;&#103;&#105;&#116;&#104;&#x75;&#98;&#46;&#x63;&#111;&#109;&#x2e;">&#x73;&#x75;&#112;&#112;&#111;&#114;&#x74;&#x40;&#103;&#x69;&#x74;&#104;&#117;&#98;&#46;&#x63;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+
+<p>For information on troubleshooting Jekyll see:</p>
+
+<p><a href="https://help.github.com/articles/using-jekyll-with-pages#troubleshooting">https://help.github.com/articles/using-jekyll-with-pages#troubleshooting</a></p>
+
+<p>If you have any questions please contact us at <a href="https://github.com/contact.">https://github.com/contact.</a></p></blockquote>
+
+<p>也就是说只是warning而已，程序员根本不理睬的，加载速度慢点就慢点儿呗，可是。。。每次pushGitHub都发一次邮件啊，博主强迫症犯了，决心搞定它。<br/>
+GitHub很贴心的给出了整改意见啊，也就是第一个URL：<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS的.gitignore]]></title>
@@ -54,7 +76,7 @@ DerivedData
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[MacOSX10.9上用Octopress和Github搭建个人博客]]></title>
+    <title type="html"><![CDATA[MacOSX10.9上用Octopress和GitHub搭建个人博客]]></title>
     <link href="http://yulingtianxia.com/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/"/>
     <updated>2014-04-05T14:28:54+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke</id>

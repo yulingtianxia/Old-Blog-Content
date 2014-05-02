@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-02T13:53:45+08:00</updated>
+  <updated>2014-05-02T14:10:24+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -14,13 +14,36 @@
 
   
   <entry>
+    <title type="html"><![CDATA[GitHub Page build warning]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/05/02/github-page-build-warning/"/>
+    <updated>2014-05-02T13:57:53+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/05/02/github-page-build-warning</id>
+    <content type="html"><![CDATA[<p>几天前博主的GitHub Page闹了些小情绪：</p>
+
+<blockquote><p>The page build completed successfully, but returned the following warning:</p>
+
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that yulingtianxia.com isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#x3a;&#x73;&#x75;&#x70;&#x70;&#x6f;&#114;&#116;&#x40;&#x67;&#x69;&#x74;&#104;&#117;&#98;&#x2e;&#x63;&#111;&#109;&#x2e;">&#115;&#x75;&#x70;&#x70;&#111;&#x72;&#116;&#64;&#103;&#x69;&#116;&#x68;&#117;&#98;&#46;&#x63;&#x6f;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+
+<p>For information on troubleshooting Jekyll see:</p>
+
+<p><a href="https://help.github.com/articles/using-jekyll-with-pages#troubleshooting">https://help.github.com/articles/using-jekyll-with-pages#troubleshooting</a></p>
+
+<p>If you have any questions please contact us at <a href="https://github.com/contact.">https://github.com/contact.</a></p></blockquote>
+
+<p>也就是说只是warning而已，程序员根本不理睬的，加载速度慢点就慢点儿呗，可是。。。每次pushGitHub都发一次邮件啊，博主强迫症犯了，决心搞定它。<br/>
+GitHub很贴心的给出了整改意见啊，也就是第一个URL：<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[初识Core Data(1)]]></title>
     <link href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data%281%29/"/>
     <updated>2014-05-01T19:58:00+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data(1)</id>
     <content type="html"><![CDATA[<p>本文内容：<br/>
 1. Core Data概述<br/>
-2. 新建一个Core Data工程</p>
+2. 新建一个Core Data工程<br/>
+3. 总结</p>
 
 <hr />
 
@@ -4916,24 +4939,6 @@ instance为将被实例化的对象，为了让instance只被实例化一次，�
 
 
 <p>其实还有很多优秀的网站没有收录，本文只是收录了本人能看懂的网址（英文伤不起），其实大量优秀的教程都是英文的啊！碰到问题现用现查还是最快，没事儿的时候可以看看本文提到的网站充充电。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[XCode和Objective-C Cheat Sheet]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
-    <updated>2014-04-06T18:38:24+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
-    <content type="html"><![CDATA[<p>关于XCode和OC的速查，方便记忆，以后会更新</p>
-
-<!-- more-->
-
-
-<p>XCode5 Cheat Sheet:(<a href="http://www.git-tower.com/blog/xcode-cheat-sheet/">作者</a>)<br/>
-<img src="http://yulingtianxia.com/images/blog/xcode-cheat-sheet_页面_1.jpg"> <br/>
-<img src="http://yulingtianxia.com/images/blog/xcode-cheat-sheet_页面_2.jpg">
-Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(<a href="http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5">作者</a>) <br/>
-<img src="http://yulingtianxia.com/images/blog/RW-Objective-C-Cheatsheet-v-1-5.jpg"></p>
 ]]></content>
   </entry>
   
