@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-02T01:33:41+08:00</updated>
+  <updated>2014-05-02T13:53:45+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -491,6 +491,8 @@ return _fetchedResultsController;
 
 <p><img src="/images/blog/entity_description_2x.png" alt="" /></p>
 
+<p><img src="/images/blog/advanced_persistent_stack.jpg" alt="" /></p>
+
 <p>最后，找到<code>insertNewObject</code>方法，当用户尝试加入一个对象到表视图时，该方法将被调用。接着你将看到如下的处理过程：</p>
 
 <ul>
@@ -505,6 +507,19 @@ return _fetchedResultsController;
 <p>当上下文执行保存，新的对象将被写到持久存储区中。这是如此简单！</p>
 
 <p>DetailViewController的内容比较简单，不在叙述，到此结束，新建Core Data的模版工程代码已经解析完毕了。在下一期文章中将会亲手修改代码，探索Core Data更多的使用技巧。</p>
+
+<h2>总结</h2>
+
+<p>Core Data框架基本的5个类：：NSPersistentStoreCoordinator、NSManagedObjectContext、NSManagedObjectModel、NSEntityDescription、NSManagedObject。</p>
+
+<ul>
+<li><p>NSPersistentStoreCoordinator持久化存储协调器（简称协调器）：负责从磁盘加载数据和将数据写入磁盘。协调器可以处理多种格式的数据库文件（NSPersistentStore），如二进制文件，XML文件、SQLite文件。你也可以实现自己的数据库文件格式（使用NSAtomicStore和NSIncrementalStore类），理论上你可以实现打开World或Photoshop文件的协调器。</p></li>
+<li><p>NSEntityDescription实体描述（简称实体）：实体可以被看做是NSManagedObject对象的“class”。实体定义了一个NSManagedObject对象所拥有的所有属性（NSAttributeDescription）,关系（NSRelationshipDescription），提取属性（NSFetchedPropertyDescription）。</p></li>
+<li><p>NSManagedObjectContext托管对象上下文（简称上下文）：上下文是内存中的一块暂存区域。查询对象（使用NSFetchRequest），创建对象，删除对象等操作都是在上下文中进行。在上下文没有保存之前，对数据的任何修改都只记录在暂存区中，不会影响磁盘上的数据。你可以创建多个上下文，但整个程序只能创建一个NSPersstentStoreCoordinator对象。</p></li>
+<li><p>NSManagedObject托管对象：Core Data的核心单元。模型对象的数据被持有在NSManagedObject对象中。每一个NSManagedObject对象都对应一个实体（就像每一个对象都有一个类）</p></li>
+<li><p>NSManagedObjectModel托管对象模型：NSManagedObjectModel通常被定义在一个.mom文件中，文件中保存了所有实体的定义。NSManagedObjectModel and the NS*Description 类完整定义了Core Data模型应该/可以包含的内容。</p></li>
+</ul>
+
 ]]></content>
   </entry>
   
