@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 单元测试 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/dan-yuan-ce-shi/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-03T16:59:16+08:00</updated>
+  <updated>2014-05-03T17:29:09+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[iOS单元测试－XCTest]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-%5Bnil%5Dxctest/"/>
+    <title type="html"><![CDATA[iOS单元测试-XCTest]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-xctest/"/>
     <updated>2014-04-28T13:25:12+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-[nil]xctest</id>
+    <id>http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-xctest</id>
     <content type="html"><![CDATA[<p>第一次接触单元测试还是在SQA课程上，那时我用的是JUnit来对Java程序进行单元测试。如今XCode自带的单元测试工具已经从OCUnit演变到了XCTest，但其本质还是差不多的，其好处在于XCode集成，简单方便</p>
 
 <!--more-->

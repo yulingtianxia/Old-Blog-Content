@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-03T16:59:16+08:00</updated>
+  <updated>2014-05-03T17:29:09+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -18,7 +18,18 @@
     <link href="http://yulingtianxia.com/blog/2014/05/02/chu-shi-core-data-2/"/>
     <updated>2014-05-02T20:17:04+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/05/02/chu-shi-core-data-2</id>
-    <content type="html"><![CDATA[<p>文章所使用的项目代码可以到<a href="https://github.com/yulingtianxia/MyCDDemo">这里</a>下载</p>
+    <content type="html"><![CDATA[<p>本文内容：</p>
+
+<ul>
+<li>自定义NSManagedObject</li>
+<li>使用数据模型设计器</li>
+<li>探究Core Data在SQLite中的实现</li>
+</ul>
+
+
+<p>推荐先阅读上一篇文章：<a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/">初识Core Data(1)</a></p>
+
+<p><strong>文章所使用的项目代码可以到<a href="https://github.com/yulingtianxia/MyCDDemo">这里</a>下载</strong></p>
 
 <!--more-->
 
@@ -479,7 +490,7 @@ DetailViewController.h:</p>
 你会发现多了一个CoreDataGeneratedAccessors类别，这个类别中的方法是Core Data框架根据你在数据模式编辑器中设置的实体关系自动生成的，你不需要实现它们，Core Data会在运行时实现这些方法<br/>
 如果你偏要想看看其实现机理，在右下方的代码片段库中选择“Core Data To-Many Relationship Accessors”并拖拽到代码中</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-9@2x.png" alt="" /></p>
+<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-10@2x.png" alt="" /></p>
 
 <p>生成的代码如下：</p>
 
@@ -581,11 +592,106 @@ DetailViewController.h:</p>
 <p>
 现在，我们并不需要知道他们的实现方法是如何被动态生成的，估计是用到了block或者delegate。</p>
 
-<h2>探究Core Data在SQLite中的样子</h2>
+<h2>探究Core Data在SQLite中的实现</h2>
 
 <p>在上一节中我们创建了Person，Teacher和Student三个Entity和对应的NSManagedObject子类，下面我们需要在代码中对其进行“实战部署”，并观察它们是如何在SQLite数据库中保存的，这样更有利于理解Core Data机制。</p>
 
-<p>为了简单测试，我直接在MasterViewController.m文件中的<code>insertNewObject:</code>方法中加入测试代码（其实关于测试应该利用好Xcode自带的单元测试工具<a href="http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-%5Bnil%5Dxctest/">XCTest</a>，我这里为了方便操作，用了以前添加数据的<code>insertNewObject:</code>方法，关于工程初始代码的讲解，请看我之前的一篇<a href="">文章</a>）</p>
+<p>为了简单测试，我直接在MasterViewController.m文件中的<code>insertNewObject:</code>方法中加入测试代码（其实关于测试应该利用好Xcode自带的单元测试工具<a href="http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-%5Bnil%5Dxctest/">XCTest</a>，我这里为了方便操作，用了以前添加数据的<code>insertNewObject:</code>方法，关于工程初始代码的讲解，请看我之前的一篇<a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/">教程</a>）</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">insertNewObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">context</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">fetchedResultsController</span> <span class="n">managedObjectContext</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSEntityDescription</span> <span class="o">*</span><span class="n">entity</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span><span class="p">.</span><span class="n">fetchedResultsController</span> <span class="n">fetchRequest</span><span class="p">]</span> <span class="n">entity</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">Event</span> <span class="o">*</span><span class="n">newManagedObject</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSEntityDescription</span> <span class="nl">insertNewObjectForEntityForName:</span><span class="p">[</span><span class="n">entity</span> <span class="n">name</span><span class="p">]</span> <span class="nl">inManagedObjectContext:</span><span class="n">context</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// If appropriate, configure the new managed object.</span>
+</span><span class='line'>    <span class="c1">// Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.</span>
+</span><span class='line'><span class="c1">//    [newManagedObject setValue:[NSDate date] forKey:@&quot;timeStamp&quot;];</span>
+</span><span class='line'>    <span class="n">newManagedObject</span><span class="p">.</span><span class="n">timeStamp</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//新加的测试代码</span>
+</span><span class='line'>    <span class="n">Student</span> <span class="o">*</span><span class="n">aStudent</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSEntityDescription</span> <span class="nl">insertNewObjectForEntityForName:</span><span class="s">@&quot;Student&quot;</span> <span class="nl">inManagedObjectContext:</span><span class="n">context</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">aStudent</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">@&quot;LiLei&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">aStudent</span><span class="p">.</span><span class="n">sex</span> <span class="o">=</span> <span class="s">@&quot;male&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">aStudent</span><span class="p">.</span><span class="n">grade</span> <span class="o">=</span> <span class="err">@</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">Teacher</span> <span class="o">*</span><span class="n">aTeacher</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSEntityDescription</span> <span class="nl">insertNewObjectForEntityForName:</span><span class="s">@&quot;Teacher&quot;</span> <span class="nl">inManagedObjectContext:</span><span class="n">context</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">aTeacher</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">@&quot;MissGao&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">aTeacher</span><span class="p">.</span><span class="n">sex</span> <span class="o">=</span> <span class="s">@&quot;female&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">aTeacher</span><span class="p">.</span><span class="n">course</span> <span class="o">=</span> <span class="s">@&quot;English&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">aTeacher</span> <span class="nl">addStudentsObject:</span><span class="n">aStudent</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Save the context.</span>
+</span><span class='line'>    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">context</span> <span class="nl">save:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>         <span class="c1">// Replace this implementation with code to handle the error appropriately.</span>
+</span><span class='line'>         <span class="c1">// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. </span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Unresolved error %@, %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="p">[</span><span class="n">error</span> <span class="n">userInfo</span><span class="p">]);</span>
+</span><span class='line'>        <span class="n">abort</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>我们建立了一名叫LiLei的一年级男生和一名叫MissGao的教英语的女教师，并将LiLei同学添加到高老师的学生名单中。</p>
+
+<p>运行程序，打开MyCDDemo.sqlite文件，查看表结构：</p>
+
+<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-11@2x.png" alt="" /></p>
+
+<p>你会发现虽然Student和Teacher继承Person，但是Person表里面竟然也有grade和course字段</p>
+
+<p>点击程序中的加号来添加一条数据：</p>
+
+<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-12@2x.png" alt="" /></p>
+
+<p>查看ZPERSON，Z_3TEACHERS，Z_PRIMARYKEY表内容：</p>
+
+<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-13@2x.png" alt="" /></p>
+
+<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-14@2x.png" alt="" /></p>
+
+<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-15@2x.png" alt="" /></p>
+
+<p>这次一目了然了：</p>
+
+<p>ZPERSON表存储了子类所有字段数据，其Z_ENT字段标志着这条数据的类型，Z_ENT与类型名Z_NAME的映射关系储存在Z_PRIMARYKEY表中，而Z_3TEACHERS存储的则是ZPERSON表中数据项之间的关系，也就是之前我们建立的学生和老师的对应关系，其原理是将ZPERSON表中的Z_PK字段内容两个一组对应起来，这样就相当于把ZPERSON表中两条数据项关联起来了。之前我们在代码中只将LiLei同学添加到了MissGao老师的学生列表中，但是Core Data已经自动维护起了关系，让MissGao也存在于LiLei的老师列表中。Core Data把底层的数据库封装起来，通过简单的操作让程序员更高校的管理数据，所以SQLite这部分我们只是了解下就可以了。</p>
 ]]></content>
   </entry>
   
@@ -603,7 +709,7 @@ DetailViewController.h:</p>
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#115;&#x75;&#x70;&#x70;&#111;&#x72;&#x74;&#x40;&#x67;&#105;&#x74;&#104;&#117;&#98;&#x2e;&#99;&#111;&#x6d;&#46;">&#115;&#117;&#112;&#x70;&#x6f;&#x72;&#116;&#64;&#x67;&#105;&#116;&#104;&#x75;&#98;&#46;&#99;&#111;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x73;&#117;&#112;&#x70;&#x6f;&#x72;&#116;&#x40;&#103;&#x69;&#116;&#x68;&#117;&#98;&#x2e;&#99;&#111;&#x6d;&#x2e;">&#115;&#117;&#x70;&#x70;&#111;&#x72;&#x74;&#64;&#x67;&#105;&#x74;&#104;&#x75;&#98;&#x2e;&#99;&#x6f;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
@@ -654,10 +760,14 @@ GitHub很贴心的给出了整改意见啊，也就是第一个URL：<a href="ht
     <link href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/"/>
     <updated>2014-05-01T19:58:00+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1</id>
-    <content type="html"><![CDATA[<p>本文内容：<br/>
-1. Core Data概述<br/>
-2. 新建一个Core Data工程<br/>
-3. 总结</p>
+    <content type="html"><![CDATA[<p>本文内容：</p>
+
+<ul>
+<li>Core Data概述</li>
+<li>新建一个Core Data工程</li>
+<li>总结</li>
+</ul>
+
 
 <hr />
 
@@ -1394,10 +1504,10 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[iOS单元测试－XCTest]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-%5Bnil%5Dxctest/"/>
+    <title type="html"><![CDATA[iOS单元测试-XCTest]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-xctest/"/>
     <updated>2014-04-28T13:25:12+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-[nil]xctest</id>
+    <id>http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-xctest</id>
     <content type="html"><![CDATA[<p>第一次接触单元测试还是在SQA课程上，那时我用的是JUnit来对Java程序进行单元测试。如今XCode自带的单元测试工具已经从OCUnit演变到了XCTest，但其本质还是差不多的，其好处在于XCode集成，简单方便</p>
 
 <!--more-->
