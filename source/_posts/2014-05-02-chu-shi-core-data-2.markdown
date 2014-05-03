@@ -316,6 +316,7 @@ DetailViewController.m:
 
 @end
 ``` 
+
 你会发现多了一个`CoreDataGeneratedAccessors`类别，这个类别中的方法是Core Data框架根据你在数据模式编辑器中设置的实体关系自动生成的，你不需要实现它们，Core Data会在运行时实现这些方法  
 如果你偏要想看看其实现机理，在右下方的代码片段库中选择“Core Data To-Many Relationship Accessors”并拖拽到代码中  
 
@@ -354,6 +355,9 @@ DetailViewController.m:
     [self didChangeValueForKey:@"<#relationshipName#>" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
 }
 ``` 
+
+我们需要将<#Capitalized relationship name#>, <#Relationship destination class#> 和 <#Relationship name#>替换为我们定义的连接名，对照下前面`CoreDataGeneratedAccessors`类别中的方法名，你就会明白了  
+
 同样以前标记为`@dynamic`的属性，其实现原理如下：  
 
 ``` 
