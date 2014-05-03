@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "iOS单元测试－XCTest"
+title: "iOS单元测试-XCTest"
 date: 2014-04-28 13:25:12 +0800
 comments: true
 categories: 

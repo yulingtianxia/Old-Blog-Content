@@ -9,9 +9,10 @@ categories:
 
 ---
 本文内容：  
-1. Core Data概述  
-2. 新建一个Core Data工程  
-3. 总结
+
+- Core Data概述  
+- 新建一个Core Data工程  
+- 总结
 
 ---
 <!--more-->
