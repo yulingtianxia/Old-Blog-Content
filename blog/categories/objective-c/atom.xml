@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-03T17:29:09+08:00</updated>
+  <updated>2014-05-03T17:37:42+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -124,8 +124,9 @@ if (![context save:&amp;error]) {
 
 <p>}
 <code>``
-相应地我们也可以针对</code>DetailViewController`进行改造：<br/>
-DetailViewController.h:</p>
+相应地我们也可以针对</code>DetailViewController`进行改造：</p>
+
+<p>DetailViewController.h:</p>
 
 <p>```</p>
 
@@ -195,7 +196,7 @@ DetailViewController.h:</p>
 ```
 这部分比较简单，就不详细解释了，运行程序，跟以前一样（不截图了）</p>
 
-<p>如果想复用MasterViewController里面那些代码，需要做些大改动，具体可以参看<a href="http://objccn.io/issue-1-1/">更轻量的 View Controllers</a>这篇文章</p>
+<p>如果想复用<code>MasterViewController</code>里面那些代码，需要做些大改动，具体可以参看<a href="http://objccn.io/issue-1-1/">更轻量的 View Controllers</a>这篇文章</p>
 
 <h2>使用数据模型设计器</h2>
 
@@ -273,11 +274,11 @@ DetailViewController.h:</p>
 
 <p><img src="/images/blog/QQ20140503-8@2x.png" alt="" /></p>
 
-<p>用上一节中提到的方法，建立这三个新建的Entity的NSManagedObject子类：</p>
+<p>用上一节中提到的方法，建立这三个新建的Entity的<code>NSManagedObject</code>子类：</p>
 
 <p><img src="/images/blog/QQ20140503-9@2x.png" alt="" /></p>
 
-<p>因为创建顺序的问题，当Student创建的时候还不知道有Teacher类，于是其生成的一些方法将Teacher默认为NSManagedObject类：</p>
+<p>因为创建顺序的问题，当Student创建的时候还不知道有<code>Teacher</code>类，于是其生成的一些方法将Teacher默认为<code>NSManagedObject</code>类：</p>
 
 <p>```</p>
 
@@ -302,8 +303,9 @@ DetailViewController.h:</p>
 
 
 <p>@end
-```
-而Teacher类创建的时候已经有了Student类，就不会出现上面的问题：</p>
+```</p>
+
+<p>而Teacher类创建的时候已经有了<code>Student</code>类，就不会出现上面的问题：</p>
 
 <p>```</p>
 
@@ -330,9 +332,10 @@ DetailViewController.h:</p>
 
 
 <p>@end
-```
-虽然Teacher类认识Student类，因为它已经创建了，但是此时Persion类还没有创建，于是此时Student类和Teacher类继承的依然是NSManagedObject，这不是我们想要的结果。<br/>
-解决方法是重新生成下这三个Entity对应的NSManagedObject子类，并覆盖原有的文件：</p>
+```</p>
+
+<p>虽然<code>Teacher</code>类认识<code>Student</code>类，因为它已经创建了，但是此时Persion类还没有创建，于是此时<code>Student</code>类和<code>Teacher</code>类继承的依然是<code>NSManagedObject</code>，这不是我们想要的结果。<br/>
+解决方法是重新生成下这三个Entity对应的<code>NSManagedObject</code>子类，并覆盖原有的文件：</p>
 
 <p>```</p>
 
@@ -361,8 +364,9 @@ DetailViewController.h:</p>
 
 
 <p>@end
-```
-你会发现多了一个CoreDataGeneratedAccessors类别，这个类别中的方法是Core Data框架根据你在数据模式编辑器中设置的实体关系自动生成的，你不需要实现它们，Core Data会在运行时实现这些方法<br/>
+```</p>
+
+<p>你会发现多了一个<code>CoreDataGeneratedAccessors</code>类别，这个类别中的方法是Core Data框架根据你在数据模式编辑器中设置的实体关系自动生成的，你不需要实现它们，Core Data会在运行时实现这些方法<br/>
 如果你偏要想看看其实现机理，在右下方的代码片段库中选择“Core Data To-Many Relationship Accessors”并拖拽到代码中</p>
 
 <p><img src="/images/blog/QQ20140503-10@2x.png" alt="" /></p>
@@ -401,10 +405,13 @@ DetailViewController.h:</p>
   [[self primitiveValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo;] minusSet:value];
   [self didChangeValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo; withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
 }
-```
-同样以前标记为@dynamic的属性，其实现原理如下：</p></li>
+```</p></li>
 </ul>
 
+
+<p>我们需要将&lt;#Capitalized relationship name#>, &lt;#Relationship destination class#> 和 &lt;#Relationship name#>替换为我们定义的连接名，对照下前面<code>CoreDataGeneratedAccessors</code>类别中的方法名，你就会明白了</p>
+
+<p>同样以前标记为<code>@dynamic</code>的属性，其实现原理如下：</p>
 
 <p>```
 &ndash; (&lt;#propertyObjectType#> *)&lt;#propertyName#>
@@ -432,7 +439,7 @@ return value;
 
 <h2>探究Core Data在SQLite中的实现</h2>
 
-<p>在上一节中我们创建了Person，Teacher和Student三个Entity和对应的NSManagedObject子类，下面我们需要在代码中对其进行“实战部署”，并观察它们是如何在SQLite数据库中保存的，这样更有利于理解Core Data机制。</p>
+<p>在上一节中我们创建了<code>Person</code>，<code>Teacher</code>和<code>Student</code>三个Entity和对应的<code>NSManagedObject</code>子类，下面我们需要在代码中对其进行“实战部署”，并观察它们是如何在SQLite数据库中保存的，这样更有利于理解Core Data机制。</p>
 
 <p>为了简单测试，我直接在MasterViewController.m文件中的<code>insertNewObject:</code>方法中加入测试代码（其实关于测试应该利用好Xcode自带的单元测试工具<a href="http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-%5Bnil%5Dxctest/">XCTest</a>，我这里为了方便操作，用了以前添加数据的<code>insertNewObject:</code>方法，关于工程初始代码的讲解，请看我之前的一篇<a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/">教程</a>）</p>
 
