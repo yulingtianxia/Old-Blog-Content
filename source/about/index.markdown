@@ -18,4 +18,6 @@ footer: true
 [畅游导航](http://changyou.yulingtianxia.com)  
 [ColorAtom](http://coloratom.yulingtianxia.com)
 
-在手机上查看我的博客：[Android](/download/blog_android.apk)  [iOS(需越狱)](/download/玉令天下的Blog_0.3_iosbrk.ipa)
+在手机上查看我的博客：[Android](/download/blog_android.apk)  [iOS(需越狱)](/download/玉令天下的Blog_0.3_iosbrk.ipa)  
+
+ <a href='http://me.alipay.com/yulingtianxia'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a>
