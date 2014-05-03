@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Core Data | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/core-data/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-02T14:27:00+08:00</updated>
+  <updated>2014-05-03T16:59:16+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -14,10 +14,424 @@
 
   
   <entry>
+    <title type="html"><![CDATA[初识Core Data(2)]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/05/02/chu-shi-core-data-2/"/>
+    <updated>2014-05-02T20:17:04+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/05/02/chu-shi-core-data-2</id>
+    <content type="html"><![CDATA[<p>文章所使用的项目代码可以到<a href="https://github.com/yulingtianxia/MyCDDemo">这里</a>下载</p>
+
+<!--more-->
+
+
+<h2>自定义NSManagedObject</h2>
+
+<p>在上一篇教程中我们每条数据都是通过<code>NSManagedObject</code>对象装载，通过KVC方式使用<code>valueForKey：</code>方法访问对象属性，但是使用KVC要比使用访问器效率低一点。 只在必要时使用KVC，比如你需要动态选择key或keyPath。</p>
+
+<p><code>objc
+[newEmployee setValue:@”Stig” forKey:firstName];
+[aDepartment setValue:@1000 forKeyPath:manager.salary];
+</code></p>
+
+<p>下面我们将自定义<code>NSManagedObject</code>类，通过对它的继承拓展，使得我们有自己的Event类，并通过访问器方法代替KVC方式来访问对象的属性。<br/>
+按CMD+N或者在可视化建模工具下选择菜单中Editor->Create NSManagedObject Subclass：</p>
+
+<p><img src="/images/blog/QQ20140502-1@2x.png" alt="" /></p>
+
+<p><img src="/images/blog/QQ20140502-2@2x.png" alt="" /></p>
+
+<p>选中需要子类化的Entity（当然我们只有一个Event，自动勾选了）：</p>
+
+<p><img src="/images/blog/QQ20140502-3@2x.png" alt="" /></p>
+
+<p>最后点击Create，于是Event类就创建好了，可以看到属性timeStamp已经自动生成了，并且实现为<code>@dynamic</code></p>
+
+<p>熟悉Objective-C语法的都知道<code>@synthesize</code>实际的意义就是自动生成属性的setter和getter方法。</p>
+
+<p><code>@dynamic</code>就是要告诉编译器，代码中用<code>@dynamic</code>修饰的属性，其getter和setter方法会在程序运行的时候或者用其他方式动态绑定，以便让编译器通过编译。其主要的作用就是用在<code>NSManagerObject</code>对象的属性声明上，由于此类对象的属性一般是从Core Data的属性中生成的，Core Data框架会在程序运行的时候为此类属性生成getter和setter方法。</p>
+
+<p>好的，下面我们改写以前的代码，这次我们将使用Event类的对象完成以前的任务：</p>
+
+<p>在MasterViewController.m文件中加入<code>#import "Event.h"</code>，然后将<code>insertNewObject:</code>方法替换如下</p>
+
+<p>```
+&ndash; (void)insertNewObject:(id)sender
+{</p>
+
+<pre><code>NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+Event *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+
+// If appropriate, configure the new managed object.
+// Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
+</code></pre>
+
+<p>//    [newManagedObject setValue:[NSDate date] forKey:@&ldquo;timeStamp&rdquo;];</p>
+
+<pre><code>newManagedObject.timeStamp = [NSDate date];
+// Save the context.
+NSError *error = nil;
+if (![context save:&amp;error]) {
+     // Replace this implementation with code to handle the error appropriately.
+     // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+    abort();
+}
+</code></pre>
+
+<p>}
+<code>``
+嗯，英文注释还告诉我们通常你应该用访问器方法呢，还说但是现在在这用KVC就避免了向模板添加自定义类的需求，真逗啊  
+依此类推，更改</code>prepareForSegue: sender:`方法：</p>
+
+<p>```
+&ndash; (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{</p>
+
+<pre><code>if ([[segue identifier] isEqualToString:@"showDetail"]) {
+    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+    Event *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    [[segue destinationViewController] setDetailItem:object];
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>还有<code>configureCell: atIndexPath:</code>方法：</p>
+
+<p>```
+&ndash; (void)configureCell:(UITableViewCell <em>)cell atIndexPath:(NSIndexPath </em>)indexPath
+{</p>
+
+<pre><code>Event *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+</code></pre>
+
+<p>//    cell.textLabel.text = [[object valueForKey:@&ldquo;timeStamp&rdquo;] description];</p>
+
+<pre><code>cell.textLabel.text = [object.timeStamp description];
+</code></pre>
+
+<p>}
+<code>``
+相应地我们也可以针对</code>DetailViewController`进行改造：<br/>
+DetailViewController.h:</p>
+
+<p>```</p>
+
+<h1>import &lt;UIKit/UIKit.h></h1>
+
+<p>@class Event;
+@interface DetailViewController : UIViewController</p>
+
+<p>@property (strong, nonatomic) Event *detailItem;</p>
+
+<p>@property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
+@end
+```</p>
+
+<p>DetailViewController.m:</p>
+
+<p>```</p>
+
+<h1>import &ldquo;DetailViewController.h&rdquo;</h1>
+
+<h1>import &ldquo;Event.h&rdquo;</h1>
+
+<p>@interface DetailViewController ()
+&ndash; (void)configureView;
+@end</p>
+
+<p>@implementation DetailViewController</p>
+
+<h1>pragma mark &ndash; Managing the detail item</h1>
+
+<ul>
+<li><p>(void)setDetailItem:(Event *)newDetailItem
+{
+  if (<em>detailItem != newDetailItem) {
+      </em>detailItem = newDetailItem;</p>
+
+<pre><code>  // Update the view.
+  [self configureView];
+</code></pre>
+
+<p>  }
+}</p></li>
+<li><p>(void)configureView
+{
+  // Update the user interface for the detail item.</p>
+
+<p>  if (self.detailItem) {
+//        self.detailDescriptionLabel.text = [[self.detailItem valueForKey:@&ldquo;timeStamp&rdquo;] description];
+      self.detailDescriptionLabel.text = [self.detailItem.timeStamp description];
+  }
+}</p></li>
+<li><p>(void)viewDidLoad
+{
+  [super viewDidLoad];
+  // Do any additional setup after loading the view, typically from a nib.
+  [self configureView];
+}</p></li>
+<li><p>(void)didReceiveMemoryWarning
+{
+  [super didReceiveMemoryWarning];
+  // Dispose of any resources that can be recreated.
+}</p></li>
+</ul>
+
+
+<p>@end
+```
+这部分比较简单，就不详细解释了，运行程序，跟以前一样（不截图了）</p>
+
+<p>如果想复用MasterViewController里面那些代码，需要做些大改动，具体可以参看<a href="http://objccn.io/issue-1-1/">更轻量的 View Controllers</a>这篇文章</p>
+
+<h2>使用数据模型设计器</h2>
+
+<p>点击MyCDDemo.xcdatamodeld文件进入数据模型设计器，点击下方的加号（Add Enity），添加一个Enity，将其名字改为Person。然后添加name和sex属性，类型为string，需要注意的是属性名需要首字母小写，而且我们无需像往常给数据库建表一样为其添加ID字段，因为Core Data中你不需要任何类型的唯一标识Id，也不需要处理表连接。Core Data将在后台自动处理。你所需要做的就是定义对象间的关系。Core Data框架将在后台决定如何生成最佳的底层机制。</p>
+
+<p>与实体名一样，属性的命名也有很多的要求和约定。属性名不能以大写字母开头，不能包含空格，一般都是单数。对于Boolean类型属性，你应该遵循Objective-C实例变量的约定,比如指定一个CustomerOrder对象是否已经发货，那么应该命名属性为shipped，而不是isShipped、hasShipped等。</p>
+
+<p>关于Core Data属性类型，我从网上摘抄了一段比较全面的解释：</p>
+
+<ul>
+<li><p>Undefined选项值是新创建的属性的默认类型；如果属性类型为undefined，项目将无法通过编译。</p></li>
+<li><p>Integer 16/32/64只表示整数，没有小数点。所以如果10除以3，你将会得到3，而余数1会丢失。Integer 16/32/64之间唯一的区别是所表示的数值范围不同。因为Core Data使用符号数，所以起始范围是负数，而不是0。</p>
+
+<ul>
+<li><p>Integer 16 数值范围：-32768~32767；</p></li>
+<li><p>Integer 32 数值范围：-2147483648~2147483647；</p></li>
+<li><p>Integer 64 数值范围：–9223372036854775808~9223372036854775807。</p></li>
+</ul>
+
+
+<p>  标准整型数的最大值和最小值可以在stdint.h中找到。在任何类文件中输入INT32_MAX,选中右击，然后选择Jump To Definition，你将看到许多最大值最小值定义。<strong>实体的属性的类型是Integer 16/32/64，当创建此实体对应的NSManagedObject子类时，属性最终的类型将会是NSNumber</strong>。</p></li>
+<li><p>Double和Float可以认为是有小数部分的整数。它们都是基于二进制数值系统，在CPU运算时很可能会发生舍入误差。比如1/5，如果使用十进制数值系统，可以精确表示为0.2.但在二进制数值系统中，只能表示一个大概，在小数部分你会得到大量数字。<strong>所以不要使用Integer、Double、Float表示货币值。</strong>计算精度越高则越加趋于准确值，但内存占用也会越大。一个Float数使用32bit进行存储，一个Double数使用64bit。它们都使用科学计数法进行存储，所以一个数包含尾数和指数部分。</p>
+
+<p>  在iOS中，最大的Float值是340282346638528859811704183484516925440.000000，最小的Float值是340282346638528859811704183484516925440.000000Double和Float都有一个符号位。而Double比Float的数值范围更大。</p>
+
+<p>  当你决定该选择Float还是Double时，想一下你的属性是否真的需要超过Float提供的7位精度，如果不是，你应该选择Float，因为它更加匹配64bit的iPhone 5S底层处理器。除此之外，如果你想增加浮点数的计算速度而精度并没有严格要求，Float也是最佳选择。<strong>实体的属性的类型是Float或Double，当创建此实体对应的NSManagedObject子类时，属性最终的类型将会是NSNumber。</strong></p></li>
+<li><p><strong>Decimal（十进制）是处理货币值和其他需要十进制场合下最佳选择</strong>，Decimal提供了优秀的计算精度，也消除了计算过程中的舍入误差。因为CPU的本地数制是二进制，所以CPU在处理十进制数时，开销会多一点。<strong>实体的属性的类型是Decimal，当创建此实体对应的NSManagedObject子类时，属性最终的类型将会是NSDecimalNumber。</strong>当你使用NSDecimalNumber执行计算时(如加减乘除计算)，为了保证计算精度，你只能使用它提供的内建方法。更多关于NSDecimalNumber可参见这里。</p></li>
+<li><p>String类型和Objective-C中的NSString类似，用于保存字符数组。当生成实体对应的NSManagedObject子类时，String属性被表示为NSString。</p></li>
+<li><p>Boolean数据类型被用于表示YES/NO值。当生成实体对应的NSManagedObject子类时，Boolean数据类型会被表示为NSNumber。所以为了获取布尔值，你需要想NSNumber对象发送boolValue消息。</p></li>
+<li><p>Date类型是自解释类型。用来存储日期和时间。<strong>当生成实体对应的NSManagedObject子类时，Date类型会被表示为NSDate。</strong></p></li>
+<li><p>Binary Data用来表示照片，音频，或一些BLOB类型数据(&ldquo;Binary Large OBjects&rdquo; such as image and sound data)。<strong>当生成实体对应的NSManagedObject子类时，Binary Data数据类型会被表示为NSData。</strong></p></li>
+<li><p>Transformable属性类型用于存储一个Objective-C对象。该属性类型允许你存储任何类的实例，比如你使用Transformable属性表示UIColor。<strong>当生成NSManagedObject子类时，Transformable类型会被表示为id。</strong>对于id对象的保存和解档需要使用一个NSValueTransformer的实例或子类的实例。由该类负责属性值与NSData之间的转换。但这也相当的简单，尤其是当属性值的类型已经实现了NSCoding协议，此时系统会自动提供一个默认的NSValueTransformer实例来完成归档和解档。</p></li>
+</ul>
+
+
+<p><img src="/images/blog/QQ20140503-1@2x.png" alt="" /></p>
+
+<p>选择一个属性，在右侧的Data Model Inspector中可以对属性进行更为详细的设置，而且这些设置项会根据你所设置的属性类型不同而不同，大致分为以下几类：</p>
+
+<ul>
+<li>Transient（瞬时）选项表示属性不会存储到持久化存储文件中。Transient通常用在属性的值是由其他属性计算或合成而来（比如fullName属性是根据Persion类实例的firstName和lastName拼接而来）。</li>
+<li>Optional（可选）选项表示当前属性的值允许为空。如果将属性指定为Optional，那么即使属性的值为空，实体的NSManagedObject实例也可被保存。如果该值是必选的（不选中Optional则为必选），如果属性值为空，NSManagedObject对象上下文将拒绝保存这个属性值不完整的NSManagedObject对象（当你尝试并保存上下文，你将接收到一个NSError对象）。所有的属性最初的状态都是Optinal。</li>
+<li>Indexed选项表示底层的持久化存储文件应该为该属性生成一个索引；如果你使用基于多个属性的查询条件来提取对象，指定此类属性为Indexed，可以大幅提高提取速度。</li>
+<li>Reg.Ex是Regular Expression的缩写，主要是用来验证属性值是否匹配特定的模式。此选项只对String类型有效。</li>
+<li>Validation可以保证非法数据不被保存进持久化存储文件中。数值属性类型（Integer 16/32/64、Float、Double、Decimal）都有maximum和minimum最大值最小值设定。你也可以对String类型设置最大长度和最小长度。或对Date类型设置日期范围。不过最好的做法是当用户向UITextField中输入数据时就开始验证数据，而非等到向上下文发送save消息才验证数据。</li>
+<li>除了Transformable和Binary Data类型以外，Default适用于所有属性类型。它被用来配置属性的默认值。</li>
+<li>Allows External Storage允许大尺寸的二进制数据可以保存在持久化存储文件的外部。当你保存如照片，音频或视频时，建议是选中该选项， 这样Core Data就会对大于1MB的数据保存在持久化存储文件的外部。</li>
+</ul>
+
+
+<p>如果你细心的话，会发现无论是属性还是实体等选项，右侧的Data Model Inspector经常会出现User Info一栏。<br/>
+在managed object model中很多元素，比如entities, attributes,和 relationships，有一个相关联的用户信息字典。你可以在用户信息字典中以键值对的形式放入你想要的任何信息。这里常用的信息有实体的版本详情，还有fetched property中谓词（predicate）用到的值。</p>
+
+<p>说了一大堆，再添加两个实体吧：Teacher和Student，都继承自Person：</p>
+
+<p><img src="/images/blog/QQ20140503-2@2x.png" alt="" /></p>
+
+<p><img src="/images/blog/QQ20140503-3@2x.png" alt="" /></p>
+
+<p>点击右下方的Editor Style切换到Graph模式：</p>
+
+<p><img src="/images/blog/QQ20140503-4@2x.png" alt="" /></p>
+
+<p>选中Teacher，长按Add Attribute会弹出所有的选项（同样你也可以试试长按Add Enity），选择Add Relationship，添加一个关系，命名为students，Type为To Many，目标为Student（一个老师教很多学生）：</p>
+
+<p><img src="/images/blog/QQ20140503-5@2x.png" alt="" /></p>
+
+<p><img src="/images/blog/QQ20140503-6@2x.png" alt="" /></p>
+
+<p>我们再尝试一种添加关系的新方法：把以前在Teacher中建立的students删除，选中Student，按住Ctrl，鼠标拖至Teacher，这样一个双向的关系就建立起来了：</p>
+
+<p><img src="/images/blog/QQ20140503-7@2x.png" alt="" /></p>
+
+<p>分别编辑双方的关系，Tpye都是To Many：</p>
+
+<p><img src="/images/blog/QQ20140503-8@2x.png" alt="" /></p>
+
+<p>用上一节中提到的方法，建立这三个新建的Entity的NSManagedObject子类：</p>
+
+<p><img src="/images/blog/QQ20140503-9@2x.png" alt="" /></p>
+
+<p>因为创建顺序的问题，当Student创建的时候还不知道有Teacher类，于是其生成的一些方法将Teacher默认为NSManagedObject类：</p>
+
+<p>```</p>
+
+<h1>import &lt;Foundation/Foundation.h></h1>
+
+<h1>import &lt;CoreData/CoreData.h></h1>
+
+<p>@interface Student : NSManagedObject</p>
+
+<p>@property (nonatomic, retain) NSNumber * grade;
+@property (nonatomic, retain) NSSet *teachers;
+@end</p>
+
+<p>@interface Student (CoreDataGeneratedAccessors)</p>
+
+<ul>
+<li>(void)addTeachersObject:(NSManagedObject *)value;</li>
+<li>(void)removeTeachersObject:(NSManagedObject *)value;</li>
+<li>(void)addTeachers:(NSSet *)values;</li>
+<li>(void)removeTeachers:(NSSet *)values;</li>
+</ul>
+
+
+<p>@end
+```
+而Teacher类创建的时候已经有了Student类，就不会出现上面的问题：</p>
+
+<p>```</p>
+
+<h1>import &lt;Foundation/Foundation.h></h1>
+
+<h1>import &lt;CoreData/CoreData.h></h1>
+
+<p>@class Student;</p>
+
+<p>@interface Teacher : NSManagedObject</p>
+
+<p>@property (nonatomic, retain) NSString * course;
+@property (nonatomic, retain) NSSet *students;
+@end</p>
+
+<p>@interface Teacher (CoreDataGeneratedAccessors)</p>
+
+<ul>
+<li>(void)addStudentsObject:(Student *)value;</li>
+<li>(void)removeStudentsObject:(Student *)value;</li>
+<li>(void)addStudents:(NSSet *)values;</li>
+<li>(void)removeStudents:(NSSet *)values;</li>
+</ul>
+
+
+<p>@end
+```
+虽然Teacher类认识Student类，因为它已经创建了，但是此时Persion类还没有创建，于是此时Student类和Teacher类继承的依然是NSManagedObject，这不是我们想要的结果。<br/>
+解决方法是重新生成下这三个Entity对应的NSManagedObject子类，并覆盖原有的文件：</p>
+
+<p>```</p>
+
+<h1>import &lt;Foundation/Foundation.h></h1>
+
+<h1>import &lt;CoreData/CoreData.h></h1>
+
+<h1>import &ldquo;Person.h&rdquo;</h1>
+
+<p>@class Teacher;</p>
+
+<p>@interface Student : Person</p>
+
+<p>@property (nonatomic, retain) NSNumber * grade;
+@property (nonatomic, retain) NSSet *teachers;
+@end</p>
+
+<p>@interface Student (CoreDataGeneratedAccessors)</p>
+
+<ul>
+<li>(void)addTeachersObject:(Teacher *)value;</li>
+<li>(void)removeTeachersObject:(Teacher *)value;</li>
+<li>(void)addTeachers:(NSSet *)values;</li>
+<li>(void)removeTeachers:(NSSet *)values;</li>
+</ul>
+
+
+<p>@end
+```
+你会发现多了一个CoreDataGeneratedAccessors类别，这个类别中的方法是Core Data框架根据你在数据模式编辑器中设置的实体关系自动生成的，你不需要实现它们，Core Data会在运行时实现这些方法<br/>
+如果你偏要想看看其实现机理，在右下方的代码片段库中选择“Core Data To-Many Relationship Accessors”并拖拽到代码中</p>
+
+<p><img src="/images/blog/QQ20140503-9@2x.png" alt="" /></p>
+
+<p>生成的代码如下：</p>
+
+<p>```
+&ndash; (void)add&lt;#CapitalizedRelationshipName#>Object:(&lt;#relationship destination class#> *)value
+{</p>
+
+<pre><code>NSSet *changedObjects = [NSSet setWithObject:value];
+[self willChangeValueForKey:@"&lt;#relationshipName#&gt;" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+[[self primitiveValueForKey:@"&lt;#relationshipName#&gt;"] addObject:value];
+[self didChangeValueForKey:@"&lt;#relationshipName#&gt;" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+</code></pre>
+
+<p>}</p>
+
+<ul>
+<li><p>(void)remove&lt;#CapitalizedRelationshipName#>Object:(&lt;#relationship destination class#> <em>)value
+{
+  NSSet </em>changedObjects = [NSSet setWithObject:value];
+  [self willChangeValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo; withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+  [[self primitiveValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo;] removeObject:value];
+  [self didChangeValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo; withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+}</p></li>
+<li><p>(void)add&lt;#CapitalizedRelationshipName#>:(NSSet *)value
+{  <br/>
+  [self willChangeValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo; withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+  [[self primitiveValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo;] unionSet:value];
+  [self didChangeValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo; withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+}</p></li>
+<li><p>(void)remove&lt;#CapitalizedRelationshipName#>:(NSSet *)value
+{
+  [self willChangeValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo; withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+  [[self primitiveValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo;] minusSet:value];
+  [self didChangeValueForKey:@&ldquo;&lt;#relationshipName#>&rdquo; withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+}
+```
+同样以前标记为@dynamic的属性，其实现原理如下：</p></li>
+</ul>
+
+
+<p>```
+&ndash; (&lt;#propertyObjectType#> *)&lt;#propertyName#>
+{</p>
+
+<pre><code>[self willAccessValueForKey:@"&lt;#propertyName#&gt;"];
+&lt;#propertyObjectType#&gt; *value = [self primitiveValueForKey:@"&lt;#propertyName#&gt;"];
+[self didAccessValueForKey:@"&lt;#propertyName#&gt;"];
+return value;
+</code></pre>
+
+<p>}</p>
+
+<ul>
+<li>(void)set&lt;#CapitalizedPropertyName#>:(&lt;#propertyObjectType#> *)value
+{
+  [self willChangeValueForKey:@&ldquo;&lt;#propertyName#>&rdquo;];
+  [self setPrimitiveValue:value forKey:@&ldquo;&lt;#propertyName#>&rdquo;];
+  [self didChangeValueForKey:@&ldquo;&lt;#propertyName#>&rdquo;];
+}
+```
+现在，我们并不需要知道他们的实现方法是如何被动态生成的，估计是用到了block或者delegate。</li>
+</ul>
+
+
+<h2>探究Core Data在SQLite中的样子</h2>
+
+<p>在上一节中我们创建了Person，Teacher和Student三个Entity和对应的NSManagedObject子类，下面我们需要在代码中对其进行“实战部署”，并观察它们是如何在SQLite数据库中保存的，这样更有利于理解Core Data机制。</p>
+
+<p>为了简单测试，我直接在MasterViewController.m文件中的<code>insertNewObject:</code>方法中加入测试代码（其实关于测试应该利用好Xcode自带的单元测试工具<a href="http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-%5Bnil%5Dxctest/">XCTest</a>，我这里为了方便操作，用了以前添加数据的<code>insertNewObject:</code>方法，关于工程初始代码的讲解，请看我之前的一篇<a href="">文章</a>）</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[初识Core Data(1)]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data%281%29/"/>
+    <link href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/"/>
     <updated>2014-05-01T19:58:00+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data(1)</id>
+    <id>http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1</id>
     <content type="html"><![CDATA[<p>本文内容：<br/>
 1. Core Data概述<br/>
 2. 新建一个Core Data工程<br/>
