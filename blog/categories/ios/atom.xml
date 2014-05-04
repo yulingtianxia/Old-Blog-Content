@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-04T21:12:59+08:00</updated>
+  <updated>2014-05-04T21:17:02+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -20,7 +20,7 @@
     <id>http://yulingtianxia.com/blog/2014/05/04/spritekitzuo-biao-xi</id>
     <content type="html"><![CDATA[<p>前一阵子在用SpriteKit写一个小游戏的时候，因为对坐标系系统不是很熟悉，结果耽误了不少时间，现在将这些SKNode(及其子类)中常用的部分记下来，以利于以后快速查找</p>
 
-<p>本文测试用到的工程代码可以在<a href="https://github.com/yulingtianxia/NodesCoordinates/tree/master">下载</a></p>
+<p>本文测试用到的工程代码可以在<a href="https://github.com/yulingtianxia/NodesCoordinates/tree/master">这里</a>下载</p>
 
 <p><strong>一般来说，SpriteKit中所有坐标系都是x轴正方向向右，y轴正方向向上的，后面不再重复</strong></p>
 
