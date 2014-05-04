@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-03T22:27:11+08:00</updated>
+  <updated>2014-05-04T21:12:59+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,149 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[SpriteKit坐标系]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/05/04/spritekitzuo-biao-xi/"/>
+    <updated>2014-05-04T19:36:26+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/05/04/spritekitzuo-biao-xi</id>
+    <content type="html"><![CDATA[<p>前一阵子在用SpriteKit写一个小游戏的时候，因为对坐标系系统不是很熟悉，结果耽误了不少时间，现在将这些SKNode(及其子类)中常用的部分记下来，以利于以后快速查找</p>
+
+<p>本文测试用到的工程代码可以在<a href="https://github.com/yulingtianxia/NodesCoordinates/tree/master">下载</a></p>
+
+<p><strong>一般来说，SpriteKit中所有坐标系都是x轴正方向向右，y轴正方向向上的，后面不再重复</strong></p>
+
+<!--more-->
+
+
+<h2>SKScene</h2>
+
+<p>虽然是SKNode的子类的子类，但是因为所有SKNode都需要在场景上构建布局，所以比较重要，其原点在左下角，y轴向上，x轴向右；正是因为UIView的原点在左上角，y轴向下，x轴向右，所以在SKScene中判别手势坐标的时候需要将y轴反向：</p>
+
+<p>``` objc
+&ndash; (void)handlePanFrom:(UIPanGestureRecognizer *)recognizer {</p>
+
+<pre><code>if (recognizer.state == UIGestureRecognizerStateBegan) {
+    CGPoint touchLocation = [recognizer locationInView:recognizer.view];
+    touchLocation = [self convertPointFromView:touchLocation];
+    AtomNode *touchedNode = (AtomNode *)[self nodeAtPoint:touchLocation];
+    if (isAllAtomStatic&amp;&amp;[touchedNode.name isEqualToString:AtomName]) {
+        touchedAtom = touchedNode;
+        isPanningAtom = YES;
+    }
+
+
+} else if (recognizer.state == UIGestureRecognizerStateChanged) {
+
+    CGPoint translation = [recognizer translationInView:recognizer.view];
+    translation = CGPointMake(translation.x, -translation.y);
+    if (isPanningAtom==YES) {
+        touchedAtom.position = CGPointMake(touchedAtom.position.x+translation.x, touchedAtom.position.y+translation.y);
+    }
+    [recognizer setTranslation:CGPointZero inView:recognizer.view];
+
+} else if (recognizer.state == UIGestureRecognizerStateEnded) {
+
+    if (isPanningAtom==YES) {
+        CGPoint velocity = [recognizer velocityInView:recognizer.view];
+        touchedAtom.physicsBody.velocity =CGVectorMake(velocity.x, -velocity.y);
+        isPanningAtom = NO;
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>在第一个判断分支中，因为用了<code>convertPointFromView</code>方法，已经将CGPoint从UIView坐标系转为SKScene坐标系，所以不用反转，其余两个分支中的代码均需要反转y轴。</p>
+
+<h2>SKNode</h2>
+
+<p>SKNode的原点在正中央，也就是(0.5,0.5)<br/>
+我构建了一个App，分别将被测试的Node放置在场景中央，并用一个黑色的小圆圈代表Node的坐标系的原点<br/>
+因为SKNode比较抽象，没填充内容，所以只显示了一个原点：</p>
+
+<p><img src="/images/blog/SKNode.png" alt="" /></p>
+
+<p>如果想填充些东西来证明SKNode的坐标系原点的确在其中央，将下面代码注释部分取消注释即可：</p>
+
+<p>```</p>
+
+<h1>import &ldquo;NodeButton.h&rdquo;</h1>
+
+<p>@implementation NodeButton
+&ndash;(id)init{</p>
+
+<pre><code>if (self = [super initWithName:@"SKNode"]) {
+    SKNode *sknode = (SKNode *)self.node;
+    SKSpriteNode *fill = [[SKSpriteNode alloc] init];
+    fill.size = CGSizeMake(100, 100);
+    fill.color = [UIColor redColor];
+    fill.colorBlendFactor = 1;
+</code></pre>
+
+<p>//        [sknode addChild:fill];</p>
+
+<pre><code>}
+return self;
+</code></pre>
+
+<p>}
+@end
+```</p>
+
+<h2>SKEmitterNode</h2>
+
+<p>粒子系统比较有趣，它从原点发射大量粒子，不同的粒子系统也会构筑不同的效果，因为它没有边界，还可调节发射粒子的数量方向速度等，这也使得原点在整个粒子系统中的位置有了错觉，但其本质还是(0.5,0.5)，也就是在中心</p>
+
+<p><img src="/images/blog/SKEmitterNode.png" alt="" /></p>
+
+<p>这个火苗看起来中心在哪呢？当然在圆圈处！因为粒子是从圆圈处的区域产生的，然后向上发射</p>
+
+<h2>SKLabelNode</h2>
+
+<p>label比较特殊，可能是因为需要现实文字的关系吧，其坐标原点在中下方，但不是(0.5,0)，因为如果文字包含y，p之类的“带尾巴”的字符，那么将会突出十字线下方，可以理解为写英文用的四线本的第三条线？因为字号大小不同或者提子不同，也会影响到原点位置。</p>
+
+<p>知道其原点精确位置对于编程来说意义不大，以后有时间会深究下</p>
+
+<p><img src="/images/blog/SKLabelNode.png" alt="" /></p>
+
+<h2>SKShapeNode</h2>
+
+<p>这个类也很特殊，因为其frame是根据path填充内容来确定的，而原点又是其在父坐标的position处，那么SKShapeNode的原点具体位置在哪也就没意义了，只要按照其position的位置当作原点建立坐标系就好</p>
+
+<p>```
+@implementation ShapeButton
+&ndash;(id)init{</p>
+
+<pre><code>if (self = [super initWithName:@"SKShapeNode"]) {
+    SKShapeNode *shape = (SKShapeNode *)self.node;
+    shape.path = CGPathCreateWithRect(CGRectMake(-50,-50, 100, 100), NULL);
+    shape.strokeColor = [UIColor redColor];
+
+}
+return self;
+</code></pre>
+
+<p>}
+@end
+```</p>
+
+<p>下图是我故意画了个正方形使其居中：</p>
+
+<p><img src="/images/blog/SKShapeNode.png" alt="" /></p>
+
+<h2>SKSpriteNode</h2>
+
+<p>坐标原点在其frame中心，也就是(0.5,0.5)</p>
+
+<p><img src="/images/blog/SKSpriteNode.png" alt="" /></p>
+
+<h2>总结</h2>
+
+<p>其实之所以会出现坐标系原点位置一说，是因为不同类型的Node其frame大小也不一样，而其原点在其frame中的位置也不一样，这就给人一种错觉：有的Node原点在左下角，只暴漏给我们第一象限；有的Node原点在中间，其四个象限都被填充了。。。无论原点在哪，其x轴，y轴方向都是不变的，所以本质都是一样的，只是写代码的时候需要注意，比如如果觉得将一个SKLabelNode的position设置为屏幕中心，则其文字内容就会正好居中，其实那就错了，因为y轴并没有居中。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS单元测试-XCTest]]></title>
@@ -752,58 +895,6 @@ if([SLComposeViewController isAvailableForServiceType:SLServiceTypeSinaWeibo])
 
 <p>```
 这种方法我没试过，代码是照抄自前面提到的<a href="https://github.com/yulingtianxia/ios6ShareDemo.git">Demo</a>里</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[用DFS算法计算SpriteKit中复合体的构成]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/"/>
-    <updated>2014-04-21T21:06:55+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng</id>
-    <content type="html"><![CDATA[<p>在使用Sprite Kit开发iOS游戏的时候，有时我们需要把一些<code>SKNode</code>(或者其子类)的物理体(<code>SKPhysicsBody</code>)通过某种方式连在一起组合成一个<code>SKPhysicsJoint</code>，这样就可以让这个连接体在物理世界一起被模拟。例如我们可以将两个<code>SKNode</code>用绳子(<code>SKPhysicsJointLimit</code>)，弹簧(<code>SKPhysicsJointSpring</code>)，胶水(<code>SKPhysicsJointFixed</code>)，钉子(<code>SKPhysicsJointPin</code>)，滑轨(<code>SKPhysicsJointSliding</code>)组合在一起。</p>
-
-<p>想象一些复杂的情况，比如玩家需要将游戏中多个相同的<code>SKNode</code>按照某种规则组合到一起，每个组合体包含<code>SKNode</code>的多少甚至形状(树或是环)都是游戏衡量玩家得分的标准。举个简单的例子：游戏里有好多彩色的球，玩家操作小球把它们粘在一起，将5个球粘在一起那么就能获得一份奖励</p>
-
-<p>但是每个<code>SKPhysicsJoint</code>只负责将两个<code>SKPhysicsBody</code>连在一起</p>
-
-<!--more-->
-
-
-<p>其实这个问题可以简单归结为求图论中的联通图<br/>
-我写了个<code>Graph</code>类，只需在初始化的时候传入想要参加计算的<code>SKNode</code>数组即可，主要是用递归实现<code>DFS(深度优先搜索)</code>，维护N个集合(<code>NSSet</code>)，N的个数就是游戏中子图的个数，最小的子图就是一个<code>SKNode</code>。</p>
-
-<p>代码：</p>
-
-<script src="https://gist.github.com/yulingtianxia/11142742.js"></script>
-
-
-<p>可以在任意你需要的时候获取联通图信息：</p>
-
-<p>``` objc</p>
-
-<p>NSMutableArray <em>nodes = [NSMutableArray array];
-[thisAtom.scene enumerateChildNodesWithName:AtomName usingBlock:^(SKNode </em>node, BOOL *stop) {</p>
-
-<pre><code>    [nodes addObject:node];
-}];
-</code></pre>
-
-<p>Graph *graph = [[Graph alloc] initWithNodes:nodes];
-for (int i=0; i&lt;[graph.sets count]; i++) {</p>
-
-<pre><code>NSLog(@"%@",graph.sets[i]);
-</code></pre>
-
-<p>}
-```</p>
-
-<p>完整代码在<a href="https://github.com/yulingtianxia/MyFirstGame.git">这里</a>的<code>ColorAtom</code>工程<br/>
-在向<code>SKSpriteNode.userdata</code>写键值对的时候，发现写进去后再读取依然是nil，这是因为<code>userdata</code>属性完全归用户随意使用，苹果甚至在SKSpriteNode初始化的时候干脆默认<code>userdata</code>是<code>nil</code>，所以需要初始化下：</p>
-
-<p><code>
-((SKSpriteNode *)nodes[i]).userData = [NSMutableDictionary dictionary];
-</code>
-感谢StackOverFlow网友的回答：<a href="http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values">http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values</a></p>
 ]]></content>
   </entry>
   

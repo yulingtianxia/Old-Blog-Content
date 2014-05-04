@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-03T22:27:11+08:00</updated>
+  <updated>2014-05-04T21:12:59+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,197 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[SpriteKit坐标系]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/05/04/spritekitzuo-biao-xi/"/>
+    <updated>2014-05-04T19:36:26+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/05/04/spritekitzuo-biao-xi</id>
+    <content type="html"><![CDATA[<p>前一阵子在用SpriteKit写一个小游戏的时候，因为对坐标系系统不是很熟悉，结果耽误了不少时间，现在将这些SKNode(及其子类)中常用的部分记下来，以利于以后快速查找</p>
+
+<p>本文测试用到的工程代码可以在<a href="https://github.com/yulingtianxia/NodesCoordinates/tree/master">下载</a></p>
+
+<p><strong>一般来说，SpriteKit中所有坐标系都是x轴正方向向右，y轴正方向向上的，后面不再重复</strong></p>
+
+<!--more-->
+
+
+<h2>SKScene</h2>
+
+<p>虽然是SKNode的子类的子类，但是因为所有SKNode都需要在场景上构建布局，所以比较重要，其原点在左下角，y轴向上，x轴向右；正是因为UIView的原点在左上角，y轴向下，x轴向右，所以在SKScene中判别手势坐标的时候需要将y轴反向：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">handlePanFrom:</span><span class="p">(</span><span class="n">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">recognizer</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">recognizer</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateBegan</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">touchLocation</span> <span class="o">=</span> <span class="p">[</span><span class="n">recognizer</span> <span class="nl">locationInView:</span><span class="n">recognizer</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">touchLocation</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">convertPointFromView:</span><span class="n">touchLocation</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">AtomNode</span> <span class="o">*</span><span class="n">touchedNode</span> <span class="o">=</span> <span class="p">(</span><span class="n">AtomNode</span> <span class="o">*</span><span class="p">)[</span><span class="n">self</span> <span class="nl">nodeAtPoint:</span><span class="n">touchLocation</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">isAllAtomStatic</span><span class="o">&amp;&amp;</span><span class="p">[</span><span class="n">touchedNode</span><span class="p">.</span><span class="n">name</span> <span class="nl">isEqualToString:</span><span class="n">AtomName</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">touchedAtom</span> <span class="o">=</span> <span class="n">touchedNode</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">isPanningAtom</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">recognizer</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateChanged</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">translation</span> <span class="o">=</span> <span class="p">[</span><span class="n">recognizer</span> <span class="nl">translationInView:</span><span class="n">recognizer</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">translation</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">translation</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">translation</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">isPanningAtom</span><span class="o">==</span><span class="n">YES</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">touchedAtom</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">touchedAtom</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="o">+</span><span class="n">translation</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">touchedAtom</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="o">+</span><span class="n">translation</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">recognizer</span> <span class="nl">setTranslation:</span><span class="n">CGPointZero</span> <span class="nl">inView:</span><span class="n">recognizer</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">recognizer</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateEnded</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">isPanningAtom</span><span class="o">==</span><span class="n">YES</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">CGPoint</span> <span class="n">velocity</span> <span class="o">=</span> <span class="p">[</span><span class="n">recognizer</span> <span class="nl">velocityInView:</span><span class="n">recognizer</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">touchedAtom</span><span class="p">.</span><span class="n">physicsBody</span><span class="p">.</span><span class="n">velocity</span> <span class="o">=</span><span class="n">CGVectorMake</span><span class="p">(</span><span class="n">velocity</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">velocity</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">isPanningAtom</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>在第一个判断分支中，因为用了<code>convertPointFromView</code>方法，已经将CGPoint从UIView坐标系转为SKScene坐标系，所以不用反转，其余两个分支中的代码均需要反转y轴。</p>
+
+<h2>SKNode</h2>
+
+<p>SKNode的原点在正中央，也就是(0.5,0.5)<br/>
+我构建了一个App，分别将被测试的Node放置在场景中央，并用一个黑色的小圆圈代表Node的坐标系的原点<br/>
+因为SKNode比较抽象，没填充内容，所以只显示了一个原点：</p>
+
+<p><img src="http://yulingtianxia.com/images/blog/SKNode.png" alt="" /></p>
+
+<p>如果想填充些东西来证明SKNode的坐标系原点的确在其中央，将下面代码注释部分取消注释即可：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;NodeButton.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">NodeButton</span>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithName:</span><span class="s">@&quot;SKNode&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">SKNode</span> <span class="o">*</span><span class="n">sknode</span> <span class="o">=</span> <span class="p">(</span><span class="n">SKNode</span> <span class="o">*</span><span class="p">)</span><span class="n">self</span><span class="p">.</span><span class="n">node</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">SKSpriteNode</span> <span class="o">*</span><span class="n">fill</span> <span class="o">=</span> <span class="p">[[</span><span class="n">SKSpriteNode</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">fill</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">fill</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">fill</span><span class="p">.</span><span class="n">colorBlendFactor</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//        [sknode addChild:fill];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h2>SKEmitterNode</h2>
+
+<p>粒子系统比较有趣，它从原点发射大量粒子，不同的粒子系统也会构筑不同的效果，因为它没有边界，还可调节发射粒子的数量方向速度等，这也使得原点在整个粒子系统中的位置有了错觉，但其本质还是(0.5,0.5)，也就是在中心</p>
+
+<p><img src="http://yulingtianxia.com/images/blog/SKEmitterNode.png" alt="" /></p>
+
+<p>这个火苗看起来中心在哪呢？当然在圆圈处！因为粒子是从圆圈处的区域产生的，然后向上发射</p>
+
+<h2>SKLabelNode</h2>
+
+<p>label比较特殊，可能是因为需要现实文字的关系吧，其坐标原点在中下方，但不是(0.5,0)，因为如果文字包含y，p之类的“带尾巴”的字符，那么将会突出十字线下方，可以理解为写英文用的四线本的第三条线？因为字号大小不同或者提子不同，也会影响到原点位置。</p>
+
+<p>知道其原点精确位置对于编程来说意义不大，以后有时间会深究下</p>
+
+<p><img src="http://yulingtianxia.com/images/blog/SKLabelNode.png" alt="" /></p>
+
+<h2>SKShapeNode</h2>
+
+<p>这个类也很特殊，因为其frame是根据path填充内容来确定的，而原点又是其在父坐标的position处，那么SKShapeNode的原点具体位置在哪也就没意义了，只要按照其position的位置当作原点建立坐标系就好</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@implementation</span> <span class="nc">ShapeButton</span>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithName:</span><span class="s">@&quot;SKShapeNode&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">SKShapeNode</span> <span class="o">*</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">SKShapeNode</span> <span class="o">*</span><span class="p">)</span><span class="n">self</span><span class="p">.</span><span class="n">node</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">shape</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">CGPathCreateWithRect</span><span class="p">(</span><span class="n">CGRectMake</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">shape</span><span class="p">.</span><span class="n">strokeColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>下图是我故意画了个正方形使其居中：</p>
+
+<p><img src="http://yulingtianxia.com/images/blog/SKShapeNode.png" alt="" /></p>
+
+<h2>SKSpriteNode</h2>
+
+<p>坐标原点在其frame中心，也就是(0.5,0.5)</p>
+
+<p><img src="http://yulingtianxia.com/images/blog/SKSpriteNode.png" alt="" /></p>
+
+<h2>总结</h2>
+
+<p>其实之所以会出现坐标系原点位置一说，是因为不同类型的Node其frame大小也不一样，而其原点在其frame中的位置也不一样，这就给人一种错觉：有的Node原点在左下角，只暴漏给我们第一象限；有的Node原点在中间，其四个象限都被填充了。。。无论原点在哪，其x轴，y轴方向都是不变的，所以本质都是一样的，只是写代码的时候需要注意，比如如果觉得将一个SKLabelNode的position设置为屏幕中心，则其文字内容就会正好居中，其实那就错了，因为y轴并没有居中。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[初识Core Data(2)]]></title>
@@ -716,7 +907,7 @@
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#111;&#x3a;&#x73;&#x75;&#x70;&#112;&#x6f;&#x72;&#x74;&#64;&#x67;&#105;&#116;&#x68;&#117;&#98;&#x2e;&#99;&#x6f;&#x6d;&#x2e;">&#x73;&#x75;&#112;&#112;&#111;&#114;&#x74;&#x40;&#103;&#x69;&#x74;&#x68;&#117;&#x62;&#46;&#99;&#111;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#115;&#117;&#112;&#112;&#x6f;&#114;&#x74;&#64;&#x67;&#105;&#x74;&#104;&#x75;&#98;&#x2e;&#x63;&#x6f;&#109;&#46;">&#115;&#117;&#112;&#x70;&#111;&#x72;&#116;&#64;&#103;&#105;&#116;&#104;&#117;&#98;&#46;&#x63;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
@@ -5320,308 +5511,6 @@ typedef double (^SpeedFunction)(double);
 <p>&nbsp;</p>
 
 <p>本文由<span style="text-decoration: underline;"><span style="color: #339966;"><strong><a href="http://beyondvincent.com/"><span style="color: #339966; text-decoration: underline;">破船</span></a></strong></span></span>翻译●转载请注明出处●<time datetime="2013-05-18T17:37:00+08:00" data-updated="true">2013-07-08</time></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS单例模式 or NSUserDefaults]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults/"/>
-    <updated>2014-04-07T15:07:08+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults</id>
-    <content type="html"><![CDATA[<p>本文内容：</p>
-
-<ul>
-<li>iOS的单例模式</li>
-<li>NSUserDefaults的使用</li>
-<li>总结：iOS单例模式 and NSUserDefaults</li>
-</ul>
-
-
-<!-- more-->
-
-
-<h1>iOS的单例模式</h1>
-
-<p>提起单例模式大家都不陌生，什么懒汉式，饿汉式，老汉式。。。扯远了</p>
-
-<p>一开始觉得Objective－C中没有绝对的私有方法，该如何实现单例模式呢？后来觉得想多了，限制构造方法的使用式徒劳的，因为程序是人写的，既然是单例了，那就老老实实调用自己写的getInstance吧。Java笑了？一个反射打趴下！
-在ARC诞生之前，可以通过重写<code>allocWithZone</code>方法等来实现，下面是苹果官方的单例写法：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">static</span> <span class="n">MyGizmoClass</span> <span class="o">*</span><span class="n">sharedGizmoManager</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">MyGizmoClass</span><span class="o">*</span><span class="p">)</span><span class="nf">sharedManager</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">sharedGizmoManager</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span> <span class="c1">// assignment not done here</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">sharedGizmoManager</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">allocWithZone:</span><span class="p">(</span><span class="n">NSZone</span> <span class="o">*</span><span class="p">)</span><span class="nv">zone</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">sharedGizmoManager</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">sharedGizmoManager</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">allocWithZone:</span><span class="n">zone</span><span class="p">];</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">sharedGizmoManager</span><span class="p">;</span>  <span class="c1">// assignment and return on first allocation</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span> <span class="c1">//on subsequent allocation attempts return nil</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">copyWithZone:</span><span class="p">(</span><span class="n">NSZone</span> <span class="o">*</span><span class="p">)</span><span class="nv">zone</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">retain</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">unsigned</span><span class="p">)</span><span class="nf">retainCount</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">UINT_MAX</span><span class="p">;</span>  <span class="c1">//denotes an object that cannot be released</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">release</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//do nothing</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">autorelease</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>在ARC时代，程序员不用费心计算static的实例被引用多少次，需要release巴拉巴拉。。。而自从有了GCD，iOS的单例模式变得超级简单了：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">Singleton</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedInstance</span><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="kt">id</span> <span class="n">instance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">instance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-instance为将被实例化的对象，为了让instance只被实例化一次，用到了GCD(Grand Central Dispatch)中的<code>dispatch_once</code>方法。该方法有两个参数，第二个参数是一个block，只会被执行一次。而第一个参数是一个谓词，用于判断代码块（block）是否执行完，这个谓词只能是全局或静态变量，类型为dispatch_once_t，其实dispatch_once_t就是long类型。你可以理解为第一个参数是个标识位，能保证记录第二个参数block的执行情况，即使是在最复杂的多线程并发执行的情况下，也就是说，GCD的这个方法是线程安全的。如果你对block这种类型比较陌生，可以把它暂时当作函数指针，当然，它比函数指针还要强大。<br/>
-你可以重写init方法来实现饿汉式单例，也可以自定义initwithXXX来在需要实例化的时候调用之，实现懒汉式单例。</p>
-
-<h1>NSUserDefaults</h1>
-
-<p>很多APP启动时需要读取上次运行保存的一些状态，如何保存呢？Core Data，SQlite和UIDocuments未免杀鸡用牛刀了，而<code>NSUserDefaults</code>很适用于快速读取小规模的数据</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">standardDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-写入数据</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="s">@&quot;hahaha&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">setObject:</span><span class="n">string</span> <span class="nl">forKey:</span><span class="s">@&quot;myKey&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="n">synchronize</span><span class="p">];</span><span class="c1">//写完别忘了同步</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-读取数据</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">objectForKey:</span><span class="s">@&quot;myKey&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-<code>NSUserDefaults</code>可以很好地理解成键值对</p>
-
-<p>有时在写数据之前，想判断下这个健是否已经设置过默认值</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">standardDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">standardDefaults</span> <span class="nl">stringForKey:</span><span class="s">@&quot;favoriteColor&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">setObject:</span><span class="s">@&quot;Green&quot;</span> <span class="nl">forKey:</span><span class="s">@&quot;favoriteColor&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-其实大可不必这么麻烦，摘自<a href="http://beyondvincent.com/blog/2013/04/20/13/">破船</a>推荐的方法<code>registerDefaults:</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">standardDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">registerDefaults:</span><span class="err">@</span><span class="p">{</span><span class="s">@&quot;favoriteColor&quot;</span><span class="o">:</span> <span class="s">@&quot;Green&quot;</span><span class="p">}];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-每次程序启动的时候调用<code>registerDefaults:</code> 方法都是安全的。完全可以将这个方法的调用放到<code>applicationDidFinishLaunching:</code>方法中. 这个方法永远都不会覆盖用户设置的值。<br/>
-但是并不是所有类型的对象都能够直接放入NSUserDefaults，NSUserDefaults只支持： NSString, NSNumber, NSDate, NSArray, NSDictionary<br/>
-解决方法：让这个自定义的类实现<NSCoding>协议，举个例子：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//SNShops.h</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">SNShops</span> : <span class="nc">NSObject</span><span class="o">&lt;</span><span class="n">NSCoding</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">strong</span><span class="p">)</span> <span class="n">NSString</span><span class="o">*</span> <span class="n">sid</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">strong</span><span class="p">)</span> <span class="n">NSString</span><span class="o">*</span> <span class="n">name</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="nf">initWithCoder:</span> <span class="p">(</span><span class="n">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">coder</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">encodeWithCoder:</span> <span class="p">(</span><span class="n">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">coder</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//SNShops.m</span>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">SNShops</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="nf">initWithCoder:</span> <span class="p">(</span><span class="n">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">coder</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">])</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">sid</span> <span class="o">=</span> <span class="p">[</span><span class="n">coder</span> <span class="nl">decodeObjectForKey:</span><span class="s">@&quot;sid&quot;</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="p">[</span><span class="n">coder</span> <span class="nl">decodeObjectForKey:</span><span class="s">@&quot;name&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">encodeWithCoder:</span> <span class="p">(</span><span class="n">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">coder</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">coder</span> <span class="nl">encodeObject:</span><span class="n">self</span><span class="p">.</span><span class="n">sid</span> <span class="nl">forKey:</span><span class="s">@&quot;sid&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">coder</span> <span class="nl">encodeObject:</span><span class="n">self</span><span class="p">.</span><span class="n">name</span> <span class="nl">forKey:</span><span class="s">@&quot;name&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>然后再存取时通过<code>NSData</code>做载体：<br/>
-存入</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">standardDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'><span class="n">SNShops</span> <span class="o">*</span><span class="n">shop</span> <span class="o">=</span> <span class="p">[[</span><span class="n">SNShops</span> <span class="n">alloc</span><span class="p">]</span><span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSData</span> <span class="o">*</span><span class="n">shopData</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSKeyedArchiver</span> <span class="nl">archivedDataWithRootObject:</span><span class="n">shop</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">setObject:</span><span class="n">shopData</span> <span class="nl">forKey:</span><span class="s">@&quot;myshop&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">standardDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-读取</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">NSData</span> <span class="o">*</span><span class="n">newshopData</span> <span class="o">=</span> <span class="p">[</span><span class="n">standardDefaults</span> <span class="nl">objectForKey:</span><span class="s">&quot;myshop&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="n">SNShops</span> <span class="o">*</span><span class="n">newshop</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSKeyedUnarchiver</span> <span class="nl">unarchiveObjectWithData:</span><span class="n">newshopData</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<h1>总结：iOS单例模式 and NSUserDefaults</h1>
-
-<p>单例模式虽然能存入任何类型的对象，但是它会随着程序的挂起而消亡。而NSUserDefaults在读取自定义类型时有些繁琐，降低编码效率和可读性，好处是程序下次启动依然能读取到上次的状态。<br/>
-笔者在实际应用中采取了二者结合的模式：让单例模式的类实现<NSCoding>协议，程序第一次启动的时候通过NSData做载体读取单例类的实例，并存入单例，程序运行中一直对单例做存储操作，当程序快要进入到后台挂起的时候，通过NSData做载体存入NSUserDefaults，一举两得。</p>
 ]]></content>
   </entry>
   
