@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-04T21:17:02+08:00</updated>
+  <updated>2014-05-04T21:42:57+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -29,7 +29,7 @@
 
 <h2>SKScene</h2>
 
-<p>虽然是SKNode的子类的子类，但是因为所有SKNode都需要在场景上构建布局，所以比较重要，其原点在左下角，y轴向上，x轴向右；正是因为UIView的原点在左上角，y轴向下，x轴向右，所以在SKScene中判别手势坐标的时候需要将y轴反向：</p>
+<p>虽然是<code>SKNode</code>的子类的子类，但是因为所有<code>SKNode</code>都需要在场景上构建布局，所以比较重要，其原点在左下角，y轴向上，x轴向右；正是因为UIView的原点在左上角，y轴向下，x轴向右，所以在<code>SKScene</code>中判别手势坐标的时候需要将y轴反向：</p>
 
 <p>``` objc
 &ndash; (void)handlePanFrom:(UIPanGestureRecognizer *)recognizer {</p>
@@ -66,7 +66,7 @@
 <p>}
 ```</p>
 
-<p>在第一个判断分支中，因为用了<code>convertPointFromView</code>方法，已经将CGPoint从UIView坐标系转为SKScene坐标系，所以不用反转，其余两个分支中的代码均需要反转y轴。</p>
+<p>在第一个判断分支中，因为用了<code>convertPointFromView</code>方法，已经将<code>CGPoint</code>从<code>UIView</code>坐标系转为<code>SKScene</code>坐标系，所以不用反转，其余两个分支中的代码均需要反转y轴。</p>
 
 <h2>SKNode</h2>
 
@@ -121,7 +121,7 @@ return self;
 
 <h2>SKShapeNode</h2>
 
-<p>这个类也很特殊，因为其frame是根据path填充内容来确定的，而原点又是其在父坐标的position处，那么SKShapeNode的原点具体位置在哪也就没意义了，只要按照其position的位置当作原点建立坐标系就好</p>
+<p>这个类也很特殊，因为其frame是根据path填充内容来确定的，而原点又是其在父坐标的position处，那么<code>SKShapeNode</code>的原点具体位置在哪也就没意义了，只要按照其position的位置当作原点建立坐标系就好</p>
 
 <p>```
 @implementation ShapeButton
@@ -152,7 +152,7 @@ return self;
 
 <h2>总结</h2>
 
-<p>其实之所以会出现坐标系原点位置一说，是因为不同类型的Node其frame大小也不一样，而其原点在其frame中的位置也不一样，这就给人一种错觉：有的Node原点在左下角，只暴漏给我们第一象限；有的Node原点在中间，其四个象限都被填充了。。。无论原点在哪，其x轴，y轴方向都是不变的，所以本质都是一样的，只是写代码的时候需要注意，比如如果觉得将一个SKLabelNode的position设置为屏幕中心，则其文字内容就会正好居中，其实那就错了，因为y轴并没有居中。</p>
+<p>其实之所以会出现坐标系原点位置一说，是因为不同类型的Node其frame大小也不一样，而其原点在其frame中的位置也不一样，这就给人一种错觉：有的Node原点在左下角，只暴漏给我们第一象限；有的Node原点在中间，其四个象限都被填充了。。。无论原点在哪，其x轴，y轴方向都是不变的，所以本质都是一样的，只是写代码的时候需要注意，比如如果觉得将一个<code>SKLabelNode</code>的position设置为屏幕中心，则其文字内容就会正好居中，其实那就错了，因为y轴并没有居中。</p>
 ]]></content>
   </entry>
   
