@@ -185,31 +185,33 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost（）</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public abstract class Beverage {
-</span><span class='line'>String description = "Unknown Beverage";
-</span><span class='line'>public String getDescription() {
-</span><span class='line'>return description;
-</span><span class='line'>}
-</span><span class='line'>public abstract double cost();
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Beverage</span> <span class="o">{</span>
+</span><span class='line'><span class="n">String</span> <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Unknown Beverage&quot;</span><span class="o">;</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">getDescription</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'><span class="k">return</span> <span class="n">description</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">double</span> <span class="nf">cost</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就是装饰者类吧：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public abstract class CondimentDecorator extends Beverage {
-</span><span class='line'>public abstract String getDescription();
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">CondimentDecorator</span> <span class="kd">extends</span> <span class="n">Beverage</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="n">String</span> <span class="nf">getDescription</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -217,7 +219,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>现在，已经有了基类，让我们开始开始实现一些饮料吧！先从浓缩咖啡（Espresso）开始。别忘了，我们需要为具体的饮料设置描述，而且还必须实现cost()方法</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -225,14 +227,15 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public class Espresso extends Beverage {
-</span><span class='line'>public Espresso() {
-</span><span class='line'>description = "Espresso";
-</span><span class='line'>}
-</span><span class='line'>public double cost() {
-</span><span class='line'>return 1.99;
-</span><span class='line'>}
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Espresso</span> <span class="kd">extends</span> <span class="n">Beverage</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="nf">Espresso</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'><span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Espresso&quot;</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">double</span> <span class="nf">cost</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'><span class="k">return</span> <span class="mf">1.99</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -241,7 +244,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>如果你回头去看看装饰者模式的类图，将发现我们已经完成了抽象组件（Beverage），有了具体组件（HouseBlend），也有了抽象装饰者（CondimentDecorator）。现在，我们就来实现具体装饰者。先从摩卡下手：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -253,18 +256,19 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public class Mocha extends CondimentDecorator {
-</span><span class='line'>Beverage beverage;
-</span><span class='line'>public Mocha(Beverage beverage) {
-</span><span class='line'>this.beverage = beverage;
-</span><span class='line'>}
-</span><span class='line'>public String getDescription() {
-</span><span class='line'>return beverage.getDescription() + ", Mocha";
-</span><span class='line'>}
-</span><span class='line'>public double cost() {
-</span><span class='line'>return .20 + beverage.cost();
-</span><span class='line'>}
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Mocha</span> <span class="kd">extends</span> <span class="n">CondimentDecorator</span> <span class="o">{</span>
+</span><span class='line'><span class="n">Beverage</span> <span class="n">beverage</span><span class="o">;</span>
+</span><span class='line'><span class="kd">public</span> <span class="nf">Mocha</span><span class="o">(</span><span class="n">Beverage</span> <span class="n">beverage</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'><span class="k">this</span><span class="o">.</span><span class="na">beverage</span> <span class="o">=</span> <span class="n">beverage</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">getDescription</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'><span class="k">return</span> <span class="n">beverage</span><span class="o">.</span><span class="na">getDescription</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;, Mocha&quot;</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">double</span> <span class="nf">cost</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'><span class="k">return</span> <span class="o">.</span><span class="mi">20</span> <span class="o">+</span> <span class="n">beverage</span><span class="o">.</span><span class="na">cost</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -275,7 +279,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>下面进行测试：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -294,43 +298,43 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public class StarbuzzCoffee {
-</span><span class='line'>public static void main(String args[]) {
-</span><span class='line'>Beverage beverage = new Espresso();
-</span><span class='line'>System.out.println(beverage.getDescription()
-</span><span class='line'>+ " $" + beverage.cost());
-</span><span class='line'>Beverage beverage2 = new DarkRoast();
-</span><span class='line'>beverage2 = new Mocha(beverage2);
-</span><span class='line'>beverage2 = new Mocha(beverage2);
-</span><span class='line'>beverage2 = new Whip(beverage2);
-</span><span class='line'>System.out.println(beverage2.getDescription()
-</span><span class='line'>+ " $" + beverage2.cost());
-</span><span class='line'>Beverage beverage3 = new HouseBlend();
-</span><span class='line'>beverage3 = new Soy(beverage3);
-</span><span class='line'>beverage3 = new Mocha(beverage3);
-</span><span class='line'>beverage3 = new Whip(beverage3);
-</span><span class='line'>System.out.println(beverage3.getDescription()
-</span><span class='line'>+ " $" + beverage3.cost());
-</span><span class='line'>}
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StarbuzzCoffee</span> <span class="o">{</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+</span><span class='line'><span class="n">Beverage</span> <span class="n">beverage</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Espresso</span><span class="o">();</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">beverage</span><span class="o">.</span><span class="na">getDescription</span><span class="o">()</span>
+</span><span class='line'><span class="o">+</span> <span class="s">&quot; $&quot;</span> <span class="o">+</span> <span class="n">beverage</span><span class="o">.</span><span class="na">cost</span><span class="o">());</span>
+</span><span class='line'><span class="n">Beverage</span> <span class="n">beverage2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DarkRoast</span><span class="o">();</span>
+</span><span class='line'><span class="n">beverage2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Mocha</span><span class="o">(</span><span class="n">beverage2</span><span class="o">);</span>
+</span><span class='line'><span class="n">beverage2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Mocha</span><span class="o">(</span><span class="n">beverage2</span><span class="o">);</span>
+</span><span class='line'><span class="n">beverage2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Whip</span><span class="o">(</span><span class="n">beverage2</span><span class="o">);</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">beverage2</span><span class="o">.</span><span class="na">getDescription</span><span class="o">()</span>
+</span><span class='line'><span class="o">+</span> <span class="s">&quot; $&quot;</span> <span class="o">+</span> <span class="n">beverage2</span><span class="o">.</span><span class="na">cost</span><span class="o">());</span>
+</span><span class='line'><span class="n">Beverage</span> <span class="n">beverage3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HouseBlend</span><span class="o">();</span>
+</span><span class='line'><span class="n">beverage3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Soy</span><span class="o">(</span><span class="n">beverage3</span><span class="o">);</span>
+</span><span class='line'><span class="n">beverage3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Mocha</span><span class="o">(</span><span class="n">beverage3</span><span class="o">);</span>
+</span><span class='line'><span class="n">beverage3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Whip</span><span class="o">(</span><span class="n">beverage3</span><span class="o">);</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">beverage3</span><span class="o">.</span><span class="na">getDescription</span><span class="o">()</span>
+</span><span class='line'><span class="o">+</span> <span class="s">&quot; $&quot;</span> <span class="o">+</span> <span class="n">beverage3</span><span class="o">.</span><span class="na">cost</span><span class="o">());</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
 <p>输出结果：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>% java StarbuzzCoffee  
-</span><span class='line'>Espresso $1.99  
-</span><span class='line'>Dark Roast Coffee, Mocha, Mocha, Whip $1.49  
-</span><span class='line'>House Blend Coffee, Soy, Mocha, Whip $1.34  
-</span><span class='line'>%
-</span><span class='line'></span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">%</span> <span class="n">java</span> <span class="n">StarbuzzCoffee</span>
+</span><span class='line'><span class="n">Espresso</span> <span class="n">$1</span><span class="o">.</span><span class="mi">99</span>
+</span><span class='line'><span class="n">Dark</span> <span class="n">Roast</span> <span class="n">Coffee</span><span class="o">,</span> <span class="n">Mocha</span><span class="o">,</span> <span class="n">Mocha</span><span class="o">,</span> <span class="n">Whip</span> <span class="n">$1</span><span class="o">.</span><span class="mi">49</span>
+</span><span class='line'><span class="n">House</span> <span class="n">Blend</span> <span class="n">Coffee</span><span class="o">,</span> <span class="n">Soy</span><span class="o">,</span> <span class="n">Mocha</span><span class="o">,</span> <span class="n">Whip</span> <span class="n">$1</span><span class="o">.</span><span class="mi">34</span>
+</span><span class='line'><span class="o">%</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>

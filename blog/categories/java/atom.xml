@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Java | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-10T18:05:37+08:00</updated>
+  <updated>2014-05-10T18:07:31+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -54,7 +54,7 @@
 
 <p>Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost（）</p>
 
-<p><code>
+<p><code>java
 public abstract class Beverage {
 String description = "Unknown Beverage";
 public String getDescription() {
