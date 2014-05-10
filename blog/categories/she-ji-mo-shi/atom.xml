@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 设计模式 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/she-ji-mo-shi/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-10T17:27:52+08:00</updated>
+  <updated>2014-05-10T17:30:42+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -59,12 +59,13 @@ public class Mocha extends CondimentDecorator {Beverage beverage;public Mocha(Be
 其他几种配料代码就不写了<br/>
 下面进行测试：<br/>
 <code>
-public class StarbuzzCoffee {public static void main(String args[]) {Beverage beverage = new Espresso();System.out.println(beverage.getDescription()+ " $" + beverage.cost());Beverage beverage2 = new DarkRoast();beverage2 = new Mocha(beverage2);beverage2 = new Mocha(beverage2);beverage2 = new Whip(beverage2);System.out.println(beverage2.getDescription()+ " $" + beverage2.cost());Beverage beverage3 = new HouseBlend();beverage3 = new Soy(beverage3);beverage3 = new Mocha(beverage3);beverage3 = new Whip(beverage3);System.out.println(beverage3.getDescription()+ " $" + beverage3.cost());}}</code>
-输出结果：</p>
+public class StarbuzzCoffee {public static void main(String args[]) {Beverage beverage = new Espresso();System.out.println(beverage.getDescription()+ " $" + beverage.cost());Beverage beverage2 = new DarkRoast();beverage2 = new Mocha(beverage2);beverage2 = new Mocha(beverage2);beverage2 = new Whip(beverage2);System.out.println(beverage2.getDescription()+ " $" + beverage2.cost());Beverage beverage3 = new HouseBlend();beverage3 = new Soy(beverage3);beverage3 = new Mocha(beverage3);beverage3 = new Whip(beverage3);System.out.println(beverage3.getDescription()+ " $" + beverage3.cost());}}</code></p>
+
+<p>输出结果：</p>
 
 <p><code>
 % java StarbuzzCoffeeEspresso $1.99Dark Roast Coffee, Mocha, Mocha, Whip $1.49House Blend Coffee, Soy, Mocha, Whip $1.34%
-</code>
+</code> <br/>
 果然是一层套一层吧：<br/>
 <img src="/images/blog/QQ20140510-4@2x.png" alt="" /></p>
 
