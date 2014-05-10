@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-10T17:37:55+08:00</updated>
+  <updated>2014-05-10T17:41:39+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -37,17 +37,12 @@
 <img src="http://yulingtianxia.com/images/blog/QQ20140510-2@2x.png" alt="" /><br/>
 更恶心的是，如果某种配料的价格有变化，就必须含有此配料相应的更改一些饮料子类的实现，记住：<strong>类应该对扩展开放，对修改关闭。</strong> <br/>
 应用装饰者模式，就像给对象穿衣服一样一层一层将拓展动态的添加上去，灵活多变有弹性<br/>
-<img src="http://yulingtianxia.com/images/blog/QQ20140510-3@2x.png" alt="" /></p>
-
-<p>下面用Java实现这个例子</p>
-
-<p>Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost()。<br/>
+<img src="http://yulingtianxia.com/images/blog/QQ20140510-3@2x.png" alt="" /><br/>
+下面用Java实现这个例子<br/>
+Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost()。  <code>
+public abstract class Beverage {String description = "Unknown Beverage";public String getDescription() {return description;}public abstract double cost();}</code> Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就是装饰者类吧：<br/>
 <code>
-public abstract class Beverage {String description = "Unknown Beverage";public String getDescription() {return description;}public abstract double cost();}</code>
-Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就是装饰者类吧：<br/>
-<code>
-public abstract class CondimentDecorator extends Beverage {public abstract String getDescription();}</code>
-必须让Condiment Decorator能够取代Beverage，所以将CondimentDecorator扩展自 Beverage 类。<br/>
+public abstract class CondimentDecorator extends Beverage {public abstract String getDescription();}</code> 必须让Condiment Decorator能够取代Beverage，所以将CondimentDecorator扩展自 Beverage 类<br/>
 现在，已经有了基类，让我们开始开始实现一些饮料吧！先从浓缩咖啡（Espresso）开始。别忘了，我们需要为具体的饮料设置描述，而且还必须实现cost()方法。<br/>
 <code>
 public class Espresso extends Beverage {public Espresso() {description = "Espresso";}public double cost() {return 1.99;}}</code>
@@ -1232,7 +1227,7 @@ return context;
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#x69;&#108;&#x74;&#111;&#58;&#115;&#117;&#x70;&#112;&#x6f;&#114;&#116;&#x40;&#x67;&#x69;&#x74;&#x68;&#x75;&#x62;&#46;&#x63;&#x6f;&#109;&#x2e;">&#x73;&#x75;&#x70;&#112;&#111;&#114;&#x74;&#x40;&#103;&#105;&#116;&#104;&#x75;&#98;&#46;&#x63;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#58;&#x73;&#x75;&#x70;&#x70;&#111;&#114;&#x74;&#64;&#x67;&#x69;&#x74;&#x68;&#117;&#x62;&#46;&#99;&#111;&#x6d;&#46;">&#115;&#117;&#112;&#112;&#x6f;&#x72;&#x74;&#64;&#103;&#x69;&#x74;&#x68;&#117;&#x62;&#46;&#x63;&#x6f;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
