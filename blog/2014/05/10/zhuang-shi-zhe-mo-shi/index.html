@@ -223,7 +223,7 @@ public class StarbuzzCoffee {public static void main(String args[]) {Beverage be
 </span><span class='line'>##Java中的装饰者
 </span><span class='line'>java.io包内的类太多了，简直是……“排山倒海”。你第一次（还有第二次和第三次）看到这些API发出“哇”的惊叹时，放心，你不是唯一受到惊吓的人。现在，你已经知道装饰者模式，这些I/O的相关类对你来说应该更有意义了，因为其中许多类都是装饰者。下面是一个典型的对象集合，用装饰者来将功能结合起来，以读取文件数据：  
 </span><span class='line'>![](/images/blog/QQ20140510-5@2x.png)  
-</span><span class='line'>BufferedInputStream及LineNumberInputStream都扩展自FilterInputStream，而FilterInputStream是一个抽象的装饰类。  
+</span><span class='line'>`BufferedInputStream`及`LineNumberInputStream`都扩展自`FilterInputStream`，而`FilterInputStream`是一个抽象的装饰类。  
 </span><span class='line'>![](/images/blog/QQ20140510-6@2x.png)  
 </span><span class='line'>你会发现“输出”流的设计方式也是一样的。你可能还会发现Reader/Writer流（作为基于字符数据的输入输出）和输入流/输出流的类相当类似（虽然有一些小差异和不一致之处，但是相当雷同，所以你应该可以了解这些类）。  
 </span><span class='line'>但是JavaAI/O也引出装饰者模式的一个“缺点”：利用装饰者模式，常常造成设计中有大量的小类，数量实在太多，可能会造成使用此API程序员的困扰。但是，现在你已经了解了装饰者的工作原理，以后当使用别人的大量装饰的API时，就可以很容易地辨别出他们的装饰者类是如何组织的，以方便用包装方式取得想要的行为。  
@@ -406,7 +406,7 @@ return context;
 
 <p>给UIImage添加一个新的title属性<br/>
 具体代码如下：<br/>
-UIImage+Title.h:</p>
+<code>UIImage+Title.h</code>:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -417,7 +417,7 @@ UIImage+Title.h:</p>
 
 
 <p>
-UIImage+Title.m:</p>
+<code>UIImage+Title.m</code>:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -451,15 +451,15 @@ UIImage+Title.m:</p>
 
 <p>
 可以看到关键是用到了runtime的两个函数：<br/>
-1. id objc_getAssociatedObject(id object, void <em>key)<br/>
-2. void objc_setAssociatedObject(id object, void </em>key, id value, objc_AssociationPolicy policy)</p>
+1. <code>id objc_getAssociatedObject(id object, void *key)</code><br/>
+2. <code>void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)</code></p>
 
-<p>该函数中第一位参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy，它有以下几个选项：OBJC_ASSOCIATION_ASSIGN，OBJC_ASSOCIATION_RETAIN，OBJC_ASSOCIATION_COPY，分别对应我们在声明属性时的assign,retain,copy。<br/>
+<p>该函数中第一位参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy，它有以下几个选项：<code>OBJC_ASSOCIATION_ASSIGN</code>，<code>OBJC_ASSOCIATION_RETAIN</code>，<code>OBJC_ASSOCIATION_COPY</code>，分别对应我们在声明属性时的<code>assign</code>,<code>retain</code>,<code>copy</code>。<br/>
 关于第二个参数，key。因为一个对象可以关联多个新的对像，我们需要一个标志来区分他们。所以这个key就起这样的作用。这里的需要的key的地址，不关心它指向谁。</p>
 
 <p>当我们第二次以新的value调用objc_setAssociatedObject时，如果policy是OBJC_ASSOCIATION_ASSIGN，新的value被关联，对原来旧的value没有任何影响。如果policy是OBJC_ASSOCIATION_RETAIN和OBJC_ASSOCIATION_COPY，新的value被关联，旧的value被release。如果想release原来的value又不关联新的value，，可以用objc_setAssociatedObject直接传一个nil做为value的值。</p>
 
-<p>注意不要使用objc_removeAssociatedObjects，因为它用去掉所有的关联的对象。参考资料：<br/>
+<p>注意不要使用<code>objc_removeAssociatedObjects</code>，因为它用去掉所有的关联的对象。参考资料：<br/>
 1. 《iOS设计模式解析》<br/>
 2. 《HeadFirst设计模式》<br/>
 3. <a href="http://fanliugen.com/?p=460">http://fanliugen.com/?p=460</a></p>
