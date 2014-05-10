@@ -177,8 +177,9 @@ public abstract class CondimentDecorator extends Beverage {public abstract Strin
 <code>
 public class Espresso extends Beverage {public Espresso() {description = "Espresso";}public double cost() {return 1.99;}}</code>
 其他几种具体的饮料就不写了<br/>
-如果你回头去看看装饰者模式的类图，将发现我们已经完成了抽象组件（Beverage），有了具体组件（HouseBlend），也有了抽象装饰者（CondimentDecorator）。现在，我们就来实现具体装饰者。先从摩卡下手：<br/>
-<code>
+如果你回头去看看装饰者模式的类图，将发现我们已经完成了抽象组件（Beverage），有了具体组件（HouseBlend），也有了抽象装饰者（CondimentDecorator）。现在，我们就来实现具体装饰者。先从摩卡下手：</p>
+
+<p><code>
 public class Mocha extends CondimentDecorator {Beverage beverage;public Mocha(Beverage beverage) {this.beverage = beverage;}public String getDescription() {return beverage.getDescription() + ", Mocha";}public double cost() {return .20 + beverage.cost();}}</code>
 你会发现在装饰者类中，完成了描述和价格的效果添加，也就是完成了拓展<br/>
 其他几种配料代码就不写了<br/>
@@ -212,10 +213,8 @@ public class StarbuzzCoffee {public static void main(String args[]) {Beverage be
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
 <span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>% java StarbuzzCoffeeEspresso $1.99Dark Roast Coffee, Mocha, Mocha, Whip $1.49House Blend Coffee, Soy, Mocha, Whip $1.34%
-</span><span class='line'>```   
-</span><span class='line'>果然是一层套一层吧：  
+</pre></td><td class='code'><pre><code class=''><span class='line'>% java StarbuzzCoffee  Espresso $1.99  Dark Roast Coffee, Mocha, Mocha, Whip $1.49  House Blend Coffee, Soy, Mocha, Whip $1.34  %
+</span><span class='line'>``` 果然是一层套一层吧：  
 </span><span class='line'>![](/images/blog/QQ20140510-4@2x.png)  
 </span><span class='line'>##Java中的装饰者
 </span><span class='line'>java.io包内的类太多了，简直是……“排山倒海”。你第一次（还有第二次和第三次）看到这些API发出“哇”的惊叹时，放心，你不是唯一受到惊吓的人。现在，你已经知道装饰者模式，这些I/O的相关类对你来说应该更有意义了，因为其中许多类都是装饰者。下面是一个典型的对象集合，用装饰者来将功能结合起来，以读取文件数据：  

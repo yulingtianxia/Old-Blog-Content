@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Java | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-10T17:44:24+08:00</updated>
+  <updated>2014-05-10T17:47:04+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -48,8 +48,9 @@ public abstract class CondimentDecorator extends Beverage {public abstract Strin
 <code>
 public class Espresso extends Beverage {public Espresso() {description = "Espresso";}public double cost() {return 1.99;}}</code>
 其他几种具体的饮料就不写了<br/>
-如果你回头去看看装饰者模式的类图，将发现我们已经完成了抽象组件（Beverage），有了具体组件（HouseBlend），也有了抽象装饰者（CondimentDecorator）。现在，我们就来实现具体装饰者。先从摩卡下手：<br/>
-<code>
+如果你回头去看看装饰者模式的类图，将发现我们已经完成了抽象组件（Beverage），有了具体组件（HouseBlend），也有了抽象装饰者（CondimentDecorator）。现在，我们就来实现具体装饰者。先从摩卡下手：</p>
+
+<p><code>
 public class Mocha extends CondimentDecorator {Beverage beverage;public Mocha(Beverage beverage) {this.beverage = beverage;}public String getDescription() {return beverage.getDescription() + ", Mocha";}public double cost() {return .20 + beverage.cost();}}</code>
 你会发现在装饰者类中，完成了描述和价格的效果添加，也就是完成了拓展<br/>
 其他几种配料代码就不写了<br/>
@@ -60,9 +61,8 @@ public class StarbuzzCoffee {public static void main(String args[]) {Beverage be
 <p>输出结果：</p>
 
 <p><code>
-% java StarbuzzCoffeeEspresso $1.99Dark Roast Coffee, Mocha, Mocha, Whip $1.49House Blend Coffee, Soy, Mocha, Whip $1.34%
-</code> <br/>
-果然是一层套一层吧：<br/>
+% java StarbuzzCoffee  Espresso $1.99  Dark Roast Coffee, Mocha, Mocha, Whip $1.49  House Blend Coffee, Soy, Mocha, Whip $1.34  %
+</code> 果然是一层套一层吧：<br/>
 <img src="/images/blog/QQ20140510-4@2x.png" alt="" /></p>
 
 <h2>Java中的装饰者</h2>
