@@ -22,23 +22,21 @@ categories:
 比如，现在有一个饮料类（Beverage），向饮料中添加不同的配料（蒸奶（Steamed Milk）、豆浆（Soy）、摩卡（Mocha，也就是巧克力风味）或覆盖奶泡），就会配制出很多种不同的种类的饮料，其价格也随着添加的配料而变化，饮料店需要计算价格，如果用具体子类继承饮料类并考虑到所有组合的话，将是一个“类爆炸”：  
 ![](/images/blog/QQ20140510-2@2x.png)  
 更恶心的是，如果某种配料的价格有变化，就必须含有此配料相应的更改一些饮料子类的实现，记住：**类应该对扩展开放，对修改关闭。**   
-应用装饰着模式，就像给对象穿衣服一样一层一层将拓展动态的添加上去，灵活多变有弹性  
+应用装饰者模式，就像给对象穿衣服一样一层一层将拓展动态的添加上去，灵活多变有弹性  
 ![](/images/blog/QQ20140510-3@2x.png)  
 
 下面用Java实现这个例子  
-
-Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost()。  
-``` java
-public abstract class Beverage {String description = "Unknown Beverage";public String getDescription() {return description;}public abstract double cost();}``` 
-Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就是装饰者类吧：  
+Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost（）  
+ ``` 
+public abstract class Beverage {String description = "Unknown Beverage";public String getDescription() {return description;}public abstract double cost();}``` Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就是装饰者类吧：  
 ``` 
-public abstract class CondimentDecorator extends Beverage {public abstract String getDescription();}``` 
-必须让Condiment Decorator能够取代Beverage，所以将CondimentDecorator扩展自 Beverage 类。  
-现在，已经有了基类，让我们开始开始实现一些饮料吧！先从浓缩咖啡（Espresso）开始。别忘了，我们需要为具体的饮料设置描述，而且还必须实现cost()方法。  
+public abstract class CondimentDecorator extends Beverage {public abstract String getDescription();}``` 必须让Condiment Decorator能够取代Beverage，所以将CondimentDecorator扩展自 Beverage 类  
+现在，已经有了基类，让我们开始开始实现一些饮料吧！先从浓缩咖啡（Espresso）开始。别忘了，我们需要为具体的饮料设置描述，而且还必须实现cost()方法    
 ``` 
 public class Espresso extends Beverage {public Espresso() {description = "Espresso";}public double cost() {return 1.99;}}``` 
-其他几种具体的饮料就不写了  
+其他几种具体的饮料就不写了  
 如果你回头去看看装饰者模式的类图，将发现我们已经完成了抽象组件（Beverage），有了具体组件（HouseBlend），也有了抽象装饰者（CondimentDecorator）。现在，我们就来实现具体装饰者。先从摩卡下手：  
+  
 ``` 
 public class Mocha extends CondimentDecorator {Beverage beverage;public Mocha(Beverage beverage) {this.beverage = beverage;}public String getDescription() {return beverage.getDescription() + ", Mocha";}public double cost() {return .20 + beverage.cost();}}``` 
 你会发现在装饰者类中，完成了描述和价格的效果添加，也就是完成了拓展  
@@ -46,12 +44,12 @@ public class Mocha extends CondimentDecorator {Beverage beverage;public Mocha(
 下面进行测试：  
 ``` 
 public class StarbuzzCoffee {public static void main(String args[]) {Beverage beverage = new Espresso();System.out.println(beverage.getDescription()+ " $" + beverage.cost());Beverage beverage2 = new DarkRoast();beverage2 = new Mocha(beverage2);beverage2 = new Mocha(beverage2);beverage2 = new Whip(beverage2);System.out.println(beverage2.getDescription()+ " $" + beverage2.cost());Beverage beverage3 = new HouseBlend();beverage3 = new Soy(beverage3);beverage3 = new Mocha(beverage3);beverage3 = new Whip(beverage3);System.out.println(beverage3.getDescription()+ " $" + beverage3.cost());}}``` 
+
 输出结果： 
- 
+
 ``` 
-% java StarbuzzCoffeeEspresso $1.99Dark Roast Coffee, Mocha, Mocha, Whip $1.49House Blend Coffee, Soy, Mocha, Whip $1.34%
-``` 
-果然是一层套一层吧：  
+% java StarbuzzCoffee  Espresso $1.99  Dark Roast Coffee, Mocha, Mocha, Whip $1.49  House Blend Coffee, Soy, Mocha, Whip $1.34  %
+``` 果然是一层套一层吧：  
 ![](/images/blog/QQ20140510-4@2x.png)  
 ##Java中的装饰者
 java.io包内的类太多了，简直是……“排山倒海”。你第一次（还有第二次和第三次）看到这些API发出“哇”的惊叹时，放心，你不是唯一受到惊吓的人。现在，你已经知道装饰者模式，这些I/O的相关类对你来说应该更有意义了，因为其中许多类都是装饰者。下面是一个典型的对象集合，用装饰者来将功能结合起来，以读取文件数据：  
@@ -105,7 +103,7 @@ UIImage(BaseFilter)中的方法定义，用户绘制图像，相当于装饰者�
 }
 @end
 ``` 
-Transform类别定义了一个`imageWithTransform:transform`方法，接受一个转换引用，然后把应用于内部的图像引用，并让它把自己画出来，然后返回变换后的图像：  
+Transform类别定义了一个`imageWithTransform:transform`方法，接受一个转换引用，然后把应用于内部的图像引用，并让它把自己画出来，然后返回变换后的图像:  
 ``` #import "UIImage+Transform.h"
 #import "UIImage+BaseFilter.h"
 @implementation UIImage (Transform)
