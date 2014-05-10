@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 设计模式 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/she-ji-mo-shi/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-10T16:46:42+08:00</updated>
+  <updated>2014-05-10T17:24:48+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -86,7 +86,172 @@ BufferedInputStream及LineNumberInputStream都扩展自FilterInputStream，而Fi
 这次我们来装饰一张照片，装饰的方法有很多，比如旋转位移变换，阴影。。。<br/>
 <img src="/images/blog/QQ20140510-7@2x.png" alt="" /></p>
 
-<p>代码可以在<a href="https://github.com/yulingtianxia/Decorator">这里</a>下载</p>
+<p>工程代码可以在<a href="https://github.com/yulingtianxia/Decorator">这里</a>下载</p>
+
+<p>这一方式中有三个类别：UIImage(BaseFilter),UIImage(Transform)和UIImage(Shadow)。从现在起，我把它们分别简称为BaseFilter、Transform和Shadow。BaseFilter定义了几个基本的二维绘图操作，使用当前绘图上下文绘制自己，其他滤镜类别可以使用同样的方法来绘制图像。Transform和Shadow没有继承BaseFilter，但他们属于同一类，因为他们都是UIImage的类别。BaseFilter中定义的方法也能在Transform和Shadow类别中使用，而不必像子类化那样进行继承。</p>
+
+<p>UIImage(BaseFilter)中的方法定义，用户绘制图像，相当于装饰者抽象类，而UIImage则是被装饰的组件:</p>
+
+<p>``` objc</p>
+
+<h1>import &ldquo;UIImage+BaseFilter.h&rdquo;</h1>
+
+<p>@implementation UIImage (BaseFilter)
+&ndash; (CGContextRef) beginContext
+{</p>
+
+<pre><code>CGSize size = [self size];
+UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+CGContextRef context = UIGraphicsGetCurrentContext();
+
+return context;
+</code></pre>
+
+<p>}</p>
+
+<ul>
+<li><p>(UIImage *) getImageFromCurrentImageContext
+{
+  [self drawAtPoint:CGPointZero];</p>
+
+<p>  // Retrieve the UIImage from the current context
+  UIImage *imageOut = UIGraphicsGetImageFromCurrentImageContext();</p>
+
+<p>  return imageOut;
+}</p></li>
+<li><p>(void) endContext
+{
+  UIGraphicsEndImageContext();
+}
+@end
+<code>
+Transform类别定义了一个`imageWithTransform:transform`方法，接受一个转换引用，然后把应用于内部的图像引用，并让它把自己画出来，然后返回变换后的图像：  
+</code> #import &ldquo;UIImage+Transform.h&rdquo;</p>
+
+<h1>import &ldquo;UIImage+BaseFilter.h&rdquo;</h1>
+
+<p>@implementation UIImage (Transform)</p></li>
+<li><p>(UIImage *) imageWithTransform:(CGAffineTransform)transform
+{
+  CGContextRef context = [self beginContext];</p>
+
+<p>  // setup transformation
+  CGContextConcatCTM(context, transform);</p>
+
+<p>  // Draw the original image to the context
+  UIImage *imageOut = [self getImageFromCurrentImageContext];</p>
+
+<p>  [self endContext];</p>
+
+<p>  return imageOut;
+}
+@end
+```</p></li>
+</ul>
+
+
+<p>Shadow类别定义了一个<code>imageWithDropShadow</code>方法，向图像的内部引用添加阴影效果，并返回应用效果之后的最终图像。</p>
+
+<p>```</p>
+
+<h1>import &ldquo;UIImage+Shadow.h&rdquo;</h1>
+
+<h1>import &ldquo;UIImage+BaseFilter.h&rdquo;</h1>
+
+<p>@implementation UIImage (Shadow)
+&ndash; (UIImage *) imageWithDropShadow
+{</p>
+
+<pre><code>CGContextRef context = [self beginContext];
+
+// set up shadow
+CGSize offset = CGSizeMake (-25,  15);
+CGContextSetShadow(context, offset, 20.0);
+
+// Draw the original image to the context
+UIImage * imageOut = [self getImageFromCurrentImageContext];
+
+[self endContext];
+
+return imageOut;
+</code></pre>
+
+<p>}
+@end
+```
+最后在ViewController中加载图像：</p>
+
+<p>```
+&ndash; (void)viewDidLoad
+{</p>
+
+<pre><code>[super viewDidLoad];
+// Do any additional setup after loading the view, typically from a nib.
+UIImage *image = imageView.image;
+
+
+// create a transformation
+CGAffineTransform rotateTransform = CGAffineTransformMakeRotation(-M_PI / 4.0);
+CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(-image.size.width / 2.0,
+                                                                        image.size.height / 8.0);
+CGAffineTransform finalTransform = CGAffineTransformConcat(rotateTransform, translateTransform);
+UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropShadow];
+[imageView setImage:finalImage];
+</code></pre>
+
+<p>}
+```</p>
+
+<p>因为类别只能拓展方法，不能在原有类的基础上添加属性，但是我们依然可以通过下面的方式向类中动态添加属性，来弥补类别的不足：</p>
+
+<p>给UIImage添加一个新的title属性<br/>
+具体代码如下：<br/>
+UIImage+Title.h:</p>
+
+<p><code>
+@interface UIImage(Title)
+@property(nonatomic, copy) NSString *title;
+@end
+</code>
+UIImage+Title.m:</p>
+
+<p>```</p>
+
+<h1>import &ldquo;UIImage+Title.h&rdquo;</h1>
+
+<p>static char titleKey;</p>
+
+<p>@implementation UIImage(Title)
+&ndash; (NSString *)title
+{</p>
+
+<pre><code>return objc_getAssociatedObject(self, &amp;titleKey);
+</code></pre>
+
+<p>}</p>
+
+<ul>
+<li>(void)setTitle:(NSString *)title
+{
+  objc_setAssociatedObject(self, &amp;titleKey, title, OBJC_ASSOCIATION_COPY);
+}
+@end
+```
+可以看到关键是用到了runtime的两个函数：</li>
+<li>id objc_getAssociatedObject(id object, void *key)</li>
+<li>void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)</li>
+</ul>
+
+
+<p>该函数中第一位参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy，它有以下几个选项：OBJC_ASSOCIATION_ASSIGN，OBJC_ASSOCIATION_RETAIN，OBJC_ASSOCIATION_COPY，分别对应我们在声明属性时的assign,retain,copy。<br/>
+关于第二个参数，key。因为一个对象可以关联多个新的对像，我们需要一个标志来区分他们。所以这个key就起这样的作用。这里的需要的key的地址，不关心它指向谁。</p>
+
+<p>当我们第二次以新的value调用objc_setAssociatedObject时，如果policy是OBJC_ASSOCIATION_ASSIGN，新的value被关联，对原来旧的value没有任何影响。如果policy是OBJC_ASSOCIATION_RETAIN和OBJC_ASSOCIATION_COPY，新的value被关联，旧的value被release。如果想release原来的value又不关联新的value，，可以用objc_setAssociatedObject直接传一个nil做为value的值。</p>
+
+<p>注意不要使用objc_removeAssociatedObjects，因为它用去掉所有的关联的对象。参考资料：<br/>
+1. 《iOS设计模式解析》<br/>
+2. 《HeadFirst设计模式》<br/>
+3. <a href="http://fanliugen.com/?p=460">http://fanliugen.com/?p=460</a></p>
 ]]></content>
   </entry>
   
