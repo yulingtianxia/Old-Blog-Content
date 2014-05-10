@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 设计模式 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/she-ji-mo-shi/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-10T18:07:31+08:00</updated>
+  <updated>2014-05-10T18:12:43+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -338,7 +338,7 @@ UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropSh
 </ul>
 
 
-<p>该函数中第一位参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy，它有以下几个选项：<code>OBJC_ASSOCIATION_ASSIGN</code>，<code>OBJC_ASSOCIATION_RETAIN</code>，<code>OBJC_ASSOCIATION_COPY</code>，分别对应我们在声明属性时的<code>assign</code>,<code>retain</code>,<code>copy</code>。<br/>
+<p>该函数中第一个参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy,它有以下几个选项：<code>OBJC_ASSOCIATION_ASSIGN</code>，<code>OBJC_ASSOCIATION_RETAIN</code>，<code>OBJC_ASSOCIATION_COPY</code>，分别对应我们在声明属性时的<code>assign</code>,<code>retain</code>,<code>copy</code>。<br/>
 关于第二个参数，key。因为一个对象可以关联多个新的对像，我们需要一个标志来区分他们。所以这个key就起这样的作用。这里的需要的key的地址，不关心它指向谁。</p>
 
 <p>当我们第二次以新的value调用objc_setAssociatedObject时，如果policy是OBJC_ASSOCIATION_ASSIGN，新的value被关联，对原来旧的value没有任何影响。如果policy是OBJC_ASSOCIATION_RETAIN和OBJC_ASSOCIATION_COPY，新的value被关联，旧的value被release。如果想release原来的value又不关联新的value，，可以用objc_setAssociatedObject直接传一个nil做为value的值。</p>
