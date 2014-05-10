@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-10T17:30:42+08:00</updated>
+  <updated>2014-05-10T17:31:58+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -42,7 +42,7 @@
 <p>下面用Java实现这个例子</p>
 
 <p>Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost()。<br/>
-<code>java
+<code>
 public abstract class Beverage {String description = "Unknown Beverage";public String getDescription() {return description;}public abstract double cost();}</code>
 Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就是装饰者类吧：<br/>
 <code>
