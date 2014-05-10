@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-10T17:47:04+08:00</updated>
+  <updated>2014-05-10T17:50:11+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -37,30 +37,9 @@
 <img src="http://yulingtianxia.com/images/blog/QQ20140510-2@2x.png" alt="" /><br/>
 更恶心的是，如果某种配料的价格有变化，就必须含有此配料相应的更改一些饮料子类的实现，记住：<strong>类应该对扩展开放，对修改关闭。</strong> <br/>
 应用装饰者模式，就像给对象穿衣服一样一层一层将拓展动态的添加上去，灵活多变有弹性<br/>
-<img src="http://yulingtianxia.com/images/blog/QQ20140510-3@2x.png" alt="" /><br/>
-下面用Java实现这个例子<br/>
-Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost（）<br/>
- <code>
-public abstract class Beverage {String description = "Unknown Beverage";public String getDescription() {return description;}public abstract double cost();}</code> Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就是装饰者类吧：<br/>
-<code>
-public abstract class CondimentDecorator extends Beverage {public abstract String getDescription();}</code> 必须让Condiment Decorator能够取代Beverage，所以将CondimentDecorator扩展自 Beverage 类<br/>
-现在，已经有了基类，让我们开始开始实现一些饮料吧！先从浓缩咖啡（Espresso）开始。别忘了，我们需要为具体的饮料设置描述，而且还必须实现cost()方法  <br/>
-<code>
-public class Espresso extends Beverage {public Espresso() {description = "Espresso";}public double cost() {return 1.99;}}</code>
-其他几种具体的饮料就不写了<br/>
-如果你回头去看看装饰者模式的类图，将发现我们已经完成了抽象组件（Beverage），有了具体组件（HouseBlend），也有了抽象装饰者（CondimentDecorator）。现在，我们就来实现具体装饰者。先从摩卡下手：</p>
+<img src="http://yulingtianxia.com/images/blog/QQ20140510-3@2x.png" alt="" /></p>
 
-<p><code>
-public class Mocha extends CondimentDecorator {Beverage beverage;public Mocha(Beverage beverage) {this.beverage = beverage;}public String getDescription() {return beverage.getDescription() + ", Mocha";}public double cost() {return .20 + beverage.cost();}}</code>
-你会发现在装饰者类中，完成了描述和价格的效果添加，也就是完成了拓展<br/>
-其他几种配料代码就不写了<br/>
-下面进行测试：<br/>
-<code>
-public class StarbuzzCoffee {public static void main(String args[]) {Beverage beverage = new Espresso();System.out.println(beverage.getDescription()+ " $" + beverage.cost());Beverage beverage2 = new DarkRoast();beverage2 = new Mocha(beverage2);beverage2 = new Mocha(beverage2);beverage2 = new Whip(beverage2);System.out.println(beverage2.getDescription()+ " $" + beverage2.cost());Beverage beverage3 = new HouseBlend();beverage3 = new Soy(beverage3);beverage3 = new Mocha(beverage3);beverage3 = new Whip(beverage3);System.out.println(beverage3.getDescription()+ " $" + beverage3.cost());}}</code></p>
-
-<p>输出结果：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -84,242 +63,174 @@ public class StarbuzzCoffee {public static void main(String args[]) {Beverage be
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
 <span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>% java StarbuzzCoffee  Espresso $1.99  Dark Roast Coffee, Mocha, Mocha, Whip $1.49  House Blend Coffee, Soy, Mocha, Whip $1.34  %
-</span><span class='line'>``` 果然是一层套一层吧：  
-</span><span class='line'>![](/images/blog/QQ20140510-4@2x.png)  
-</span><span class='line'>##Java中的装饰者
-</span><span class='line'>java.io包内的类太多了，简直是……“排山倒海”。你第一次（还有第二次和第三次）看到这些API发出“哇”的惊叹时，放心，你不是唯一受到惊吓的人。现在，你已经知道装饰者模式，这些I/O的相关类对你来说应该更有意义了，因为其中许多类都是装饰者。下面是一个典型的对象集合，用装饰者来将功能结合起来，以读取文件数据：  
-</span><span class='line'>![](/images/blog/QQ20140510-5@2x.png)  
-</span><span class='line'>`BufferedInputStream`及`LineNumberInputStream`都扩展自`FilterInputStream`，而`FilterInputStream`是一个抽象的装饰类。  
-</span><span class='line'>![](/images/blog/QQ20140510-6@2x.png)  
-</span><span class='line'>你会发现“输出”流的设计方式也是一样的。你可能还会发现Reader/Writer流（作为基于字符数据的输入输出）和输入流/输出流的类相当类似（虽然有一些小差异和不一致之处，但是相当雷同，所以你应该可以了解这些类）。  
-</span><span class='line'>但是JavaAI/O也引出装饰者模式的一个“缺点”：利用装饰者模式，常常造成设计中有大量的小类，数量实在太多，可能会造成使用此API程序员的困扰。但是，现在你已经了解了装饰者的工作原理，以后当使用别人的大量装饰的API时，就可以很容易地辨别出他们的装饰者类是如何组织的，以方便用包装方式取得想要的行为。  
-</span><span class='line'>##Objective-C类别与装饰模式
-</span><span class='line'>Objective-C中也可以实现基于继承和接口的装饰者模式，但这里介绍的是另一种实现方法：类别  
-</span><span class='line'>类别是一个Objective-C的语言功能，通过它可以向类添加行为（方法的接口与实现），而不必进行子类化。通过类别添加的方法对类原有的方法没有不良影响。类别中的方法成为了类的一部分，并可由其子类继承。  
-</span><span class='line'>我们可以用类别来实现装饰模式，然而这不是一种严格的实现，它实现了模式的意图，但却是一种变体。由装饰器类别添加的行为是编译时绑定的，虽然Objective-C原本支持动态绑定（应该用方法的哪个实现）。而且装饰器类别实际上没有封装被扩展的类的实例。  
-</span><span class='line'>尽管使用类别来实现这个模式跟原始风格有些偏离，但是实现少量的装饰器的时候，它比真正子类的方式更为轻量、更为容易。
-</span><span class='line'>这次我们来装饰一张照片，装饰的方法有很多，比如旋转位移变换，阴影。。。  
-</span><span class='line'>![](/images/blog/QQ20140510-7@2x.png)  
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;UIImage+BaseFilter.h&quot;</span>
 </span><span class='line'>
-</span><span class='line'>工程代码可以在[这里](https://github.com/yulingtianxia/Decorator)下载  
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">UIImage</span> <span class="nl">(BaseFilter)</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGContextRef</span><span class="p">)</span> <span class="nf">beginContext</span>
+</span><span class='line'><span class="p">{</span>
 </span><span class='line'>
-</span><span class='line'>这一方式中有三个类别：UIImage(BaseFilter),UIImage(Transform)和UIImage(Shadow)。从现在起，我把它们分别简称为BaseFilter、Transform和Shadow。BaseFilter定义了几个基本的二维绘图操作，使用当前绘图上下文绘制自己，其他滤镜类别可以使用同样的方法来绘制图像。Transform和Shadow没有继承BaseFilter，但他们属于同一类，因为他们都是UIImage的类别。BaseFilter中定义的方法也能在Transform和Shadow类别中使用，而不必像子类化那样进行继承。  
+</span><span class='line'>    <span class="n">CGSize</span> <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">size</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">context</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
 </span><span class='line'>
-</span><span class='line'>UIImage(BaseFilter)中的方法定义，用户绘制图像，相当于装饰者抽象类，而UIImage则是被装饰的组件:  
+</span><span class='line'>    <span class="k">return</span> <span class="n">context</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span> <span class="nf">getImageFromCurrentImageContext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">drawAtPoint:</span><span class="n">CGPointZero</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Retrieve the UIImage from the current context</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageOut</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">imageOut</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">endContext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p> objc</p>
+<p>
+Transform类别定义了一个<code>imageWithTransform:transform</code>方法，接受一个转换引用，然后把应用于内部的图像引用，并让它把自己画出来，然后返回变换后的图像：<br/>
+&#8220;` #import &ldquo;UIImage+Transform.h&rdquo;</p>
 
 <h1>import &ldquo;UIImage+BaseFilter.h&rdquo;</h1>
 
-<p>@implementation UIImage (BaseFilter)
-&ndash; (CGContextRef) beginContext
+<p>@implementation UIImage (Transform)
+&ndash; (UIImage *) imageWithTransform:(CGAffineTransform)transform
 {</p>
 
-<pre><code>CGSize size = [self size];
-UIGraphicsBeginImageContextWithOptions(size, NO, 0);
-CGContextRef context = UIGraphicsGetCurrentContext();
+<pre><code>CGContextRef context = [self beginContext];
 
-return context;
+// setup transformation
+CGContextConcatCTM(context, transform);
+
+// Draw the original image to the context
+UIImage *imageOut = [self getImageFromCurrentImageContext];
+
+[self endContext];
+
+return imageOut;
+</code></pre>
+
+<p>}
+@end</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">Shadow</span><span class="err">类别定义了一个`</span><span class="n">imageWithDropShadow</span><span class="err">`方法，向图像的内部引用添加阴影效果，并返回应用效果之后的最终图像。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h1>import &ldquo;UIImage+Shadow.h&rdquo;</h1>
+
+<h1>import &ldquo;UIImage+BaseFilter.h&rdquo;</h1>
+
+<p>@implementation UIImage (Shadow)
+&ndash; (UIImage *) imageWithDropShadow
+{</p>
+
+<pre><code>CGContextRef context = [self beginContext];
+
+// set up shadow
+CGSize offset = CGSizeMake (-25,  15);
+CGContextSetShadow(context, offset, 20.0);
+
+// Draw the original image to the context
+UIImage * imageOut = [self getImageFromCurrentImageContext];
+
+[self endContext];
+
+return imageOut;
+</code></pre>
+
+<p>}
+@end</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="err">最后在</span><span class="n">ViewController</span><span class="err">中加载图像：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+&ndash; (void)viewDidLoad
+{</p>
+
+<pre><code>[super viewDidLoad];
+// Do any additional setup after loading the view, typically from a nib.
+UIImage *image = imageView.image;
+
+
+// create a transformation
+CGAffineTransform rotateTransform = CGAffineTransformMakeRotation(-M_PI / 4.0);
+CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(-image.size.width / 2.0,
+                                                                        image.size.height / 8.0);
+CGAffineTransform finalTransform = CGAffineTransformConcat(rotateTransform, translateTransform);
+UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropShadow];
+[imageView setImage:finalImage];
+</code></pre>
+
+<p>}</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="err">因为类别只能拓展方法，不能在原有类的基础上添加属性，但是我们依然可以通过下面的方式向类中动态添加属性，来弥补类别的不足：</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">给</span><span class="n">UIImage</span><span class="err">添加一个新的</span><span class="n">title</span><span class="err">属性</span>
+</span><span class='line'><span class="err">具体代码如下：</span>
+</span><span class='line'><span class="err">`</span><span class="n">UIImage</span><span class="o">+</span><span class="n">Title</span><span class="p">.</span><span class="n">h</span><span class="err">`</span><span class="o">:</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+@interface UIImage(Title)
+@property(nonatomic, copy) NSString *title;
+@end</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="err">`</span><span class="n">UIImage</span><span class="o">+</span><span class="n">Title</span><span class="p">.</span><span class="n">m</span><span class="err">`</span><span class="o">:</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h1>import &ldquo;UIImage+Title.h&rdquo;</h1>
+
+<p>static char titleKey;</p>
+
+<p>@implementation UIImage(Title)
+&ndash; (NSString *)title
+{</p>
+
+<pre><code>return objc_getAssociatedObject(self, &amp;titleKey);
 </code></pre>
 
 <p>}</p>
 
 <ul>
-<li><p>(UIImage *) getImageFromCurrentImageContext
+<li>(void)setTitle:(NSString *)title
 {
-  [self drawAtPoint:CGPointZero];</p>
-
-<p>  // Retrieve the UIImage from the current context
-  UIImage *imageOut = UIGraphicsGetImageFromCurrentImageContext();</p>
-
-<p>  return imageOut;
-}</p></li>
-<li><p>(void) endContext
-{
-  UIGraphicsEndImageContext();
+  objc_setAssociatedObject(self, &amp;titleKey, title, OBJC_ASSOCIATION_COPY);
 }
-@end</p></li>
+@end
+&#8220;`
+可以看到关键是用到了runtime的两个函数：</li>
+<li><code>id objc_getAssociatedObject(id object, void *key)</code></li>
+<li><code>void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)</code></li>
 </ul>
 
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Transform类别定义了一个`imageWithTransform:transform`方法，接受一个转换引用，然后把应用于内部的图像引用，并让它把自己画出来，然后返回变换后的图像：  
-</span><span class='line'>``` #import "UIImage+Transform.h"
-</span><span class='line'>#import "UIImage+BaseFilter.h"
-</span><span class='line'>@implementation UIImage (Transform)
-</span><span class='line'>- (UIImage *) imageWithTransform:(CGAffineTransform)transform
-</span><span class='line'>{
-</span><span class='line'>    CGContextRef context = [self beginContext];
-</span><span class='line'>    
-</span><span class='line'>    // setup transformation
-</span><span class='line'>    CGContextConcatCTM(context, transform);
-</span><span class='line'>    
-</span><span class='line'>    // Draw the original image to the context
-</span><span class='line'>    UIImage *imageOut = [self getImageFromCurrentImageContext];
-</span><span class='line'>    
-</span><span class='line'>    [self endContext];
-</span><span class='line'>    
-</span><span class='line'>    return imageOut;
-</span><span class='line'>}
-</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>Shadow类别定义了一个<code>imageWithDropShadow</code>方法，向图像的内部引用添加阴影效果，并返回应用效果之后的最终图像。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#import "UIImage+Shadow.h"
-</span><span class='line'>#import "UIImage+BaseFilter.h"
-</span><span class='line'>@implementation UIImage (Shadow)
-</span><span class='line'>- (UIImage *) imageWithDropShadow
-</span><span class='line'>{
-</span><span class='line'>    CGContextRef context = [self beginContext];
-</span><span class='line'>    
-</span><span class='line'>    // set up shadow
-</span><span class='line'>    CGSize offset = CGSizeMake (-25,  15);
-</span><span class='line'>    CGContextSetShadow(context, offset, 20.0);
-</span><span class='line'>    
-</span><span class='line'>    // Draw the original image to the context
-</span><span class='line'>    UIImage * imageOut = [self getImageFromCurrentImageContext];
-</span><span class='line'>    
-</span><span class='line'>    [self endContext];
-</span><span class='line'>    
-</span><span class='line'>    return imageOut;
-</span><span class='line'>}
-</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-最后在ViewController中加载图像：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)viewDidLoad
-</span><span class='line'>{
-</span><span class='line'>    [super viewDidLoad];
-</span><span class='line'>  // Do any additional setup after loading the view, typically from a nib.
-</span><span class='line'>    UIImage *image = imageView.image;
-</span><span class='line'>    
-</span><span class='line'>    
-</span><span class='line'>    // create a transformation
-</span><span class='line'>    CGAffineTransform rotateTransform = CGAffineTransformMakeRotation(-M_PI / 4.0);
-</span><span class='line'>    CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(-image.size.width / 2.0,
-</span><span class='line'>                                                                            image.size.height / 8.0);
-</span><span class='line'>    CGAffineTransform finalTransform = CGAffineTransformConcat(rotateTransform, translateTransform);
-</span><span class='line'>    UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropShadow];
-</span><span class='line'>    [imageView setImage:finalImage];
-</span><span class='line'>
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>因为类别只能拓展方法，不能在原有类的基础上添加属性，但是我们依然可以通过下面的方式向类中动态添加属性，来弥补类别的不足：</p>
-
-<p>给UIImage添加一个新的title属性<br/>
-具体代码如下：<br/>
-<code>UIImage+Title.h</code>:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@interface UIImage(Title)
-</span><span class='line'>@property(nonatomic, copy) NSString *title;
-</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-<code>UIImage+Title.m</code>:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#import "UIImage+Title.h"
-</span><span class='line'>static char titleKey;
-</span><span class='line'>
-</span><span class='line'>@implementation UIImage(Title)
-</span><span class='line'>- (NSString *)title
-</span><span class='line'>{
-</span><span class='line'>    return objc_getAssociatedObject(self, &titleKey);
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>- (void)setTitle:(NSString *)title
-</span><span class='line'>{
-</span><span class='line'>    objc_setAssociatedObject(self, &titleKey, title, OBJC_ASSOCIATION_COPY);
-</span><span class='line'>}
-</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-可以看到关键是用到了runtime的两个函数：<br/>
-1. <code>id objc_getAssociatedObject(id object, void *key)</code><br/>
-2. <code>void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)</code></p>
 
 <p>该函数中第一位参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy，它有以下几个选项：<code>OBJC_ASSOCIATION_ASSIGN</code>，<code>OBJC_ASSOCIATION_RETAIN</code>，<code>OBJC_ASSOCIATION_COPY</code>，分别对应我们在声明属性时的<code>assign</code>,<code>retain</code>,<code>copy</code>。<br/>
 关于第二个参数，key。因为一个对象可以关联多个新的对像，我们需要一个标志来区分他们。所以这个key就起这样的作用。这里的需要的key的地址，不关心它指向谁。</p>
@@ -1227,7 +1138,7 @@ return context;
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#x73;&#117;&#112;&#112;&#x6f;&#114;&#116;&#64;&#x67;&#105;&#116;&#x68;&#x75;&#98;&#46;&#x63;&#x6f;&#109;&#x2e;">&#x73;&#x75;&#112;&#x70;&#x6f;&#x72;&#x74;&#64;&#103;&#x69;&#x74;&#x68;&#117;&#x62;&#x2e;&#99;&#111;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#58;&#x73;&#x75;&#x70;&#x70;&#111;&#114;&#x74;&#x40;&#x67;&#x69;&#x74;&#x68;&#x75;&#x62;&#46;&#x63;&#x6f;&#109;&#x2e;">&#x73;&#117;&#112;&#x70;&#x6f;&#114;&#116;&#x40;&#103;&#105;&#116;&#104;&#x75;&#98;&#x2e;&#99;&#111;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
