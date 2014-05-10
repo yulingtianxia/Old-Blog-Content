@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Java | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-10T17:41:39+08:00</updated>
+  <updated>2014-05-10T17:44:24+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -39,11 +39,12 @@
 应用装饰者模式，就像给对象穿衣服一样一层一层将拓展动态的添加上去，灵活多变有弹性<br/>
 <img src="/images/blog/QQ20140510-3@2x.png" alt="" /><br/>
 下面用Java实现这个例子<br/>
-Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost()。  <code>
+Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost（）<br/>
+ <code>
 public abstract class Beverage {String description = "Unknown Beverage";public String getDescription() {return description;}public abstract double cost();}</code> Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就是装饰者类吧：<br/>
 <code>
 public abstract class CondimentDecorator extends Beverage {public abstract String getDescription();}</code> 必须让Condiment Decorator能够取代Beverage，所以将CondimentDecorator扩展自 Beverage 类<br/>
-现在，已经有了基类，让我们开始开始实现一些饮料吧！先从浓缩咖啡（Espresso）开始。别忘了，我们需要为具体的饮料设置描述，而且还必须实现cost()方法。<br/>
+现在，已经有了基类，让我们开始开始实现一些饮料吧！先从浓缩咖啡（Espresso）开始。别忘了，我们需要为具体的饮料设置描述，而且还必须实现cost()方法  <br/>
 <code>
 public class Espresso extends Beverage {public Espresso() {description = "Espresso";}public double cost() {return 1.99;}}</code>
 其他几种具体的饮料就不写了<br/>
