@@ -1,0 +1,699 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Objective-C中的KVC和KVO - 玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="Objective-C中的KVC和KVO KVC 键/值编码中的基本调用包括-valueForKey:和-setValue:forKey:。以字符串的形式向对象发送消息，这个字符串是我们关注的属性的关键。
+valueForKey:首先查找以键-key或-isKey 命名的getter方法。 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/05/12/objective-czhong-de-kvche-kvo/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I'm not a hacker.</p>
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+    <li><a href="/blog/archives">所有文章</a></li>
+    <li><a href="/about">关于我</a></li>
+    
+</ul>
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+16.153846153846153%25%27%3EC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcode-snippets%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ECode+Snippets%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+16.153846153846153%25%27%3ECore+Data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdfssuan-fa%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EDFS%E7%AE%97%E6%B3%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EGCD%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+19.23076923076923%25%27%3EGitHub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3EiOS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EMacOSX%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+31.53846153846154%25%27%3EObjective-C%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsksprite%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ESKSprite%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ESocial+Framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+19.23076923076923%25%27%3ESpriteKit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+16.153846153846153%25%27%3EXcode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EXCode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdan-yuan-ce-shi%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fji-chu-zhi-shi%27+style%3D%27font-size%3A+16.153846153846153%25%27%3E%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjie-ping%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E6%88%AA%E5%B1%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+22.307692307692307%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+28.46153846153846%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
+<br>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Objective-C中的KVC和KVO</h1>
+	<div class="entry-content" itemprop="articleBody"><!--more-->
+
+
+<h2>KVC</h2>
+
+<p>键/值编码中的基本调用包括<code>-valueForKey:</code>和<code>-setValue:forKey:</code>。以字符串的形式向对象发送消息，这个字符串是我们关注的属性的关键。<br/>
+<code>valueForKey:</code>首先查找以键<code>-key</code>或<code>-isKey   </code>命名的getter方法。如果不存在getter方法（假如我们没有通过<code>@synthesize</code>提供存取方法），它将在对象内部查找名为<code>_key</code>或<code>key</code>的实例变量。<br/>
+对于KVC，Cocoa自动放入和取出标量值（int，float和struct）放入NSNumber或NSValue中；当使用<code>-setValue:ForKey:</code>时，它自动将标量值从这些对象中取出。仅KVC具有这种自动包装功能，常规方法调用和属性语法不具备该功能。<br/>
+<code>-setValue:ForKey:</code>的工作方式和<code>-valueForKey:</code>相同。它首先查找名称的setter方法，如果不存在setter方法，它将在类中查找名为<code>_key</code>或<code>key</code>的实例变量。</p>
+
+<p>使用KVC访问属性的代价比直接使用存取方法要大，所以只在需要的时候才用。</p>
+
+<p>有关KVC的更多用法，参看这篇文章：<a href="http://blog.csdn.net/omegayy/article/details/7381301">http://blog.csdn.net/omegayy/article/details/7381301</a></p>
+
+<h2>KVO</h2>
+
+<p>KVO是Cocoa提供的一种称为键－值观察的机制，对象可以通过它得到其他对象特性属性的变更通知。这种机制在MVC模式的场景中很重要，因为它让视图对象可以经由控制器层观察模型对象的变更。<br/>
+这一机制基于NSKeyValueObserving非正式协议，Cocoa通过这个协议为所有遵守协议的对象提供了一种自动化的属性观察能力。要实现自动观察，参与KVO的对象需要符合KVC的要求和存取方法，也可以手动实现观察者通知，也可以两者都保留。</p>
+
+<p>KVO是Cocoa框架使用<strong>观察者模式</strong>的一种途径。</p>
+
+<p>设置一个属性的观察者需要三步，理解这些步骤可以更清楚的知道KVO的工作框图<br/>
+1. 首先看看你当前的场景如果使用KVO是否更妥当，比如，当一个实例的某个具体属性有任何变更的时候，另一个实例需要被通知。</p>
+
+<p><img src="/images/blog/kvo_objects.jpg" alt="" /></p>
+
+<p>比如，BankObject中的accountBalance属性有任何变更时，某个PersonObject对象都要觉察到。<br/>
+2. 这个PersonObject对象必须注册成为BankObject的accountBalance属性的观察者，可以通过发送<code>addObserver:forKeyPath:options:context:</code>消息来实现。</p>
+
+<p><img src="/images/blog/kvo_objects_connection.jpg" alt="" /></p>
+
+<p>注意：<code>addObserver:forKeyPath:options:context:</code>方法在你指定的两个实例间建立联系，而不是在两个类之间。<br/>
+3. 为了回应变更通知，观察者必须实现<code>observeValueForKeyPath:ofObject:change:context:</code>方法。这个方法的实现决定了观察者如何回应变更通知。你可以在这个方法里自定义如何回应被观察属性的变更。</p>
+
+<p><img src="/images/blog/kvo_objects_implementation.jpg" alt="" />  <br/>
+4. 当一个被观察属性的值以符合KVO方式变更或者当它依赖的键变更时，<code>observeValueForKeyPath:ofObject:change:context:</code>方法会被自动执行。</p>
+
+<p><img src="/images/blog/kvo_objects_notification.jpg" alt="" /></p>
+
+<h3>Registering for Key-Value Observing</h3>
+
+<h4>注册称为观察者</h4>
+
+<p>你可以通过发送<code>addObserver:forKeyPath:options:context:</code>消息来注册观察者</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">registerAsObserver</span> <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/*</span>
+</span><span class='line'><span class="cm">     Register &#39;inspector&#39; to receive change notifications for the &quot;openingBalance&quot; property of</span>
+</span><span class='line'><span class="cm">     the &#39;account&#39; object and specify that both the old and new values of &quot;openingBalance&quot;</span>
+</span><span class='line'><span class="cm">     should be provided in the observe… method.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">account</span> <span class="nl">addObserver:</span><span class="n">inspector</span>
+</span><span class='line'>             <span class="nl">forKeyPath:</span><span class="s">@&quot;openingBalance&quot;</span>
+</span><span class='line'>                 <span class="nl">options:</span><span class="p">(</span><span class="n">NSKeyValueObservingOptionNew</span> <span class="o">|</span>
+</span><span class='line'>                            <span class="n">NSKeyValueObservingOptionOld</span><span class="p">)</span>
+</span><span class='line'>                    <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>inspector注册成为了account的观察者，被观察属性的KeyPath是@&ldquo;openingBalance&#8221;，也就是account的openingBalance属性，NSKeyValueObservingOptionNew和NSKeyValueObservingOptionOld选项分别标识在观察者接收通知时change字典对应入口提供更改后的值和更改前的值。context是一个指针，当<code>observeValueForKeyPath:ofObject:change:context:</code>方法执行时context会提供给观察者。context可以使C指针或者一个对象引用，既可以当作一个唯一的标识来分辨被观察的变更，也可以向观察者提供数据。</p>
+
+<h4>接收变更通知</h4>
+
+<p>当被观察的属性变更时，观察者会接到<code>observeValueForKeyPath:ofObject:change:context:</code>消息，所有的观察者都必须实现这个方法。<br/>
+观察者会被提供触发通知的对象和key path，一个包含变更详细信息的字典，还有一个注册观察者时提供的context指针。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">observeValueForKeyPath:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">keyPath</span>
+</span><span class='line'>                      <span class="nf">ofObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">object</span>
+</span><span class='line'>                        <span class="nf">change:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">change</span>
+</span><span class='line'>                       <span class="nf">context:</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="nv">context</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">keyPath</span> <span class="nl">isEqual:</span><span class="s">@&quot;openingBalance&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">openingBalanceInspectorField</span> <span class="nl">setObjectValue:</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">change</span> <span class="nl">objectForKey:</span><span class="n">NSKeyValueChangeNewKey</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="cm">/*</span>
+</span><span class='line'><span class="cm">     Be sure to call the superclass&#39;s implementation *if it implements it*.</span>
+</span><span class='line'><span class="cm">     NSObject does not implement the method.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="nl">observeValueForKeyPath:</span><span class="n">keyPath</span>
+</span><span class='line'>                         <span class="nl">ofObject:</span><span class="n">object</span>
+</span><span class='line'>                           <span class="nl">change:</span><span class="n">change</span>
+</span><span class='line'>                           <span class="nl">context:</span><span class="n">context</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+关于change参数，它是一个字典，有五个常量作为它的键：</p>
+
+<p>NSString <em>const NSKeyValueChangeKindKey;<br/>
+NSString </em>const NSKeyValueChangeNewKey;<br/>
+NSString <em>const NSKeyValueChangeOldKey;<br/>
+NSString </em>const NSKeyValueChangeIndexesKey;<br/>
+NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
+
+<p><strong>NSKeyValueChangeKindKey</strong><br/>
+指明了变更的类型，值为“NSKeyValueChange”枚举中的某一个，类型为NSNumber。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">enum</span> <span class="p">{</span>
+</span><span class='line'>   <span class="n">NSKeyValueChangeSetting</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>   <span class="n">NSKeyValueChangeInsertion</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>   <span class="n">NSKeyValueChangeRemoval</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class='line'>   <span class="n">NSKeyValueChangeReplacement</span> <span class="o">=</span> <span class="mi">4</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="k">typedef</span> <span class="n">NSUInteger</span> <span class="n">NSKeyValueChange</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+<strong>NSKeyValueChangeNewKey</strong><br/>
+如果 NSKeyValueChangeKindKey的值为 NSKeyValueChangeSetting，并且 NSKeyValueObservingOptionNew选项在注册观察者时也指定了，那么这个键的值就是属性变更后的新值。<br/>
+对于 NSKeyValueChangeInsertion或者NSKeyValueChangeReplacement，如果 NSKeyValueObservingOptionNew选项在注册观察者时也指定了，这个键的值是一个数组，其包含了插入或替换的对象。<br/>
+<strong>NSKeyValueChangeOldKey</strong><br/>
+如果 NSKeyValueChangeKindKey的值为 NSKeyValueChangeSetting，并且 NSKeyValueObservingOptionOld选项在注册观察者时也指定了，那么这个键的值就是属性变更前的旧值。<br/>
+对于  NSKeyValueChangeRemoval 或者NSKeyValueChangeReplacement，如果 NSKeyValueObservingOptionOld选项在注册观察者时也指定了，这个键的值是一个数组，其包含了被移除或替换的对象。<br/>
+<strong>NSKeyValueChangeIndexesKey</strong><br/>
+如果 NSKeyValueChangeKindKey的值为NSKeyValueChangeInsertion, NSKeyValueChangeRemoval, 或者 NSKeyValueChangeReplacement，这个键的值是一个NSIndexSet对象，包含了增加，移除或者替换对象的index。<br/>
+<strong>NSKeyValueChangeNotificationIsPriorKey</strong><br/>
+如果注册观察者时NSKeyValueObservingOptionPrior选项被指明了，此通知在变更发生前被发出。其值为NSNumber类型，默认为YES。</p>
+
+<h4>移除观察者</h4>
+
+<p>你可以通过发送<code>removeObserver:forKeyPath:</code>消息来移除观察者，你需要指明观察对象和路径。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">unregisterForChangeNotification</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">observedObject</span> <span class="nl">removeObserver:</span><span class="n">inspector</span> <span class="nl">forKeyPath:</span><span class="s">@&quot;openingBalance&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+上面的代码将openingBalance属性的观察者inspector移除，移除后观察者再也不会收到<code>observeValueForKeyPath:ofObject:change:context:</code>消息。<br/>
+在移除观察者之前，如果context是一个对象的引用，那么必须保持对它的强引用直到观察者被移除。</p>
+
+<h3>KVO Compliance</h3>
+
+<p>有两种方法可以保证变更通知被发出。自动发送通知是NSObject提供的，并且一个类中的所有属性都默认支持，只要是符合KVO的。一般情况你使用自动变更通知，你不需要写任何代码。<br/>
+人工变更通知需要些额外的代码，但也对通知发送提供了额外的控制。你可以通过重写子类<code>automaticallyNotifiesObserversForKey:</code>方法的方式控制子类一些属性的自动通知。</p>
+
+<h4>Automatic Change Notification</h4>
+
+<p>下面代码中的方法都能导致KVO变更消息发出</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// Call the accessor method.</span>
+</span><span class='line'><span class="p">[</span><span class="n">account</span> <span class="nl">setName:</span><span class="s">@&quot;Savings&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Use setValue:forKey:.</span>
+</span><span class='line'><span class="p">[</span><span class="n">account</span> <span class="nl">setValue:</span><span class="s">@&quot;Savings&quot;</span> <span class="nl">forKey:</span><span class="s">@&quot;name&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Use a key path, where &#39;account&#39; is a kvc-compliant property of &#39;document&#39;.</span>
+</span><span class='line'><span class="p">[</span><span class="n">document</span> <span class="nl">setValue:</span><span class="s">@&quot;Savings&quot;</span> <span class="nl">forKeyPath:</span><span class="s">@&quot;account.name&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Use mutableArrayValueForKey: to retrieve a relationship proxy object.</span>
+</span><span class='line'><span class="n">Transaction</span> <span class="o">*</span><span class="n">newTransaction</span> <span class="o">=</span> <span class="o">&lt;</span><span class="err">#</span><span class="n">Create</span> <span class="n">a</span> <span class="n">new</span> <span class="n">transaction</span> <span class="k">for</span> <span class="n">the</span> <span class="n">account</span><span class="err">#</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">transactions</span> <span class="o">=</span> <span class="p">[</span><span class="n">account</span> <span class="nl">mutableArrayValueForKey:</span><span class="s">@&quot;transactions&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">transactions</span> <span class="nl">addObject:</span><span class="n">newTransaction</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h4>Manual Change Notification</h4>
+
+<p>下面的代码为openingBalance属性开启了人工通知，并让父类决定其他属性的通知方式。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">automaticallyNotifiesObserversForKey:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">theKey</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">automatic</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">theKey</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;openingBalance&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">automatic</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">automatic</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">automaticallyNotifiesObserversForKey:</span><span class="n">theKey</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">automatic</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>要实现人工观察者通知，你要执行在变更前执行<code>willChangeValueForKey:</code>方法，在变更后执行<code>didChangeValueForKey:</code>方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setOpeningBalance:</span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="nv">theBalance</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">willChangeValueForKey:</span><span class="s">@&quot;openingBalance&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_openingBalance</span> <span class="o">=</span> <span class="n">theBalance</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">didChangeValueForKey:</span><span class="s">@&quot;openingBalance&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+为了使不必要的通知最小化我们应该在变更前先检查一下值是否变了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setOpeningBalance:</span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="nv">theBalance</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">theBalance</span> <span class="o">!=</span> <span class="n">_openingBalance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">willChangeValueForKey:</span><span class="s">@&quot;openingBalance&quot;</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">_openingBalance</span> <span class="o">=</span> <span class="n">theBalance</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">didChangeValueForKey:</span><span class="s">@&quot;openingBalance&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+如果一个操作导致了多个键的变化，你必须嵌套变更通知：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setOpeningBalance:</span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="nv">theBalance</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">willChangeValueForKey:</span><span class="s">@&quot;openingBalance&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">willChangeValueForKey:</span><span class="s">@&quot;itemChanged&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_openingBalance</span> <span class="o">=</span> <span class="n">theBalance</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_itemChanged</span> <span class="o">=</span> <span class="n">_itemChanged</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">didChangeValueForKey:</span><span class="s">@&quot;itemChanged&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">didChangeValueForKey:</span><span class="s">@&quot;openingBalance&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+在to-many关系操作的情形中，你不仅必须表明key是什么，还要表明变更类型和影响到的索引。变更类型是一个 NSKeyValueChange值，被影响对象的索引是一个 NSIndexSet对象。<br/>
+下面的代码示范了在to-many关系transactions对象中的删除操作：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeTransactionsAtIndexes:</span><span class="p">(</span><span class="n">NSIndexSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexes</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">willChange:</span><span class="n">NSKeyValueChangeRemoval</span>
+</span><span class='line'>        <span class="nl">valuesAtIndexes:</span><span class="n">indexes</span> <span class="nl">forKey:</span><span class="s">@&quot;transactions&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Remove the transaction objects at the specified indexes.</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">didChange:</span><span class="n">NSKeyValueChangeRemoval</span>
+</span><span class='line'>        <span class="nl">valuesAtIndexes:</span><span class="n">indexes</span> <span class="nl">forKey:</span><span class="s">@&quot;transactions&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>Registering Dependent Keys</h3>
+
+<p>有一些属性的值取决于一个或者多个其他对象的属性值，一旦某个被依赖的属性值变了，依赖它的属性的变化也需要被通知。</p>
+
+<h4>To-one Relationships</h4>
+
+<p>要自动触发 to-one关系，有两种方法：重写<code>keyPathsForValuesAffectingValueForKey:</code>方法或者定义名称为<code>keyPathsForValuesAffecting&lt;Key&gt;</code>的方法。</p>
+
+<p>例如一个人的全名是由姓氏和名子组成的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">fullName</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@ %@&quot;</span><span class="p">,</span><span class="n">firstName</span><span class="p">,</span> <span class="n">lastName</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+一个观察fullName的程序在firstName或者lastName变化时也应该接收到通知。</p>
+
+<p>一种解决方法是重写<code>keyPathsForValuesAffectingValueForKey:</code>方法来表明fullname属性是依赖于firstname和lastname的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nf">keyPathsForValuesAffectingValueForKey:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">key</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSSet</span> <span class="o">*</span><span class="n">keyPaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">keyPathsForValuesAffectingValueForKey:</span><span class="n">key</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">key</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;fullName&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">affectingKeys</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="s">@&quot;lastName&quot;</span><span class="p">,</span> <span class="s">@&quot;firstName&quot;</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">keyPaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">keyPaths</span> <span class="nl">setByAddingObjectsFromArray:</span><span class="n">affectingKeys</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">keyPaths</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+相当于在影响fullName值的keypath中新加了两个key：lastName和firstName，很容易理解。</p>
+
+<p>另一种实现同样结果的方法是实现一个遵循命名方式为<code>keyPathsForValuesAffecting&lt;Key&gt;</code>的类方法，<Key>是依赖于其他值的属性名（首字母大写），用上面代码的例子来重新实现一下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nf">keyPathsForValuesAffectingFullName</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSSet</span> <span class="nl">setWithObjects:</span><span class="s">@&quot;lastName&quot;</span><span class="p">,</span> <span class="s">@&quot;firstName&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>有时在类别中我们不能添加<code>keyPathsForValuesAffectingValueForKey:</code>方法，因为不能再类别中重写方法，所以这时可以实现<code>keyPathsForValuesAffecting&lt;Key&gt;</code>方法来代替。</p>
+
+<p>注意：你不能在<code>keyPathsForValuesAffectingValueForKey:</code>方法中设立to-many关系的依赖，相反，你必须观察在to-many集合中的每一个对象中相关的属性并通过亲自更新他们的依赖来回应变更。下一节将会讲述对付此情形的策略。</p>
+
+<h4>To-many Relationships</h4>
+
+<p><code>keyPathsForValuesAffectingValueForKey:</code>方法不支持包含to-many关系的keypath。比如，假如你有一个Department类，它有一个针对Employee类的to-many关系（雇员），Employee类有salary属性。你希望Department类有一个totalSalary属性来计算所有员工的薪水，也就是在这个关系中Department的totalSalary依赖于所有Employee的salary属性。你不能通过实现<code>keyPathsForValuesAffectingTotalSalary</code>方法并返回<code>employees.salary</code>。</p>
+
+<p>有两种解决方法：<br/>
+1. 你可以用KVO将parent（比如Department）作为所有children（比如Employee）相关属性的观察者。你必须在把child添加或删除到parent时也把parent作为child的观察者添加或删除。在<code>observeValueForKeyPath:ofObject:change:context:</code>方法中我们可以针对被依赖项的变更来更新依赖项的值：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">observeValueForKeyPath:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">keyPath</span> <span class="nf">ofObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">object</span> <span class="nf">change:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">change</span> <span class="nf">context:</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="nv">context</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">context</span> <span class="o">==</span> <span class="n">totalSalaryContext</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">updateTotalSalary</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>    <span class="c1">// deal with other observations and/or invoke super...</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">updateTotalSalary</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setTotalSalary:</span><span class="p">[</span><span class="n">self</span> <span class="nl">valueForKeyPath:</span><span class="s">@&quot;employees.@sum.salary&quot;</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setTotalSalary:</span><span class="p">(</span><span class="n">NSNumber</span> <span class="o">*</span><span class="p">)</span><span class="nv">newTotalSalary</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">totalSalary</span> <span class="o">!=</span> <span class="n">newTotalSalary</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">willChangeValueForKey:</span><span class="s">@&quot;totalSalary&quot;</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">_totalSalary</span> <span class="o">=</span> <span class="n">newTotalSalary</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">didChangeValueForKey:</span><span class="s">@&quot;totalSalary&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSNumber</span> <span class="o">*</span><span class="p">)</span><span class="nf">totalSalary</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_totalSalary</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>2.如果你在使用Core Data，你可以在应用的notification center中将parent注册为它的 managed object context的观察者，parent应该回应相应的变更通知，这些通知是children以类似KVO的形式发出的。</p>
+
+<p>其实这也是Objective-C中利用Cocoa实现观察者模式的另一种途径：NSNotificationCenter</p>
+</div>
+
+</article>
+
+
+
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+  	
+     <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_xiaoyou"></a>
+	<a href="http://www.jiathis.com/share?uid=1912336" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1912336" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1912336"></script>
+<!-- UY END -->
+
+ 	
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    玉令天下
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'yulingtianxia';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/05/12/objective-czhong-de-kvche-kvo/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/05/12/objective-czhong-de-kvche-kvo/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+		</div>
+	</div>
+</body>
+</html>
