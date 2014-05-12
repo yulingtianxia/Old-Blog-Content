@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 设计模式 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/she-ji-mo-shi/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-12T17:21:10+08:00</updated>
+  <updated>2014-05-12T18:42:26+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -32,7 +32,10 @@
 
 <p>使用KVC访问属性的代价比直接使用存取方法要大，所以只在需要的时候才用。</p>
 
-<p>有关KVC的更多用法，参看这篇文章：<a href="http://blog.csdn.net/omegayy/article/details/7381301">http://blog.csdn.net/omegayy/article/details/7381301</a></p>
+<p>有关KVC的更多用法，参看下面的文章：</p>
+
+<p><a href="http://blog.csdn.net/omegayy/article/details/7381301  ">http://blog.csdn.net/omegayy/article/details/7381301  </a>
+<a href="http://blog.csdn.net/wzzvictory/article/details/9674431">http://blog.csdn.net/wzzvictory/article/details/9674431</a></p>
 
 <h2>KVO</h2>
 
@@ -337,7 +340,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#x6d;&#97;&#105;&#108;&#116;&#x6f;&#58;&#101;&#x6d;&#x70;&#x6c;&#x6f;&#121;&#101;&#101;&#x73;&#x2e;&#x40;&#115;&#x75;&#x6d;&#x2e;&#115;&#x61;&#108;&#x61;&#x72;&#121;">&#x65;&#109;&#112;&#108;&#x6f;&#121;&#x65;&#x65;&#x73;&#x2e;&#64;&#x73;&#x75;&#x6d;&#46;&#x73;&#97;&#108;&#97;&#x72;&#x79;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#101;&#109;&#x70;&#108;&#x6f;&#121;&#x65;&#101;&#115;&#x2e;&#x40;&#x73;&#x75;&#109;&#x2e;&#115;&#97;&#108;&#97;&#114;&#x79;">&#101;&#x6d;&#x70;&#x6c;&#x6f;&#x79;&#101;&#x65;&#x73;&#46;&#x40;&#x73;&#x75;&#109;&#46;&#x73;&#x61;&#x6c;&#x61;&#114;&#121;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 
