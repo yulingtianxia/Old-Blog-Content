@@ -41,7 +41,7 @@ categories:
 
 Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost（）  
  
-``` 
+``` java
 public abstract class Beverage {
 String description = "Unknown Beverage";
 public String getDescription() {
@@ -71,7 +71,6 @@ return 1.99;
 }
 }
 ``` 
-
 
 其他几种具体的饮料就不写了  
 
@@ -151,13 +150,11 @@ java.io包内的类太多了，简直是……“排山倒海”。你第一次�
 但是JavaAI/O也引出装饰者模式的一个“缺点”：利用装饰者模式，常常造成设计中有大量的小类，数量实在太多，可能会造成使用此API程序员的困扰。但是，现在你已经了解了装饰者的工作原理，以后当使用别人的大量装饰的API时，就可以很容易地辨别出他们的装饰者类是如何组织的，以方便用包装方式取得想要的行为。  
 
 
-##Objective-C类别与装饰模式
-
+##Objective-C类别与装饰模式  
 
 Objective-C中也可以实现基于继承和接口的装饰者模式，但这里介绍的是另一种实现方法：类别  
 
 类别是一个Objective-C的语言功能，通过它可以向类添加行为（方法的接口与实现），而不必进行子类化。通过类别添加的方法对类原有的方法没有不良影响。类别中的方法成为了类的一部分，并可由其子类继承。  
-
 
 我们可以用类别来实现装饰模式，然而这不是一种严格的实现，它实现了模式的意图，但却是一种变体。由装饰器类别添加的行为是编译时绑定的，虽然Objective-C原本支持动态绑定（应该用方法的哪个实现）。而且装饰器类别实际上没有封装被扩展的类的实例。  
 
@@ -306,7 +303,7 @@ static char titleKey;
 1. `id objc_getAssociatedObject(id object, void *key)`  
 2. `void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)`  
 
-该函数中第一位参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy，它有以下几个选项：`OBJC_ASSOCIATION_ASSIGN`，`OBJC_ASSOCIATION_RETAIN`，`OBJC_ASSOCIATION_COPY`，分别对应我们在声明属性时的`assign`,`retain`,`copy`。  
+该函数中第一个参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy,它有以下几个选项：`OBJC_ASSOCIATION_ASSIGN`，`OBJC_ASSOCIATION_RETAIN`，`OBJC_ASSOCIATION_COPY`，分别对应我们在声明属性时的`assign`,`retain`,`copy`。  
 关于第二个参数，key。因为一个对象可以关联多个新的对像，我们需要一个标志来区分他们。所以这个key就起这样的作用。这里的需要的key的地址，不关心它指向谁。  
 
 当我们第二次以新的value调用objc_setAssociatedObject时，如果policy是OBJC_ASSOCIATION_ASSIGN，新的value被关联，对原来旧的value没有任何影响。如果policy是OBJC_ASSOCIATION_RETAIN和OBJC_ASSOCIATION_COPY，新的value被关联，旧的value被release。如果想release原来的value又不关联新的value，，可以用objc_setAssociatedObject直接传一个nil做为value的值。  
