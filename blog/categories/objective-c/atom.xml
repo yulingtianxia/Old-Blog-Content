@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-14T12:44:47+08:00</updated>
+  <updated>2014-05-17T21:55:56+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,311 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[NSPredicate]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/05/17/nspredicate/"/>
+    <updated>2014-05-17T20:42:11+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/05/17/nspredicate</id>
+    <content type="html"><![CDATA[<p>本文转载自<a href="http://nshipster.cn/nspredicate/">http://nshipster.cn/nspredicate/</a></p>
+
+<p>NSPredicate是一个Foundation类，它指定数据被获取或者过滤的方式。它的查询语言就像SQL的WHERE和正则表达式的交叉一样，提供了具有表现力的，自然语言界面来定义一个集合被搜寻的逻辑条件。</p>
+
+<!--more-->
+
+
+<p>相比较抽象的谈论它，展示NSPredicate的使用方法更加容易，所以我们来重新审视<a href="http://nshipster.com/nssortdescriptor/">NSSortDescriptor</a>中使用的示例数据集吧：</p>
+
+<table>
+<thead>
+<tr>
+<th>索引 </th>
+<th> 0 </th>
+<th> 1 </th>
+<th> 2 </th>
+<th> 3 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名 </td>
+<td> Alice </td>
+<td> Bob   </td>
+<td> Charlie </td>
+<td>  Quentin</td>
+</tr>
+<tr>
+<td>姓 </td>
+<td> Smith </td>
+<td> Jones </td>
+<td> Smith </td>
+<td> Alberts</td>
+</tr>
+<tr>
+<td>年龄  </td>
+<td> 24    </td>
+<td> 27    </td>
+<td> 33    </td>
+<td> 31</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>``` objc</p>
+
+<p>@interface Person : NSObject
+@property NSString <em>firstName;
+@property NSString </em>lastName;
+@property NSNumber *age;
+@end</p>
+
+<p>@implementation Person</p>
+
+<ul>
+<li>(NSString *)description {
+  return [NSString stringWithFormat:@&ldquo;%@ %@&rdquo;, self.firstName, self.lastName];
+}</li>
+</ul>
+
+
+<p>@end</p>
+
+<h1>pragma mark &ndash;</h1>
+
+<p>NSArray <em>firstNames = @[ @&ldquo;Alice&rdquo;, @&ldquo;Bob&rdquo;, @&ldquo;Charlie&rdquo;, @&ldquo;Quentin&rdquo; ];
+NSArray </em>lastNames = @[ @&ldquo;Smith&rdquo;, @&ldquo;Jones&rdquo;, @&ldquo;Smith&rdquo;, @&ldquo;Alberts&rdquo; ];
+NSArray *ages = @[ @24, @27, @33, @31 ];</p>
+
+<p>NSMutableArray <em>people = [NSMutableArray array];
+[firstNames enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL </em>stop) {</p>
+
+<pre><code>Person *person = [[Person alloc] init];
+person.firstName = firstNames[idx];
+person.lastName = lastNames[idx];
+person.age = ages[idx];
+[people addObject:person];
+</code></pre>
+
+<p>}];</p>
+
+<p>NSPredicate <em>bobPredicate = [NSPredicate predicateWithFormat:@&ldquo;firstName = &lsquo;Bob&rsquo;&rdquo;];
+NSPredicate </em>smithPredicate = [NSPredicate predicateWithFormat:@&ldquo;lastName = %@&rdquo;, @&ldquo;Smith&rdquo;];
+NSPredicate *thirtiesPredicate = [NSPredicate predicateWithFormat:@&ldquo;age >= 30&rdquo;];</p>
+
+<p>// [&ldquo;Bob Jones&rdquo;]
+NSLog(@&ldquo;Bobs: %@&rdquo;, [people filteredArrayUsingPredicate:bobPredicate]);</p>
+
+<p>// [&ldquo;Alice Smith&rdquo;, &ldquo;Charlie Smith&rdquo;]
+NSLog(@&ldquo;Smiths: %@&rdquo;, [people filteredArrayUsingPredicate:smithPredicate]);</p>
+
+<p>// [&ldquo;Charlie Smith&rdquo;, &ldquo;Quentin Alberts&rdquo;]
+NSLog(@&ldquo;30&rsquo;s: %@&rdquo;, [people filteredArrayUsingPredicate:thirtiesPredicate]);
+```</p>
+
+<h2>集合中使用NSPredicate</h2>
+
+<p>Foundation提供使用谓词（predicate）来过滤NSArray／NSMutableArray&amp;NSSet／NSMutableSet的方法。</p>
+
+<p>不可变的集合，NSArray&amp;NSSet，有可以通过评估接收到的predicate来返回一个不可变集合的方法<code>filteredArrayUsingPredicate:</code>和<code>filteredSetUsingPredicate:</code>。</p>
+
+<p>可变集合，NSMutableArray&amp;NSMutableSet，可以使用方法<code>filterUsingPredicate:</code>，它可以通过运行接收到的谓词来移除评估结果为FALSE的对象。</p>
+
+<p>NSDictionary可以用谓词来过滤它的键和值（两者都为NSArray对象）。NSOrderedSet可以由过滤的NSArray或NSSet生成一个新的有序的集，或者NSMutableSet可以简单的<code>removeObjectsInArray:</code>，来传递通过<em>否定</em>predicate过滤的对象。</p>
+
+<h2>Core Data中使用NSPredicate</h2>
+
+<p>NSFetchRequest有一个predicate属性，它可以指定管理对象应该被获取的逻辑条件。谓词的使用规则在这里同样适用，唯一的区别在于，在管理对象环境中，谓词由持久化存储助理（persistent store coordinator）评估，而不像集合那样在内存中被过滤。</p>
+
+<h2>谓词语法</h2>
+
+<h3>替换</h3>
+
+<ul>
+<li>%@是对值为字符串，数字或者日期的对象的替换值。</li>
+<li>%K是key path的替换值。</li>
+</ul>
+
+
+<p>```
+NSPredicate *ageIs33Predicate = [NSPredicate predicateWithFormat:@&ldquo;%K = %@&rdquo;, @&ldquo;age&rdquo;, @33];</p>
+
+<p>// [&ldquo;Charlie Smith&rdquo;]
+NSLog(@&ldquo;Age 33: %@&rdquo;, [people filteredArrayUsingPredicate:ageIs33Predicate]);
+<code>``
+- $VARIABLE_NAME是可以被</code>NSPredicate -predicateWithSubstitutionVariables:`替换的值。</p>
+
+<p>```
+NSPredicate *namesBeginningWithLetterPredicate = [NSPredicate predicateWithFormat:@&ldquo;(firstName BEGINSWITH[cd] $letter) OR (lastName BEGINSWITH[cd] $letter)&rdquo;];</p>
+
+<p>// [&ldquo;Alice Smith&rdquo;, &ldquo;Quentin Alberts&rdquo;]
+NSLog(@&ldquo;&lsquo;A&rsquo; Names: %@&rdquo;, [people filteredArrayUsingPredicate:[namesBeginningWithLetterPredicate predicateWithSubstitutionVariables:@{@&ldquo;letter&rdquo;: @&ldquo;A&rdquo;}]]);
+```</p>
+
+<h3>基本比较</h3>
+
+<ul>
+<li>=, ==：左边的表达式和右边的表达式相等。</li>
+<li>>=, =>：左边的表达式大于或者等于右边的表达式。</li>
+<li>&lt;=, =&lt;：左边的表达式小于等于右边的表达式。</li>
+<li>>：左边的表达式大于右边的表达式。</li>
+<li>&lt;：左边的表达式小于右边的表达式。</li>
+<li>!=, &lt;>：左边的表达式不等于右边的表达式。</li>
+<li>BETWEEN：左边的表达式等于右边的表达式的值或者介于它们之间。右边是一个有两个指定上限和下限的数值的数列（指定顺序的数列）。比如，1 BETWEEN { 0 , 33 }，或者$INPUT BETWEEN { $LOWER, $UPPER }。</li>
+</ul>
+
+
+<h3>基本复合谓词</h3>
+
+<ul>
+<li>AND, &amp;&amp;：逻辑与.</li>
+<li>OR, ||：逻辑或.</li>
+<li>NOT, !：逻辑非.</li>
+</ul>
+
+
+<h3>字符串比较</h3>
+
+<p><em>字符串比较在默认的情况下是区分大小写和音调的。你可以在方括号中用关键字符c和d来修改操作符以相应的指定不区分大小写和变音符号，比如firstname BEGINSWITH[cd] $FIRST_NAME。</em></p>
+
+<ul>
+<li>BEGINSWITH：左边的表达式以右边的表达式作为开始。</li>
+<li>CONTAINS：左边的表达式包含右边的表达式。</li>
+<li>ENDSWITH：左边的表达式以右边的表达式作为结束。</li>
+<li>LIKE：左边的表达式等于右边的表达式：?和<em>可作为通配符，其中?匹配1个字符，</em>匹配0个或者多个字符。</li>
+<li>MATCHES：左边的表达式根据ICU v3（更多内容请查看<a href="http://userguide.icu-project.org/strings/regexp">ICU User Guide for Regular Expressions</a>）的regex风格比较，等于右边的表达式。</li>
+</ul>
+
+
+<h3>合计操作</h3>
+
+<h4>关系操作</h4>
+
+<ul>
+<li>ANY，SOME：指定下列表达式中的任意元素。比如，ANY children.age &lt; 18。</li>
+<li>ALL：指定下列表达式中的所有元素。比如，ALL children.age &lt; 18。</li>
+<li>NONE：指定下列表达式中没有的元素。比如，NONE children.age &lt; 18。它在逻辑上等于NOT (ANY &hellip;)。</li>
+<li>IN：等于SQL的IN操作，左边的表达必须出现在右边指定的集合中。比如，name IN { &lsquo;Ben&rsquo;, &lsquo;Melissa&rsquo;, &lsquo;Nick&rsquo; }。</li>
+</ul>
+
+
+<h4>数组操作</h4>
+
+<ul>
+<li>array[index]：指定数组中特定索引处的元素。</li>
+<li>array[FIRST]：指定数组中的第一个元素。</li>
+<li>array[LAST]：指定数组中的最后一个元素。</li>
+<li>array[SIZE]：指定数组的大小。</li>
+</ul>
+
+
+<h3>布尔值谓词</h3>
+
+<ul>
+<li>TRUEPREDICATE：结果始终为真的谓词。</li>
+<li>FALSEPREDICATE：结果始终为假的谓词。</li>
+</ul>
+
+
+<h2>NSCompoundPredicate</h2>
+
+<p>我们见过与&amp;或被用在谓词格式字符串中以创建复合谓词。然而，我们也可以用NSCompoundPredicate来完成同样的工作。</p>
+
+<p>例如，下列谓词是相等的：</p>
+
+<p>```
+[NSCompoundPredicate andPredicateWithSubpredicates:@[[NSPredicate predicateWithFormat:@&ldquo;age > 25&rdquo;], [NSPredicate predicateWithFormat:@&ldquo;firstName = %@&rdquo;, @&ldquo;Quentin&rdquo;]]];</p>
+
+<p>[NSPredicate predicateWithFormat:@&ldquo;(age > 25) AND (firstName = %@)&rdquo;, @&ldquo;Quentin&rdquo;];
+```</p>
+
+<p>虽然语法字符串文字更加容易输入，但是在有的时候，你需要结合现有的谓词。在那些情况下，你可以使用<code>NSCompoundPredicate -andPredicateWithSubpredicates:</code>&amp;<code>-orPredicateWithSubpredicates:</code>。</p>
+
+<h2>NSComparisonPredicate</h2>
+
+<p>同样的，如果你在读过<a href="http://nshipster.com/nsexpression/">上周的文章</a>之后发现你使用了太多的NSExpression的话，NSComparisonPredicate可以帮助你解决这个问题。</p>
+
+<p>就像NSCompoundPredicate一样，NSComparisonPredicate从子部件构建了一个NSPredicate－－在这种情况下，左侧和右侧都是NSExpression。 分析它的类的构造函数可以让我们一窥NSPredicate的格式字符串是如何解析的：</p>
+
+<p>```
++ (NSPredicate <em>)predicateWithLeftExpression:(NSExpression </em>)lhs</p>
+
+<pre><code>                         rightExpression:(NSExpression *)rhs
+                                modifier:(NSComparisonPredicateModifier)modifier
+                                    type:(NSPredicateOperatorType)type
+                                 options:(NSUInteger)options
+</code></pre>
+
+<p>```</p>
+
+<h4>参数</h4>
+
+<ul>
+<li>lhs：左边的表达式。</li>
+<li>rhs：右边的表达式。</li>
+<li>modifier：应用的修改符。（ANY或者ALL）</li>
+<li>type：谓词运算符类型。</li>
+<li>options：要应用的选项。没有选项的话则为0。</li>
+</ul>
+
+
+<h3>NSComparisonPredicate类型</h3>
+
+<p><code>
+enum {
+   NSLessThanPredicateOperatorType = 0,
+   NSLessThanOrEqualToPredicateOperatorType,
+   NSGreaterThanPredicateOperatorType,
+   NSGreaterThanOrEqualToPredicateOperatorType,
+   NSEqualToPredicateOperatorType,
+   NSNotEqualToPredicateOperatorType,
+   NSMatchesPredicateOperatorType,
+   NSLikePredicateOperatorType,
+   NSBeginsWithPredicateOperatorType,
+   NSEndsWithPredicateOperatorType,
+   NSInPredicateOperatorType,
+   NSCustomSelectorPredicateOperatorType,
+   NSContainsPredicateOperatorType,
+   NSBetweenPredicateOperatorType
+};
+typedef NSUInteger NSPredicateOperatorType;
+</code></p>
+
+<h3>NSComparisonPredicate选项</h3>
+
+<ul>
+<li>NSCaseInsensitivePredicateOption：不区分大小写的谓词。你通过在谓词格式字符串中加入后面带有[c]的字符串操作（比如，"NeXT" like[c] &ldquo;next"）来表达这一选项。</li>
+<li>NSDiacriticInsensitivePredicateOption：忽视发音符号的谓词。你通过在谓词格式字符串中加入后面带有[d]的字符串操作（比如，"naïve" like[d] &ldquo;naive"）来表达这一选项。</li>
+<li>NSNormalizedPredicateOption：表示待比较的字符串已经被预处理了。这一选项取代了NSCaseInsensitivePredicateOption和NSDiacriticInsensitivePredicateOption，旨在用作性能优化的选项。你可以通过在谓词格式字符串中加入后面带有[n]的字符串（比如，"WXYZlan" matches[n] &ldquo;.lan"）来表达这一选项。</li>
+<li>NSLocaleSensitivePredicateOption：表明要使用&lt;，&lt;=，=，=>，> 作为比较的字符串应该使用区域识别的方式处理。你可以通过在&lt;，&lt;=，=，=>，>其中之一的操作符后加入[l]（比如，"straße" >[l] &ldquo;strasse"）以便在谓词格式字符串表达这一选项。</li>
+</ul>
+
+
+<h2>Block谓词</h2>
+
+<p>最后，如果你实在不愿意学习NSPredicate的格式语法，你也可以学学NSPredicate +predicateWithBlock:。</p>
+
+<p>```
+NSPredicate <em>shortNamePredicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary </em>bindings) {</p>
+
+<pre><code>        return [[evaluatedObject firstName] length] &lt;= 5;
+    }];
+</code></pre>
+
+<p>// [&ldquo;Alice Smith&rdquo;, &ldquo;Bob Jones&rdquo;]
+NSLog(@&ldquo;Short Names: %@&rdquo;, [people filteredArrayUsingPredicate:shortNamePredicate]);
+<code>``
+...好吧，虽然使用</code>predicateWithBlock:`是懒人的做法，但它也并不是一无是处。</p>
+
+<p>事实上，因为block可以封装任意的计算，所以有一个查询类是无法以NSPredicate格式字符串形式来表达的（比如对运行时被动态计算的值的评估）。而且当同一件事情可以用NSExpression结合自定义选择器来完成时，block为完成工作提供了一个方便的接口。</p>
+
+<p>重要提示：<strong>由<code>predicateWithBlock:</code>生成的NSPredicate不能用于由SQLite存储库支持的Core Data数据的提取要求。</strong></p>
+
+<p>我知道我已经说过很多次了，可是NSPredicate真的是Cocoa的优势之一。其他语言的第三方库如果能有它一半的能力就已经很幸运了－－更别提标准库了。对于我们这些应用和框架开发者来说，有它作为标准组件使得我们在处理数据时有了很大的优势。</p>
+
+<p>和NSExpression一样，NSPredicate一直在提醒我们Foundation有多么好：它不仅仅十分有用，它精致的构架和设计也是我们写代码时灵感的来源。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Objective-C中的KVC和KVO]]></title>
@@ -340,7 +645,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#x61;&#105;&#x6c;&#x74;&#111;&#58;&#101;&#109;&#112;&#x6c;&#x6f;&#121;&#x65;&#x65;&#x73;&#x2e;&#64;&#115;&#x75;&#x6d;&#46;&#x73;&#97;&#108;&#97;&#x72;&#x79;">&#101;&#x6d;&#x70;&#x6c;&#111;&#x79;&#101;&#x65;&#115;&#46;&#x40;&#115;&#x75;&#x6d;&#46;&#x73;&#97;&#x6c;&#97;&#x72;&#x79;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#x65;&#109;&#112;&#108;&#111;&#121;&#101;&#101;&#x73;&#46;&#x40;&#115;&#117;&#109;&#x2e;&#x73;&#x61;&#108;&#x61;&#x72;&#121;">&#101;&#109;&#112;&#x6c;&#111;&#x79;&#x65;&#x65;&#115;&#46;&#64;&#115;&#117;&#109;&#46;&#115;&#x61;&#108;&#97;&#x72;&#x79;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 
@@ -1710,24 +2015,6 @@ return _fetchedResultsController;
 <li><p>NSManagedObjectModel托管对象模型：NSManagedObjectModel通常被定义在一个.mom文件中，文件中保存了所有实体的定义。NSManagedObjectModel and the NS*Description 类完整定义了Core Data模型应该/可以包含的内容。</p></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Objective-C交叉引用解决方法]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/24/objective-cjiao-cha-yin-yong-jie-jue-fang-fa/"/>
-    <updated>2014-04-24T20:25:00+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/24/objective-cjiao-cha-yin-yong-jie-jue-fang-fa</id>
-    <content type="html"><![CDATA[<p>如果类A的头文件import了B，类B的头文件import了A，这样在编译时有可能产生一种错误：“can not find interface declaration”，这是因为Objective-C不允许交叉引用</p>
-
-<!--more-->
-
-
-<p>#import是GCC编译器提供的，XCode在编译Objective－C、C和C++程序时都会使用它。#import可保证头文件只被包含一次，而不论此命令实际上在那个文件中出现了多少次。<br/>
-在C语言中，程序员通常使用基于#ifdef命令的方案来避免一个文件包含另一个文件，而后者又包含第一个文件的情况。<br/>
-@class创建了一个向前引用。就是在告诉编译器：“相信我，以后你会知道这个类到底是什么。但是现在，你只需要知道这些。”<br/>
-如果有循环依赖关系，@class也很有用。即A类使用B类，B类也使用A类。如果试图通过#import语句让这两个类互相引用，那么最后就会出现编译错误。但是如果在A.h中使用@class B，在B.h中使用@class A，那么这两个类就可以互相引用了。<br/>
-<strong>所以最佳的解决方案是在头文件中使用@class，在.m文件中使用#import</strong></p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 转载 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/zhuan-zai/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-14T12:44:47+08:00</updated>
+  <updated>2014-05-17T21:55:56+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,311 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[NSPredicate]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/05/17/nspredicate/"/>
+    <updated>2014-05-17T20:42:11+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/05/17/nspredicate</id>
+    <content type="html"><![CDATA[<p>本文转载自<a href="http://nshipster.cn/nspredicate/">http://nshipster.cn/nspredicate/</a></p>
+
+<p>NSPredicate是一个Foundation类，它指定数据被获取或者过滤的方式。它的查询语言就像SQL的WHERE和正则表达式的交叉一样，提供了具有表现力的，自然语言界面来定义一个集合被搜寻的逻辑条件。</p>
+
+<!--more-->
+
+
+<p>相比较抽象的谈论它，展示NSPredicate的使用方法更加容易，所以我们来重新审视<a href="http://nshipster.com/nssortdescriptor/">NSSortDescriptor</a>中使用的示例数据集吧：</p>
+
+<table>
+<thead>
+<tr>
+<th>索引 </th>
+<th> 0 </th>
+<th> 1 </th>
+<th> 2 </th>
+<th> 3 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名 </td>
+<td> Alice </td>
+<td> Bob   </td>
+<td> Charlie </td>
+<td>  Quentin</td>
+</tr>
+<tr>
+<td>姓 </td>
+<td> Smith </td>
+<td> Jones </td>
+<td> Smith </td>
+<td> Alberts</td>
+</tr>
+<tr>
+<td>年龄  </td>
+<td> 24    </td>
+<td> 27    </td>
+<td> 33    </td>
+<td> 31</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>``` objc</p>
+
+<p>@interface Person : NSObject
+@property NSString <em>firstName;
+@property NSString </em>lastName;
+@property NSNumber *age;
+@end</p>
+
+<p>@implementation Person</p>
+
+<ul>
+<li>(NSString *)description {
+  return [NSString stringWithFormat:@&ldquo;%@ %@&rdquo;, self.firstName, self.lastName];
+}</li>
+</ul>
+
+
+<p>@end</p>
+
+<h1>pragma mark &ndash;</h1>
+
+<p>NSArray <em>firstNames = @[ @&ldquo;Alice&rdquo;, @&ldquo;Bob&rdquo;, @&ldquo;Charlie&rdquo;, @&ldquo;Quentin&rdquo; ];
+NSArray </em>lastNames = @[ @&ldquo;Smith&rdquo;, @&ldquo;Jones&rdquo;, @&ldquo;Smith&rdquo;, @&ldquo;Alberts&rdquo; ];
+NSArray *ages = @[ @24, @27, @33, @31 ];</p>
+
+<p>NSMutableArray <em>people = [NSMutableArray array];
+[firstNames enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL </em>stop) {</p>
+
+<pre><code>Person *person = [[Person alloc] init];
+person.firstName = firstNames[idx];
+person.lastName = lastNames[idx];
+person.age = ages[idx];
+[people addObject:person];
+</code></pre>
+
+<p>}];</p>
+
+<p>NSPredicate <em>bobPredicate = [NSPredicate predicateWithFormat:@&ldquo;firstName = &lsquo;Bob&rsquo;&rdquo;];
+NSPredicate </em>smithPredicate = [NSPredicate predicateWithFormat:@&ldquo;lastName = %@&rdquo;, @&ldquo;Smith&rdquo;];
+NSPredicate *thirtiesPredicate = [NSPredicate predicateWithFormat:@&ldquo;age >= 30&rdquo;];</p>
+
+<p>// [&ldquo;Bob Jones&rdquo;]
+NSLog(@&ldquo;Bobs: %@&rdquo;, [people filteredArrayUsingPredicate:bobPredicate]);</p>
+
+<p>// [&ldquo;Alice Smith&rdquo;, &ldquo;Charlie Smith&rdquo;]
+NSLog(@&ldquo;Smiths: %@&rdquo;, [people filteredArrayUsingPredicate:smithPredicate]);</p>
+
+<p>// [&ldquo;Charlie Smith&rdquo;, &ldquo;Quentin Alberts&rdquo;]
+NSLog(@&ldquo;30&rsquo;s: %@&rdquo;, [people filteredArrayUsingPredicate:thirtiesPredicate]);
+```</p>
+
+<h2>集合中使用NSPredicate</h2>
+
+<p>Foundation提供使用谓词（predicate）来过滤NSArray／NSMutableArray&amp;NSSet／NSMutableSet的方法。</p>
+
+<p>不可变的集合，NSArray&amp;NSSet，有可以通过评估接收到的predicate来返回一个不可变集合的方法<code>filteredArrayUsingPredicate:</code>和<code>filteredSetUsingPredicate:</code>。</p>
+
+<p>可变集合，NSMutableArray&amp;NSMutableSet，可以使用方法<code>filterUsingPredicate:</code>，它可以通过运行接收到的谓词来移除评估结果为FALSE的对象。</p>
+
+<p>NSDictionary可以用谓词来过滤它的键和值（两者都为NSArray对象）。NSOrderedSet可以由过滤的NSArray或NSSet生成一个新的有序的集，或者NSMutableSet可以简单的<code>removeObjectsInArray:</code>，来传递通过<em>否定</em>predicate过滤的对象。</p>
+
+<h2>Core Data中使用NSPredicate</h2>
+
+<p>NSFetchRequest有一个predicate属性，它可以指定管理对象应该被获取的逻辑条件。谓词的使用规则在这里同样适用，唯一的区别在于，在管理对象环境中，谓词由持久化存储助理（persistent store coordinator）评估，而不像集合那样在内存中被过滤。</p>
+
+<h2>谓词语法</h2>
+
+<h3>替换</h3>
+
+<ul>
+<li>%@是对值为字符串，数字或者日期的对象的替换值。</li>
+<li>%K是key path的替换值。</li>
+</ul>
+
+
+<p>```
+NSPredicate *ageIs33Predicate = [NSPredicate predicateWithFormat:@&ldquo;%K = %@&rdquo;, @&ldquo;age&rdquo;, @33];</p>
+
+<p>// [&ldquo;Charlie Smith&rdquo;]
+NSLog(@&ldquo;Age 33: %@&rdquo;, [people filteredArrayUsingPredicate:ageIs33Predicate]);
+<code>``
+- $VARIABLE_NAME是可以被</code>NSPredicate -predicateWithSubstitutionVariables:`替换的值。</p>
+
+<p>```
+NSPredicate *namesBeginningWithLetterPredicate = [NSPredicate predicateWithFormat:@&ldquo;(firstName BEGINSWITH[cd] $letter) OR (lastName BEGINSWITH[cd] $letter)&rdquo;];</p>
+
+<p>// [&ldquo;Alice Smith&rdquo;, &ldquo;Quentin Alberts&rdquo;]
+NSLog(@&ldquo;&lsquo;A&rsquo; Names: %@&rdquo;, [people filteredArrayUsingPredicate:[namesBeginningWithLetterPredicate predicateWithSubstitutionVariables:@{@&ldquo;letter&rdquo;: @&ldquo;A&rdquo;}]]);
+```</p>
+
+<h3>基本比较</h3>
+
+<ul>
+<li>=, ==：左边的表达式和右边的表达式相等。</li>
+<li>>=, =>：左边的表达式大于或者等于右边的表达式。</li>
+<li>&lt;=, =&lt;：左边的表达式小于等于右边的表达式。</li>
+<li>>：左边的表达式大于右边的表达式。</li>
+<li>&lt;：左边的表达式小于右边的表达式。</li>
+<li>!=, &lt;>：左边的表达式不等于右边的表达式。</li>
+<li>BETWEEN：左边的表达式等于右边的表达式的值或者介于它们之间。右边是一个有两个指定上限和下限的数值的数列（指定顺序的数列）。比如，1 BETWEEN { 0 , 33 }，或者$INPUT BETWEEN { $LOWER, $UPPER }。</li>
+</ul>
+
+
+<h3>基本复合谓词</h3>
+
+<ul>
+<li>AND, &amp;&amp;：逻辑与.</li>
+<li>OR, ||：逻辑或.</li>
+<li>NOT, !：逻辑非.</li>
+</ul>
+
+
+<h3>字符串比较</h3>
+
+<p><em>字符串比较在默认的情况下是区分大小写和音调的。你可以在方括号中用关键字符c和d来修改操作符以相应的指定不区分大小写和变音符号，比如firstname BEGINSWITH[cd] $FIRST_NAME。</em></p>
+
+<ul>
+<li>BEGINSWITH：左边的表达式以右边的表达式作为开始。</li>
+<li>CONTAINS：左边的表达式包含右边的表达式。</li>
+<li>ENDSWITH：左边的表达式以右边的表达式作为结束。</li>
+<li>LIKE：左边的表达式等于右边的表达式：?和<em>可作为通配符，其中?匹配1个字符，</em>匹配0个或者多个字符。</li>
+<li>MATCHES：左边的表达式根据ICU v3（更多内容请查看<a href="http://userguide.icu-project.org/strings/regexp">ICU User Guide for Regular Expressions</a>）的regex风格比较，等于右边的表达式。</li>
+</ul>
+
+
+<h3>合计操作</h3>
+
+<h4>关系操作</h4>
+
+<ul>
+<li>ANY，SOME：指定下列表达式中的任意元素。比如，ANY children.age &lt; 18。</li>
+<li>ALL：指定下列表达式中的所有元素。比如，ALL children.age &lt; 18。</li>
+<li>NONE：指定下列表达式中没有的元素。比如，NONE children.age &lt; 18。它在逻辑上等于NOT (ANY &hellip;)。</li>
+<li>IN：等于SQL的IN操作，左边的表达必须出现在右边指定的集合中。比如，name IN { &lsquo;Ben&rsquo;, &lsquo;Melissa&rsquo;, &lsquo;Nick&rsquo; }。</li>
+</ul>
+
+
+<h4>数组操作</h4>
+
+<ul>
+<li>array[index]：指定数组中特定索引处的元素。</li>
+<li>array[FIRST]：指定数组中的第一个元素。</li>
+<li>array[LAST]：指定数组中的最后一个元素。</li>
+<li>array[SIZE]：指定数组的大小。</li>
+</ul>
+
+
+<h3>布尔值谓词</h3>
+
+<ul>
+<li>TRUEPREDICATE：结果始终为真的谓词。</li>
+<li>FALSEPREDICATE：结果始终为假的谓词。</li>
+</ul>
+
+
+<h2>NSCompoundPredicate</h2>
+
+<p>我们见过与&amp;或被用在谓词格式字符串中以创建复合谓词。然而，我们也可以用NSCompoundPredicate来完成同样的工作。</p>
+
+<p>例如，下列谓词是相等的：</p>
+
+<p>```
+[NSCompoundPredicate andPredicateWithSubpredicates:@[[NSPredicate predicateWithFormat:@&ldquo;age > 25&rdquo;], [NSPredicate predicateWithFormat:@&ldquo;firstName = %@&rdquo;, @&ldquo;Quentin&rdquo;]]];</p>
+
+<p>[NSPredicate predicateWithFormat:@&ldquo;(age > 25) AND (firstName = %@)&rdquo;, @&ldquo;Quentin&rdquo;];
+```</p>
+
+<p>虽然语法字符串文字更加容易输入，但是在有的时候，你需要结合现有的谓词。在那些情况下，你可以使用<code>NSCompoundPredicate -andPredicateWithSubpredicates:</code>&amp;<code>-orPredicateWithSubpredicates:</code>。</p>
+
+<h2>NSComparisonPredicate</h2>
+
+<p>同样的，如果你在读过<a href="http://nshipster.com/nsexpression/">上周的文章</a>之后发现你使用了太多的NSExpression的话，NSComparisonPredicate可以帮助你解决这个问题。</p>
+
+<p>就像NSCompoundPredicate一样，NSComparisonPredicate从子部件构建了一个NSPredicate－－在这种情况下，左侧和右侧都是NSExpression。 分析它的类的构造函数可以让我们一窥NSPredicate的格式字符串是如何解析的：</p>
+
+<p>```
++ (NSPredicate <em>)predicateWithLeftExpression:(NSExpression </em>)lhs</p>
+
+<pre><code>                         rightExpression:(NSExpression *)rhs
+                                modifier:(NSComparisonPredicateModifier)modifier
+                                    type:(NSPredicateOperatorType)type
+                                 options:(NSUInteger)options
+</code></pre>
+
+<p>```</p>
+
+<h4>参数</h4>
+
+<ul>
+<li>lhs：左边的表达式。</li>
+<li>rhs：右边的表达式。</li>
+<li>modifier：应用的修改符。（ANY或者ALL）</li>
+<li>type：谓词运算符类型。</li>
+<li>options：要应用的选项。没有选项的话则为0。</li>
+</ul>
+
+
+<h3>NSComparisonPredicate类型</h3>
+
+<p><code>
+enum {
+   NSLessThanPredicateOperatorType = 0,
+   NSLessThanOrEqualToPredicateOperatorType,
+   NSGreaterThanPredicateOperatorType,
+   NSGreaterThanOrEqualToPredicateOperatorType,
+   NSEqualToPredicateOperatorType,
+   NSNotEqualToPredicateOperatorType,
+   NSMatchesPredicateOperatorType,
+   NSLikePredicateOperatorType,
+   NSBeginsWithPredicateOperatorType,
+   NSEndsWithPredicateOperatorType,
+   NSInPredicateOperatorType,
+   NSCustomSelectorPredicateOperatorType,
+   NSContainsPredicateOperatorType,
+   NSBetweenPredicateOperatorType
+};
+typedef NSUInteger NSPredicateOperatorType;
+</code></p>
+
+<h3>NSComparisonPredicate选项</h3>
+
+<ul>
+<li>NSCaseInsensitivePredicateOption：不区分大小写的谓词。你通过在谓词格式字符串中加入后面带有[c]的字符串操作（比如，"NeXT" like[c] &ldquo;next"）来表达这一选项。</li>
+<li>NSDiacriticInsensitivePredicateOption：忽视发音符号的谓词。你通过在谓词格式字符串中加入后面带有[d]的字符串操作（比如，"naïve" like[d] &ldquo;naive"）来表达这一选项。</li>
+<li>NSNormalizedPredicateOption：表示待比较的字符串已经被预处理了。这一选项取代了NSCaseInsensitivePredicateOption和NSDiacriticInsensitivePredicateOption，旨在用作性能优化的选项。你可以通过在谓词格式字符串中加入后面带有[n]的字符串（比如，"WXYZlan" matches[n] &ldquo;.lan"）来表达这一选项。</li>
+<li>NSLocaleSensitivePredicateOption：表明要使用&lt;，&lt;=，=，=>，> 作为比较的字符串应该使用区域识别的方式处理。你可以通过在&lt;，&lt;=，=，=>，>其中之一的操作符后加入[l]（比如，"straße" >[l] &ldquo;strasse"）以便在谓词格式字符串表达这一选项。</li>
+</ul>
+
+
+<h2>Block谓词</h2>
+
+<p>最后，如果你实在不愿意学习NSPredicate的格式语法，你也可以学学NSPredicate +predicateWithBlock:。</p>
+
+<p>```
+NSPredicate <em>shortNamePredicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary </em>bindings) {</p>
+
+<pre><code>        return [[evaluatedObject firstName] length] &lt;= 5;
+    }];
+</code></pre>
+
+<p>// [&ldquo;Alice Smith&rdquo;, &ldquo;Bob Jones&rdquo;]
+NSLog(@&ldquo;Short Names: %@&rdquo;, [people filteredArrayUsingPredicate:shortNamePredicate]);
+<code>``
+...好吧，虽然使用</code>predicateWithBlock:`是懒人的做法，但它也并不是一无是处。</p>
+
+<p>事实上，因为block可以封装任意的计算，所以有一个查询类是无法以NSPredicate格式字符串形式来表达的（比如对运行时被动态计算的值的评估）。而且当同一件事情可以用NSExpression结合自定义选择器来完成时，block为完成工作提供了一个方便的接口。</p>
+
+<p>重要提示：<strong>由<code>predicateWithBlock:</code>生成的NSPredicate不能用于由SQLite存储库支持的Core Data数据的提取要求。</strong></p>
+
+<p>我知道我已经说过很多次了，可是NSPredicate真的是Cocoa的优势之一。其他语言的第三方库如果能有它一半的能力就已经很幸运了－－更别提标准库了。对于我们这些应用和框架开发者来说，有它作为标准组件使得我们在处理数据时有了很大的优势。</p>
+
+<p>和NSExpression一样，NSPredicate一直在提醒我们Foundation有多么好：它不仅仅十分有用，它精致的构架和设计也是我们写代码时灵感的来源。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GCD 深入理解：第一部分]]></title>
@@ -1168,217 +1473,6 @@ frame #25: 0x00002a55 Debug`start + 53
 <p>本文由破船译自：<span style="text-decoration: underline;"><span style="color: #339966;"><a href="http://mobile.tutsplus.com/tutorials/iphone/debugging-in-ios-essential-tips/" target="_blank"><span style="color: #339966; text-decoration: underline;">tutsplus</span></a></span></span><br/>
 转载请注明出处：<span style="text-decoration: underline;"><span style="color: #339966;"><strong><a href="http://www.beyondvincent.com/" target="_blank"><span style="color: #339966; text-decoration: underline;">BeyondVincent的博客</span></a></strong></span></span><br/>
 _<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_____</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Xcode Code Snippets]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/17/xcode-code-snippets/"/>
-    <updated>2014-04-17T13:18:02+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/17/xcode-code-snippets</id>
-    <content type="html"><![CDATA[<p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
-
-<hr />
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg"><img class="alignnone size-full wp-image-734" alt="fend_off_rsi" src="http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg" width="1200" height="620" /></a></p>
-
-<!--more-->
-
-
-<p>在Double Encore，我们写的代码都是干净，可重用的——不过，有时候并不能完全做到。如在使用pragma mark的时候。下面就是一个示例：</p>
-
-<pre class="wp-code-highlight prettyprint linenums:1">#pragma mark - UIViewController overrides</pre>
-
-
-<p>通过pragma mark，可以让代码看起来既整洁又有组织。虽然这很重要，但是会带来额外的输入操作和时间。</p>
-
-<p>此时，我们可以使用code snippets。</p>
-
-<p>通过code snippets，我们可以创建一些可重用的代码块，并且在任何需要的地方很容易的就可以使用这些代码块。这可以节省输入需要的操作和时间。并且，一旦你学会使用code snippets，会发现你可以创建并扩充自己的code snippet library。</p>
-
-<p>创建一个code snippet非常简单。首先，打开Xcode并在utilities panel中选择code snippet library。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/1-1024x768.png"><img class="alignnone size-full wp-image-736" alt="1-1024x768" src="http://www.doubleencore.com/wp-content/uploads/2013/04/1-1024x768.png" width="1024" height="768" /></a></p>
-
-<p>上图中，可以看到在code snippet library中已经有一些数据了。</p>
-
-<p>接着，输入希望创建的code snippet。在这里，我为pragma mark创建一个code snippet。如下图所示，在代码编辑器中输入 “#pragma mark – UIViewController overrides”。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/2-1024x768.png" width="1024" height="768" /></p>
-
-<p>选中代码块，如下图所示：</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/3-1024x768.png" width="1024" height="768" /></p>
-
-<p>然后单击并按住代码块，知道文本光标变为箭头光标。接着将代码块拖放到code snippet library中，然后松开鼠标。如下图所示</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/4-1024x768.png" width="1024" height="768" /></p>
-
-<p>此时会弹出一个popover，通过该popover可以对新的code snippet进行编辑，如下图所示。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/5-1024x768.png" width="1024" height="768" /></p>
-
-<p>首先，是定snippet的名字。这里我指定为“Pragma Mark”</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/6-1024x768.png" width="1024" height="768" /></p>
-
-<p>然后，指定该snippet的completion shortcut（可选项）。这里我指定为“pm”。这样设置以后，在Xcode的代码编辑器中只需要输入快捷方式（pm），就能简单的将这个snippet添加到代码中。非常有用！</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/7-1024x768.png" width="1024" height="768" /></p>
-
-<p>接着，可以看到在上面的示例中，pragma mark的标题是“UIViewController overrides”，不过我们是希望对其修改一下，以能够很容易的输入任意标题。</p>
-
-<p>我们可以简单的将code snippet包含的文本内容修改为“#pragma mark – “即可。不过，这里还有更好的一个办法——将文本块封装到“&lt;#” 和 “#>”中间，这样code snippet将指出我们可以插入自定义文本的完整范围。</p>
-
-<p>下面，将“UIViewController overrides”替换…</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/8-1024x768.png" width="1024" height="768" /></p>
-
-<p>&#8230;为“&lt;#Title#>”。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/9-1024x768.png" width="1024" height="768" /></p>
-
-<p>注意，completion scopes字段在这里并没有做修改，通过该字段可以指定completion shortcut的有效范围。</p>
-
-<p>最后，点击edit按钮，以完成snippet的编辑。之后可以在这个popover画面中看到最终结果的一个预览效果。</p>
-
-<p>&nbsp;</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/10-1024x768.png" width="1024" height="768" /></p>
-
-<p>然后点击popover中的done按钮。下面，你可以将我们在代码编辑器中为创建snippet而写入的文本行删除掉。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/11-1024x768.png" width="1024" height="768" /></p>
-
-<p>现在来试用一下刚刚创建的snippet！有两种方法。第一种是在code snippet library中找到snippet，然后用鼠标将其拖拽到代码编辑器中&#8230;</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/12-1024x768.png" width="1024" height="768" /></p>
-
-<p>&#8230;然后松开鼠标。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/13-1024x768.png" width="1024" height="768" /></p>
-
-<p>一旦将snippet拖放到代码编辑器之后，就可以通过点击键盘上的tab键在不同的completion字段间移动焦点。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/14-1024x768.png" width="1024" height="768" /></p>
-
-<p>第二种方法是在代码编辑器里简单的输入completion shortcut中设置的内容即可。我们这里是“pm”。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/15-1024x768.png" width="1024" height="768" /></p>
-
-<p>然后点击键盘中的return键，就可以将snippet插入到代码编辑器中。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/141-1024x768.png" width="1024" height="768" /></p>
-
-<p>很简单吧！现在你已经知道如何创建自己的snippet了，你将发现这非常的有用。任何时候，你都遇到重复输入的相同代码块，都可以考虑将其添加到你的code snippets library中。</p>
-
-<p>&nbsp;</p>
-
-<p>下面是我经常使用到的一些snippet：</p>
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Animation Block
-Completion Shortcut: ab
-Completion Scopes: Function or Method
- 
-void (^&lt;#Title#&gt;)(void) = ^{ };
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Animation Completion Block
-Completion Shortcut: acb
-Completion Scopes: Function or Method
- 
-void (^&lt;#Title#&gt;)(BOOL) = ^(BOOL finished) { };
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Notification Add
-Completion Shortcut: na
-Completion Scopes: Function or Method
- 
-[[NSNotificationCenter defaultCenter] addObserver:&lt;#Observer#&gt; selector:&lt;#Selector#&gt; name:&lt;#Name#&gt; object:&lt;#Object#&gt;];
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Notification Remove
-Completion Shortcut: nr
-Completion Scopes: Function or Method
- 
-[[NSNotificationCenter defaultCenter] removeObserver:&lt;#Observer#&gt; name:&lt;#Name#&gt; object:&lt;#Object#&gt;];
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: NSLog
-Completion Shortcut: log
-Completion Scopes: Function or Method
- 
-NSLog(@"&lt;#Log#&gt;");
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Private Interface
-Completion Shortcut: pi
-Completion Scopes: Top Level
- 
-@interface &lt;#Title#&gt; ()
-
-@end
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Assign
-Completion Shortcut: pa
-Completion Scopes: All
- 
-@property (assign, nonatomic)
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Strong
-Completion Shortcut: ps
-Completion Scopes: All
- 
-@property (strong, nonatomic)
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Unsafe Unretained
-Completion Shortcut: pu
-Completion Scopes: All
- 
-@property (unsafe_unretained, nonatomic)
-</pre>
-
-
-
-
-<div style="text-align: left;">
-</div>
-
-
-
-
-<div style="text-align: left;">
-</div>
-
-
-
 ]]></content>
   </entry>
   
