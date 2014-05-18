@@ -9,28 +9,7 @@
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="iOS的.gitignore 在多人一起开发XCode项目的时候，很多中间生成的临时文件并不需要加入到版本控制当中，所以记录下XCode需要用到的.gitignore文件 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-# Xcode &hellip;">
+	<meta name="description" content="iOS的.gitignore 在多人一起开发XCode项目的时候，很多中间生成的临时文件并不需要加入到版本控制当中，所以记录下XCode需要用到的.gitignore文件 出处：https://github.com/github/gitignore/blob/master/Objective-C &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -173,6 +152,8 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <!-- more-->
 
 
+<p>出处：<a href="https://github.com/github/gitignore/blob/master/Objective-C.gitignore">https://github.com/github/gitignore/blob/master/Objective-C.gitignore</a></p>
+
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -194,9 +175,14 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'># Xcode
-</span><span class='line'>.DS_Store
-</span><span class='line'>*/build/*
+</span><span class='line'>#
+</span><span class='line'>build/
 </span><span class='line'>*.pbxuser
 </span><span class='line'>!default.pbxuser
 </span><span class='line'>*.mode1v3
@@ -206,19 +192,25 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </span><span class='line'>*.perspectivev3
 </span><span class='line'>!default.perspectivev3
 </span><span class='line'>xcuserdata
-</span><span class='line'>profile
+</span><span class='line'>*.xccheckout
 </span><span class='line'>*.moved-aside
 </span><span class='line'>DerivedData
-</span><span class='line'>.idea/
 </span><span class='line'>*.hmap
-</span><span class='line'>*.xccheckout
+</span><span class='line'>*.ipa
+</span><span class='line'>*.xcuserstate
 </span><span class='line'>
-</span><span class='line'>#CocoaPods
-</span><span class='line'>Pods</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'># CocoaPods
+</span><span class='line'>#
+</span><span class='line'># We recommend against adding the Pods directory to your .gitignore. However
+</span><span class='line'># you should judge for yourself, the pros and cons are mentioned at:
+</span><span class='line'># http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
+</span><span class='line'>#
+</span><span class='line'># Pods/</span></code></pre></td></tr></table></div></figure>
 
 
-<p>
-还有需要记住一点的是，使用IB进行界面设计，无论是xib文件还是storyboard，同一时间只能右一个人更改一个Window或VC，虽然XCode5之后xib和storyboard可读性大大增强，但是仍不像Android开发界面的xml格式那么普及，还是小心谨慎为好</p>
+<p></p>
+
+<p>还有需要记住一点的是，使用IB进行界面设计，无论是xib文件还是storyboard，同一时间只能右一个人更改一个Window或VC，虽然XCode5之后xib和storyboard可读性大大增强，但是仍不像Android开发界面的xml格式那么普及，还是小心谨慎为好</p>
 </div>
 
 </article>

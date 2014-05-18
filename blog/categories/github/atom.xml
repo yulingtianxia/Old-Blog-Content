@@ -4,7 +4,7 @@
   <title><![CDATA[Category: GitHub | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-17T21:55:56+08:00</updated>
+  <updated>2014-05-18T12:25:29+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -27,7 +27,7 @@
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x73;&#x75;&#x70;&#112;&#111;&#114;&#x74;&#64;&#x67;&#x69;&#x74;&#x68;&#x75;&#98;&#46;&#x63;&#x6f;&#109;&#46;">&#115;&#117;&#112;&#x70;&#x6f;&#x72;&#x74;&#64;&#x67;&#x69;&#x74;&#x68;&#117;&#98;&#46;&#99;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#115;&#117;&#112;&#112;&#111;&#x72;&#116;&#64;&#103;&#x69;&#116;&#x68;&#117;&#98;&#x2e;&#99;&#x6f;&#x6d;&#46;">&#x73;&#117;&#x70;&#112;&#x6f;&#114;&#116;&#64;&#103;&#105;&#x74;&#104;&#x75;&#x62;&#46;&#x63;&#111;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
@@ -69,12 +69,14 @@ ns4.p04.dynect.net. 26356   IN  A   204.13.251.4
 <!-- more-->
 
 
+<p>出处：<a href="https://github.com/github/gitignore/blob/master/Objective-C.gitignore">https://github.com/github/gitignore/blob/master/Objective-C.gitignore</a></p>
+
 <p>```</p>
 
 <h1>Xcode</h1>
 
-<p>.DS_Store
-<em>/build/</em>
+<p>#
+build/
 <em>.pbxuser
 !default.pbxuser
 </em>.mode1v3
@@ -84,18 +86,30 @@ ns4.p04.dynect.net. 26356   IN  A   204.13.251.4
 </em>.perspectivev3
 !default.perspectivev3
 xcuserdata
-profile
-<em>.moved-aside
+<em>.xccheckout
+</em>.moved-aside
 DerivedData
-.idea/
-</em>.hmap
-*.xccheckout</p>
+<em>.hmap
+</em>.ipa
+*.xcuserstate</p>
 
 <h1>CocoaPods</h1>
 
-<p>Pods
-```
-还有需要记住一点的是，使用IB进行界面设计，无论是xib文件还是storyboard，同一时间只能右一个人更改一个Window或VC，虽然XCode5之后xib和storyboard可读性大大增强，但是仍不像Android开发界面的xml格式那么普及，还是小心谨慎为好</p>
+<p>#</p>
+
+<h1>We recommend against adding the Pods directory to your .gitignore. However</h1>
+
+<h1>you should judge for yourself, the pros and cons are mentioned at:</h1>
+
+<h1><a href="http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control">http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control</a></h1>
+
+<p>#</p>
+
+<h1>Pods/</h1>
+
+<p>```</p>
+
+<p>还有需要记住一点的是，使用IB进行界面设计，无论是xib文件还是storyboard，同一时间只能右一个人更改一个Window或VC，虽然XCode5之后xib和storyboard可读性大大增强，但是仍不像Android开发界面的xml格式那么普及，还是小心谨慎为好</p>
 ]]></content>
   </entry>
   
