@@ -1,0 +1,1027 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>GCD 深入理解：第二部分 - 玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="GCD 深入理解：第二部分 本文转载自https://github.com/nixzhu/dev-blog
+再次声明:本文转载自https://github.com/nixzhu/dev-blog 本文翻译自 http://www.raywenderlich.com/63338/grand- &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/05/14/grand-central-dispatch-in-depth-part-2/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I'm not a hacker.</p>
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+    <li><a href="/blog/archives">所有文章</a></li>
+    <li><a href="/about">关于我</a></li>
+    
+</ul>
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+16.153846153846153%25%27%3EC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcode-snippets%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ECode+Snippets%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+16.153846153846153%25%27%3ECore+Data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdfssuan-fa%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EDFS%E7%AE%97%E6%B3%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+16.153846153846153%25%27%3EGCD%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+19.23076923076923%25%27%3EGitHub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3EiOS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EMacOSX%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+34.61538461538461%25%27%3EObjective-C%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsksprite%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ESKSprite%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ESocial+Framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+19.23076923076923%25%27%3ESpriteKit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+16.153846153846153%25%27%3EXcode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EXCode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdan-yuan-ce-shi%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fji-chu-zhi-shi%27+style%3D%27font-size%3A+16.153846153846153%25%27%3E%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjie-ping%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E6%88%AA%E5%B1%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+22.307692307692307%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+34.61538461538461%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
+<br>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">GCD 深入理解：第二部分</h1>
+	<div class="entry-content" itemprop="articleBody"><p><strong>本文转载自<a href="https://github.com/nixzhu/dev-blog">https://github.com/nixzhu/dev-blog</a></strong><br/>
+<strong>再次声明:本文转载自<a href="https://github.com/nixzhu/dev-blog">https://github.com/nixzhu/dev-blog</a></strong></p>
+
+<p>本文翻译自 <a href="http://www.raywenderlich.com/63338/grand-central-dispatch-in-depth-part-2">http://www.raywenderlich.com/63338/grand-central-dispatch-in-depth-part-2</a></p>
+
+<p>原作者：<a href="http://www.raywenderlich.com/u/Lolgrep">Derek Selander</a></p>
+
+<p>译者：<a href="http://weibo.com/riven0951">Riven</a>、<a href="https://twitter.com/nixzhu">@nixzhu</a></p>
+
+<p>前半部分由 Riven 翻译，但他由于太忙而搁置，后由 NIX 整理校对并翻译后半部分。</p>
+
+<!--more-->
+
+
+<p></p>
+
+<p>==============================</p>
+
+<p>欢迎来到GCD深入理解系列教程的第二部分（也是最后一部分）。</p>
+
+<p>在本系列的<a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md">第一部分</a>中，你已经学到超过你想像的关于并发、线程以及GCD 如何工作的知识。通过在初始化时利用 <code>dispatch_once</code>，你创建了一个线程安全的 <code>PhotoManager</code> 单例，而且你通过使用 <code>dispatch_barrier_async</code> 和 <code>dispatch_sync</code> 的组合使得对 <code>Photos</code> 数组的读取和写入都变得线程安全了。</p>
+
+<p>除了上面这些，你还通过利用 <code>dispatch_after</code> 来延迟显示提示信息，以及利用 <code>dispatch_async</code> 将 CPU 密集型任务从 ViewController 的初始化过程中剥离出来异步执行，达到了增强应用的用户体验的目的。</p>
+
+<p>如果你一直跟着第一部分的教程在写代码，那你可以继续你的工程。但如果你没有完成第一部分的工作，或者不想重用你的工程，你可以<a href="http://cdn2.raywenderlich.com/wp-content/uploads/2014/01/GooglyPuff_End_1.zip">下载第一部分最终的代码</a>。</p>
+
+<p>那就让我们来更深入地探索 GCD 吧！</p>
+
+<h2>纠正过早弹出的提示</h2>
+
+<p>你可能已经注意到当你尝试用 Le Internet 选项来添加图片时，一个 <code>UIAlertView</code> 会在图片下载完成之前就弹出，如下如所示：</p>
+
+<p><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2014/01/Screen-Shot-2014-01-17-at-5.49.51-PM-308x500.png" alt="Premature Completion Block" /></p>
+
+<p>问题的症结在 PhotoManagers 的 <code>downloadPhotoWithCompletionBlock:</code> 里，它目前的实现如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadPhotosWithCompletionBlock:</span><span class="p">(</span><span class="n">BatchPhotoDownloadingCompletionBlock</span><span class="p">)</span><span class="nv">completionBlock</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">__block</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">switch</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+</span><span class='line'>                <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kOverlyAttachedGirlfriendURLString</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+</span><span class='line'>                <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kSuccessKidURLString</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+</span><span class='line'>                <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kLotsOfFacesURLString</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">Photo</span> <span class="o">*</span><span class="n">photo</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Photo</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initwithURL:</span><span class="n">url</span>
+</span><span class='line'>                              <span class="nl">withCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">_error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="k">if</span> <span class="p">(</span><span class="n">_error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                      <span class="n">error</span> <span class="o">=</span> <span class="n">_error</span><span class="p">;</span>
+</span><span class='line'>                                  <span class="p">}</span>
+</span><span class='line'>                              <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">addPhoto:</span><span class="n">photo</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">completionBlock</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">completionBlock</span><span class="p">(</span><span class="n">error</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在方法的最后你调用了 <code>completionBlock</code> ——因为此时你假设所有的照片都已下载完成。但很不幸，此时并不能保证所有的下载都已完成。</p>
+
+<p><code>Photo</code> 类的实例方法用某个 URL 开始下载某个文件并立即返回，但此时下载并未完成。换句话说，当 <code>downloadPhotoWithCompletionBlock:</code> 在其末尾调用 <code>completionBlock</code> 时，它就假设了它自己所使用的方法全都是同步的，而且每个方法都完成了它们的工作。</p>
+
+<p>然而，<code>-[Photo initWithURL:withCompletionBlock:]</code> 是异步执行的，会立即返回——所以这种方式行不通。</p>
+
+<p>因此，只有在所有的图像下载任务都调用了它们自己的 Completion Block 之后，<code>downloadPhotoWithCompletionBlock:</code> 才能调用它自己的 <code>completionBlock</code> 。问题是：你该如何监控并发的异步事件？你不知道它们何时完成，而且它们完成的顺序完全是不确定的。</p>
+
+<p>或许你可以写一些比较 Hacky 的代码，用多个布尔值来记录每个下载的完成情况，但这样做就缺失了扩展性，而且说实话，代码会很难看。</p>
+
+<p>幸运的是， 解决这种对多个异步任务的完成进行监控的问题，恰好就是设计 dispatch_group 的目的。</p>
+
+<h3>Dispatch Groups（调度组）</h3>
+
+<p>Dispatch Group 会在整个组的任务都完成时通知你。这些任务可以是同步的，也可以是异步的，即便在不同的队列也行。而且在整个组的任务都完成时，Dispatch Group 可以用同步的或者异步的方式通知你。因为要监控的任务在不同队列，那就用一个 <code>dispatch_group_t</code> 的实例来记下这些不同的任务。</p>
+
+<p>当组中所有的事件都完成时，GCD 的 API 提供了两种通知方式。</p>
+
+<p>第一种是 <code>dispatch_group_wait</code> ，它会阻塞当前线程，直到组里面所有的任务都完成或者等到某个超时发生。这恰好是你目前所需要的。</p>
+
+<p>打开 PhotoManager.m，用下列实现替换 <code>downloadPhotosWithCompletionBlock:</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadPhotosWithCompletionBlock:</span><span class="p">(</span><span class="n">BatchPhotoDownloadingCompletionBlock</span><span class="p">)</span><span class="nv">completionBlock</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_HIGH</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">{</span> <span class="c1">// 1</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">__block</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">dispatch_group_t</span> <span class="n">downloadGroup</span> <span class="o">=</span> <span class="n">dispatch_group_create</span><span class="p">();</span> <span class="c1">// 2</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">switch</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+</span><span class='line'>                    <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kOverlyAttachedGirlfriendURLString</span><span class="p">];</span>
+</span><span class='line'>                    <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+</span><span class='line'>                    <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kSuccessKidURLString</span><span class="p">];</span>
+</span><span class='line'>                    <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+</span><span class='line'>                    <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kLotsOfFacesURLString</span><span class="p">];</span>
+</span><span class='line'>                    <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>                    <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">dispatch_group_enter</span><span class="p">(</span><span class="n">downloadGroup</span><span class="p">);</span> <span class="c1">// 3</span>
+</span><span class='line'>            <span class="n">Photo</span> <span class="o">*</span><span class="n">photo</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Photo</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initwithURL:</span><span class="n">url</span>
+</span><span class='line'>                                  <span class="nl">withCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">_error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                      <span class="k">if</span> <span class="p">(</span><span class="n">_error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                          <span class="n">error</span> <span class="o">=</span> <span class="n">_error</span><span class="p">;</span>
+</span><span class='line'>                                      <span class="p">}</span>
+</span><span class='line'>                                      <span class="n">dispatch_group_leave</span><span class="p">(</span><span class="n">downloadGroup</span><span class="p">);</span> <span class="c1">// 4</span>
+</span><span class='line'>                                  <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">addPhoto:</span><span class="n">photo</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">dispatch_group_wait</span><span class="p">(</span><span class="n">downloadGroup</span><span class="p">,</span> <span class="n">DISPATCH_TIME_FOREVER</span><span class="p">);</span> <span class="c1">// 5</span>
+</span><span class='line'>        <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span> <span class="c1">// 6</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">completionBlock</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 7</span>
+</span><span class='line'>                <span class="n">completionBlock</span><span class="p">(</span><span class="n">error</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>按照注释的顺序，你会看到：</p>
+
+<ol>
+<li>因为你在使用的是同步的 <code>dispatch_group_wait</code> ，它会阻塞当前线程，所以你要用 <code>dispatch_async</code> 将整个方法放入后台队列以避免阻塞主线程。</li>
+<li>创建一个新的 Dispatch Group，它的作用就像一个用于未完成任务的计数器。</li>
+<li><code>dispatch_group_enter</code> 手动通知 Dispatch Group 任务已经开始。你必须保证 <code>dispatch_group_enter</code> 和 <code>dispatch_group_leave</code> 成对出现，否则你可能会遇到诡异的崩溃问题。</li>
+<li>手动通知 Group 它的工作已经完成。再次说明，你必须要确保进入 Group 的次数和离开 Group 的次数相等。</li>
+<li><code>dispatch_group_wait</code> 会一直等待，直到任务全部完成或者超时。如果在所有任务完成前超时了，该函数会返回一个非零值。你可以对此返回值做条件判断以确定是否超出等待周期；然而，你在这里用 <code>DISPATCH_TIME_FOREVER</code> 让它永远等待。它的意思，勿庸置疑就是，永－远－等－待！这样很好，因为图片的创建工作总是会完成的。</li>
+<li>此时此刻，你已经确保了，要么所有的图片任务都已完成，要么发生了超时。然后，你在主线程上运行 <code>completionBlock</code> 回调。这会将工作放到主线程上，并在稍后执行。</li>
+<li>最后，检查 <code>completionBlock</code> 是否为 nil，如果不是，那就运行它。</li>
+</ol>
+
+
+<p>编译并运行你的应用，尝试下载多个图片，观察你的应用是在何时运行 completionBlock 的。</p>
+
+<blockquote><p>注意：如果你是在真机上运行应用，而且网络活动发生得太快以致难以观察 completionBlock 被调用的时刻，那么你可以在 Settings 应用里的开发者相关部分里打开一些网络设置，以确保代码按照我们所期望的那样工作。只需去往 Network Link Conditioner 区，开启它，再选择一个 Profile，“Very Bad Network” 就不错。</p></blockquote>
+
+<p>如果你是在模拟器里运行应用，你可以使用 <a href="http://nshipster.com/network-link-conditioner/">来自 GitHub 的 Network Link Conditioner</a> 来改变网络速度。它会成为你工具箱中的一个好工具，因为它强制你研究你的应用在连接速度并非最佳的情况下会变成什么样。</p>
+
+<p>目前为止的解决方案还不错，但是总体来说，如果可能，最好还是要避免阻塞线程。你的下一个任务是重写一些方法，以便当所有下载任务完成时能异步通知你。</p>
+
+<p>在我们转向另外一种使用 Dispatch Group 的方式之前，先看一个简要的概述，关于何时以及怎样使用有着不同的队列类型的 Dispatch Group ：</p>
+
+<ul>
+<li>自定义串行队列：它很适合当一组任务完成时发出通知。</li>
+<li>主队列（串行）：它也很适合这样的情况。但如果你要同步地等待所有工作地完成，那你就不应该使用它，因为你不能阻塞主线程。然而，异步模型是一个很有吸引力的能用于在几个较长任务（例如网络调用）完成后更新 UI 的方式。</li>
+<li>并发队列：它也很适合 Dispatch Group 和完成时通知。</li>
+</ul>
+
+
+<h3>Dispatch Group，第二种方式</h3>
+
+<p>上面的一切都很好，但在另一个队列上异步调度然后使用 dispatch_group_wait 来阻塞实在显得有些笨拙。是的，还有另一种方式……</p>
+
+<p>在 PhotoManager.m 中找到 <code>downloadPhotosWithCompletionBlock:</code> 方法，用下面的实现替换它：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadPhotosWithCompletionBlock:</span><span class="p">(</span><span class="n">BatchPhotoDownloadingCompletionBlock</span><span class="p">)</span><span class="nv">completionBlock</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 1</span>
+</span><span class='line'>    <span class="n">__block</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">dispatch_group_t</span> <span class="n">downloadGroup</span> <span class="o">=</span> <span class="n">dispatch_group_create</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="n">NSInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">switch</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+</span><span class='line'>                <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kOverlyAttachedGirlfriendURLString</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+</span><span class='line'>                <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kSuccessKidURLString</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+</span><span class='line'>                <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kLotsOfFacesURLString</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">dispatch_group_enter</span><span class="p">(</span><span class="n">downloadGroup</span><span class="p">);</span> <span class="c1">// 2</span>
+</span><span class='line'>        <span class="n">Photo</span> <span class="o">*</span><span class="n">photo</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Photo</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initwithURL:</span><span class="n">url</span>
+</span><span class='line'>                              <span class="nl">withCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">_error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="k">if</span> <span class="p">(</span><span class="n">_error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                      <span class="n">error</span> <span class="o">=</span> <span class="n">_error</span><span class="p">;</span>
+</span><span class='line'>                                  <span class="p">}</span>
+</span><span class='line'>                                  <span class="n">dispatch_group_leave</span><span class="p">(</span><span class="n">downloadGroup</span><span class="p">);</span> <span class="c1">// 3</span>
+</span><span class='line'>                              <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">addPhoto:</span><span class="n">photo</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">dispatch_group_notify</span><span class="p">(</span><span class="n">downloadGroup</span><span class="p">,</span> <span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span> <span class="c1">// 4</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">completionBlock</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">completionBlock</span><span class="p">(</span><span class="n">error</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面解释新的异步方法如何工作：</p>
+
+<ol>
+<li>在新的实现里，因为你没有阻塞主线程，所以你并不需要将方法包裹在 <code>async</code> 调用中。</li>
+<li>同样的 <code>enter</code> 方法，没做任何修改。</li>
+<li>同样的 <code>leave</code> 方法，也没做任何修改。</li>
+<li><code>dispatch_group_notify</code> 以异步的方式工作。当 Dispatch Group 中没有任何任务时，它就会执行其代码，那么 <code>completionBlock</code> 便会运行。你还指定了运行 <code>completionBlock</code> 的队列，此处，主队列就是你所需要的。</li>
+</ol>
+
+
+<p>对于这个特定的工作，上面的处理明显更清晰，而且也不会阻塞任何线程。</p>
+
+<h2>太多并发带来的风险</h2>
+
+<p>既然你的工具箱里有了这些新工具，你大概做任何事情都想使用它们，对吧？</p>
+
+<p><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2014/01/Thread_All_The_Code_Meme.jpg" alt="Thread_All_The_Code_Meme" /></p>
+
+<p>看看 PhotoManager 中的 <code>downloadPhotosWithCompletionBlock</code> 方法。你可能已经注意到这里的 <code>for</code> 循环，它迭代三次，下载三个不同的图片。你的任务是尝试让 <code>for</code> 循环并发运行，以提高其速度。</p>
+
+<p><code>dispatch_apply</code> 刚好可用于这个任务。</p>
+
+<p><code>dispatch_apply</code> 表现得就像一个 <code>for</code> 循环，但它能并发地执行不同的迭代。这个函数是同步的，所以和普通的 <code>for</code> 循环一样，它只会在所有工作都完成后才会返回。</p>
+
+<p>当在 Block 内计算任何给定数量的工作的最佳迭代数量时，必须要小心，因为过多的迭代和每个迭代只有少量的工作会导致大量开销以致它能抵消任何因并发带来的收益。而被称为<code>跨越式（striding）</code>的技术可以在此帮到你，即通过在每个迭代里多做几个不同的工作。</p>
+
+<blockquote><p>译者注：大概就能减少并发数量吧，作者是提醒大家注意并发的开销，记在心里！</p></blockquote>
+
+<p>那何时才适合用 <code>dispatch_apply</code> 呢？</p>
+
+<ul>
+<li>自定义串行队列：串行队列会完全抵消 <code>dispatch_apply</code> 的功能；你还不如直接使用普通的 <code>for</code> 循环。</li>
+<li>主队列（串行）：与上面一样，在串行队列上不适合使用 <code>dispatch_apply</code> 。还是用普通的 <code>for</code> 循环吧。</li>
+<li>并发队列：对于并发循环来说是很好选择，特别是当你需要追踪任务的进度时。</li>
+</ul>
+
+
+<p>回到 <code>downloadPhotosWithCompletionBlock:</code> 并用下列实现替换它：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadPhotosWithCompletionBlock:</span><span class="p">(</span><span class="n">BatchPhotoDownloadingCompletionBlock</span><span class="p">)</span><span class="nv">completionBlock</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">__block</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">dispatch_group_t</span> <span class="n">downloadGroup</span> <span class="o">=</span> <span class="n">dispatch_group_create</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">dispatch_apply</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_HIGH</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">(</span><span class="n">size_t</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">switch</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+</span><span class='line'>                <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kOverlyAttachedGirlfriendURLString</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+</span><span class='line'>                <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kSuccessKidURLString</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+</span><span class='line'>                <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">kLotsOfFacesURLString</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">dispatch_group_enter</span><span class="p">(</span><span class="n">downloadGroup</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">Photo</span> <span class="o">*</span><span class="n">photo</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Photo</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initwithURL:</span><span class="n">url</span>
+</span><span class='line'>                              <span class="nl">withCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">_error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="k">if</span> <span class="p">(</span><span class="n">_error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                      <span class="n">error</span> <span class="o">=</span> <span class="n">_error</span><span class="p">;</span>
+</span><span class='line'>                                  <span class="p">}</span>
+</span><span class='line'>                                  <span class="n">dispatch_group_leave</span><span class="p">(</span><span class="n">downloadGroup</span><span class="p">);</span>
+</span><span class='line'>                              <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">addPhoto:</span><span class="n">photo</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">dispatch_group_notify</span><span class="p">(</span><span class="n">downloadGroup</span><span class="p">,</span> <span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">completionBlock</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">completionBlock</span><span class="p">(</span><span class="n">error</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你的循环现在是并行运行的了；在上面的代码中，在调用 <code>dispatch_apply</code> 时，你用第一次参数指明了迭代的次数，用第二个参数指定了任务运行的队列，而第三个参数是一个 Block。</p>
+
+<p>要知道虽然你有代码保证添加相片时线程安全，但图片的顺序却可能不同，这取决于线程完成的顺序。</p>
+
+<p>编译并运行，然后从 “Le Internet” 添加一些照片。注意到区别了吗？</p>
+
+<p>在真机上运行新代码会稍微更快的得到结果。但我们所做的这些提速工作真的值得吗？</p>
+
+<p>实际上，在这个例子里并不值得。下面是原因：</p>
+
+<ul>
+<li>你创建并行运行线程而付出的开销，很可能比直接使用  <code>for</code> 循环要多。若你要以合适的步长迭代非常大的集合，那才应该考虑使用 <code>dispatch_apply</code>。</li>
+<li>你用于创建应用的时间是有限的——除非实在太糟糕否则不要浪费时间去提前优化代码。如果你要优化什么，那去优化那些明显值得你付出时间的部分。你可以通过在 Instruments 里分析你的应用，找出最长运行时间的方法。看看 <a href="http://www.raywenderlich.com/23037/how-to-use-instruments-in-xcode">如何在 Xcode 中使用 Instruments</a> 可以学到更多相关知识。</li>
+<li>通常情况下，优化代码会让你的代码更加复杂，不利于你自己和其他开发者阅读。请确保添加的复杂性能换来足够多的好处。</li>
+</ul>
+
+
+<p>记住，不要在优化上太疯狂。你只会让你自己和后来者更难以读懂你的代码。</p>
+
+<h2>GCD 的其他趣味</h2>
+
+<p>等一下！还有更多！有一些额外的函数在不同的道路上走得更远。虽然你不会太频繁地使用这些工具，但在对的情况下，它们可以提供极大的帮助。</p>
+
+<h3>阻塞——正确的方式</h3>
+
+<p>这可能听起来像是个疯狂的想法，但你知道 Xcode 已有了测试功能吗？:] 我知道，虽然有时候我喜欢假装它不存在，但在代码里构建复杂关系时编写和运行测试非常重要。</p>
+
+<p>Xcode 里的测试在 <code>XCTestCase</code> 的子类上执行，并运行任何方法签名以 <code>test</code> 开头的方法。测试在主线程运行，所以你可以假设所有测试都是串行发生的。</p>
+
+<p>当一个给定的测试方法运行完成，XCTest 方法将考虑此测试已结束，并进入下一个测试。这意味着任何来自前一个测试的异步代码会在下一个测试运行时继续运行。</p>
+
+<p>网络代码通常是异步的，因此你不能在执行网络获取时阻塞主线程。也就是说，整个测试会在测试方法完成之后结束，这会让对网络代码的测试变得很困难。也就是，除非你在测试方法内部阻塞主线程直到网络代码完成。</p>
+
+<blockquote><p>注意：有一些人会说，这种类型的测试不属于集成测试的首选集（Preferred Set）。一些人会赞同，一些人不会。但如果你想做，那就去做。</p></blockquote>
+
+<p><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2014/01/Gandalf_Semaphore.png" alt="Gandalf_Semaphore" /></p>
+
+<p>导航到 GooglyPuffTests.m 并查看 <code>downloadImageURLWithString:</code>，如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadImageURLWithString:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">URLString</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">URLString</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">__block</span> <span class="kt">BOOL</span> <span class="n">isFinishedDownloading</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">__unused</span> <span class="n">Photo</span> <span class="o">*</span><span class="n">photo</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Photo</span> <span class="n">alloc</span><span class="p">]</span>
+</span><span class='line'>                             <span class="nl">initwithURL:</span><span class="n">url</span>
+</span><span class='line'>                             <span class="nl">withCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                 <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                     <span class="n">XCTFail</span><span class="p">(</span><span class="s">@&quot;%@ failed. %@&quot;</span><span class="p">,</span> <span class="n">URLString</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>                                 <span class="p">}</span>
+</span><span class='line'>                                 <span class="n">isFinishedDownloading</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>                             <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">isFinishedDownloading</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这是一种测试异步网络代码的幼稚方式。 While 循环在函数的最后一直等待，直到 <code>isFinishedDownloading</code> 布尔值变成 True，它只会在 Completion Block 里发生。让我们看看这样做有什么影响。</p>
+
+<p>通过在 Xcode 中点击  Product / Test 运行你的测试，如果你使用默认的键绑定，也可以使用快捷键 ⌘+U 来运行你的测试。</p>
+
+<p>在测试运行时，注意 Xcode debug 导航栏里的 CPU 使用率。这个设计不当的实现就是一个基本的 <a href="http://en.wikipedia.org/wiki/Spinlock">自旋锁</a> 。它很不实用，因为你在 While 循环里浪费了珍贵的 CPU 周期；而且它也几乎没有扩展性。</p>
+
+<blockquote><p>译者注：所谓自旋锁，就是某个线程一直抢占着 CPU 不断检查以等到它需要的情况出现。因为现代操作系统都是可以并发运行多个线程的，所以它所等待的那个线程也有机会被调度执行，这样它所需要的情况早晚会出现。</p></blockquote>
+
+<p>你可能需要使用前面提到的 Network Link Conditioner ，已便清楚地看到这个问题。如果你的网络太快，那么自旋只会在很短的时间里发生，难以观察。</p>
+
+<blockquote><p>译者注：作者反复提到网速太快，而我们还需要对付 GFW，简直泪流满面！</p></blockquote>
+
+<p>你需要一个更优雅、可扩展的解决方案来阻塞线程直到资源可用。欢迎来到信号量。</p>
+
+<h3>信号量</h3>
+
+<p>信号量是一种老式的线程概念，由非常谦卑的 Edsger W. Dijkstra 介绍给世界。信号量之所以比较复杂是因为它建立在操作系统的复杂性之上。</p>
+
+<p>如果你想学到更多关于信号量的知识，看看这个链接<a href="http://greenteapress.com/semaphores/">它更细致地讨论了信号量理论</a>。如果你是学术型，那可以看一个软件开发中经典的<a href="http://greenteapress.com/semaphores/">哲学家进餐问题</a>，它需要使用信号量来解决。</p>
+
+<p>信号量让你控制多个消费者对有限数量资源的访问。举例来说，如果你创建了一个有着两个资源的信号量，那同时最多只能有两个线程可以访问临界区。其他想使用资源的线程必须在一个…你猜到了吗？…FIFO队列里等待。</p>
+
+<p>让我们来使用信号量吧！</p>
+
+<p>打开 GooglyPuffTests.m 并用下列实现替换 <code>downloadImageURLWithString:</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">downloadImageURLWithString:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">URLString</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 1</span>
+</span><span class='line'>    <span class="n">dispatch_semaphore_t</span> <span class="n">semaphore</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">URLString</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">__unused</span> <span class="n">Photo</span> <span class="o">*</span><span class="n">photo</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Photo</span> <span class="n">alloc</span><span class="p">]</span>
+</span><span class='line'>                             <span class="nl">initwithURL:</span><span class="n">url</span>
+</span><span class='line'>                             <span class="nl">withCompletionBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                 <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                     <span class="n">XCTFail</span><span class="p">(</span><span class="s">@&quot;%@ failed. %@&quot;</span><span class="p">,</span> <span class="n">URLString</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>                                 <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>                                 <span class="c1">// 2</span>
+</span><span class='line'>                                 <span class="n">dispatch_semaphore_signal</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
+</span><span class='line'>                             <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 3</span>
+</span><span class='line'>    <span class="n">dispatch_time_t</span> <span class="n">timeoutTime</span> <span class="o">=</span> <span class="n">dispatch_time</span><span class="p">(</span><span class="n">DISPATCH_TIME_NOW</span><span class="p">,</span> <span class="n">kDefaultTimeoutLengthInNanoSeconds</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">dispatch_semaphore_wait</span><span class="p">(</span><span class="n">semaphore</span><span class="p">,</span> <span class="n">timeoutTime</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">XCTFail</span><span class="p">(</span><span class="s">@&quot;%@ timed out&quot;</span><span class="p">,</span> <span class="n">URLString</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面来说明你代码中的信号量是如何工作的：</p>
+
+<ol>
+<li>创建一个信号量。参数指定信号量的起始值。这个数字是你可以访问的信号量，不需要有人先去增加它的数量。（注意到增加信号量也被叫做发射信号量）。译者注：这里初始化为0，也就是说，有人想使用信号量必然会被阻塞，直到有人增加信号量。</li>
+<li>在 Completion Block 里你告诉信号量你不再需要资源了。这就会增加信号量的计数并告知其他想使用此资源的线程。</li>
+<li>这会在超时之前等待信号量。这个调用阻塞了当前线程直到信号量被发射。这个函数的一个非零返回值表示到达超时了。在这个例子里，测试将会失败因为它以为网络请求不会超过 10 秒钟就会返回——一个平衡点！</li>
+</ol>
+
+
+<p>再次运行测试。只要你有一个正常工作的网络连接，这个测试就会马上成功。请特别注意 CPU 的使用率，与之前使用自旋锁的实现作个对比。</p>
+
+<p>关闭你的网络链接再运行测试；如果你在真机上运行，就打开飞行模式。如果你的在模拟器里运行，你可以直接断开 Mac 的网络链接。测试会在 10 秒后失败。这很棒，它真的能按照预想的那样工作！</p>
+
+<p>还有一些琐碎的测试，但如果你与一个服务器组协同工作，那么这些基本的测试能够防止其他人就最新的网络问题对你说三道四。</p>
+
+<h3>使用 Dispatch Source</h3>
+
+<p>GCD 的一个特别有趣的特性是 Dispatch Source，它基本上就是一个低级函数的 grab-bag ，能帮助你去响应或监测 Unix 信号、文件描述符、Mach 端口、VFS 节点，以及其它晦涩的东西。所有这些都超出了本教程讨论的范围，但你可以通过实现一个 Dispatch Source 对象并以一个相当奇特的方式来使用它来品尝那些晦涩的东西。</p>
+
+<p>第一次使用 Dispatch Source 可能会迷失在如何使用一个源，所以你需要知晓的第一件事是 <code>dispatch_source_create</code> 如何工作。下面是创建一个源的函数原型：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_source_t</span> <span class="nf">dispatch_source_create</span><span class="p">(</span>
+</span><span class='line'>   <span class="n">dispatch_source_type_t</span> <span class="n">type</span><span class="p">,</span>
+</span><span class='line'>   <span class="n">uintptr_t</span> <span class="n">handle</span><span class="p">,</span>
+</span><span class='line'>   <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">mask</span><span class="p">,</span>
+</span><span class='line'>   <span class="n">dispatch_queue_t</span> <span class="n">queue</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一个参数是 <code>dispatch_source_type_t</code> 。这是最重要的参数，因为它决定了 handle 和 mask 参数将会是什么。你可以查看 <a href="https://developer.apple.com/library/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/Reference/reference.html#//apple_ref/doc/constant_group/Dispatch_Source_Type_Constants">Xcode 文档</a> 得到哪些选项可用于每个 <code>dispatch_source_type_t</code> 参数。</p>
+
+<p>下面你将监控 <code>DISPATCH_SOURCE_TYPE_SIGNAL</code> 。如<a href="https://developer.apple.com/library/mac/documentation/Performance/Reference/GCD_libdispatch_Ref/Reference/reference.html#//apple_ref/c/macro/DISPATCH_SOURCE_TYPE_SIGNAL%22">文档所显示的</a>：</p>
+
+<p>一个监控当前进程信号的 Dispatch Source。 handle 是信号编号，mask 未使用（传 0 即可）。</p>
+
+<p>这些 Unix 信号组成的列表可在头文件  <a href="http://www.opensource.apple.com/source/xnu/xnu-1456.1.26/bsd/sys/signal.h">signal.h</a> 中找到。在其顶部有一堆 <code>#define</code> 语句。你将监控此信号列表中的 <code>SIGSTOP</code> 信号。这个信号将会在进程接收到一个无法回避的暂停指令时被发出。在你用 LLDB 调试器调试应用时你使用的也是这个信号。</p>
+
+<p>去往 PhotoCollectionViewController.m 并添加如下代码到 <code>viewDidLoad</code> 的顶部，就在 <code>[super viewDidLoad]</code> 下面：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// 1</span>
+</span><span class='line'>  <span class="err">#</span><span class="k">if</span> <span class="n">DEBUG</span>
+</span><span class='line'>      <span class="c1">// 2</span>
+</span><span class='line'>      <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">dispatch_get_main_queue</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// 3</span>
+</span><span class='line'>      <span class="k">static</span> <span class="n">dispatch_source_t</span> <span class="n">source</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// 4</span>
+</span><span class='line'>      <span class="n">__typeof</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="n">__weak</span> <span class="n">weakSelf</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// 5</span>
+</span><span class='line'>      <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>          <span class="c1">// 6</span>
+</span><span class='line'>          <span class="n">source</span> <span class="o">=</span> <span class="n">dispatch_source_create</span><span class="p">(</span><span class="n">DISPATCH_SOURCE_TYPE_SIGNAL</span><span class="p">,</span> <span class="n">SIGSTOP</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">queue</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="c1">// 7</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">source</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">{</span>
+</span><span class='line'>              <span class="c1">// 8</span>
+</span><span class='line'>              <span class="n">dispatch_source_set_event_handler</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>                  <span class="c1">// 9</span>
+</span><span class='line'>                  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Hi, I am: %@&quot;</span><span class="p">,</span> <span class="n">weakSelf</span><span class="p">);</span>
+</span><span class='line'>              <span class="p">});</span>
+</span><span class='line'>              <span class="n">dispatch_resume</span><span class="p">(</span><span class="n">source</span><span class="p">);</span> <span class="c1">// 10</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">});</span>
+</span><span class='line'>  <span class="err">#</span><span class="n">endif</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// The other stuff</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这些代码有点儿复杂，所以跟着注释一步步走，看看到底发生了什么：</p>
+
+<ol>
+<li>最好是在 DEBUG 模式下编译这些代码，因为这会给“有关方面（Interested Parties）”很多关于你应用的洞察。 :]</li>
+<li>Just to mix things up，你创建了一个 <code>dispatch_queue_t</code> 实例变量而不是在参数上直接使用函数。当代码变长，分拆有助于可读性。</li>
+<li>你需要 <code>source</code> 在方法范围之外也可被访问，所以你使用了一个 static 变量。</li>
+<li>使用 <code>weakSelf</code> 以确保不会出现保留环（Retain Cycle）。这对 <code>PhotoCollectionViewController</code> 来说不是完全必要的，因为它会在应用的整个生命期里保持活跃。然而，如果你有任何其它会消失的类，这就能确保不会出现保留环而造成内存泄漏。</li>
+<li>使用 <code>dispatch_once</code> 确保只会执行一次 Dispatch Source 的设置。</li>
+<li>初始化 <code>source</code> 变量。你指明了你对信号监控感兴趣并提供了 <code>SIGSTOP</code> 信号作为第二个参数。进一步，你使用主队列处理接收到的事件——很快你就好发现为何要这样做。</li>
+<li>如果你提供的参数不合格，那么 Dispatch Source 对象不会被创建。也就是说，在你开始在其上工作之前，你需要确保已有了一个有效的 Dispatch Source 。</li>
+<li>当你收到你所监控的信号时，<code>dispatch_source_set_event_handler</code> 就会执行。之后你可以在其 Block 里设置合适的逻辑处理器（Logic Handler）。</li>
+<li>一个基本的 <code>NSLog</code> 语句，它将对象打印到控制台。</li>
+<li>默认的，所有源都初始为暂停状态。如果你要开始监控事件，你必须告诉源对象恢复活跃状态。</li>
+</ol>
+
+
+<p>编译并运行应用；在调试器里暂停并立即恢复应用，查看控制台，你会看到这个来自黑暗艺术的函数确实可以工作。你看到的大概如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="mi">2014</span><span class="o">-</span><span class="mo">03</span><span class="o">-</span><span class="mi">29</span> <span class="mi">17</span><span class="o">:</span><span class="mi">41</span><span class="o">:</span><span class="mf">30.610</span> <span class="n">GooglyPuff</span><span class="p">[</span><span class="mi">8181</span><span class="o">:</span><span class="mi">60</span><span class="n">b</span><span class="p">]</span> <span class="n">Hi</span><span class="p">,</span> <span class="n">I</span> <span class="nl">am:</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你的应用现在具有调试感知了！这真是超级棒，但在真实世界里该如何使用它呢？</p>
+
+<p>你可以用它去调试一个对象并在任何你想恢复应用的时候显示数据；你同样能给你的应用加上自定义的安全逻辑以便在恶意攻击者将一个调试器连接到你的应用上时保护它自己（或用户的数据）。</p>
+
+<blockquote><p>译者注：好像挺有用！</p></blockquote>
+
+<p>一个有趣的主意是，使用此方式的作为一个堆栈追踪工具去找到你想在调试器里操纵的对象。</p>
+
+<p><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2014/01/What_Meme.jpg" alt="What_Meme" /></p>
+
+<p>稍微想想这个情况。当你意外地停止调试器，你几乎从来都不会在所需的栈帧上。现在你可以在任何时候停止调试器并在你所需的地方执行代码。如果你想在你的应用的某一点执行的代码非常难以从调试器访问的话，这会非常有用。有机会试试吧！</p>
+
+<p><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2014/01/I_See_What_You_Did_Meme.png" alt="I_See_What_You_Did_Meme" /></p>
+
+<p>将一个断点放在你刚添加在 viewDidLoad 里的事件处理器的 <code>NSLog</code> 语句上。在调试器里暂停，然后再次开始；应用会到达你添加的断点。现在你深入到你的 PhotoCollectionViewController 方法深处。你可以访问 PhotoCollectionViewController 的实例得到你关心的内容。非常方便！</p>
+
+<blockquote><p>注意：如果你还没有注意到在调试器里的是哪个线程，那现在就看看它们。主线程总是第一个被 libdispatch 跟随，它是 GCD 的坐标，作为第二个线程。之后，线程计数和剩余线程取决于硬件在应用到达断点时正在做的事情。</p></blockquote>
+
+<p>在调试器里，键入命令：<code>po [[weakSelf navigationItem] setPrompt:@"WOOT!"]</code></p>
+
+<p>然后恢复应用的执行。你会看到如下内容：</p>
+
+<p><img src="http://cdn5.raywenderlich.com/wp-content/uploads/2014/01/Dispatch_Sources_Xcode_Breakpoint_Console-650x500.png" alt="Dispatch_Sources_Xcode_Breakpoint_Console" /></p>
+
+<p><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2014/01/Dispatch_Sources_Debugger_Updating_UI-308x500.png" alt="Dispatch_Sources_Debugger_Updating_UI" /></p>
+
+<p>使用这个方法，你可以更新 UI、查询类的属性，甚至是执行方法——所有这一切都不需要重启应用并到达某个特定的工作状态。相当优美吧！</p>
+
+<blockquote><p>译者注：发挥这一点，是可以做出一些调试库的吧？</p></blockquote>
+
+<h2>之后又该往何处去？</h2>
+
+<p>你可以<a href="http://cdn3.raywenderlich.com/wp-content/uploads/2014/01/GooglyPuff-Final.zip">在此下载最终的项目</a>。</p>
+
+<p>我讨厌再次提及此主题，但你真的要看看 <a href="http://www.raywenderlich.com/23037/how-to-use-instruments-in-xcode">如何使用 Instruments</a> 教程。如果你计划优化你的应用，那你一定要学会使用它。请注意 Instruments 擅长于分析相对执行：比较哪些区域的代码相对于其它区域的代码花费了更长的时间。如果你尝试计算出某个方法实际的执行时间，那你可能需要拿出更多的自酿的解决方案（Home-brewed Solution）。</p>
+
+<p>同样请看看 <a href="http://www.raywenderlich.com/19788/how-to-use-nsoperations-and-nsoperationqueues">如何使用 NSOperations 和 NSOperationQueues</a> 吧，它们是建立在 GCD 之上的并发技术。大体来说，如果你在写简单的用过就忘的任务，那它们就是使用 GCD 的最佳实践，。NSOperations 提供更好的控制、处理大量并发操作的实现，以及一个以速度为代价的更加面向对象的范例。</p>
+
+<p>记住，除非你有特别的原因要往下流走（译者的玩笑：即使用低级别 API），否则永远应尝试并坚持使用高级的 API。如果你想学到更多或想做某些非常非常“有趣”的事情，那你就应该冒险进入 Apple 的黑暗艺术。</p>
+
+<p>祝你好运，玩得开心！有任何问题或反馈请在下方的讨论区贴出！</p>
+
+<p>=====================</p>
+
+<p>译者注：欢迎非商业转载，但请一定注明出处：<a href="https://github.com/nixzhu/dev-blog">https://github.com/nixzhu/dev-blog</a> ！</p>
+
+<p>转载声明：后面还有原译者的微博和支付宝等信息，感觉转载过来怪怪的，想浏览的话请点击原地址：<a href="https://github.com/nixzhu/dev-blog">https://github.com/nixzhu/dev-blog</a></p>
+</div>
+
+</article>
+
+
+
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+  	
+     <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_xiaoyou"></a>
+	<a href="http://www.jiathis.com/share?uid=1912336" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1912336" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1912336"></script>
+<!-- UY END -->
+
+ 	
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    玉令天下
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'yulingtianxia';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/05/14/grand-central-dispatch-in-depth-part-2/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/05/14/grand-central-dispatch-in-depth-part-2/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+		</div>
+	</div>
+</body>
+</html>
