@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-19T12:56:15+08:00</updated>
+  <updated>2014-05-19T15:24:47+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -1295,7 +1295,7 @@
 
 <h3>Registering for Key-Value Observing</h3>
 
-<h4>注册称为观察者</h4>
+<h4>注册成为观察者</h4>
 
 <p>你可以通过发送<code>addObserver:forKeyPath:options:context:</code>消息来注册观察者</p>
 
@@ -1462,12 +1462,12 @@ NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
 上面的代码将openingBalance属性的观察者inspector移除，移除后观察者再也不会收到<code>observeValueForKeyPath:ofObject:change:context:</code>消息。<br/>
 在移除观察者之前，如果context是一个对象的引用，那么必须保持对它的强引用直到观察者被移除。</p>
 
-<h3>KVO Compliance</h3>
+<h3>KVO Compliance（KVO兼容）</h3>
 
 <p>有两种方法可以保证变更通知被发出。自动发送通知是NSObject提供的，并且一个类中的所有属性都默认支持，只要是符合KVO的。一般情况你使用自动变更通知，你不需要写任何代码。<br/>
 人工变更通知需要些额外的代码，但也对通知发送提供了额外的控制。你可以通过重写子类<code>automaticallyNotifiesObserversForKey:</code>方法的方式控制子类一些属性的自动通知。</p>
 
-<h4>Automatic Change Notification</h4>
+<h4>Automatic Change Notification（自动通知）</h4>
 
 <p>下面代码中的方法都能导致KVO变更消息发出</p>
 
@@ -1502,7 +1502,7 @@ NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
 
 <p></p>
 
-<h4>Manual Change Notification</h4>
+<h4>Manual Change Notification（手动通知）</h4>
 
 <p>下面的代码为openingBalance属性开启了人工通知，并让父类决定其他属性的通知方式。</p>
 
@@ -1617,7 +1617,7 @@ NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
 
 <p></p>
 
-<h3>Registering Dependent Keys</h3>
+<h3>Registering Dependent Keys（注册依赖的属性）</h3>
 
 <p>有一些属性的值取决于一个或者多个其他对象的属性值，一旦某个被依赖的属性值变了，依赖它的属性的变化也需要被通知。</p>
 
@@ -1749,6 +1749,20 @@ NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
 <p>2.如果你在使用Core Data，你可以在应用的notification center中将parent注册为它的 managed object context的观察者，parent应该回应相应的变更通知，这些通知是children以类似KVO的形式发出的。</p>
 
 <p>其实这也是Objective-C中利用Cocoa实现观察者模式的另一种途径：NSNotificationCenter</p>
+
+<h3>调试KVO</h3>
+
+<p>你可以在 lldb 里查看一个被观察对象的所有观察信息。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">(</span><span class="n">lldb</span><span class="p">)</span> <span class="n">po</span> <span class="p">[</span><span class="n">observedObject</span> <span class="n">observationInfo</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+这会打印出有关谁观察谁之类的很多信息。</p>
+
+<p>这个信息的格式不是公开的，我们不能让任何东西依赖它，因为苹果随时都可以改变它。不过这是一个很强大的排错工具。</p>
 ]]></content>
   </entry>
   
@@ -3133,7 +3147,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#105;&#108;&#116;&#x6f;&#58;&#x73;&#117;&#x70;&#x70;&#x6f;&#x72;&#x74;&#x40;&#x67;&#105;&#x74;&#x68;&#x75;&#x62;&#x2e;&#99;&#x6f;&#x6d;&#x2e;">&#x73;&#x75;&#112;&#x70;&#111;&#x72;&#116;&#x40;&#x67;&#105;&#116;&#104;&#117;&#98;&#x2e;&#x63;&#x6f;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#x73;&#117;&#112;&#x70;&#x6f;&#x72;&#116;&#64;&#x67;&#105;&#x74;&#x68;&#117;&#x62;&#x2e;&#x63;&#111;&#109;&#46;">&#115;&#117;&#x70;&#x70;&#111;&#x72;&#x74;&#x40;&#x67;&#105;&#x74;&#x68;&#x75;&#x62;&#x2e;&#99;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
