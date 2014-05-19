@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-18T20:32:28+08:00</updated>
+  <updated>2014-05-19T12:56:15+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -337,10 +337,38 @@ NSLog(@&ldquo;Short Names: %@&rdquo;, [people filteredArrayUsingPredicate:shortN
 
 <p>使用KVC访问属性的代价比直接使用存取方法要大，所以只在需要的时候才用。</p>
 
+<p>最简单的 KVC 能让我们通过以下的形式访问属性：</p>
+
+<p><code>objc
+@property (nonatomic, copy) NSString *name;
+</code></p>
+
+<p>取值：</p>
+
+<p><code>
+NSString *n = [object valueForKey:@"name"];
+</code>
+设定：</p>
+
+<p><code>
+[object setValue:@"Daniel" forKey:@"name"];
+</code>
+值得注意的是这个不仅可以访问作为对象属性，而且也能访问一些标量（例如 int 和 CGFloat）和 struct（例如 CGRect）。Foundation 框架会为我们自动封装它们。举例来说，如果有以下属性：</p>
+
+<p><code>
+@property (nonatomic) CGFloat height;
+</code>
+我们可以这样设置它：</p>
+
+<p><code>
+[object setValue:@(20) forKey:@"height"];
+</code></p>
+
 <p>有关KVC的更多用法，参看下面的文章：</p>
 
 <p><a href="http://blog.csdn.net/omegayy/article/details/7381301  ">http://blog.csdn.net/omegayy/article/details/7381301  </a>
-<a href="http://blog.csdn.net/wzzvictory/article/details/9674431">http://blog.csdn.net/wzzvictory/article/details/9674431</a></p>
+<a href="http://blog.csdn.net/wzzvictory/article/details/9674431  ">http://blog.csdn.net/wzzvictory/article/details/9674431  </a>
+<a href="http://objccn.io/issue-7-3/">http://objccn.io/issue-7-3/</a></p>
 
 <h2>KVO</h2>
 
@@ -391,7 +419,18 @@ NSLog(@&ldquo;Short Names: %@&rdquo;, [people filteredArrayUsingPredicate:shortN
 <p>}
 ```</p>
 
-<p>inspector注册成为了account的观察者，被观察属性的KeyPath是@&ldquo;openingBalance"，也就是account的openingBalance属性，NSKeyValueObservingOptionNew和NSKeyValueObservingOptionOld选项分别标识在观察者接收通知时change字典对应入口提供更改后的值和更改前的值。context是一个指针，当<code>observeValueForKeyPath:ofObject:change:context:</code>方法执行时context会提供给观察者。context可以使C指针或者一个对象引用，既可以当作一个唯一的标识来分辨被观察的变更，也可以向观察者提供数据。</p>
+<p>inspector注册成为了account的观察者，被观察属性的KeyPath是@&ldquo;openingBalance"，也就是account的openingBalance属性，NSKeyValueObservingOptionNew和NSKeyValueObservingOptionOld选项分别标识在观察者接收通知时change字典对应入口提供更改后的值和更改前的值。更简单的办法是用 NSKeyValueObservingOptionPrior 选项，随后我们就可以用以下方式提取出改变前后的值：(change是个字典，详细介绍请看下节)</p>
+
+<p><code>
+id oldValue = change[NSKeyValueChangeOldKey];
+id newValue = change[NSKeyValueChangeNewKey];
+</code></p>
+
+<p>我们常常需要当一个值改变的时候更新 UI，但是我们也要在第一次运行代码的时候更新一次 UI。我们可以用 KVO 并添加 NSKeyValueObservingOptionInitial 的选项 来一箭双雕地做好这样的事情。这将会让 KVO 通知在调用 -addObserver:forKeyPath:&hellip; 到时候也被触发。<br/>
+当我们注册 KVO 通知的时候，我们可以添加 NSKeyValueObservingOptionPrior 选项，这能使我们在键值改变之前被通知。这和-willChangeValueForKey:被触发的时间相对应。<br/>
+如果我们注册通知的时候附加了 NSKeyValueObservingOptionPrior 选项，我们将会收到两个通知：一个在值变更前，另一个在变更之后。变更前的通知将会在 change 字典中有不同的键。</p>
+
+<p>context是一个指针，当<code>observeValueForKeyPath:ofObject:change:context:</code>方法执行时context会提供给观察者。context可以使C指针或者一个对象引用，既可以当作一个唯一的标识来分辨被观察的变更，也可以向观察者提供数据。</p>
 
 <h4>接收变更通知</h4>
 
@@ -450,7 +489,21 @@ typedef NSUInteger NSKeyValueChange;
 <strong>NSKeyValueChangeIndexesKey</strong><br/>
 如果 NSKeyValueChangeKindKey的值为NSKeyValueChangeInsertion, NSKeyValueChangeRemoval, 或者 NSKeyValueChangeReplacement，这个键的值是一个NSIndexSet对象，包含了增加，移除或者替换对象的index。<br/>
 <strong>NSKeyValueChangeNotificationIsPriorKey</strong><br/>
-如果注册观察者时NSKeyValueObservingOptionPrior选项被指明了，此通知在变更发生前被发出。其值为NSNumber类型，默认为YES。</p>
+如果注册观察者时NSKeyValueObservingOptionPrior选项被指明了，此通知会在变更发生前被发出。其类型为NSNumber，包含的值为YES。我们可以像以下这样区分通知是在改变之前还是之后被触发的：</p>
+
+<p>```
+if ([change[NSKeyValueChangeNotificationIsPriorKey] boolValue]) {</p>
+
+<pre><code>// 改变之前
+</code></pre>
+
+<p>} else {</p>
+
+<pre><code>// 改变之后
+</code></pre>
+
+<p>}
+```</p>
 
 <h4>移除观察者</h4>
 
@@ -645,7 +698,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x65;&#x6d;&#112;&#108;&#x6f;&#x79;&#101;&#101;&#x73;&#46;&#x40;&#115;&#x75;&#x6d;&#46;&#x73;&#x61;&#x6c;&#97;&#x72;&#x79;">&#x65;&#x6d;&#112;&#x6c;&#x6f;&#x79;&#101;&#x65;&#115;&#46;&#64;&#115;&#x75;&#109;&#x2e;&#115;&#x61;&#108;&#x61;&#x72;&#x79;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#x65;&#109;&#112;&#108;&#111;&#121;&#101;&#101;&#115;&#46;&#64;&#x73;&#x75;&#x6d;&#46;&#x73;&#x61;&#108;&#97;&#x72;&#121;">&#x65;&#109;&#112;&#x6c;&#111;&#x79;&#101;&#x65;&#115;&#46;&#64;&#115;&#117;&#x6d;&#46;&#115;&#x61;&#108;&#97;&#x72;&#x79;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-18T20:32:28+08:00</updated>
+  <updated>2014-05-19T12:56:15+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -1220,10 +1220,53 @@
 
 <p>使用KVC访问属性的代价比直接使用存取方法要大，所以只在需要的时候才用。</p>
 
+<p>最简单的 KVC 能让我们通过以下的形式访问属性：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">copy</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>取值：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">n</span> <span class="o">=</span> <span class="p">[</span><span class="n">object</span> <span class="nl">valueForKey:</span><span class="s">@&quot;name&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+设定：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">object</span> <span class="nl">setValue:</span><span class="s">@&quot;Daniel&quot;</span> <span class="nl">forKey:</span><span class="s">@&quot;name&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+值得注意的是这个不仅可以访问作为对象属性，而且也能访问一些标量（例如 int 和 CGFloat）和 struct（例如 CGRect）。Foundation 框架会为我们自动封装它们。举例来说，如果有以下属性：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">CGFloat</span> <span class="n">height</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+我们可以这样设置它：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">object</span> <span class="nl">setValue:</span><span class="err">@</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="nl">forKey:</span><span class="s">@&quot;height&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
 <p>有关KVC的更多用法，参看下面的文章：</p>
 
 <p><a href="http://blog.csdn.net/omegayy/article/details/7381301  ">http://blog.csdn.net/omegayy/article/details/7381301  </a>
-<a href="http://blog.csdn.net/wzzvictory/article/details/9674431">http://blog.csdn.net/wzzvictory/article/details/9674431</a></p>
+<a href="http://blog.csdn.net/wzzvictory/article/details/9674431  ">http://blog.csdn.net/wzzvictory/article/details/9674431  </a>
+<a href="http://objccn.io/issue-7-3/">http://objccn.io/issue-7-3/</a></p>
 
 <h2>KVO</h2>
 
@@ -1285,7 +1328,22 @@
 
 <p></p>
 
-<p>inspector注册成为了account的观察者，被观察属性的KeyPath是@&ldquo;openingBalance&#8221;，也就是account的openingBalance属性，NSKeyValueObservingOptionNew和NSKeyValueObservingOptionOld选项分别标识在观察者接收通知时change字典对应入口提供更改后的值和更改前的值。context是一个指针，当<code>observeValueForKeyPath:ofObject:change:context:</code>方法执行时context会提供给观察者。context可以使C指针或者一个对象引用，既可以当作一个唯一的标识来分辨被观察的变更，也可以向观察者提供数据。</p>
+<p>inspector注册成为了account的观察者，被观察属性的KeyPath是@&ldquo;openingBalance&#8221;，也就是account的openingBalance属性，NSKeyValueObservingOptionNew和NSKeyValueObservingOptionOld选项分别标识在观察者接收通知时change字典对应入口提供更改后的值和更改前的值。更简单的办法是用 NSKeyValueObservingOptionPrior 选项，随后我们就可以用以下方式提取出改变前后的值：(change是个字典，详细介绍请看下节)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">id</span> <span class="n">oldValue</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="n">NSKeyValueChangeOldKey</span><span class="p">];</span>
+</span><span class='line'><span class="kt">id</span> <span class="n">newValue</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="n">NSKeyValueChangeNewKey</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>我们常常需要当一个值改变的时候更新 UI，但是我们也要在第一次运行代码的时候更新一次 UI。我们可以用 KVO 并添加 NSKeyValueObservingOptionInitial 的选项 来一箭双雕地做好这样的事情。这将会让 KVO 通知在调用 -addObserver:forKeyPath:&hellip; 到时候也被触发。<br/>
+当我们注册 KVO 通知的时候，我们可以添加 NSKeyValueObservingOptionPrior 选项，这能使我们在键值改变之前被通知。这和-willChangeValueForKey:被触发的时间相对应。<br/>
+如果我们注册通知的时候附加了 NSKeyValueObservingOptionPrior 选项，我们将会收到两个通知：一个在值变更前，另一个在变更之后。变更前的通知将会在 change 字典中有不同的键。</p>
+
+<p>context是一个指针，当<code>observeValueForKeyPath:ofObject:change:context:</code>方法执行时context会提供给观察者。context可以使C指针或者一个对象引用，既可以当作一个唯一的标识来分辨被观察的变更，也可以向观察者提供数据。</p>
 
 <h4>接收变更通知</h4>
 
@@ -1370,7 +1428,22 @@ NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
 <strong>NSKeyValueChangeIndexesKey</strong><br/>
 如果 NSKeyValueChangeKindKey的值为NSKeyValueChangeInsertion, NSKeyValueChangeRemoval, 或者 NSKeyValueChangeReplacement，这个键的值是一个NSIndexSet对象，包含了增加，移除或者替换对象的index。<br/>
 <strong>NSKeyValueChangeNotificationIsPriorKey</strong><br/>
-如果注册观察者时NSKeyValueObservingOptionPrior选项被指明了，此通知在变更发生前被发出。其值为NSNumber类型，默认为YES。</p>
+如果注册观察者时NSKeyValueObservingOptionPrior选项被指明了，此通知会在变更发生前被发出。其类型为NSNumber，包含的值为YES。我们可以像以下这样区分通知是在改变之前还是之后被触发的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">change</span><span class="p">[</span><span class="n">NSKeyValueChangeNotificationIsPriorKey</span><span class="p">]</span> <span class="n">boolValue</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 改变之前</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 改变之后</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
 
 <h4>移除观察者</h4>
 
@@ -3060,7 +3133,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#58;&#115;&#x75;&#x70;&#x70;&#111;&#114;&#x74;&#x40;&#x67;&#x69;&#x74;&#x68;&#117;&#98;&#x2e;&#99;&#111;&#x6d;&#x2e;">&#115;&#x75;&#112;&#x70;&#111;&#114;&#x74;&#64;&#x67;&#x69;&#x74;&#104;&#x75;&#98;&#x2e;&#99;&#111;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#105;&#108;&#116;&#x6f;&#58;&#x73;&#117;&#x70;&#x70;&#x6f;&#x72;&#x74;&#x40;&#x67;&#105;&#x74;&#x68;&#x75;&#x62;&#x2e;&#99;&#x6f;&#x6d;&#x2e;">&#x73;&#x75;&#112;&#x70;&#111;&#x72;&#116;&#x40;&#x67;&#105;&#116;&#104;&#117;&#98;&#x2e;&#x63;&#x6f;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
