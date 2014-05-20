@@ -22,10 +22,39 @@ categories:
 
 使用KVC访问属性的代价比直接使用存取方法要大，所以只在需要的时候才用。  
 
+最简单的 KVC 能让我们通过以下的形式访问属性：  
+
+``` objc
+@property (nonatomic, copy) NSString *name;
+``` 
+
+取值：   
+
+``` 
+NSString *n = [object valueForKey:@"name"];
+``` 
+设定：  
+
+``` 
+[object setValue:@"Daniel" forKey:@"name"];
+``` 
+值得注意的是这个不仅可以访问作为对象属性，而且也能访问一些标量（例如 int 和 CGFloat）和 struct（例如 CGRect）。Foundation 框架会为我们自动封装它们。举例来说，如果有以下属性：  
+
+``` 
+@property (nonatomic) CGFloat height;
+``` 
+我们可以这样设置它：  
+
+``` 
+[object setValue:@(20) forKey:@"height"];
+``` 
+
 有关KVC的更多用法，参看下面的文章：  
 
 http://blog.csdn.net/omegayy/article/details/7381301  
-http://blog.csdn.net/wzzvictory/article/details/9674431
+http://blog.csdn.net/wzzvictory/article/details/9674431  
+http://objccn.io/issue-7-3/  
+
 
 
 ##KVO
@@ -55,7 +84,7 @@ KVO是Cocoa框架使用**观察者模式**的一种途径。
 
 ###Registering for Key-Value Observing
 
-####注册称为观察者
+####注册成为观察者
 你可以通过发送`addObserver:forKeyPath:options:context:`消息来注册观察者  
 
 ``` objc
@@ -73,7 +102,19 @@ KVO是Cocoa框架使用**观察者模式**的一种途径。
 }
 ``` 
 
-inspector注册成为了account的观察者，被观察属性的KeyPath是@"openingBalance"，也就是account的openingBalance属性，NSKeyValueObservingOptionNew和NSKeyValueObservingOptionOld选项分别标识在观察者接收通知时change字典对应入口提供更改后的值和更改前的值。context是一个指针，当`observeValueForKeyPath:ofObject:change:context:`方法执行时context会提供给观察者。context可以使C指针或者一个对象引用，既可以当作一个唯一的标识来分辨被观察的变更，也可以向观察者提供数据。  
+inspector注册成为了account的观察者，被观察属性的KeyPath是@"openingBalance"，也就是account的openingBalance属性，NSKeyValueObservingOptionNew和NSKeyValueObservingOptionOld选项分别标识在观察者接收通知时change字典对应入口提供更改后的值和更改前的值。更简单的办法是用 NSKeyValueObservingOptionPrior 选项，随后我们就可以用以下方式提取出改变前后的值：(change是个字典，详细介绍请看下节)  
+
+``` 
+id oldValue = change[NSKeyValueChangeOldKey];
+id newValue = change[NSKeyValueChangeNewKey];
+``` 
+  
+
+我们常常需要当一个值改变的时候更新 UI，但是我们也要在第一次运行代码的时候更新一次 UI。我们可以用 KVO 并添加 NSKeyValueObservingOptionInitial 的选项 来一箭双雕地做好这样的事情。这将会让 KVO 通知在调用 -addObserver:forKeyPath:... 到时候也被触发。  
+当我们注册 KVO 通知的时候，我们可以添加 NSKeyValueObservingOptionPrior 选项，这能使我们在键值改变之前被通知。这和-willChangeValueForKey:被触发的时间相对应。  
+如果我们注册通知的时候附加了 NSKeyValueObservingOptionPrior 选项，我们将会收到两个通知：一个在值变更前，另一个在变更之后。变更前的通知将会在 change 字典中有不同的键。  
+
+context是一个指针，当`observeValueForKeyPath:ofObject:change:context:`方法执行时context会提供给观察者。context可以使C指针或者一个对象引用，既可以当作一个唯一的标识来分辨被观察的变更，也可以向观察者提供数据。  
 
 ####接收变更通知
 
@@ -129,7 +170,16 @@ typedef NSUInteger NSKeyValueChange;
 **NSKeyValueChangeIndexesKey**  
 如果 NSKeyValueChangeKindKey的值为NSKeyValueChangeInsertion, NSKeyValueChangeRemoval, 或者 NSKeyValueChangeReplacement，这个键的值是一个NSIndexSet对象，包含了增加，移除或者替换对象的index。  
 **NSKeyValueChangeNotificationIsPriorKey**  
-如果注册观察者时NSKeyValueObservingOptionPrior选项被指明了，此通知在变更发生前被发出。其值为NSNumber类型，默认为YES。  
+如果注册观察者时NSKeyValueObservingOptionPrior选项被指明了，此通知会在变更发生前被发出。其类型为NSNumber，包含的值为YES。我们可以像以下这样区分通知是在改变之前还是之后被触发的：  
+
+``` 
+if ([change[NSKeyValueChangeNotificationIsPriorKey] boolValue]) {
+    // 改变之前
+} else {
+    // 改变之后
+}
+``` 
+  
 
 ####移除观察者  
 你可以通过发送`removeObserver:forKeyPath:`消息来移除观察者，你需要指明观察对象和路径。  
@@ -142,12 +192,12 @@ typedef NSUInteger NSKeyValueChange;
 上面的代码将openingBalance属性的观察者inspector移除，移除后观察者再也不会收到`observeValueForKeyPath:ofObject:change:context:`消息。  
 在移除观察者之前，如果context是一个对象的引用，那么必须保持对它的强引用直到观察者被移除。  
 
-###KVO Compliance
+###KVO Compliance（KVO兼容）
 
 有两种方法可以保证变更通知被发出。自动发送通知是NSObject提供的，并且一个类中的所有属性都默认支持，只要是符合KVO的。一般情况你使用自动变更通知，你不需要写任何代码。  
 人工变更通知需要些额外的代码，但也对通知发送提供了额外的控制。你可以通过重写子类` automaticallyNotifiesObserversForKey:`方法的方式控制子类一些属性的自动通知。  
 
-####Automatic Change Notification
+####Automatic Change Notification（自动通知）
 
 下面代码中的方法都能导致KVO变更消息发出  
 
@@ -167,7 +217,7 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 [transactions addObject:newTransaction];
 ``` 
 
-####Manual Change Notification
+####Manual Change Notification（手动通知）
 
 下面的代码为openingBalance属性开启了人工通知，并让父类决定其他属性的通知方式。  
 
@@ -232,7 +282,7 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 }
 ``` 
 
-###Registering Dependent Keys
+###Registering Dependent Keys（注册依赖的属性）
 
 有一些属性的值取决于一个或者多个其他对象的属性值，一旦某个被依赖的属性值变了，依赖它的属性的变化也需要被通知。  
 
@@ -317,3 +367,13 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 
 其实这也是Objective-C中利用Cocoa实现观察者模式的另一种途径：NSNotificationCenter  
 
+###调试KVO  
+
+你可以在 lldb 里查看一个被观察对象的所有观察信息。  
+
+``` 
+(lldb) po [observedObject observationInfo]
+``` 
+这会打印出有关谁观察谁之类的很多信息。  
+
+这个信息的格式不是公开的，我们不能让任何东西依赖它，因为苹果随时都可以改变它。不过这是一个很强大的排错工具。  
