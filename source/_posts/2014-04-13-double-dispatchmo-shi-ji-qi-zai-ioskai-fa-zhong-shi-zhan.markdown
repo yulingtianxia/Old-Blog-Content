@@ -199,7 +199,11 @@ evt.injectHandler(new EventHandler());
 }
 ``` 
 ##Objective-C中实现碰撞检测用到的Visitor模式
-虽然OC不支持函数重载，但是其独有的SEL类型可以很好的解决这个问题  
+
+虽然OC不支持函数重载，但是我们可以老老实实的用方法名来区分类似`visitXXX`的访问方法，并利用OC其独有的SEL类型可以很好的在运行时判断该调用哪个方法  
+
+![](/images/blog/Objective-C编程之道.jpg)   
+
 感谢kouky提供的iOS上碰撞检测的[Demo](https://github.com/kouky/iOS-SpriteKit-Pong)，这里他用到了Visitor模式  
 由于判断物体类型是用一个32位掩码来标记，所以这里不可避免的要用到if语句，这不代表它不是动态绑定，因为if语句是在初始化方法`+ (id)contactVisitorWithBody:(SKPhysicsBody *)body forContact:(SKPhysicsContact *)contact`中其作用的，只是为了判断物体类型，而不是判断碰撞两者的组合类型  
 可以参考我写的例子[ColorAtom](https://github.com/yulingtianxia/MyFirstGame/tree/master/ColorAtom)  
