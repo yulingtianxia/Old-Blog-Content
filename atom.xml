@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-05-19T15:24:47+08:00</updated>
+  <updated>2014-05-26T12:59:39+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,155 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[publish your pods on CocoaPods with trunk]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/05/26/publish-your-pods-on-cocoapods-with-trunk/"/>
+    <updated>2014-05-26T12:03:08+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/05/26/publish-your-pods-on-cocoapods-with-trunk</id>
+    <content type="html"><![CDATA[<h2>简介</h2>
+
+<p>2014年5月20日，CocoaPods不再接受向<a href="git@github.com:CocoaPods/Specs.git">CocoaPods/Specs</a>的pull request，官方的说法是为了安全考虑，防止每个人的pod被其他人修改，于是CocoaPods团队开发了trunk服务，这样每个人都是其发布的pod的owner，没有权限的人无法修改，这样更安全。</p>
+
+<p>更改后的提交架构是这样的：(来自官方图片)</p>
+
+<p><img src="images/blog/architecture-diagram.png" alt="" /></p>
+
+<!--more-->
+
+
+<p>以前的podspec文件都是ruby格式，而trunk为我们带来了更轻便的json格式，你后你可以用json来配置你的pod了。不用担心过去我们发布的pod，他们依然健在，并且trunk会将podspec文件转化为podspec.json文件。</p>
+
+<p>这里给出一个官方的介绍链接（自备梯子）：<a href="http://blog.cocoapods.org/CocoaPods-Trunk/#transition">http://blog.cocoapods.org/CocoaPods-Trunk/#transition</a></p>
+
+<p><strong>废话不多说，简要介绍下如何使用trunk新建我们的pod：</strong></p>
+
+<h2>开始注册</h2>
+
+<p>trunk需要CocoaPods 0.33版本以上，用<code>pod --version</code>命令查看版本，如果版本低，需要升级：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo gem install cocoapods
+</span><span class='line'>pod setup
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>然后会一直卡在<code>Setting up CocoaPods master repo</code>这里，这是因为下载导致进程阻塞。通过<code>cd  ~/.cocoapods</code>命令进入cocoapods根目录，然后通过<code>du -sh *</code>命令查看总的文件大小，如果隔一阵子会增加，那么说明一切正常，下载速度取决于你的网络。</p>
+
+<p>更新完成后，下一步是注册trunk，这一步需要自备梯子，否则就会出现这种<a href="https://github.com/CocoaPods/CocoaPods/issues/2174">问题</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pod trunk register yulingtianxia@gmail.com 'Yang Xiaoyu' --description='macbook pro' --verbose</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+上面的命令是我注册时使用的，你需要把邮箱和名字以及描述替换成你的，加上<code>--verbose</code>可以输出详细debug信息，方便出错时查看。</p>
+
+<p>注册后CocoaPods会给你的邮箱发送验证链接，点击后就注册成功了，可以用<code>pod trunk me</code>命令查看自己的注册信息：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bogon:YXYNumberAnimationLabel yangxiaoyu$ pod trunk me
+</span><span class='line'>  - Name:     Yang Xiaoyu
+</span><span class='line'>  - Email:    yulingtianxia@gmail.com
+</span><span class='line'>  - Since:    May 25th, 20:27
+</span><span class='line'>  - Sessions: 
+</span><span class='line'>    - May 25th, 20:27 - September 30th, 22:41. IP: 23.228.209.171
+</span><span class='line'>  Description: macbook pro</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+上面是我的注册信息，CocoaPods不通过密码来验证用户，而是通过一个session token。</p>
+
+<h2>部署你的Pod</h2>
+
+<p>首先你需要建立一个podspec文件，这是我的podspec文件：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Pod::Spec.new do |s|
+</span><span class='line'>  s.name         = "YXYNumberAnimationLabel"
+</span><span class='line'>  s.version      = "1.0.1"
+</span><span class='line'>  s.summary      = "一个可以动起来的数字Label"
+</span><span class='line'>  s.description  = &lt;&lt;-DESC
+</span><span class='line'>                    通过设置数字变化的插值来展现动画效果
+</span><span class='line'>                   DESC
+</span><span class='line'>  s.homepage     = "https://github.com/yulingtianxia/YXYNumberAnimationLabel"
+</span><span class='line'>  
+</span><span class='line'>  s.license      = 'MIT'
+</span><span class='line'>  s.author       = { "Orta Therox" =&gt; "yulingtianxia@gmail.com" }
+</span><span class='line'>  s.social_media_url = "http://twitter.com/yulingtianxia"
+</span><span class='line'>  s.source       = { :git =&gt; "https://github.com/yulingtianxia/YXYNumberAnimationLabel.git", :tag =&gt; s.version.to_s }
+</span><span class='line'>
+</span><span class='line'>  s.platform     = :ios, '6.0'
+</span><span class='line'>  s.requires_arc = true
+</span><span class='line'>
+</span><span class='line'>  s.source_files = 'YXYNumberAnimationLabel/*'
+</span><span class='line'>  s.frameworks = 'Foundation', 'UIKit'
+</span><span class='line'>  #s.private_header_files = 'Classes/ios/private/*.h'
+</span><span class='line'>  
+</span><span class='line'>  #s.dependency 'FLKAutoLayout', '~&gt; 0.1'
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+<strong>具体配置什么的大家走很熟悉，这里只是讲述使用trunk后需要注意的地方和新的操作</strong></p>
+
+<p>在你podspec文件下的路径运行<code>pod trunk push YXYNumberAnimationLabel.podspec</code> 命令，别忘了将<code>YXYNumberAnimationLabel.podspec</code>替换成你的podspec文件名。</p>
+
+<p>pod trunk push命令做了如下三个工作：</p>
+
+<ol>
+<li>验证你本地的podspec文件</li>
+<li>上传你的podspec文件到trunk</li>
+<li>将你的podspec文件转化成trunk需要的JSON文件</li>
+</ol>
+
+
+<p>如果部署成功，CocosPods会在Twitter上@你</p>
+
+<p>就像文章最开始的架构图描述的那样，你在trunk中的操作依然会在<a href="git@github.com:CocoaPods/Specs.git">CocoaPods/Specs</a>仓库中更新。以后再做更改时只需要更新版本号然后通过trunk来提交，不用向<a href="git@github.com:CocoaPods/Specs.git">CocoaPods/Specs</a>pull request并等待审核和merge了。</p>
+
+<h2>将其他人加入到你的Pod</h2>
+
+<p>为了让其他人也有权限来和你一起建设你的代码，你需要运行下面的命令来赋予别人权限，假如我将<code>kyle@cocoapods.org</code>加入到我的名字叫<code>ARAnalytics</code>的库中，我需要运行下面的命令：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pod trunk add-owner ARAnalytics kyle@cocoapods.org</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[NSPredicate]]></title>
@@ -3147,7 +3296,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#x73;&#117;&#112;&#x70;&#x6f;&#x72;&#116;&#64;&#x67;&#105;&#x74;&#x68;&#117;&#x62;&#x2e;&#x63;&#111;&#109;&#46;">&#115;&#117;&#x70;&#x70;&#111;&#x72;&#x74;&#x40;&#x67;&#105;&#x74;&#x68;&#x75;&#x62;&#x2e;&#99;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#105;&#x6c;&#116;&#x6f;&#58;&#x73;&#x75;&#x70;&#x70;&#x6f;&#x72;&#x74;&#64;&#x67;&#x69;&#x74;&#104;&#x75;&#x62;&#46;&#99;&#111;&#109;&#x2e;">&#115;&#x75;&#x70;&#x70;&#x6f;&#114;&#x74;&#x40;&#x67;&#x69;&#116;&#x68;&#117;&#98;&#46;&#99;&#x6f;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
@@ -6355,217 +6504,6 @@ frame #25: 0x00002a55 Debug`start + 53
 <p>本文由破船译自：<span style="text-decoration: underline;"><span style="color: #339966;"><a href="http://mobile.tutsplus.com/tutorials/iphone/debugging-in-ios-essential-tips/" target="_blank"><span style="color: #339966; text-decoration: underline;">tutsplus</span></a></span></span><br/>
 转载请注明出处：<span style="text-decoration: underline;"><span style="color: #339966;"><strong><a href="http://www.beyondvincent.com/" target="_blank"><span style="color: #339966; text-decoration: underline;">BeyondVincent的博客</span></a></strong></span></span><br/>
 _<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_<strong>_</strong>_____</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Xcode Code Snippets]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/17/xcode-code-snippets/"/>
-    <updated>2014-04-17T13:18:02+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/17/xcode-code-snippets</id>
-    <content type="html"><![CDATA[<p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
-
-<hr />
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg"><img class="alignnone size-full wp-image-734" alt="fend_off_rsi" src="http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg" width="1200" height="620" /></a></p>
-
-<!--more-->
-
-
-<p>在Double Encore，我们写的代码都是干净，可重用的——不过，有时候并不能完全做到。如在使用pragma mark的时候。下面就是一个示例：</p>
-
-<pre class="wp-code-highlight prettyprint linenums:1">#pragma mark - UIViewController overrides</pre>
-
-
-<p>通过pragma mark，可以让代码看起来既整洁又有组织。虽然这很重要，但是会带来额外的输入操作和时间。</p>
-
-<p>此时，我们可以使用code snippets。</p>
-
-<p>通过code snippets，我们可以创建一些可重用的代码块，并且在任何需要的地方很容易的就可以使用这些代码块。这可以节省输入需要的操作和时间。并且，一旦你学会使用code snippets，会发现你可以创建并扩充自己的code snippet library。</p>
-
-<p>创建一个code snippet非常简单。首先，打开Xcode并在utilities panel中选择code snippet library。</p>
-
-<p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/1-1024x768.png"><img class="alignnone size-full wp-image-736" alt="1-1024x768" src="http://www.doubleencore.com/wp-content/uploads/2013/04/1-1024x768.png" width="1024" height="768" /></a></p>
-
-<p>上图中，可以看到在code snippet library中已经有一些数据了。</p>
-
-<p>接着，输入希望创建的code snippet。在这里，我为pragma mark创建一个code snippet。如下图所示，在代码编辑器中输入 “#pragma mark – UIViewController overrides”。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/2-1024x768.png" width="1024" height="768" /></p>
-
-<p>选中代码块，如下图所示：</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/3-1024x768.png" width="1024" height="768" /></p>
-
-<p>然后单击并按住代码块，知道文本光标变为箭头光标。接着将代码块拖放到code snippet library中，然后松开鼠标。如下图所示</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/4-1024x768.png" width="1024" height="768" /></p>
-
-<p>此时会弹出一个popover，通过该popover可以对新的code snippet进行编辑，如下图所示。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/5-1024x768.png" width="1024" height="768" /></p>
-
-<p>首先，是定snippet的名字。这里我指定为“Pragma Mark”</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/6-1024x768.png" width="1024" height="768" /></p>
-
-<p>然后，指定该snippet的completion shortcut（可选项）。这里我指定为“pm”。这样设置以后，在Xcode的代码编辑器中只需要输入快捷方式（pm），就能简单的将这个snippet添加到代码中。非常有用！</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/7-1024x768.png" width="1024" height="768" /></p>
-
-<p>接着，可以看到在上面的示例中，pragma mark的标题是“UIViewController overrides”，不过我们是希望对其修改一下，以能够很容易的输入任意标题。</p>
-
-<p>我们可以简单的将code snippet包含的文本内容修改为“#pragma mark – “即可。不过，这里还有更好的一个办法——将文本块封装到“&lt;#” 和 “#>”中间，这样code snippet将指出我们可以插入自定义文本的完整范围。</p>
-
-<p>下面，将“UIViewController overrides”替换…</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/8-1024x768.png" width="1024" height="768" /></p>
-
-<p>&#8230;为“&lt;#Title#>”。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/9-1024x768.png" width="1024" height="768" /></p>
-
-<p>注意，completion scopes字段在这里并没有做修改，通过该字段可以指定completion shortcut的有效范围。</p>
-
-<p>最后，点击edit按钮，以完成snippet的编辑。之后可以在这个popover画面中看到最终结果的一个预览效果。</p>
-
-<p>&nbsp;</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/10-1024x768.png" width="1024" height="768" /></p>
-
-<p>然后点击popover中的done按钮。下面，你可以将我们在代码编辑器中为创建snippet而写入的文本行删除掉。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/11-1024x768.png" width="1024" height="768" /></p>
-
-<p>现在来试用一下刚刚创建的snippet！有两种方法。第一种是在code snippet library中找到snippet，然后用鼠标将其拖拽到代码编辑器中&#8230;</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/12-1024x768.png" width="1024" height="768" /></p>
-
-<p>&#8230;然后松开鼠标。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/13-1024x768.png" width="1024" height="768" /></p>
-
-<p>一旦将snippet拖放到代码编辑器之后，就可以通过点击键盘上的tab键在不同的completion字段间移动焦点。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/14-1024x768.png" width="1024" height="768" /></p>
-
-<p>第二种方法是在代码编辑器里简单的输入completion shortcut中设置的内容即可。我们这里是“pm”。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/15-1024x768.png" width="1024" height="768" /></p>
-
-<p>然后点击键盘中的return键，就可以将snippet插入到代码编辑器中。</p>
-
-<p><img class="alignnone size-full wp-image-736" alt="" src="http://www.doubleencore.com/wp-content/uploads/2013/04/141-1024x768.png" width="1024" height="768" /></p>
-
-<p>很简单吧！现在你已经知道如何创建自己的snippet了，你将发现这非常的有用。任何时候，你都遇到重复输入的相同代码块，都可以考虑将其添加到你的code snippets library中。</p>
-
-<p>&nbsp;</p>
-
-<p>下面是我经常使用到的一些snippet：</p>
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Animation Block
-Completion Shortcut: ab
-Completion Scopes: Function or Method
- 
-void (^&lt;#Title#&gt;)(void) = ^{ };
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Animation Completion Block
-Completion Shortcut: acb
-Completion Scopes: Function or Method
- 
-void (^&lt;#Title#&gt;)(BOOL) = ^(BOOL finished) { };
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Notification Add
-Completion Shortcut: na
-Completion Scopes: Function or Method
- 
-[[NSNotificationCenter defaultCenter] addObserver:&lt;#Observer#&gt; selector:&lt;#Selector#&gt; name:&lt;#Name#&gt; object:&lt;#Object#&gt;];
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Notification Remove
-Completion Shortcut: nr
-Completion Scopes: Function or Method
- 
-[[NSNotificationCenter defaultCenter] removeObserver:&lt;#Observer#&gt; name:&lt;#Name#&gt; object:&lt;#Object#&gt;];
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: NSLog
-Completion Shortcut: log
-Completion Scopes: Function or Method
- 
-NSLog(@"&lt;#Log#&gt;");
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Private Interface
-Completion Shortcut: pi
-Completion Scopes: Top Level
- 
-@interface &lt;#Title#&gt; ()
-
-@end
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Assign
-Completion Shortcut: pa
-Completion Scopes: All
- 
-@property (assign, nonatomic)
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Strong
-Completion Shortcut: ps
-Completion Scopes: All
- 
-@property (strong, nonatomic)
-</pre>
-
-
-
-
-<pre class="wp-code-highlight prettyprint linenums:1">Title: Property Unsafe Unretained
-Completion Shortcut: pu
-Completion Scopes: All
- 
-@property (unsafe_unretained, nonatomic)
-</pre>
-
-
-
-
-<div style="text-align: left;">
-</div>
-
-
-
-
-<div style="text-align: left;">
-</div>
-
-
-
 ]]></content>
   </entry>
   
