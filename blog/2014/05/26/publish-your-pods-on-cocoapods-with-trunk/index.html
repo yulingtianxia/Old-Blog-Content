@@ -264,12 +264,36 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <p>
 <strong>具体配置什么的大家走很熟悉，这里只是讲述使用trunk后需要注意的地方和新的操作</strong></p>
 
-<p>在你podspec文件下的路径运行<code>pod trunk push YXYNumberAnimationLabel.podspec</code> 命令，别忘了将<code>YXYNumberAnimationLabel.podspec</code>替换成你的podspec文件名。</p>
+<p>在验证和上传你的podspec文件到trunk之前，需要将你的源码push到Github上，tag一个版本号并发布一个release版本，这样podspec文件中的<code>s.source</code>的值才能是准确的：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git add -A && git commit -m "Release 1.0.1."  
+</span><span class='line'>git tag '1.0.1'  
+</span><span class='line'>git push --tags  
+</span><span class='line'>git push origin master</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>这两条命令是为pod添加版本号并打上tag:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>set the new version to 1.0.1
+</span><span class='line'>set the new tag to 1.0.1</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>在你podspec文件下的路径运行<code>pod trunk push YXYNumberAnimationLabel.podspec</code> 命令，同样需要翻墙梯子自备，别忘了将<code>YXYNumberAnimationLabel.podspec</code>替换成你的podspec文件名。</p>
 
 <p>pod trunk push命令做了如下三个工作：</p>
 
 <ol>
-<li>验证你本地的podspec文件</li>
+<li>验证你本地的podspec文件（你也可以用<code>pod lib lint</code>命令来验证）</li>
 <li>上传你的podspec文件到trunk</li>
 <li>将你的podspec文件转化成trunk需要的JSON文件</li>
 </ol>
