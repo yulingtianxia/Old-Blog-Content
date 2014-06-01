@@ -86,11 +86,29 @@ end
 ``` 
 **具体配置什么的大家走很熟悉，这里只是讲述使用trunk后需要注意的地方和新的操作**  
 
-在你podspec文件下的路径运行`pod trunk push YXYNumberAnimationLabel.podspec` 命令，别忘了将`YXYNumberAnimationLabel.podspec`替换成你的podspec文件名。  
+在验证和上传你的podspec文件到trunk之前，需要将你的源码push到Github上，tag一个版本号并发布一个release版本，这样podspec文件中的`s.source`的值才能是准确的：  
+
+``` 
+git add -A && git commit -m "Release 1.0.1."  
+git tag '1.0.1'  
+git push --tags  
+git push origin master
+``` 
+
+这两条命令是为pod添加版本号并打上tag:  
+
+``` 
+set the new version to 1.0.1
+set the new tag to 1.0.1
+``` 
+
+
+
+在你podspec文件下的路径运行`pod trunk push YXYNumberAnimationLabel.podspec` 命令，同样需要翻墙梯子自备，别忘了将`YXYNumberAnimationLabel.podspec`替换成你的podspec文件名。  
 
 pod trunk push命令做了如下三个工作：  
 
-1. 验证你本地的podspec文件
+1. 验证你本地的podspec文件（你也可以用`pod lib lint`命令来验证）
 2. 上传你的podspec文件到trunk
 3. 将你的podspec文件转化成trunk需要的JSON文件
 
