@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-06T18:17:38+08:00</updated>
+  <updated>2014-06-09T11:30:16+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -616,7 +616,7 @@
 
 <p>欢迎来到GCD深入理解系列教程的第二部分（也是最后一部分）。</p>
 
-<p>在本系列的<a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md">第一部分</a>中，你已经学到超过你想像的关于并发、线程以及GCD 如何工作的知识。通过在初始化时利用 <code>dispatch_once</code>，你创建了一个线程安全的 <code>PhotoManager</code> 单例，而且你通过使用 <code>dispatch_barrier_async</code> 和 <code>dispatch_sync</code> 的组合使得对 <code>Photos</code> 数组的读取和写入都变得线程安全了。</p>
+<p>在本系列的<a href="http://yulingtianxia.com/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/">第一部分</a>中，你已经学到超过你想像的关于并发、线程以及GCD 如何工作的知识。通过在初始化时利用 <code>dispatch_once</code>，你创建了一个线程安全的 <code>PhotoManager</code> 单例，而且你通过使用 <code>dispatch_barrier_async</code> 和 <code>dispatch_sync</code> 的组合使得对 <code>Photos</code> 数组的读取和写入都变得线程安全了。</p>
 
 <p>除了上面这些，你还通过利用 <code>dispatch_after</code> 来延迟显示提示信息，以及利用 <code>dispatch_async</code> 将 CPU 密集型任务从 ViewController 的初始化过程中剥离出来异步执行，达到了增强应用的用户体验的目的。</p>
 
@@ -3338,7 +3338,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#115;&#x75;&#x70;&#x70;&#111;&#x72;&#116;&#64;&#x67;&#105;&#116;&#x68;&#117;&#98;&#46;&#x63;&#x6f;&#x6d;&#46;">&#115;&#x75;&#112;&#112;&#x6f;&#114;&#x74;&#x40;&#x67;&#105;&#116;&#x68;&#117;&#x62;&#46;&#99;&#x6f;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#x69;&#x6c;&#x74;&#111;&#x3a;&#115;&#x75;&#112;&#x70;&#111;&#x72;&#116;&#64;&#x67;&#105;&#116;&#104;&#117;&#98;&#x2e;&#99;&#x6f;&#109;&#46;">&#x73;&#117;&#112;&#x70;&#x6f;&#x72;&#x74;&#64;&#x67;&#105;&#116;&#104;&#117;&#x62;&#46;&#x63;&#111;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
