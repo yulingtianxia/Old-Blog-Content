@@ -553,7 +553,7 @@ dispatch_source_t dispatch_source_create(
 [1]: http://www.raywenderlich.com/feed/
 [2]: http://twitter.com/rwenderlich
 [3]: http://cdn3.raywenderlich.com/wp-content/uploads/2014/03/Concurrency_vs_Parallelism.png "Learn about concurrency in this Grand Central Dispatch in-depth tutorial series."
-[4]: https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md
+[4]: http://yulingtianxia.com/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/
 [5]: http://cdn2.raywenderlich.com/wp-content/uploads/2014/01/GooglyPuff_End_1.zip
 [6]: http://cdn5.raywenderlich.com/wp-content/uploads/2014/01/Screen-Shot-2014-01-17-at-5.49.51-PM-308x500.png
 [7]: http://developer.apple.com/documentation/Cocoa/Reference/Foundation/Classes/NSError_Class/
