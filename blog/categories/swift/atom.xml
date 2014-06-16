@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-09T11:30:16+08:00</updated>
+  <updated>2014-06-16T22:04:20+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,190 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Swift重载和自定义运算符]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/06/16/swiftzhong-zai-yun-suan-fu/"/>
+    <updated>2014-06-16T20:45:20+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/06/16/swiftzhong-zai-yun-suan-fu</id>
+    <content type="html"><![CDATA[<p>最近一直边忙毕设边学Swift，终于看完了官方的教程（语言参考暂不打算看），在iBooks上做了一些笔记（看英文伤不起），感觉Swift是一门大杂烩类型的语言，我会记录一些我自认为以前遇到较少或者需要重点记忆的语法特性，在此作为分享，这次是运算符的重载，几乎每门语言都有，只是语法不一样罢了。</p>
+
+<!--more-->
+
+
+<h2>运算符重载</h2>
+
+<p>在Swift的官方文档中运算符重载叫做运算符函数（Operator Functions），顾名思义就是对已经有的运算符覆盖定义自己的函数实现。三元运算符（a？b：c）和默认的默认的赋值符(=)是不可重载的。</p>
+
+<h3>中置运算符的重载</h3>
+
+<p>在<code>func</code>关键字前使用属性<code>@infix</code>来重载中置运算符，函数名为想要重载的中置运算符：</p>
+
+<p>```
+struct Vector2D {</p>
+
+<pre><code>var x = 0.0, y = 0.0
+</code></pre>
+
+<p>}
+@infix func + (left: Vector2D, right: Vector2D) &ndash;> Vector2D {</p>
+
+<pre><code>return Vector2D(x: left.x + right.x, y: left.y + right.y)
+</code></pre>
+
+<p>}
+<code>``
+上面的代码是对结构体</code>Vector2D<code>之间双目运算符</code>+<code>的重载，下面可以直接使用</code>+<code>对</code>Vector2D`进行操作了：</p>
+
+<p><code>
+let vector = Vector2D(x: 3.0, y: 1.0)
+let anotherVector = Vector2D(x: 2.0, y: 4.0)
+let combinedVector = vector + anotherVector
+// combinedVector 是一个新的Vector2D, 值为 (5.0, 5.0)
+</code></p>
+
+<p>除了对双目运算符的重载，还有对比较运算符的重载</p>
+
+<p>```
+@infix func == (left: Vector2D, right: Vector2D) &ndash;> Bool {</p>
+
+<pre><code>return (left.x == right.x) &amp;&amp; (left.y == right.y)
+</code></pre>
+
+<p>}</p>
+
+<p>@infix func != (left: Vector2D, right: Vector2D) &ndash;> Bool {</p>
+
+<pre><code>return !(left == right)
+</code></pre>
+
+<p>}
+```</p>
+
+<p>现在我们可以使用这两个运算符来判断两个Vector2D对象是否相等</p>
+
+<p>```
+let twoThree = Vector2D(x: 2.0, y: 3.0)
+let anotherTwoThree = Vector2D(x: 2.0, y: 3.0)
+if twoThree == anotherTwoThree {</p>
+
+<pre><code>println("这两个向量是相等的.")
+</code></pre>
+
+<p>}
+// prints &ldquo;这两个向量是相等的.&rdquo;
+```</p>
+
+<h3>前置和后置运算符的重载</h3>
+
+<p>前置和后置运算符重载跟中置运算符重载类似，只是将<code>func</code>关键字前的属性替换成<code>@prefix</code>和<code>@postfix</code>，比如：</p>
+
+<p>```
+@prefix func &ndash; (vector: Vector2D) &ndash;> Vector2D {</p>
+
+<pre><code>return Vector2D(x: -vector.x, y: -vector.y)
+</code></pre>
+
+<p>}
+```</p>
+
+<p>这段代码为<code>Vector2D</code>类型提供了单目减运算，并且是前置，也就是取负操作。</p>
+
+<p><code>
+let positive = Vector2D(x: 3.0, y: 4.0)
+let negative = -positive
+// negative 为 (-3.0, -4.0)
+let alsoPositive = -negative
+// alsoPositive 为 (3.0, 4.0)
+</code></p>
+
+<h3>组合赋值运算符的重载</h3>
+
+<p>组合赋值是其他运算符和赋值运算符一起执行的运算。如<code>+=</code>把加运算和赋值运算组合成一个操作。实现一个组合赋值符号需要使用<code>@assignment</code>属性，还需要把运算符的左参数设置成<code>inout</code>，因为这个参数会在运算符函数内直接修改它的值。</p>
+
+<p>```
+@assignment func += (inout left: Vector2D, right: Vector2D) {</p>
+
+<pre><code>left = left + right
+</code></pre>
+
+<p>}
+```</p>
+
+<p>因为加法运算在之前定义过了，这里无需重新定义。所以，加赋运算符函数使用已经存在的高级加法运算符函数来执行左值加右值的运算。</p>
+
+<p><code>
+var original = Vector2D(x: 1.0, y: 2.0)
+let vectorToAdd = Vector2D(x: 3.0, y: 4.0)
+original += vectorToAdd
+// original 现在为 (4.0, 6.0)
+</code>
+你可以将<code>@assignment</code>属性和 <code>@prefix</code> 或 <code>@postfix</code> 属性起来组合，实现一个<code>Vector2D</code>的前置运算符。</p>
+
+<p>```
+@prefix @assignment func ++ (inout vector: Vector2D) &ndash;> Vector2D {</p>
+
+<pre><code>vector += Vector2D(x: 1.0, y: 1.0)
+return vector
+</code></pre>
+
+<p>}
+<code>``
+这个前置使用了已经定义好的高级加赋运算，将自己加上一个值为</code> (1.0，1.0) `的对象然后赋给自己，然后再将自己返回。</p>
+
+<p><code>
+var toIncrement = Vector2D(x: 3.0, y: 4.0)
+let afterIncrement = ++toIncrement
+// toIncrement 现在是 (4.0, 5.0)
+// afterIncrement 现在也是 (4.0, 5.0)
+</code></p>
+
+<h2>自定义运算符</h2>
+
+<p>标准的运算符不够玩，那你可以声明一些个性的运算符，但个性的运算符只能使用这些字符 <code>/ = - + * % &lt; &gt;！&amp; | ^。~</code>  <br/>
+新的运算符声明需在全局域使用<code>operator</code>关键字声明，可以声明为前置，中置或后置的。</p>
+
+<p><code>
+operator prefix +++ {}
+</code>
+这段代码定义了一个新的前置运算符叫<code>+++</code>，此前Swift并不存在这个运算符。此处为了演示，我们让<code>+++</code>对<code>Vector2D</code>对象的操作定义为“双自增”（prefix doubling incrementer） 这样一个独有的操作，这个操作使用了之前定义的加赋运算（<code>+=</code>）实现了自已加上自己然后返回的运算。</p>
+
+<p>```
+@prefix @assignment func +++ (inout vector: Vector2D) &ndash;> Vector2D {</p>
+
+<pre><code>vector += vector
+return vector
+</code></pre>
+
+<p>}
+```</p>
+
+<p><code>+++</code>运算的实现是把自己再加上自己</p>
+
+<p><code>
+var toBeDoubled = Vector2D(x: 1.0, y: 4.0)
+let afterDoubling = +++toBeDoubled
+// toBeDoubled 现在是 (2.0, 8.0)
+// afterDoubling 现在也是 (2.0, 8.0)
+</code>
+此外还可以定义运算符的结合性(associativity)和优先级(precedence)，结合性(associativity)的值可取的值有left，right和none。左结合运算符跟其他优先级相同的左结合运算符写在一起时，会跟左边的操作数结合。同理，右结合运算符会跟右边的操作数结合。而非结合运算符不能跟其他相同优先级的运算符写在一起。<br/>
+结合性(associativity)的值默认为none，优先级(precedence)默认为100。</p>
+
+<p>```
+operator infix +&ndash; { associativity left precedence 140 }
+func +&ndash; (left: Vector2D, right: Vector2D) &ndash;> Vector2D {</p>
+
+<pre><code>return Vector2D(x: left.x + right.x, y: left.y - right.y)
+</code></pre>
+
+<p>}
+let firstVector = Vector2D(x: 1.0, y: 2.0)
+let secondVector = Vector2D(x: 3.0, y: 4.0)
+let plusMinusVector = firstVector +&ndash; secondVector
+// plusMinusVector 此时的值为 (4.0, -2.0)
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[XCode,Swift和Objective-C Cheat Sheet]]></title>
