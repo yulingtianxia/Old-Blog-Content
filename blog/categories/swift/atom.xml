@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-16T22:04:20+08:00</updated>
+  <updated>2014-06-16T22:07:00+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -31,7 +31,7 @@
 
 <p>在<code>func</code>关键字前使用属性<code>@infix</code>来重载中置运算符，函数名为想要重载的中置运算符：</p>
 
-<p>```
+<p>``` js
 struct Vector2D {</p>
 
 <pre><code>var x = 0.0, y = 0.0

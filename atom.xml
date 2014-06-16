@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-16T22:04:20+08:00</updated>
+  <updated>2014-06-16T22:07:00+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -31,69 +31,73 @@
 
 <p>在<code>func</code>关键字前使用属性<code>@infix</code>来重载中置运算符，函数名为想要重载的中置运算符：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>struct Vector2D {
-</span><span class='line'>    var x = 0.0, y = 0.0
-</span><span class='line'>}
-</span><span class='line'>@infix func + (left: Vector2D, right: Vector2D) -&gt; Vector2D {
-</span><span class='line'>    return Vector2D(x: left.x + right.x, y: left.y + right.y)
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="err">@</span><span class="nx">infix</span> <span class="nx">func</span> <span class="o">+</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">left</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">right</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">left</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">right</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 上面的代码是对结构体<code>Vector2D</code>之间双目运算符<code>+</code>的重载，下面可以直接使用<code>+</code>对<code>Vector2D</code>进行操作了：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>let vector = Vector2D(x: 3.0, y: 1.0)
-</span><span class='line'>let anotherVector = Vector2D(x: 2.0, y: 4.0)
-</span><span class='line'>let combinedVector = vector + anotherVector
-</span><span class='line'>// combinedVector 是一个新的Vector2D, 值为 (5.0, 5.0)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">vector</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">anotherVector</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">4.0</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">combinedVector</span> <span class="o">=</span> <span class="nx">vector</span> <span class="o">+</span> <span class="nx">anotherVector</span>
+</span><span class='line'><span class="c1">// combinedVector 是一个新的Vector2D, 值为 (5.0, 5.0)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
 <p>除了对双目运算符的重载，还有对比较运算符的重载</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@infix func == (left: Vector2D, right: Vector2D) -&gt; Bool {
-</span><span class='line'>    return (left.x == right.x) && (left.y == right.y)
-</span><span class='line'>}
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">infix</span> <span class="nx">func</span> <span class="o">==</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Bool</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">left</span><span class="p">.</span><span class="nx">x</span> <span class="o">==</span> <span class="nx">right</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">left</span><span class="p">.</span><span class="nx">y</span> <span class="o">==</span> <span class="nx">right</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>@infix func != (left: Vector2D, right: Vector2D) -&gt; Bool {
-</span><span class='line'>    return !(left == right)
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="err">@</span><span class="nx">infix</span> <span class="nx">func</span> <span class="o">!=</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Bool</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="o">!</span><span class="p">(</span><span class="nx">left</span> <span class="o">==</span> <span class="nx">right</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
 <p>现在我们可以使用这两个运算符来判断两个Vector2D对象是否相等</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>let twoThree = Vector2D(x: 2.0, y: 3.0)
-</span><span class='line'>let anotherTwoThree = Vector2D(x: 2.0, y: 3.0)
-</span><span class='line'>if twoThree == anotherTwoThree {
-</span><span class='line'>    println("这两个向量是相等的.")
-</span><span class='line'>}
-</span><span class='line'>// prints "这两个向量是相等的."</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">twoThree</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">3.0</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">anotherTwoThree</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">3.0</span><span class="p">)</span>
+</span><span class='line'><span class="k">if</span> <span class="nx">twoThree</span> <span class="o">==</span> <span class="nx">anotherTwoThree</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;这两个向量是相等的.&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;这两个向量是相等的.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -102,28 +106,30 @@
 
 <p>前置和后置运算符重载跟中置运算符重载类似，只是将<code>func</code>关键字前的属性替换成<code>@prefix</code>和<code>@postfix</code>，比如：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@prefix func - (vector: Vector2D) -&gt; Vector2D {
-</span><span class='line'>    return Vector2D(x: -vector.x, y: -vector.y)
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">prefix</span> <span class="nx">func</span> <span class="o">-</span> <span class="p">(</span><span class="nx">vector</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="o">-</span><span class="nx">vector</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="o">-</span><span class="nx">vector</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
 <p>这段代码为<code>Vector2D</code>类型提供了单目减运算，并且是前置，也就是取负操作。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>let positive = Vector2D(x: 3.0, y: 4.0)
-</span><span class='line'>let negative = -positive
-</span><span class='line'>// negative 为 (-3.0, -4.0)
-</span><span class='line'>let alsoPositive = -negative
-</span><span class='line'>// alsoPositive 为 (3.0, 4.0)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">positive</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">4.0</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">negative</span> <span class="o">=</span> <span class="o">-</span><span class="nx">positive</span>
+</span><span class='line'><span class="c1">// negative 为 (-3.0, -4.0)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">alsoPositive</span> <span class="o">=</span> <span class="o">-</span><span class="nx">negative</span>
+</span><span class='line'><span class="c1">// alsoPositive 为 (3.0, 4.0)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -132,52 +138,56 @@
 
 <p>组合赋值是其他运算符和赋值运算符一起执行的运算。如<code>+=</code>把加运算和赋值运算组合成一个操作。实现一个组合赋值符号需要使用<code>@assignment</code>属性，还需要把运算符的左参数设置成<code>inout</code>，因为这个参数会在运算符函数内直接修改它的值。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@assignment func += (inout left: Vector2D, right: Vector2D) {
-</span><span class='line'>    left = left + right
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">assignment</span> <span class="nx">func</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">inout</span> <span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">left</span> <span class="o">=</span> <span class="nx">left</span> <span class="o">+</span> <span class="nx">right</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
 <p>因为加法运算在之前定义过了，这里无需重新定义。所以，加赋运算符函数使用已经存在的高级加法运算符函数来执行左值加右值的运算。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var original = Vector2D(x: 1.0, y: 2.0)
-</span><span class='line'>let vectorToAdd = Vector2D(x: 3.0, y: 4.0)
-</span><span class='line'>original += vectorToAdd
-</span><span class='line'>// original 现在为 (4.0, 6.0)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">original</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">2.0</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">vectorToAdd</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">4.0</span><span class="p">)</span>
+</span><span class='line'><span class="nx">original</span> <span class="o">+=</span> <span class="nx">vectorToAdd</span>
+</span><span class='line'><span class="c1">// original 现在为 (4.0, 6.0)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 你可以将<code>@assignment</code>属性和 <code>@prefix</code> 或 <code>@postfix</code> 属性起来组合，实现一个<code>Vector2D</code>的前置运算符。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@prefix @assignment func ++ (inout vector: Vector2D) -&gt; Vector2D {
-</span><span class='line'>    vector += Vector2D(x: 1.0, y: 1.0)
-</span><span class='line'>    return vector
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">prefix</span> <span class="err">@</span><span class="nx">assignment</span> <span class="nx">func</span> <span class="o">++</span> <span class="p">(</span><span class="nx">inout</span> <span class="nx">vector</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">vector</span> <span class="o">+=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">vector</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 这个前置使用了已经定义好的高级加赋运算，将自己加上一个值为<code>(1.0，1.0)</code>的对象然后赋给自己，然后再将自己返回。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var toIncrement = Vector2D(x: 3.0, y: 4.0)
-</span><span class='line'>let afterIncrement = ++toIncrement
-</span><span class='line'>// toIncrement 现在是 (4.0, 5.0)
-</span><span class='line'>// afterIncrement 现在也是 (4.0, 5.0)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">toIncrement</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">4.0</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">afterIncrement</span> <span class="o">=</span> <span class="o">++</span><span class="nx">toIncrement</span>
+</span><span class='line'><span class="c1">// toIncrement 现在是 (4.0, 5.0)</span>
+</span><span class='line'><span class="c1">// afterIncrement 现在也是 (4.0, 5.0)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -187,42 +197,45 @@
 <p>标准的运算符不够玩，那你可以声明一些个性的运算符，但个性的运算符只能使用这些字符 <code>/ = - + * % &lt; &gt;！&amp; | ^。~</code>  <br/>
 新的运算符声明需在全局域使用<code>operator</code>关键字声明，可以声明为前置，中置或后置的。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>operator prefix +++ {}</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">operator</span> <span class="nx">prefix</span> <span class="o">+++</span> <span class="p">{}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 这段代码定义了一个新的前置运算符叫<code>+++</code>，此前Swift并不存在这个运算符。此处为了演示，我们让<code>+++</code>对<code>Vector2D</code>对象的操作定义为“双自增”（prefix doubling incrementer） 这样一个独有的操作，这个操作使用了之前定义的加赋运算（<code>+=</code>）实现了自已加上自己然后返回的运算。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@prefix @assignment func +++ (inout vector: Vector2D) -&gt; Vector2D {
-</span><span class='line'>    vector += vector
-</span><span class='line'>    return vector
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">prefix</span> <span class="err">@</span><span class="nx">assignment</span> <span class="nx">func</span> <span class="o">+++</span> <span class="p">(</span><span class="nx">inout</span> <span class="nx">vector</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">vector</span> <span class="o">+=</span> <span class="nx">vector</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">vector</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
 <p><code>+++</code>运算的实现是把自己再加上自己</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var toBeDoubled = Vector2D(x: 1.0, y: 4.0)
-</span><span class='line'>let afterDoubling = +++toBeDoubled
-</span><span class='line'>// toBeDoubled 现在是 (2.0, 8.0)
-</span><span class='line'>// afterDoubling 现在也是 (2.0, 8.0)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">toBeDoubled</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">4.0</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">afterDoubling</span> <span class="o">=</span> <span class="o">+++</span><span class="nx">toBeDoubled</span>
+</span><span class='line'><span class="c1">// toBeDoubled 现在是 (2.0, 8.0)</span>
+</span><span class='line'><span class="c1">// afterDoubling 现在也是 (2.0, 8.0)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 此外还可以定义运算符的结合性(associativity)和优先级(precedence)，结合性(associativity)的值可取的值有left，right和none。左结合运算符跟其他优先级相同的左结合运算符写在一起时，会跟左边的操作数结合。同理，右结合运算符会跟右边的操作数结合。而非结合运算符不能跟其他相同优先级的运算符写在一起。<br/>
 结合性(associativity)的值默认为none，优先级(precedence)默认为100。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -230,14 +243,15 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>operator infix +- { associativity left precedence 140 }
-</span><span class='line'>func +- (left: Vector2D, right: Vector2D) -&gt; Vector2D {
-</span><span class='line'>    return Vector2D(x: left.x + right.x, y: left.y - right.y)
-</span><span class='line'>}
-</span><span class='line'>let firstVector = Vector2D(x: 1.0, y: 2.0)
-</span><span class='line'>let secondVector = Vector2D(x: 3.0, y: 4.0)
-</span><span class='line'>let plusMinusVector = firstVector +- secondVector
-</span><span class='line'>// plusMinusVector 此时的值为 (4.0, -2.0)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">operator</span> <span class="nx">infix</span> <span class="o">+-</span> <span class="p">{</span> <span class="nx">associativity</span> <span class="nx">left</span> <span class="nx">precedence</span> <span class="mi">140</span> <span class="p">}</span>
+</span><span class='line'><span class="nx">func</span> <span class="o">+-</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">left</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">right</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">left</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">right</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">firstVector</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">2.0</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">secondVector</span> <span class="o">=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">4.0</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">plusMinusVector</span> <span class="o">=</span> <span class="nx">firstVector</span> <span class="o">+-</span> <span class="nx">secondVector</span>
+</span><span class='line'><span class="c1">// plusMinusVector 此时的值为 (4.0, -2.0)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -3569,7 +3583,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#58;&#115;&#x75;&#x70;&#x70;&#111;&#x72;&#116;&#64;&#103;&#x69;&#x74;&#104;&#x75;&#98;&#46;&#x63;&#x6f;&#x6d;&#x2e;">&#x73;&#117;&#112;&#112;&#x6f;&#114;&#x74;&#x40;&#103;&#x69;&#116;&#104;&#x75;&#x62;&#x2e;&#99;&#x6f;&#109;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#105;&#108;&#116;&#x6f;&#58;&#115;&#117;&#112;&#112;&#111;&#x72;&#x74;&#64;&#103;&#x69;&#116;&#x68;&#117;&#x62;&#46;&#99;&#x6f;&#x6d;&#x2e;">&#x73;&#x75;&#x70;&#x70;&#111;&#x72;&#x74;&#x40;&#103;&#x69;&#116;&#104;&#x75;&#x62;&#46;&#x63;&#x6f;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
