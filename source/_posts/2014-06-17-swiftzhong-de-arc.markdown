@@ -5,6 +5,7 @@ date: 2014-06-17 10:32:38 +0800
 comments: true
 categories: 
 - Swift
+- ARC
 
 ---
 Objective-C中的ARC被Swift很好的继承下来了，本文参考自Swift文档网上的翻译，主要重点记录下Swift中的ARC与OC对比需要注意的地方。
