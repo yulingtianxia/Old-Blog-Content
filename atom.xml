@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-17T14:24:23+08:00</updated>
+  <updated>2014-06-17T23:32:14+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,516 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Optionals and Optional Chaining in Swift]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/06/17/optionals-and-optional-chaining-in-swift/"/>
+    <updated>2014-06-17T20:42:17+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/06/17/optionals-and-optional-chaining-in-swift</id>
+    <content type="html"><![CDATA[<p>可选类型（<code>Optionals</code>）在Swift中用于处理值可能缺失的情况，也就是说可能存在没有值的情况。C 和 Objective-C 中并没有可选类型这个概念。但在Objective-C中，一个方法的返回值可以是一个对象或<code>nil</code>值（<code>nil</code>表示缺少一个合法对象），而对象只是针对类而言，结构体、基本C类型和枚举并不适用<code>nil</code>来表示值的缺失，对于这些类型，Objective-C 方法一般会返回一个特殊值（比如<code>NSNotFound</code>）来暗示值缺失。这种表示“值缺失”方法不统一的局面使得调用方法的程序员蛋疼了-需要针对不同情况进行处理-但随着可选类型的诞生，这种情形在Swift中得到解决，<code>Optionals</code>可以表示任意类型值的缺失。</p>
+
+<!--more-->
+
+
+<h2>可选类型（Optionals）</h2>
+
+<p>在Swift中，有时候需要把内容为数字的字符串转化成数字：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">possibleNumber</span> <span class="o">=</span> <span class="s2">&quot;123&quot;</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">convertedNumber</span> <span class="o">=</span> <span class="nx">possibleNumber</span><span class="p">.</span><span class="nx">toInt</span><span class="p">()</span>
+</span><span class='line'><span class="c1">// convertedNumber 被推测为类型 &quot;Int?&quot;， 或者类型 &quot;optional Int&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+因为Swift是类型安全的语言，为了保证转化过程中不出错，<code>toInt()</code>方法返回的是一个<code>Optional&lt;Int&gt;</code>(也可写成<code>Int?</code>)类型的实例。如果被转化的字符串不是一个数字（比如是“hello world”），那样<code>toInt()</code>返回的内容将不含有<code>Int</code>值。这保证了整个过程不报错，下面我们可以“优雅的”检查下<code>convertedNumber</code>是否有<code>Int</code>值：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="nx">convertedNumber</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;\(possibleNumber) has an integer value of \(convertedNumber!)&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;\(possibleNumber) could not be converted to an integer&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 输出 &quot;123 has an integer value of 123&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+当你确定可选类型确实包含值之后，你可以在可选的名字后面加一个感叹号（!）来获取值。这个惊叹号表示“我知道这个可选有值，请使用它。”这被称为可选值的强制解析（forced unwrapping）</p>
+
+<p>这里细心的同学可能看不懂了：<code>convertedNumber</code>不是应该是一个可选的整型值么，怎么还能作为条件判断的逻辑值（Bool）呢？让我们来分析下<code>Optional</code>类型的真身：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">enum</span> <span class="nx">Optional</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">:</span> <span class="nx">LogicValue</span><span class="p">,</span> <span class="nx">Reflectable</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nx">None</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nx">Some</span><span class="p">(</span><span class="nx">T</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">()</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">_</span> <span class="nx">some</span><span class="o">:</span> <span class="nx">T</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">/// Allow use in a Boolean context.</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">getLogicValue</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nx">Bool</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">/// Haskell&#39;s fmap, which was mis-named</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">map</span><span class="o">&lt;</span><span class="nx">U</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">f</span><span class="o">:</span> <span class="p">(</span><span class="nx">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">U</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">U</span><span class="o">?</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">getMirror</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nx">Mirror</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>原来可选类型是本质是一个枚举类型，包含两个成员：<code>None</code>和<code>Some</code>，其中<code>Some</code>成员还有一个类型为泛型<code>T</code>的关联值（Associated Values）。它之所以能够当做条件判断语句是因为它遵循了<code>LogicValue</code>协议：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">/// Protocol describing types that can be used as logical values within</span>
+</span><span class='line'><span class="c1">/// a condition.</span>
+</span><span class='line'><span class="c1">///</span>
+</span><span class='line'><span class="c1">/// Types that conform to the `LogicValue` protocol can be used as</span>
+</span><span class='line'><span class="c1">/// condition in various control statements (`if`, `while`, C-style</span>
+</span><span class='line'><span class="c1">/// `for`) as well as other logical value contexts (e.g., `case`</span>
+</span><span class='line'><span class="c1">/// statement guards).</span>
+</span><span class='line'><span class="nx">protocol</span> <span class="nx">LogicValue</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">getLogicValue</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nx">Bool</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+看了Swift对<code>LogicValue</code>协议的描述，这下子应该明白了吧。光凭猜测大约知道：当可选类型有值的时候其实是<code>Some</code>成员，并在构造器<code>init(_ some: T)</code>调用时将值存储在<code>Some</code>成员的关联值中，此时<code>getLogicValue()</code>方法返回true；当可选类型没有值的时候其实是<code>None</code>成员，并在构造器<code>init()</code>调用时将<code>nil</code>给了<code>None</code>成员，具体细节不是很清楚。<br/>
+看得出可选类型的设计借鉴了Haskell语言，至于<code>nil</code>到底是什么：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">/// A null sentinel value.</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">nil</span><span class="o">:</span> <span class="nx">NilType</span> <span class="p">{</span> <span class="nx">get</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+<code>nil</code>是<code>NilType</code>类型唯一的实例，好特殊啊。Swift 的<code>nil</code>和 Objective-C 中的<code>nil</code>并不一样。在 Objective-C 中，<code>nil</code>是一个指向不存在对象的指针。在 Swift 中，<code>nil</code>不是指针——它是一个确定的值，用来表示值缺失。任何类型的可选状态都可以被设置为<code>nil</code>，不只是对象类型。</p>
+
+<p><strong>可选类型默认值为<code>nil</code></strong></p>
+
+<p>除了用if语句判断和强制解析来获取可选类型中的值，还可以用可选绑定的方式来来判断可选类型是否包含值：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">constantName</span> <span class="o">=</span> <span class="nx">someOptional</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">statements</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+于是之前的例子可以可以改写为：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">actualNumber</span> <span class="o">=</span> <span class="nx">possibleNumber</span><span class="p">.</span><span class="nx">toInt</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;\(possibleNumber) has an integer value of \(actualNumber)&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;\(possibleNumber) could not be converted to an integer&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 输出 &quot;123 has an integer value of 123&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>如果<code>possibleNumber.toInt</code>返回的可选<code>Int</code>包含一个值，创建一个叫做<code>actualNumber</code>的新常量并将可选包含的值赋给它。它已经被可选类型包含的值初始化过，所以不需要再使用<code>!</code>后缀来获取它的值。</p>
+
+<p>有时候在程序架构中，第一次被赋值之后，可以确定一个可选类型总会有值。在这种情况下，每次都要判断和解析可选值是非常低效的，因为可以确定它总会有值。这种类型的可选状态被定义为<strong>隐式解析可选类型</strong>（implicitly unwrapped optionals）。把想要用作可选的类型的后面的问号（String?）改成感叹号（String!）来声明一个隐式解析可选类型。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">possibleString</span><span class="o">:</span> <span class="nb">String</span><span class="o">?</span> <span class="o">=</span> <span class="s2">&quot;An optional string.&quot;</span>
+</span><span class='line'><span class="nx">println</span><span class="p">(</span><span class="nx">possibleString</span><span class="o">!</span><span class="p">)</span> <span class="c1">// 需要惊叹号来获取值</span>
+</span><span class='line'><span class="c1">// 输出 &quot;An optional string.&quot;</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">assumedString</span><span class="o">:</span> <span class="nb">String</span><span class="o">!</span> <span class="o">=</span> <span class="s2">&quot;An implicitly unwrapped optional string.&quot;</span>
+</span><span class='line'><span class="nx">println</span><span class="p">(</span><span class="nx">assumedString</span><span class="p">)</span>  <span class="c1">// 不需要感叹号</span>
+</span><span class='line'><span class="c1">// 输出 &quot;An implicitly unwrapped optional string.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+你仍然可以把隐式解析可选类型当做普通可选类型来判断它是否包含值：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="nx">assumedString</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="nx">assumedString</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 输出 &quot;An implicitly unwrapped optional string.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+你也可以在可选绑定中使用隐式解析可选类型来检查并解析它的值：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">definiteString</span> <span class="o">=</span> <span class="nx">assumedString</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="nx">definiteString</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 输出 &quot;An implicitly unwrapped optional string.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+可能看到这里你会觉得隐式解析可选类型的存在意义是什么？为何不直接用普通的非可选类型呢？其实<code>Implicitly Unwrapped Optionals</code>被用于类的初始化方法中，避免循环引用:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">Country</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">name</span><span class="o">:</span> <span class="nb">String</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">capitalCity</span><span class="o">:</span> <span class="nx">City</span><span class="o">!</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">,</span> <span class="nx">capitalName</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">capitalCity</span> <span class="o">=</span> <span class="nx">City</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nx">capitalName</span><span class="p">,</span> <span class="nx">country</span><span class="o">:</span> <span class="nx">self</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">class</span> <span class="nx">City</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">name</span><span class="o">:</span> <span class="nb">String</span>
+</span><span class='line'>    <span class="nx">unowned</span> <span class="kd">let</span> <span class="nx">country</span><span class="o">:</span> <span class="nx">Country</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">,</span> <span class="nx">country</span><span class="o">:</span> <span class="nx">Country</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">country</span> <span class="o">=</span> <span class="nx">country</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">country</span> <span class="o">=</span> <span class="nx">Country</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Canada&quot;</span><span class="p">,</span> <span class="nx">capitalName</span><span class="o">:</span> <span class="s2">&quot;Ottawa&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="nx">println</span><span class="p">(</span><span class="s2">&quot;\(country.name)&#39;s capital city is called \(country.capitalCity.name)&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1">// prints &quot;Canada&#39;s capital city is called Ottawa”</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>因为编译器会将其认为默认<code>nil</code>，不需赋值就可以完成类的初始化，在例子中<code>capitalCity</code>还没被赋值时<code>Country</code>类就已经初始化并可以被引用；这样就能实现一行代码建立<code>Country</code>和<code>City</code>实例而不造成强引用循环。有关ARC的更多知识可以看看这篇<a href="http://yulingtianxia.com/blog/2014/06/17/swiftzhong-de-arc/">文章</a></p>
+
+<h2>可选链（Optional Chaining）</h2>
+
+<p>可选链（Optional Chaining）是一种可以请求和调用属性、方法及下标的过程，它的可选性体现于请求或调用的目标当前可能为空（nil）。如果可选的目标有值，那么调用就会成功；相反，如果选择的目标为空（nil），则这种调用将返回空（nil）。多次请求或调用可以被链接在一起形成一个链，如果任何一个节点为空（nil）将导致整个链失效。</p>
+
+<p>可能官方的定义不接地气，先来个例子做铺垫：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">Person</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">residence</span><span class="o">:</span> <span class="nx">Residence</span><span class="o">?</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">class</span> <span class="nx">Residence</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">rooms</span> <span class="o">=</span> <span class="nx">Room</span><span class="p">[]()</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">numberOfRooms</span><span class="o">:</span> <span class="nx">Int</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">rooms</span><span class="p">.</span><span class="nx">count</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">subscript</span><span class="p">(</span><span class="nx">i</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Room</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">rooms</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">printNumberOfRooms</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;The number of rooms is \(numberOfRooms)&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">address</span><span class="o">:</span> <span class="nx">Address</span><span class="o">?</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">class</span> <span class="nx">Room</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">name</span><span class="o">:</span> <span class="nb">String</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span> <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">class</span> <span class="nx">Address</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">buildingName</span><span class="o">:</span> <span class="nb">String</span><span class="o">?</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">buildingNumber</span><span class="o">:</span> <span class="nb">String</span><span class="o">?</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">street</span><span class="o">:</span> <span class="nb">String</span><span class="o">?</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">buildingIdentifier</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">String</span><span class="o">?</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">buildingName</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">buildingName</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">buildingNumber</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">buildingNumber</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">nil</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>人（<code>Person</code>）可能会拥有住所（<code>Residence</code>），一个住所肯定会有一些带名字的房间（<code>Room</code>），还有可能注明所在地址（<code>Address</code>）。住所还提供了获取房间数目的方法，并能通过下标访问某个房间，而地址包含了一些可选的信息。</p>
+
+<p>PS：不要嫌我墨迹，官方文档比我墨迹多了。。。</p>
+
+<p>现在我造个人（邪恶的孩子面壁思过去！），就叫john</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">john</span> <span class="o">=</span> <span class="nx">Person</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+如果我们想知道john同学家房子大不大，有几个房间啊？但是直接问不太好，万一john家里穷漂泊不定四海为家，那不就玩脱了么？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">roomCount</span> <span class="o">=</span> <span class="nx">john</span><span class="p">.</span><span class="nx">residence</span><span class="o">!</span><span class="p">.</span><span class="nx">numberOfRooms</span>
+</span><span class='line'><span class="c1">//将导致运行时错误</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>所以还是先问问他家有没有房子吧：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">roomCount</span> <span class="o">=</span> <span class="nx">john</span><span class="p">.</span><span class="nx">residence</span><span class="o">?</span><span class="p">.</span><span class="nx">numberOfRooms</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;John&#39;s residence has \(roomCount) room(s).&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;我造john的时候没给他分房子，这可怜孩子！&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 打印 &quot;我造john的时候没给他分房子，这可怜孩子！&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+可选链提供了一种另一种获得<code>numberOfRooms</code>的方法。利用可选链，使用<code>?</code>来代替原来<code>!</code>的位置，因为这种尝试获得<code>numberOfRooms</code>的操作有可能失败，可选链会返回<code>Int?</code>类型值。要注意的是，虽然<code>numberOfRooms</code>是非可选<code>Int</code>，这一点也成立。只要是通过可选链的请求就意味着最后<code>numberOfRooms</code>总是返回一个<code>Int?</code>而不是<code>Int</code>。</p>
+
+<p>我们也可以在可选链上调用方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="nx">john</span><span class="p">.</span><span class="nx">residence</span><span class="o">?</span><span class="p">.</span><span class="nx">printNumberOfRooms</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;It was possible to print the number of rooms.&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;It was not possible to print the number of rooms.&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 打印 &quot;It was not possible to print the number of rooms.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>虽然<code>printNumberOfRooms</code>方法无返回值，但是它有一个隐式的返回类型<code>Void</code>，在可选链上调用后返回类型就成了<code>Void?</code>，既然是可选类型，就可以放到if语句条件判断中啦！</p>
+
+<p>现在想看看john家第一间房子名字叫啥，但却怕人家没房子遭遇尴尬，不用怕：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">firstRoomName</span> <span class="o">=</span> <span class="nx">john</span><span class="p">.</span><span class="nx">residence</span><span class="o">?</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">name</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;The first room name is \(firstRoomName).&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;连房子都没有更别提第一间房间名了！&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 打印 &quot;连房子都没有更别提第一间房间名了！&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+在下标调用中可选链的问号直接跟在<code>john.residence</code>的后面，在下标中括号的前面，因为<code>john.residence</code>才是可选链试图获得的可选值。（关键是<code>Person</code>不一定有<code>residence</code>，但<code>Residence</code>肯定有<code>rooms</code>）</p>
+
+<p>造个john玩了人家这么久，还不快给人家分套房子！（其实是为了演示后面的<code>Address</code>）</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">johnsHouse</span> <span class="o">=</span> <span class="nx">Residence</span><span class="p">()</span>
+</span><span class='line'><span class="nx">johnsHouse</span><span class="p">.</span><span class="nx">rooms</span> <span class="o">+=</span> <span class="nx">Room</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Living Room&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="nx">johnsHouse</span><span class="p">.</span><span class="nx">rooms</span> <span class="o">+=</span> <span class="nx">Room</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Kitchen&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="nx">john</span><span class="p">.</span><span class="nx">residence</span> <span class="o">=</span> <span class="nx">johnsHouse</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">firstRoomName</span> <span class="o">=</span> <span class="nx">john</span><span class="p">.</span><span class="nx">residence</span><span class="o">?</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">name</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;The first room name is \(firstRoomName).&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;Unable to retrieve the first room name.&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 打印 &quot;The first room name is Living Room.&quot;。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>现在john乔迁新居奔小康了，快问问他家地址，好串个门</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">johnsAddress</span> <span class="o">=</span> <span class="nx">Address</span><span class="p">()</span>
+</span><span class='line'><span class="nx">johnsAddress</span><span class="p">.</span><span class="nx">buildingName</span> <span class="o">=</span> <span class="s2">&quot;The Larches&quot;</span>
+</span><span class='line'><span class="nx">johnsAddress</span><span class="p">.</span><span class="nx">street</span> <span class="o">=</span> <span class="s2">&quot;Laurel Street&quot;</span>
+</span><span class='line'><span class="nx">john</span><span class="p">.</span><span class="nx">residence</span><span class="o">!</span><span class="p">.</span><span class="nx">address</span> <span class="o">=</span> <span class="nx">johnsAddress</span>
+</span><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">johnsStreet</span> <span class="o">=</span> <span class="nx">john</span><span class="p">.</span><span class="nx">residence</span><span class="o">?</span><span class="p">.</span><span class="nx">address</span><span class="o">?</span><span class="p">.</span><span class="nx">street</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;John&#39;s street name is \(johnsStreet).&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;Unable to retrieve the address.&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 打印 &quot;John&#39;s street name is Laurel Street.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+值得注意的是<code>john.residence</code>属性是一个可选类型并且已经不为<code>nil</code>(刚刚奔小康了嘛)，因此你需要在它获取<code>address</code>属性之前使用<code>!</code>强制解析以获得它的实际值。</p>
+
+<p>虽然这条可选链上有两个问号（两层可选链），但其返回类型依然是可选类型（<code>String?</code>），而不是可选类型的嵌套（<code>String??</code>即<code>Optional&lt;Optional&lt;String&gt;&gt;</code>）。你可以将多层可选链连接在一起，可以掘取模型内更下层的属性方法和下标。然而多层可选链不能再添加比已经返回的可选值更多的层。 也就是说：</p>
+
+<p><strong>如果你试图获得的类型不是可选类型，由于使用了可选链它将变成可选类型。 如果你试图获得的类型已经是可选类型，由于可选链它也不会提高可选性。</strong></p>
+
+<p>前面的例子解释了如何通过可选链来获得可选类型属性值。你也可以通过可选链调用一个返回可选类型值的方法并按需链接该方法的返回值。 如上所述，<code>buildingIdentifier</code>方法在可选链调用后最终的返回值类型依然是<code>String?</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">buildingIdentifier</span> <span class="o">=</span> <span class="nx">john</span><span class="p">.</span><span class="nx">residence</span><span class="o">?</span><span class="p">.</span><span class="nx">address</span><span class="o">?</span><span class="p">.</span><span class="nx">buildingIdentifier</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;John&#39;s building identifier is \(buildingIdentifier).&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 打印 &quot;John&#39;s building identifier is The Larches.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+如果你还想进一步对方法返回值执行可选链，将可选链问号符放在方法括号的后面：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">upper</span> <span class="o">=</span> <span class="nx">john</span><span class="p">.</span><span class="nx">residence</span><span class="o">?</span><span class="p">.</span><span class="nx">address</span><span class="o">?</span><span class="p">.</span><span class="nx">buildingIdentifier</span><span class="p">()</span><span class="o">?</span><span class="p">.</span><span class="nx">uppercaseString</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;John&#39;s uppercase building identifier is \(upper).&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 打印 &quot;John&#39;s uppercase building identifier is THE LARCHES.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+你将可选链问号符放在括号后面是因为你想要链接的可选值是<code>buildingIdentifier</code>方法的返回值，不是<code>buildingIdentifier</code>方法本身。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Swift中的ARC]]></title>
@@ -4081,7 +4591,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#115;&#117;&#x70;&#x70;&#x6f;&#x72;&#116;&#64;&#103;&#x69;&#x74;&#104;&#x75;&#x62;&#46;&#x63;&#x6f;&#109;&#x2e;">&#x73;&#x75;&#112;&#112;&#111;&#x72;&#116;&#64;&#x67;&#x69;&#x74;&#104;&#117;&#98;&#46;&#x63;&#x6f;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#x3a;&#x73;&#117;&#x70;&#x70;&#111;&#114;&#x74;&#x40;&#103;&#x69;&#x74;&#104;&#117;&#x62;&#x2e;&#x63;&#111;&#x6d;&#46;">&#115;&#x75;&#x70;&#112;&#x6f;&#x72;&#116;&#x40;&#103;&#105;&#116;&#104;&#x75;&#98;&#x2e;&#99;&#111;&#109;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
@@ -6730,153 +7240,6 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 <p></p>
 
 <p>本文摘自<a href="http://blog.sina.com.cn/s/blog_5e8facd20100qn20.html">周立功</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[深入理解typedef]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/17/shen-ru-li-jie-typedef/"/>
-    <updated>2014-04-17T18:38:37+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/17/shen-ru-li-jie-typedef</id>
-    <content type="html"><![CDATA[<p>第一次对typedef语法产生疑惑是在大一使用struct的时候，而在使用Objective－C对Block进行操作的时候，再一次困惑</p>
-
-<!--more-->
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>typedef &lt;#returnType#&gt;(^&lt;#name#&gt;)(&lt;#arguments#&gt;);//typedefBlock Code Snippets
-</span><span class='line'>
-</span><span class='line'>typedef void (^RWAlertViewCompletionBlock)(UIAlertView *alertView, NSInteger buttonIndex);</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>然后就可以把<code>RWAlertViewCompletionBlock</code>当成一个Block的类型大摇大摆的使用啦<br/>
-在这之前楼主心目中的typedef一般都是这样的</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>typedef int INT32;
-</span><span class='line'>typedef char Line[81];//表示使用Line代表具有81个元素的char类型数组。
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-甚至有时候是这样的</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>typedef struct tagPOINT
-</span><span class='line'>{
-</span><span class='line'>    int x;
-</span><span class='line'>    int y;
-</span><span class='line'>}POINT;
-</span><span class='line'>POINT p1;//在C++中即使不用typedef也可直接中tagPOINT声明变量，但在旧的C中就需要typedef来省略struct关键字</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-如今遇到的Block其实可以当作函数指针啦</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>int (*PF)(int *, int);
-</span><span class='line'>//也就是说，PF是一个函数指针“变量”。当使用typedef声明后，则PF就成为了一个函数指针“类型”，即：
-</span><span class='line'>typedef int (*PF)(int *, int);</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p><strong>typedef的语法规则其实很简单，一句话来说就是定义对象的语法前加关键字typedef，剩下的不变，原本定义的对象标识符换成类型标识符，对应语义从定义一个对象改成定义一个类型别名。typedef看起来复杂根本原因是对象定义的语法比较复杂，例如分隔符*和[]的用法。</strong></p>
-
-<p>针对经典的const来个例子</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>typedef char * pStr;
-</span><span class='line'>char string[4] = "abc";
-</span><span class='line'>const char *p1 = string;
-</span><span class='line'>const pStr p2 = string;
-</span><span class='line'>p1++;
-</span><span class='line'>p2++;//error</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-<code>p2++</code>这句会报错的.<br/>
-<code>const char *p1 = string;</code>你可以这样理解：<code>(const char) *p1 = string</code>, <code>p1</code>是一个指针，指向<code>const char</code>的东西，这个东西就是<code>string</code>(string是一个字符数组的首地址，它的地址声明后肯定是<code>const</code>的，除非该数组销毁)，但是<code>p1</code>是一个指针变量，它是可以递增的，即你看到的<code>p1++</code>，它可以完成从数组的来遍历数组的目的。<br/>
-而<code>const pStr p2 = string;</code>是这样的：由于<code>p2</code>不是指针，<code>const</code>直接修饰到了<code>p2</code>,即现在的<code>p2</code>是常量了，它的类型是<code>pStr</code>(我们自己定义的类型)，相当于<code>const int p2</code>, <code>const long p2</code>等等，<code>const</code>都是直接修饰<code>p2</code>的，只不过<code>int</code>，<code>long</code>是系统类型，而<code>pStr</code>是我们定义的类型。为什么会出现这种效果了，就是因为<code>typedef</code>,它把<code>char *</code>定义成一个复合的类型，要从整体上来理解语义，而不是字符替换后来理解语义。</p>
-
-<p>最后作死下，引入非人类的案例：</p>
-
-<p>为复杂的声明定义一个新的简单的别名。方法是：在原来的声明里逐步用别名替换一部分复杂声明，如此循环，把带变量名的部分留到最后替换，得到的就是原声明的最简化版。举例：</p>
-
-<p>原声明：<code>void (*b[10]) (void (*)());</code></p>
-
-<p>变量名为b，先替换右边部分括号里的，pFunParam为别名一：</p>
-
-<p><code>typedef void (*pFunParam)();</code></p>
-
-<p>再替换左边的变量b，pFunx为别名二：</p>
-
-<p><code>typedef void (*pFunx)(pFunParam);</code></p>
-
-<p>原声明的最简化版：</p>
-
-<p><code>pFunx b[10];</code></p>
-
-<p>原声明：<code>doube(*)() (*e)[9];</code></p>
-
-<p>变量名为e，先替换左边部分，pFuny为别名一：</p>
-
-<p><code>typedef double(*pFuny)();</code></p>
-
-<p>再替换右边的变量e，pFunParamy为别名二</p>
-
-<p><code>typedef pFuny (*pFunParamy)[9];</code></p>
-
-<p>原声明的最简化版：</p>
-
-<p><code>pFunParamy e;</code></p>
-
-<p>理解复杂声明可用的“右左法则”：从变量名看起，先往右，再往左，碰到一个圆括号</p>
-
-<p>就调转阅读的方向；括号内分析完就跳出括号，还是按先右后左的顺序，如此循环，直</p>
-
-<p>到整个声明分析完。举例：</p>
-
-<p><code>int (*func)(int *p);</code></p>
-
-<p>首先找到变量名func，外面有一对圆括号，而且左边是一个*号，这说明func是一个指针</p>
-
-<p>；然后跳出这个圆括号，先看右边，又遇到圆括号，这说明(*func)是一个函数，所以</p>
-
-<p>func是一个指向这类函数的指针，即函数指针，这类函数具有int*类型的形参，返回值</p>
-
-<p>类型是int。</p>
-
-<p><code>int (*func[5])(int *);</code></p>
-
-<p>func右边是一个[]运算符，说明func是具有5个元素的数组；func的左边有一个*，说明</p>
-
-<p>func的元素是指针（注意这里的*不是修饰func，而是修饰func[5]的，原因是[]运算符</p>
-
-<p>优先级比*高，func先跟[]结合）。跳出这个括号，看右边，又遇到圆括号，说明func数</p>
-
-<p>组的元素是函数类型的指针，它指向的函数具有int*类型的形参，返回值类型为int。</p>
-
-<p>这种用法是比较复杂的，出现的频率也不少，往往在看到这样的用法却不能理解，相信以上的解释能有所帮助。</p>
 ]]></content>
   </entry>
   

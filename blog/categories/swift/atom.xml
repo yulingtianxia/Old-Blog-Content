@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-17T14:24:23+08:00</updated>
+  <updated>2014-06-17T23:32:14+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,391 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Optionals and Optional Chaining in Swift]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/06/17/optionals-and-optional-chaining-in-swift/"/>
+    <updated>2014-06-17T20:42:17+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/06/17/optionals-and-optional-chaining-in-swift</id>
+    <content type="html"><![CDATA[<p>可选类型（<code>Optionals</code>）在Swift中用于处理值可能缺失的情况，也就是说可能存在没有值的情况。C 和 Objective-C 中并没有可选类型这个概念。但在Objective-C中，一个方法的返回值可以是一个对象或<code>nil</code>值（<code>nil</code>表示缺少一个合法对象），而对象只是针对类而言，结构体、基本C类型和枚举并不适用<code>nil</code>来表示值的缺失，对于这些类型，Objective-C 方法一般会返回一个特殊值（比如<code>NSNotFound</code>）来暗示值缺失。这种表示“值缺失”方法不统一的局面使得调用方法的程序员蛋疼了-需要针对不同情况进行处理-但随着可选类型的诞生，这种情形在Swift中得到解决，<code>Optionals</code>可以表示任意类型值的缺失。</p>
+
+<!--more-->
+
+
+<h2>可选类型（Optionals）</h2>
+
+<p>在Swift中，有时候需要把内容为数字的字符串转化成数字：</p>
+
+<p><code>js
+let possibleNumber = "123"
+let convertedNumber = possibleNumber.toInt()
+// convertedNumber 被推测为类型 "Int?"， 或者类型 "optional Int"
+</code>
+因为Swift是类型安全的语言，为了保证转化过程中不出错，<code>toInt()</code>方法返回的是一个<code>Optional&lt;Int&gt;</code>(也可写成<code>Int?</code>)类型的实例。如果被转化的字符串不是一个数字（比如是“hello world”），那样<code>toInt()</code>返回的内容将不含有<code>Int</code>值。这保证了整个过程不报错，下面我们可以“优雅的”检查下<code>convertedNumber</code>是否有<code>Int</code>值：</p>
+
+<p>```
+if convertedNumber {</p>
+
+<pre><code>println("\(possibleNumber) has an integer value of \(convertedNumber!)")
+</code></pre>
+
+<p>} else {</p>
+
+<pre><code>println("\(possibleNumber) could not be converted to an integer")
+</code></pre>
+
+<p>}
+// 输出 &ldquo;123 has an integer value of 123&rdquo;
+```
+当你确定可选类型确实包含值之后，你可以在可选的名字后面加一个感叹号（!）来获取值。这个惊叹号表示“我知道这个可选有值，请使用它。”这被称为可选值的强制解析（forced unwrapping）</p>
+
+<p>这里细心的同学可能看不懂了：<code>convertedNumber</code>不是应该是一个可选的整型值么，怎么还能作为条件判断的逻辑值（Bool）呢？让我们来分析下<code>Optional</code>类型的真身：</p>
+
+<p>```
+enum Optional<T> : LogicValue, Reflectable {</p>
+
+<pre><code>case None
+case Some(T)
+init()
+init(_ some: T)
+
+/// Allow use in a Boolean context.
+func getLogicValue() -&gt; Bool
+
+/// Haskell's fmap, which was mis-named
+func map&lt;U&gt;(f: (T) -&gt; U) -&gt; U?
+func getMirror() -&gt; Mirror
+</code></pre>
+
+<p>}
+```</p>
+
+<p>原来可选类型是本质是一个枚举类型，包含两个成员：<code>None</code>和<code>Some</code>，其中<code>Some</code>成员还有一个类型为泛型<code>T</code>的关联值（Associated Values）。它之所以能够当做条件判断语句是因为它遵循了<code>LogicValue</code>协议：</p>
+
+<p><code>``
+/// Protocol describing types that can be used as logical values within
+/// a condition.
+///
+/// Types that conform to the</code>LogicValue<code>protocol can be used as
+/// condition in various control statements (</code>if<code>,</code>while<code>, C-style
+///</code>for<code>) as well as other logical value contexts (e.g.,</code>case`
+/// statement guards).
+protocol LogicValue {</p>
+
+<pre><code>func getLogicValue() -&gt; Bool
+</code></pre>
+
+<p>}
+<code>``
+看了Swift对</code>LogicValue<code>协议的描述，这下子应该明白了吧。光凭猜测大约知道：当可选类型有值的时候其实是</code>Some<code>成员，并在构造器</code>init(_ some: T)<code>调用时将值存储在</code>Some<code>成员的关联值中，此时</code>getLogicValue()<code>方法返回true；当可选类型没有值的时候其实是</code>None<code>成员，并在构造器</code>init()<code>调用时将</code>nil<code>给了</code>None<code>成员，具体细节不是很清楚。  
+看得出可选类型的设计借鉴了Haskell语言，至于</code>nil`到底是什么：</p>
+
+<p><code>
+/// A null sentinel value.
+var nil: NilType { get }
+</code>
+<code>nil</code>是<code>NilType</code>类型唯一的实例，好特殊啊。Swift 的<code>nil</code>和 Objective-C 中的<code>nil</code>并不一样。在 Objective-C 中，<code>nil</code>是一个指向不存在对象的指针。在 Swift 中，<code>nil</code>不是指针——它是一个确定的值，用来表示值缺失。任何类型的可选状态都可以被设置为<code>nil</code>，不只是对象类型。</p>
+
+<p><strong>可选类型默认值为<code>nil</code></strong></p>
+
+<p>除了用if语句判断和强制解析来获取可选类型中的值，还可以用可选绑定的方式来来判断可选类型是否包含值：</p>
+
+<p>```
+if let constantName = someOptional {</p>
+
+<pre><code>statements
+</code></pre>
+
+<p>}
+```
+于是之前的例子可以可以改写为：</p>
+
+<p>```
+if let actualNumber = possibleNumber.toInt() {</p>
+
+<pre><code>println("\(possibleNumber) has an integer value of \(actualNumber)")
+</code></pre>
+
+<p>} else {</p>
+
+<pre><code>println("\(possibleNumber) could not be converted to an integer")
+</code></pre>
+
+<p>}
+// 输出 &ldquo;123 has an integer value of 123&rdquo;
+```</p>
+
+<p>如果<code>possibleNumber.toInt</code>返回的可选<code>Int</code>包含一个值，创建一个叫做<code>actualNumber</code>的新常量并将可选包含的值赋给它。它已经被可选类型包含的值初始化过，所以不需要再使用<code>!</code>后缀来获取它的值。</p>
+
+<p>有时候在程序架构中，第一次被赋值之后，可以确定一个可选类型总会有值。在这种情况下，每次都要判断和解析可选值是非常低效的，因为可以确定它总会有值。这种类型的可选状态被定义为<strong>隐式解析可选类型</strong>（implicitly unwrapped optionals）。把想要用作可选的类型的后面的问号（String?）改成感叹号（String!）来声明一个隐式解析可选类型。</p>
+
+<p><code>
+let possibleString: String? = "An optional string."
+println(possibleString!) // 需要惊叹号来获取值
+// 输出 "An optional string."
+let assumedString: String! = "An implicitly unwrapped optional string."
+println(assumedString)  // 不需要感叹号
+// 输出 "An implicitly unwrapped optional string."
+</code>
+你仍然可以把隐式解析可选类型当做普通可选类型来判断它是否包含值：</p>
+
+<p>```
+if assumedString {</p>
+
+<pre><code>println(assumedString)
+</code></pre>
+
+<p>}
+// 输出 &ldquo;An implicitly unwrapped optional string.&rdquo;
+```
+你也可以在可选绑定中使用隐式解析可选类型来检查并解析它的值：</p>
+
+<p>```
+if let definiteString = assumedString {</p>
+
+<pre><code>println(definiteString)
+</code></pre>
+
+<p>}
+// 输出 &ldquo;An implicitly unwrapped optional string.&rdquo;
+<code>``
+可能看到这里你会觉得隐式解析可选类型的存在意义是什么？为何不直接用普通的非可选类型呢？其实</code>Implicitly Unwrapped Optionals`被用于类的初始化方法中，避免循环引用:</p>
+
+<p>```
+class Country {</p>
+
+<pre><code>let name: String
+let capitalCity: City!
+init(name: String, capitalName: String) {
+    self.name = name
+    self.capitalCity = City(name: capitalName, country: self)
+}
+</code></pre>
+
+<p>}</p>
+
+<p>class City {</p>
+
+<pre><code>let name: String
+unowned let country: Country
+init(name: String, country: Country) {
+    self.name = name
+    self.country = country
+}
+</code></pre>
+
+<p>}</p>
+
+<p>var country = Country(name: &ldquo;Canada&rdquo;, capitalName: &ldquo;Ottawa&rdquo;)
+println(&ldquo;(country.name)&rsquo;s capital city is called (country.capitalCity.name)&rdquo;)
+// prints &ldquo;Canada&rsquo;s capital city is called Ottawa”</p>
+
+<p>```</p>
+
+<p>因为编译器会将其认为默认<code>nil</code>，不需赋值就可以完成类的初始化，在例子中<code>capitalCity</code>还没被赋值时<code>Country</code>类就已经初始化并可以被引用；这样就能实现一行代码建立<code>Country</code>和<code>City</code>实例而不造成强引用循环。有关ARC的更多知识可以看看这篇<a href="http://yulingtianxia.com/blog/2014/06/17/swiftzhong-de-arc/">文章</a></p>
+
+<h2>可选链（Optional Chaining）</h2>
+
+<p>可选链（Optional Chaining）是一种可以请求和调用属性、方法及下标的过程，它的可选性体现于请求或调用的目标当前可能为空（nil）。如果可选的目标有值，那么调用就会成功；相反，如果选择的目标为空（nil），则这种调用将返回空（nil）。多次请求或调用可以被链接在一起形成一个链，如果任何一个节点为空（nil）将导致整个链失效。</p>
+
+<p>可能官方的定义不接地气，先来个例子做铺垫：</p>
+
+<p>```
+class Person {</p>
+
+<pre><code>var residence: Residence?
+</code></pre>
+
+<p>}</p>
+
+<p>class Residence {</p>
+
+<pre><code>var rooms = Room[]()
+var numberOfRooms: Int {
+return rooms.count
+}
+subscript(i: Int) -&gt; Room {
+    return rooms[i]
+}
+func printNumberOfRooms() {
+    println("The number of rooms is \(numberOfRooms)")
+}
+var address: Address?
+</code></pre>
+
+<p>}</p>
+
+<p>class Room {</p>
+
+<pre><code>let name: String
+init(name: String) { self.name = name }
+</code></pre>
+
+<p>}</p>
+
+<p>class Address {</p>
+
+<pre><code>var buildingName: String?
+var buildingNumber: String?
+var street: String?
+func buildingIdentifier() -&gt; String? {
+    if buildingName {
+        return buildingName
+    } else if buildingNumber {
+        return buildingNumber
+    } else {
+        return nil
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>人（<code>Person</code>）可能会拥有住所（<code>Residence</code>），一个住所肯定会有一些带名字的房间（<code>Room</code>），还有可能注明所在地址（<code>Address</code>）。住所还提供了获取房间数目的方法，并能通过下标访问某个房间，而地址包含了一些可选的信息。</p>
+
+<p>PS：不要嫌我墨迹，官方文档比我墨迹多了。。。</p>
+
+<p>现在我造个人（邪恶的孩子面壁思过去！），就叫john</p>
+
+<p><code>
+let john = Person()
+</code>
+如果我们想知道john同学家房子大不大，有几个房间啊？但是直接问不太好，万一john家里穷漂泊不定四海为家，那不就玩脱了么？</p>
+
+<p><code>
+let roomCount = john.residence!.numberOfRooms
+//将导致运行时错误
+</code></p>
+
+<p>所以还是先问问他家有没有房子吧：</p>
+
+<p>```
+if let roomCount = john.residence?.numberOfRooms {</p>
+
+<pre><code>println("John's residence has \(roomCount) room(s).")
+</code></pre>
+
+<p>} else {</p>
+
+<pre><code>println("我造john的时候没给他分房子，这可怜孩子！")
+</code></pre>
+
+<p>}
+// 打印 &ldquo;我造john的时候没给他分房子，这可怜孩子！&rdquo;
+<code>``
+可选链提供了一种另一种获得</code>numberOfRooms<code>的方法。利用可选链，使用</code>?<code>来代替原来</code>!<code>的位置，因为这种尝试获得</code>numberOfRooms<code>的操作有可能失败，可选链会返回</code>Int?<code>类型值。要注意的是，虽然</code>numberOfRooms<code>是非可选</code>Int<code>，这一点也成立。只要是通过可选链的请求就意味着最后</code>numberOfRooms<code>总是返回一个</code>Int?<code>而不是</code>Int`。</p>
+
+<p>我们也可以在可选链上调用方法：</p>
+
+<p>```
+if john.residence?.printNumberOfRooms() {</p>
+
+<pre><code>println("It was possible to print the number of rooms.")
+</code></pre>
+
+<p>} else {</p>
+
+<pre><code>println("It was not possible to print the number of rooms.")
+</code></pre>
+
+<p>}
+// 打印 &ldquo;It was not possible to print the number of rooms.&rdquo;
+```</p>
+
+<p>虽然<code>printNumberOfRooms</code>方法无返回值，但是它有一个隐式的返回类型<code>Void</code>，在可选链上调用后返回类型就成了<code>Void?</code>，既然是可选类型，就可以放到if语句条件判断中啦！</p>
+
+<p>现在想看看john家第一间房子名字叫啥，但却怕人家没房子遭遇尴尬，不用怕：</p>
+
+<p>```
+if let firstRoomName = john.residence?[0].name {</p>
+
+<pre><code>println("The first room name is \(firstRoomName).")
+</code></pre>
+
+<p>} else {</p>
+
+<pre><code>println("连房子都没有更别提第一间房间名了！")
+</code></pre>
+
+<p>}
+// 打印 &ldquo;连房子都没有更别提第一间房间名了！&rdquo;
+<code>``
+在下标调用中可选链的问号直接跟在</code>john.residence<code>的后面，在下标中括号的前面，因为</code>john.residence<code>才是可选链试图获得的可选值。（关键是</code>Person<code>不一定有</code>residence<code>，但</code>Residence<code>肯定有</code>rooms`）</p>
+
+<p>造个john玩了人家这么久，还不快给人家分套房子！（其实是为了演示后面的<code>Address</code>）</p>
+
+<p>```
+let johnsHouse = Residence()
+johnsHouse.rooms += Room(name: &ldquo;Living Room&rdquo;)
+johnsHouse.rooms += Room(name: &ldquo;Kitchen&rdquo;)
+john.residence = johnsHouse</p>
+
+<p>if let firstRoomName = john.residence?[0].name {</p>
+
+<pre><code>println("The first room name is \(firstRoomName).")
+</code></pre>
+
+<p>} else {</p>
+
+<pre><code>println("Unable to retrieve the first room name.")
+</code></pre>
+
+<p>}
+// 打印 &ldquo;The first room name is Living Room."。
+```</p>
+
+<p>现在john乔迁新居奔小康了，快问问他家地址，好串个门</p>
+
+<p>```
+let johnsAddress = Address()
+johnsAddress.buildingName = &ldquo;The Larches&rdquo;
+johnsAddress.street = &ldquo;Laurel Street&rdquo;
+john.residence!.address = johnsAddress
+if let johnsStreet = john.residence?.address?.street {</p>
+
+<pre><code>println("John's street name is \(johnsStreet).")
+</code></pre>
+
+<p>} else {</p>
+
+<pre><code>println("Unable to retrieve the address.")
+</code></pre>
+
+<p>}
+// 打印 &ldquo;John&rsquo;s street name is Laurel Street.&rdquo;
+<code>``
+值得注意的是</code>john.residence<code>属性是一个可选类型并且已经不为</code>nil<code>(刚刚奔小康了嘛)，因此你需要在它获取</code>address<code>属性之前使用</code>!`强制解析以获得它的实际值。</p>
+
+<p>虽然这条可选链上有两个问号（两层可选链），但其返回类型依然是可选类型（<code>String?</code>），而不是可选类型的嵌套（<code>String??</code>即<code>Optional&lt;Optional&lt;String&gt;&gt;</code>）。你可以将多层可选链连接在一起，可以掘取模型内更下层的属性方法和下标。然而多层可选链不能再添加比已经返回的可选值更多的层。 也就是说：</p>
+
+<p><strong>如果你试图获得的类型不是可选类型，由于使用了可选链它将变成可选类型。 如果你试图获得的类型已经是可选类型，由于可选链它也不会提高可选性。</strong></p>
+
+<p>前面的例子解释了如何通过可选链来获得可选类型属性值。你也可以通过可选链调用一个返回可选类型值的方法并按需链接该方法的返回值。 如上所述，<code>buildingIdentifier</code>方法在可选链调用后最终的返回值类型依然是<code>String?</code>:</p>
+
+<p>```
+if let buildingIdentifier = john.residence?.address?.buildingIdentifier() {</p>
+
+<pre><code>println("John's building identifier is \(buildingIdentifier).")
+</code></pre>
+
+<p>}
+// 打印 &ldquo;John&rsquo;s building identifier is The Larches.&rdquo;
+```
+如果你还想进一步对方法返回值执行可选链，将可选链问号符放在方法括号的后面：</p>
+
+<p>```
+if let upper = john.residence?.address?.buildingIdentifier()?.uppercaseString {</p>
+
+<pre><code>println("John's uppercase building identifier is \(upper).")
+</code></pre>
+
+<p>}
+// 打印 &ldquo;John&rsquo;s uppercase building identifier is THE LARCHES.&rdquo;
+<code>``
+你将可选链问号符放在括号后面是因为你想要链接的可选值是</code>buildingIdentifier<code>方法的返回值，不是</code>buildingIdentifier`方法本身。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Swift中的ARC]]></title>
