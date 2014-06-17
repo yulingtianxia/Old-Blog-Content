@@ -14,8 +14,8 @@ categories:
 
 ##运算符重载
 在Swift的官方文档中运算符重载叫做运算符函数（Operator Functions），顾名思义就是对已经有的运算符覆盖定义自己的函数实现。三元运算符（a？b：c）和默认的默认的赋值符(=)是不可重载的。  
-###中置运算符的重载
-在`func`关键字前使用属性`@infix`来重载中置运算符，函数名为想要重载的中置运算符：  
+###中缀运算符的重载
+在`func`关键字前使用属性`@infix`来重载中缀运算符，函数名为想要重载的中缀运算符：  
 
 ``` js
 struct Vector2D {
@@ -58,8 +58,8 @@ if twoThree == anotherTwoThree {
 ``` 
 
 
-###前置和后置运算符的重载
-前置和后置运算符重载跟中置运算符重载类似，只是将`func`关键字前的属性替换成`@prefix`和`@postfix`，比如：
+###前缀和后缀运算符的重载
+前缀和后缀运算符重载跟中缀运算符重载类似，只是将`func`关键字前的属性替换成`@prefix`和`@postfix`，比如：
 
 ``` 
 @prefix func - (vector: Vector2D) -> Vector2D {
@@ -67,7 +67,7 @@ if twoThree == anotherTwoThree {
 }
 ``` 
 
-这段代码为`Vector2D`类型提供了单目减运算，并且是前置，也就是取负操作。
+这段代码为`Vector2D`类型提供了单目减运算，并且是前缀，也就是取负操作。
 
 ``` 
 let positive = Vector2D(x: 3.0, y: 4.0)
@@ -93,7 +93,7 @@ let vectorToAdd = Vector2D(x: 3.0, y: 4.0)
 original += vectorToAdd
 // original 现在为 (4.0, 6.0)
 ``` 
-你可以将` @assignment `属性和 `@prefix` 或 `@postfix` 属性起来组合，实现一个`Vector2D`的前置运算符。  
+你可以将` @assignment `属性和 `@prefix` 或 `@postfix` 属性起来组合，实现一个`Vector2D`的前缀运算符。  
 
 ``` 
 @prefix @assignment func ++ (inout vector: Vector2D) -> Vector2D {
@@ -101,7 +101,7 @@ original += vectorToAdd
     return vector
 }
 ``` 
-这个前置使用了已经定义好的高级加赋运算，将自己加上一个值为` (1.0，1.0) `的对象然后赋给自己，然后再将自己返回。  
+这个前缀使用了已经定义好的高级加赋运算，将自己加上一个值为` (1.0，1.0) `的对象然后赋给自己，然后再将自己返回。  
 
 ``` 
 var toIncrement = Vector2D(x: 3.0, y: 4.0)
@@ -111,12 +111,12 @@ let afterIncrement = ++toIncrement
 ``` 
 ##自定义运算符
 标准的运算符不够玩，那你可以声明一些个性的运算符，但个性的运算符只能使用这些字符 `/ = - + * % < >！& | ^。~`    
-新的运算符声明需在全局域使用`operator`关键字声明，可以声明为前置，中置或后置的。  
+新的运算符声明需在全局域使用`operator`关键字声明，可以声明为前缀，中缀或后缀的。  
 
 ``` 
 operator prefix +++ {}
 ``` 
-这段代码定义了一个新的前置运算符叫`+++`，此前Swift并不存在这个运算符。此处为了演示，我们让`+++`对`Vector2D`对象的操作定义为“双自增”（prefix doubling incrementer） 这样一个独有的操作，这个操作使用了之前定义的加赋运算（`+=`）实现了自已加上自己然后返回的运算。  
+这段代码定义了一个新的前缀运算符叫`+++`，此前Swift并不存在这个运算符。此处为了演示，我们让`+++`对`Vector2D`对象的操作定义为“双自增”（prefix doubling incrementer） 这样一个独有的操作，这个操作使用了之前定义的加赋运算（`+=`）实现了自已加上自己然后返回的运算。  
 
 ``` 
 @prefix @assignment func +++ (inout vector: Vector2D) -> Vector2D {
