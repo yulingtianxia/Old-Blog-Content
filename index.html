@@ -163,6 +163,46 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
   
 
 
+<time datetime="2014-06-19T16:07:28+08:00" data-updated="true" itemprop="datePublished">Jun 19<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+</div>
+		
+			<span class="comments"><a href="/blog/2014/06/19/rang-ruan-jian-zhi-chi-retina/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/19/rang-ruan-jian-zhi-chi-retina/" itemprop="url">让软件支持Retina</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<ol>
+<li>右键单击程序，选择“显示包内容”</li>
+<li>找到“info.plist”文件并打开</li>
+<li>如果用Xcode打开：添加一个新的键值对，类型为Boolean，Key为“NSHighResolutionCapable”，Value选择“YES”；如果用其他软件打开，直接在plist节点中的dict中添加一个键值对就可以：<key>NSHighResolutionCapable</key><br/>
+<true/></li>
+<li>为了使系统更新，复制一份“软件.app”，改成别的名字如“软件1.app”，删除原来的“软件.app”，再把“软件1.app”重命名为“软件.app”</li>
+</ol>
+
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
 <time datetime="2014-06-17T20:42:17+08:00" data-updated="true" itemprop="datePublished">Jun 17<span>th</span>, 2014</time></div>
 		<div class="tags">
 
@@ -509,55 +549,6 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 		
 		<a href="/blog/2014/05/04/spritekitzuo-biao-xi/" class="more-link">阅读全文&rarr;</a>
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-02T20:17:04+08:00" data-updated="true" itemprop="datePublished">May 2<span>nd</span>, 2014</time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/core-data/'>Core Data</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
-
-
-</div>
-		
-			<span class="comments"><a href="/blog/2014/05/02/chu-shi-core-data-2/#disqus_thread">Comments</a></span>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2014/05/02/chu-shi-core-data-2/" itemprop="url">初识Core Data(2)</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>本文内容：</p>
-
-<ul>
-<li>自定义NSManagedObject</li>
-<li>使用数据模型设计器</li>
-<li>探究Core Data在SQLite中的实现</li>
-</ul>
-
-
-<p>推荐先阅读上一篇文章：<a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/">初识Core Data(1)</a></p>
-
-<p><strong>文章所使用的项目代码可以到<a href="https://github.com/yulingtianxia/MyCDDemo">这里</a>下载</strong></p>
-
-
-		
-		<a href="/blog/2014/05/02/chu-shi-core-data-2/" class="more-link">阅读全文&rarr;</a>
 	</div>
 
 </article>

@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-18T17:00:03+08:00</updated>
+  <updated>2014-06-19T16:17:07+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,22 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[让软件支持Retina]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/06/19/rang-ruan-jian-zhi-chi-retina/"/>
+    <updated>2014-06-19T16:07:28+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/06/19/rang-ruan-jian-zhi-chi-retina</id>
+    <content type="html"><![CDATA[<ol>
+<li>右键单击程序，选择“显示包内容”</li>
+<li>找到“info.plist”文件并打开</li>
+<li>如果用Xcode打开：添加一个新的键值对，类型为Boolean，Key为“NSHighResolutionCapable”，Value选择“YES”；如果用其他软件打开，直接在plist节点中的dict中添加一个键值对就可以：<key>NSHighResolutionCapable</key><br/>
+<true/></li>
+<li>为了使系统更新，复制一份“软件.app”，改成别的名字如“软件1.app”，删除原来的“软件.app”，再把“软件1.app”重命名为“软件.app”</li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Optionals and Optional Chaining in Swift]]></title>
@@ -4591,7 +4607,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#x69;&#108;&#116;&#x6f;&#58;&#115;&#117;&#112;&#112;&#111;&#x72;&#116;&#64;&#103;&#105;&#116;&#x68;&#117;&#x62;&#x2e;&#99;&#x6f;&#109;&#x2e;">&#115;&#117;&#x70;&#x70;&#x6f;&#x72;&#116;&#64;&#x67;&#x69;&#116;&#x68;&#x75;&#98;&#x2e;&#x63;&#111;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#111;&#58;&#115;&#x75;&#x70;&#112;&#x6f;&#114;&#116;&#64;&#103;&#105;&#116;&#x68;&#117;&#98;&#46;&#x63;&#x6f;&#x6d;&#46;">&#x73;&#117;&#112;&#112;&#111;&#x72;&#x74;&#64;&#103;&#105;&#x74;&#x68;&#x75;&#98;&#46;&#x63;&#x6f;&#109;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
@@ -7154,92 +7170,6 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 <p>===============================================</p>
 
 <p>译者注：欢迎转载，但请一定注明出处！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[函数指针与指针函数]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/"/>
-    <updated>2014-04-17T19:24:39+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<h2>定义</h2>
-
-<p>顾名思义，指针函数即返回指针的函数。其一般定义形式如下：</p>
-
-<pre><code>   类型名 *函数名(函数参数表列);  
-</code></pre>
-
-<p>其中，后缀运算符括号“()”表示这是一个函数，其前缀运算符星号“*”表示此函数为指针型函数，其函数值为指针，即它带回来的值的类型为指针，当调用这个函数后，将得到一个“指向返回值为…的指针（地址），“类型名”表示函数返回的指针指向的类型”。<br/>
- “(函数参数表列)”中的括号为函数调用运算符，在调用语句中，即使函数不带参数，其参数表的一对括号也不能省略。其示例如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>int *pfun(int, int);</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<pre><code>由于“\*”的优先级低于“()”的优先级，因而pfun首先和后面的“()”结合，也就意味着，pfun是一个函数。即：
-</code></pre>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>int *(pfun(int, int));</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-接着再和前面的“*”结合，说明这个函数的返回值是一个指针。由于前面还有一个int，也就是说，pfun是一个返回值为整型指针的函数。<br/>
-我们不妨来再看一看，指针函数与函数指针有什么区别？</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>int (*pfun)(int, int);</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-通过括号强行将pfun首先与“*”结合，也就意味着，pfun是一个指针，接着与后面的“()”结合，说明该指针指向的是一个函数，然后再与前面的int结合，也就是说，该函数的返回值是int。由此可见，pfun是一个指向返回值为int的函数的指针。<br/>
-虽然它们只有一个括号的差别，但是表示的意义却截然不同。函数指针的本身是一个指针，指针指向的是一个函数。指针函数的本身是一个函数，其函数的返回值是一个指针。</p>
-
-<h2>用函数指针作为指针函数的返回值</h2>
-
-<p>在上面提到的指针函数里面，有这样一类函数，它们也返回指针型数据（地址），但是这个指针不是指向int、char之类的基本类型，而是指向函数。对于初学者，别说写出这样的函数声明，就是看到这样的写法也是一头雾水。比如,下面的语句：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>int (*ff(int))(int *, int);</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-我们用上面介绍的方法分析一下，ff首先与后面的“()”结合，即：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>int (*(ff(int)))(int *, int);// 用括号将ff(int)再括起来也就意味着，ff是一个函数。</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-接着与前面的“*”结合，说明ff函数的返回值是一个指针。然后再与后面的“()”结合，也就是说，该指针指向的是一个函数。<br/>
-这种写法确实让人非常难懂，以至于一些初学者产生误解，认为写出别人看不懂的代码才能显示自己水平高。而事实上恰好相反，能否写出通俗易懂的代码是衡量程序员是否优秀的标准。一般来说，用typedef关键字会使该声明更简单易懂。在前面我们已经见过：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>int (*PF)(int *, int);</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-也就是说，PF是一个函数指针“变量”。当使用typedef声明后，则PF就成为了一个函数指针“类型”，即：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>typedef int (*PF)(int *, int);</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-这样就定义了返回值的类型。然后，再用PF作为返回值来声明函数:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>PF ff(int);</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>本文摘自<a href="http://blog.sina.com.cn/s/blog_5e8facd20100qn20.html">周立功</a></p>
 ]]></content>
   </entry>
   
