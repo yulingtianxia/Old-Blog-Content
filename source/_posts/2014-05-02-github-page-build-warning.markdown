@@ -23,9 +23,10 @@ categories:
 GitHub很贴心的给出了整改意见啊，也就是第一个URL：https://github.com/blog/1715-faster-more-awesome-github-pages  
 简单的说，就是因为我的自定义一级域名需要指向一个可以让GitHub Page加载更快的IP，或者是让我的子域名指向`username.github.io`(username为GitHub用户名，我的是yulingtianxia)，如果你没有自己的域名，那么根本不会出现warning邮件，因为`username.github.io`本身已经做了加速优化。  
 我在terminal中运行了dig命令：  
-`yulingtianxia.github.io +nostats +nocomments +nocmd`  
+`dig yulingtianxia.github.io +nostats +nocomments +nocmd`  
 结果如下：  
 ``` 
+; <<>> DiG 9.8.3-P1 <<>> yulingtianxia.github.io +nostats +nocomments +nocmd
 ;; global options: +cmd
 ;yulingtianxia.github.io.	IN	A
 yulingtianxia.github.io. 2684	IN	CNAME	github.map.fastly.net.
