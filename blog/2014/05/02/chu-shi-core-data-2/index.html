@@ -181,13 +181,13 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <p>下面我们将自定义<code>NSManagedObject</code>类，通过对它的继承拓展，使得我们有自己的Event类，并通过访问器方法代替KVC方式来访问对象的属性。<br/>
 按CMD+N或者在可视化建模工具下选择菜单中Editor->Create NSManagedObject Subclass：</p>
 
-<p><img src="/images/blog/QQ20140502-1@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353399425.png" alt="" /></p>
 
-<p><img src="/images/blog/QQ20140502-2@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353399917.png" alt="" /></p>
 
 <p>选中需要子类化的Entity（当然我们只有一个Event，自动勾选了）：</p>
 
-<p><img src="/images/blog/QQ20140502-3@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353400261.png" alt="" /></p>
 
 <p>最后点击Create，于是Event类就创建好了，可以看到属性timeStamp已经自动生成了，并且实现为<code>@dynamic</code></p>
 
@@ -440,7 +440,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </ul>
 
 
-<p><img src="/images/blog/QQ20140503-1@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353400282.png" alt="" /></p>
 
 <p>选择一个属性，在右侧的Data Model Inspector中可以对属性进行更为详细的设置，而且这些设置项会根据你所设置的属性类型不同而不同，大致分为以下几类：</p>
 
@@ -460,31 +460,31 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>说了一大堆，再添加两个实体吧：Teacher和Student，都继承自Person：</p>
 
-<p><img src="/images/blog/QQ20140503-2@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353400755.png" alt="" /></p>
 
-<p><img src="/images/blog/QQ20140503-3@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353401739.png" alt="" /></p>
 
 <p>点击右下方的Editor Style切换到Graph模式：</p>
 
-<p><img src="/images/blog/QQ20140503-4@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353401953.png" alt="" /></p>
 
 <p>选中Teacher，长按Add Attribute会弹出所有的选项（同样你也可以试试长按Add Enity），选择Add Relationship，添加一个关系，命名为students，Type为To Many，目标为Student（一个老师教很多学生）：</p>
 
-<p><img src="/images/blog/QQ20140503-5@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353402308.png" alt="" /></p>
 
-<p><img src="/images/blog/QQ20140503-6@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/14035340227.png" alt="" /></p>
 
 <p>我们再尝试一种添加关系的新方法：把以前在Teacher中建立的students删除，选中Student，按住Ctrl，鼠标拖至Teacher，这样一个双向的关系就建立起来了：</p>
 
-<p><img src="/images/blog/QQ20140503-7@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353402879.png" alt="" /></p>
 
 <p>分别编辑双方的关系，Tpye都是To Many：</p>
 
-<p><img src="/images/blog/QQ20140503-8@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353402596.png" alt="" /></p>
 
 <p>用上一节中提到的方法，建立这三个新建的Entity的<code>NSManagedObject</code>子类：</p>
 
-<p><img src="/images/blog/QQ20140503-9@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/14035340286.png" alt="" /></p>
 
 <p>因为创建顺序的问题，当Student创建的时候还不知道有<code>Teacher</code>类，于是其生成的一些方法将Teacher默认为<code>NSManagedObject</code>类：</p>
 
@@ -625,7 +625,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <p>你会发现多了一个<code>CoreDataGeneratedAccessors</code>类别，这个类别中的方法是Core Data框架根据你在数据模式编辑器中设置的实体关系自动生成的，你不需要实现它们，Core Data会在运行时实现这些方法<br/>
 如果你偏要想看看其实现机理，在右下方的代码片段库中选择“Core Data To-Many Relationship Accessors”并拖拽到代码中</p>
 
-<p><img src="/images/blog/QQ20140503-10@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353403195.png" alt="" /></p>
 
 <p>生成的代码如下：</p>
 
@@ -811,21 +811,21 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>运行程序，打开MyCDDemo.sqlite文件，查看表结构：</p>
 
-<p><img src="/images/blog/QQ20140503-11@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353403982.png" alt="" /></p>
 
 <p>你会发现虽然Student和Teacher继承Person，但是Person表里面竟然也有grade和course字段</p>
 
 <p>点击程序中的加号来添加一条数据：</p>
 
-<p><img src="/images/blog/QQ20140503-12@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353403912.png" alt="" /></p>
 
 <p>查看ZPERSON，Z_3TEACHERS，Z_PRIMARYKEY表内容：</p>
 
-<p><img src="/images/blog/QQ20140503-13@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353404264.png" alt="" /></p>
 
-<p><img src="/images/blog/QQ20140503-14@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353404745.png" alt="" /></p>
 
-<p><img src="/images/blog/QQ20140503-15@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353405697.png" alt="" /></p>
 
 <p>这次一目了然了：</p>
 

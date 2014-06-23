@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-22T20:40:03+08:00</updated>
+  <updated>2014-06-23T23:51:51+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -1293,7 +1293,7 @@
 
 <p>更改后的提交架构是这样的：(来自官方图片)</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/architecture-diagram.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353388207.png" alt="" /></p>
 
 <!--more-->
 
@@ -2738,20 +2738,20 @@
 <p>设置一个属性的观察者需要三步，理解这些步骤可以更清楚的知道KVO的工作框图<br/>
 1. 首先看看你当前的场景如果使用KVO是否更妥当，比如，当一个实例的某个具体属性有任何变更的时候，另一个实例需要被通知。</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/kvo_objects.jpg" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389577.jpg" alt="" /></p>
 
 <p>比如，BankObject中的accountBalance属性有任何变更时，某个PersonObject对象都要觉察到。<br/>
 2. 这个PersonObject对象必须注册成为BankObject的accountBalance属性的观察者，可以通过发送<code>addObserver:forKeyPath:options:context:</code>消息来实现。</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/kvo_objects_connection.jpg" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389319.jpg" alt="" /></p>
 
 <p>注意：<code>addObserver:forKeyPath:options:context:</code>方法在你指定的两个实例间建立联系，而不是在两个类之间。<br/>
 3. 为了回应变更通知，观察者必须实现<code>observeValueForKeyPath:ofObject:change:context:</code>方法。这个方法的实现决定了观察者如何回应变更通知。你可以在这个方法里自定义如何回应被观察属性的变更。</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/kvo_objects_implementation.jpg" alt="" />  <br/>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353388989.jpg" alt="" />  <br/>
 4. 当一个被观察属性的值以符合KVO方式变更或者当它依赖的键变更时，<code>observeValueForKeyPath:ofObject:change:context:</code>方法会被自动执行。</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/kvo_objects_notification.jpg" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389524.jpg" alt="" /></p>
 
 <h3>Registering for Key-Value Observing</h3>
 
@@ -3233,7 +3233,7 @@ NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
     <id>http://yulingtianxia.com/blog/2014/05/10/zhuang-shi-zhe-mo-shi</id>
     <content type="html"><![CDATA[<p>装饰者模式动态地将责任附加到对象上。若要扩展功能，装饰者提供了比继承更有弹性的替代方案。</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140510-1@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353405846.png" alt="" /></p>
 
 <!--more-->
 
@@ -3255,13 +3255,13 @@ NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
 <p>比如，现在有一个饮料类（Beverage），向饮料中添加不同的配料（蒸奶（Steamed Milk）、豆浆（Soy）、
 摩卡（Mocha，也就是巧克力风味）或覆盖奶泡），就会配制出很多种不同的种类的饮料，其价格也随着添加的配料而变化，饮料店需要计算价格，如果用具体子类继承饮料类并考虑到所有组合的话，将是一个“类爆炸”：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140510-2@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353406269.png" alt="" /></p>
 
 <p>更恶心的是，如果某种配料的价格有变化，就必须含有此配料相应的更改一些饮料子类的实现，记住：<strong>类应该对扩展开放，对修改关闭。</strong></p>
 
 <p>应用装饰者模式，就像给对象穿衣服一样一层一层将拓展动态的添加上去，灵活多变有弹性</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140510-3@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353407109.png" alt="" /></p>
 
 <p>下面用Java实现这个例子</p>
 
@@ -3422,17 +3422,17 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 <p>
 果然是一层套一层吧：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140510-4@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353407345.png" alt="" /></p>
 
 <h2>Java中的装饰者</h2>
 
 <p>java.io包内的类太多了，简直是……“排山倒海”。你第一次（还有第二次和第三次）看到这些API发出“哇”的惊叹时，放心，你不是唯一受到惊吓的人。现在，你已经知道装饰者模式，这些I/O的相关类对你来说应该更有意义了，因为其中许多类都是装饰者。下面是一个典型的对象集合，用装饰者来将功能结合起来，以读取文件数据：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140510-5@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353408228.png" alt="" /></p>
 
 <p><code>BufferedInputStream</code>及<code>LineNumberInputStream</code>都扩展自<code>FilterInputStream</code>，而<code>FilterInputStream</code>是一个抽象的装饰类。</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140510-6@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353408237.png" alt="" /></p>
 
 <p>你会发现“输出”流的设计方式也是一样的。你可能还会发现Reader/Writer流（作为基于字符数据的输入输出）和输入流/输出流的类相当类似（虽然有一些小差异和不一致之处，但是相当雷同，所以你应该可以了解这些类）。</p>
 
@@ -3450,7 +3450,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>这次我们来装饰一张照片，装饰的方法有很多，比如旋转位移变换，阴影。。。</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140510-7@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353408757.png" alt="" /></p>
 
 <p>工程代码可以在<a href="https://github.com/yulingtianxia/Decorator">这里</a>下载</p>
 
@@ -3802,7 +3802,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 我构建了一个App，分别将被测试的Node放置在场景中央，并用一个黑色的小圆圈代表Node的坐标系的原点<br/>
 因为SKNode比较抽象，没填充内容，所以只显示了一个原点：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/SKNode.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353411185.png" alt="" /></p>
 
 <p>如果想填充些东西来证明SKNode的坐标系原点的确在其中央，将下面代码注释部分取消注释即可：</p>
 
@@ -3845,7 +3845,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>粒子系统比较有趣，它从原点发射大量粒子，不同的粒子系统也会构筑不同的效果，因为它没有边界，还可调节发射粒子的数量方向速度等，这也使得原点在整个粒子系统中的位置有了错觉，但其本质还是(0.5,0.5)，也就是在中心</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/SKEmitterNode.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353410978.png" alt="" /></p>
 
 <p>这个火苗看起来中心在哪呢？当然在圆圈处！因为粒子是从圆圈处的区域产生的，然后向上发射</p>
 
@@ -3855,7 +3855,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>知道其原点精确位置对于编程来说意义不大，以后有时间会深究下</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/SKLabelNode.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353410886.png" alt="" /></p>
 
 <h2>SKShapeNode</h2>
 
@@ -3890,13 +3890,13 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>下图是我故意画了个正方形使其居中：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/SKShapeNode.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353411872.png" alt="" /></p>
 
 <h2>SKSpriteNode</h2>
 
 <p>坐标原点在其frame中心，也就是(0.5,0.5)</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/SKSpriteNode.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353412174.png" alt="" /></p>
 
 <h2>总结</h2>
 
@@ -3941,13 +3941,13 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 <p>下面我们将自定义<code>NSManagedObject</code>类，通过对它的继承拓展，使得我们有自己的Event类，并通过访问器方法代替KVC方式来访问对象的属性。<br/>
 按CMD+N或者在可视化建模工具下选择菜单中Editor->Create NSManagedObject Subclass：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140502-1@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353399425.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140502-2@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353399917.png" alt="" /></p>
 
 <p>选中需要子类化的Entity（当然我们只有一个Event，自动勾选了）：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140502-3@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353400261.png" alt="" /></p>
 
 <p>最后点击Create，于是Event类就创建好了，可以看到属性timeStamp已经自动生成了，并且实现为<code>@dynamic</code></p>
 
@@ -4200,7 +4200,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 </ul>
 
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-1@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353400282.png" alt="" /></p>
 
 <p>选择一个属性，在右侧的Data Model Inspector中可以对属性进行更为详细的设置，而且这些设置项会根据你所设置的属性类型不同而不同，大致分为以下几类：</p>
 
@@ -4220,31 +4220,31 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>说了一大堆，再添加两个实体吧：Teacher和Student，都继承自Person：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-2@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353400755.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-3@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353401739.png" alt="" /></p>
 
 <p>点击右下方的Editor Style切换到Graph模式：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-4@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353401953.png" alt="" /></p>
 
 <p>选中Teacher，长按Add Attribute会弹出所有的选项（同样你也可以试试长按Add Enity），选择Add Relationship，添加一个关系，命名为students，Type为To Many，目标为Student（一个老师教很多学生）：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-5@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353402308.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-6@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/14035340227.png" alt="" /></p>
 
 <p>我们再尝试一种添加关系的新方法：把以前在Teacher中建立的students删除，选中Student，按住Ctrl，鼠标拖至Teacher，这样一个双向的关系就建立起来了：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-7@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353402879.png" alt="" /></p>
 
 <p>分别编辑双方的关系，Tpye都是To Many：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-8@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353402596.png" alt="" /></p>
 
 <p>用上一节中提到的方法，建立这三个新建的Entity的<code>NSManagedObject</code>子类：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-9@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/14035340286.png" alt="" /></p>
 
 <p>因为创建顺序的问题，当Student创建的时候还不知道有<code>Teacher</code>类，于是其生成的一些方法将Teacher默认为<code>NSManagedObject</code>类：</p>
 
@@ -4385,7 +4385,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 <p>你会发现多了一个<code>CoreDataGeneratedAccessors</code>类别，这个类别中的方法是Core Data框架根据你在数据模式编辑器中设置的实体关系自动生成的，你不需要实现它们，Core Data会在运行时实现这些方法<br/>
 如果你偏要想看看其实现机理，在右下方的代码片段库中选择“Core Data To-Many Relationship Accessors”并拖拽到代码中</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-10@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353403195.png" alt="" /></p>
 
 <p>生成的代码如下：</p>
 
@@ -4571,21 +4571,21 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>运行程序，打开MyCDDemo.sqlite文件，查看表结构：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-11@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353403982.png" alt="" /></p>
 
 <p>你会发现虽然Student和Teacher继承Person，但是Person表里面竟然也有grade和course字段</p>
 
 <p>点击程序中的加号来添加一条数据：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-12@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353403912.png" alt="" /></p>
 
 <p>查看ZPERSON，Z_3TEACHERS，Z_PRIMARYKEY表内容：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-13@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353404264.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-14@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353404745.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140503-15@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353405697.png" alt="" /></p>
 
 <p>这次一目了然了：</p>
 
@@ -4607,7 +4607,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#115;&#117;&#112;&#112;&#111;&#114;&#x74;&#64;&#103;&#x69;&#x74;&#104;&#117;&#x62;&#x2e;&#x63;&#111;&#109;&#46;">&#x73;&#117;&#112;&#112;&#111;&#x72;&#116;&#64;&#x67;&#x69;&#116;&#104;&#117;&#98;&#46;&#99;&#111;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#115;&#x75;&#x70;&#x70;&#x6f;&#x72;&#116;&#x40;&#x67;&#x69;&#116;&#104;&#117;&#x62;&#46;&#99;&#x6f;&#x6d;&#x2e;">&#115;&#117;&#x70;&#x70;&#x6f;&#x72;&#x74;&#x40;&#103;&#105;&#116;&#104;&#x75;&#x62;&#x2e;&#99;&#x6f;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
@@ -4688,11 +4688,11 @@ GitHub很贴心的给出了整改意见啊，也就是第一个URL：<a href="ht
 
 <p>在Xcode5中，只有Master-Detail Application，Utility Application以及Empty Application支持创建时使用Core Data模板，我们选择带有UITableView的Master-Detail Application吧。</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140501-1@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/14035339677.png" alt="" /></p>
 
 <p>一定要勾选Core Data选项，项目名称就叫MyCDDemo吧，嘿嘿</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140501-2@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353396978.png" alt="" /></p>
 
 <p>项目建立后会发现Frameworks中已经有了<code>CoreData.framework</code>一项，并且还多了一个MyCDDemo.xcdatamodeld文件，该文件定义了数据模型结构，你可以使用XCode内置的可视化建模工具进行构建。点开它你会发现左侧有三项：Entities，Fetch Request、Configurations。</p>
 
@@ -4700,11 +4700,11 @@ GitHub很贴心的给出了整改意见啊，也就是第一个URL：<a href="ht
 
 <p>在系统的学习Core Data前，可以简单的将Entity理解为数据库中的一张表，在代码中一个<code>NSEntityDescription</code>类的对象就代表了一个Entity。Entity也像类一样可以继承，如果你有若干个相似的实体，就可以抽离出它们的共有特性作为一个“父实体”，就省去了在多个实体中都指定相同的属性。甚至可以勾选Abstract Entitiy让其成为抽象实体，就像抽象类一样。</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/xcodeparententity_2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353414584.png" alt="" /></p>
 
 <p>现在已经有了一个现成的实体：Event，也就是在SQLite中有了一张叫做Event的表：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140501-3@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353397403.png" alt="" /></p>
 
 <p>Attributes就相当于一张表的列属性，可以设置其数据类型，默认值，最大最小值等，类似数据库可视化建表。需要注意的是这里的空值是NULL，不等同于OC中的nil，更不等同于0和空字符串@“”。Event实体中已经有了一个叫timeStamp的属性，类型为Date，这是模版自动生成的，暂且别修改它。</p>
 
@@ -4718,7 +4718,7 @@ GitHub很贴心的给出了整改意见啊，也就是第一个URL：<a href="ht
 
 <p>你可以预定义请求，把它们作为模板存储在被管理对象模型中。预定义的模板在你需要的时候就可以取出使用。通常情况下，我们通过Xcode的data modeling tool工具创建请求模板。模板可以包含变量：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/variablelikepredicate_2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353412465.png" alt="" /></p>
 
 <p><strong>Configurations</strong></p>
 
@@ -5025,17 +5025,17 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 
 <p>按理说接下来应该看看<code>MasterViewController中</code>被传入的<code>managedObjectContext</code>对象是如何使用的，但在这之前，我们先运行下程序，看看这个App有什么功能：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140501-4@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353397837.png" alt="" /></p>
 
 <p>再普通不过的tableview了，点击加号便可添加一条记录，内容为时间戳，回想起之前看的名称为Event的Entity，是不是想起了什么，嘿嘿。再添加了四条记录后，不妨打开sqlite文件查看下，路径为<code>~/Library/Application Support/iPhone Simulator/[OS version]/Applications/[appGUID]/Documents/</code>，目录内包含了三个文件MyCDDemo.sqlite、MyCDDemo.sqlite-shm、MyCDDemo.sqlite-wal。如上文所述，根据AppDelegate.m文件中的<code>persistentStoreCoordinator</code>方法可知，时间戳记录被存储在MyCDDemo.sqlite文件中。我用Navicat Premium将其打开：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140501-5@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/14035339876.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/QQ20140501-6@2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353398727.png" alt="" /></p>
 
 <p>相信你对“三剑客”有了更深的理解，再附上一张图加深下印象：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/coredata1.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353388879.png" alt="" /></p>
 
 <p>一个<code>NSManagedObjectModel</code>对象处在<code>NSPersistentStoreCoordinator</code>对象和<code>NSManagedObjectContext</code>对象之间。Core Data根据<code>NSManagedObjectModel</code>对象确定如何将底层的持久化文件中的数据映射为<code>NSManagedObject</code>对象。一个<code>NSManagedObjectModel</code>对象用于表示数据的结构。<code>NSManagedObjectModel</code>对象也被称为对象图(object graph)。你可以简单的理解为：<strong>在数据库sqlite文件中，一张表中的一条数据（table row）就相当于代码中的一个NSManagedObject对象，他们之间的映射是通过<code>NSManagedObjectModel</code>对象完成的</strong></p>
 
@@ -5361,17 +5361,17 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 
 <p>可能你会觉得有些混乱，这里贴上几张图梳理下各个类的关系和结构：</p>
 
-<p><img src="http://yulingtianxia.com/images/blog/coredata_doc_management_2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353388301.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/fetch_request_2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389167.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/advanced_persistence_stack_2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353388423.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/managed_object_model_2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389646.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/entity_description_2x.png" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389047.png" alt="" /></p>
 
-<p><img src="http://yulingtianxia.com/images/blog/advanced_persistent_stack.jpg" alt="" /></p>
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353388523.jpg" alt="" /></p>
 
 <p>最后，找到<code>insertNewObject</code>方法，当用户尝试加入一个对象到表视图时，该方法将被调用。接着你将看到如下的处理过程：</p>
 
