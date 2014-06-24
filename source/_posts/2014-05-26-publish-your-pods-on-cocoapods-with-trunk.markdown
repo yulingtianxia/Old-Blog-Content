@@ -15,7 +15,7 @@ categories:
 
 更改后的提交架构是这样的：(来自官方图片)  
 
-![](/images/blog/architecture-diagram.png)  
+![](http://img41.wal8.com/img41/425047_20140623222918/140353388207.png)  
 
 <!--more-->
 

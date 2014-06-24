@@ -13,14 +13,14 @@ categories:
 <!-- more-->
 XCode5 Cheat Sheet:([作者](http://www.git-tower.com/blog/xcode-cheat-sheet/))  
 
-{%img /images/blog/xcode-cheat-sheet_页面_1.jpg %}   
+![](http://byetz.img41.wal8.com/img41/425047_20140623222918/140353412989.jpg)   
 
-{%img /images/blog/xcode-cheat-sheet_页面_2.jpg %}  
+![](http://byetz.img41.wal8.com/img41/425047_20140623222918/140353414151.jpg)  
 
 Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(摘自[raywenderlich](http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5))   
 
-{%img /images/blog/RW-Objective-C-Cheatsheet-v-1-5.jpg %}   
+![](http://byetz.img41.wal8.com/img41/425047_20140623222918/140353409554.jpg)   
 
 Swift Cheat Sheet and Quick Reference:(摘自[raywenderlich](http://www.raywenderlich.com/73967/swift-cheat-sheet-and-quick-reference))  
 
-![](/images/blog/RW-Swift-Cheatsheet.png)  
+![](http://byetz.img41.wal8.com/img41/425047_20140623222918/140353410275.png)  
