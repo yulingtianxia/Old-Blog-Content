@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-24T00:11:29+08:00</updated>
+  <updated>2014-06-24T16:26:01+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,479 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Initialization in Swift]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/06/24/initialization-in-swift/"/>
+    <updated>2014-06-24T09:50:23+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/06/24/initialization-in-swift</id>
+    <content type="html"><![CDATA[<p>本文参考自Swift文档，主要包括以下内容：</p>
+
+<ul>
+<li>简介</li>
+<li>自定义构造过程</li>
+<li>默认构造器</li>
+<li>值类型的构造器代理</li>
+<li>类的继承和构造过程</li>
+<li>通过闭包和函数来设置属性的默认值</li>
+</ul>
+
+
+<!--more-->
+
+
+<h2>简介</h2>
+
+<p>构造过程是为了使用某个类、结构体或枚举类型的实例而进行的准备过程。这个过程包含了为实例中的每个属性设置初始值和为其执行必要的准备和初始化任务。</p>
+
+<p>Swift中的构造器不像Objective-C那样有返回值，但是跟C++有点像：所有的构造器都以<code>init</code>命名，用参数列表来区分各个构造器</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Fahrenheit {
+</span><span class='line'>    var temperature = 16.0
+</span><span class='line'>    init() {
+</span><span class='line'>        temperature = 32.0
+</span><span class='line'>    }
+</span><span class='line'>}
+</span><span class='line'>var f = Fahrenheit()</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><code>Fahrenheit</code>是一个结构体，与类一样，Swift中的值类型也有构造器和普通方法。上面的代码先是定义了<code>temperature</code>属性的默认值，然后又在构造器中将其赋值，最后<code>temperature</code>属性的值为32。对于<code>temperature</code>这种存储型属性，无论定义默认值还是在构造器中赋值，最终它们实现的效果是一样的。</p>
+
+<p><strong>给存储型类型属性赋默认值或在初始构造器中设置初始值时，此属性的属性观察者不会被调用</strong></p>
+
+<h2>自定义构造过程</h2>
+
+<p>你可以定义一些带参数的构造器</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Celsius {
+</span><span class='line'>    var temperatureInCelsius: Double = 0.0
+</span><span class='line'>    init(fromFahrenheit fahrenheit: Double) {
+</span><span class='line'>        temperatureInCelsius = (fahrenheit - 32.0) / 1.8
+</span><span class='line'>    }
+</span><span class='line'>    init(fromKelvin kelvin: Double) {
+</span><span class='line'>        temperatureInCelsius = kelvin - 273.15
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+构造器的参数也跟Swift中的方法定义（注意不是函数）一样，也分内部和外部参数名。上面代码中两个构造器外部参数名不同，调用构造器的时候也是通过外部参数名来区分的：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>let boilingPointOfWater = Celsius(fromFahrenheit: 212.0)
+</span><span class='line'>// boilingPointOfWater.temperatureInCelsius 是 100.0
+</span><span class='line'>let freezingPointOfWater = Celsius(fromKelvin: 273.15)
+</span><span class='line'>// freezingPointOfWater.temperatureInCelsius 是 0.0”</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+如果不写外部参数名那么外部参数名就等于内部参数名。如果你不希望为构造器的某个参数提供外部名字，你还可以使用下划线<code>_</code>来显示描述它的外部名：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Color {
+</span><span class='line'>    let red = 0.0, green = 0.0, blue = 0.0
+</span><span class='line'>    init(red: Double, green: Double, blue: Double) {
+</span><span class='line'>        self.red   = red
+</span><span class='line'>        self.green = green
+</span><span class='line'>        self.blue  = blue
+</span><span class='line'>    }
+</span><span class='line'>}
+</span><span class='line'>let magenta = Color(red: 1.0, green: 0.0, blue: 1.0)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+你会发现构造器的第一个内部参数名也会默认作为其外部参数名供调用，这一点与方法不同（方法不会默认将第一个内部参数名作为外部参数名使用），因为方法名可以在结尾加上介词来烘托出第一个参数的名字，这样就不需要为第一个参数弄一个外部参数名了，但是构造器只能用<code>init</code>关键字来定义。</p>
+
+<p>如果你定制的类型包含一个逻辑上允许取值为空的存储型属性&mdash;不管是因为它无法在初始化时赋值，还是因为它可以在之后某个时间点可以赋值为空&mdash;你都需要将它定义为可选类型<code>optional type</code>。可选类型的属性将自动初始化为空<code>nil</code>，表示这个属性是故意在初始化时设置为空的。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class SurveyQuestion {
+</span><span class='line'>    let text: String
+</span><span class='line'>    var response: String?
+</span><span class='line'>    init(text: String) {
+</span><span class='line'>        self.text = text
+</span><span class='line'>    }
+</span><span class='line'>    func ask() {
+</span><span class='line'>        println(text)
+</span><span class='line'>    }
+</span><span class='line'>}
+</span><span class='line'>let cheeseQuestion = SurveyQuestion(text: "Do you like cheese?")
+</span><span class='line'>cheeseQuestion.ask()
+</span><span class='line'>// 输出 "Do you like cheese?"
+</span><span class='line'>cheeseQuestion.response = "Yes, I do like cheese.</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>调查问题在问题提出之后，我们才能得到回答。所以我们将属性回答response声明为String?类型，或者说是可选字符串类型optional String。当SurveyQuestion实例化时，它将自动赋值为空nil，表明暂时还不存在此字符串。<br/>
+只要在构造过程结束前常量的值能确定，你可以在构造过程中的任意时间点修改常量属性的值。尽管text属性是常量，我们仍然可以在其类的构造器中设置它的值。<strong>对某个类实例来说，它的常量属性只能在定义它的类的构造过程中修改；不能在子类中修改。</strong></p>
+
+<h2>默认构造器</h2>
+
+<p>Swift将为所有属性已提供默认值的且自身没有定义任何构造器的结构体或基类，提供一个默认的构造器。这个默认构造器将简单的创建一个所有属性值都设置为默认值的实例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class ShoppingListItem {
+</span><span class='line'>    var name: String?
+</span><span class='line'>    var quantity = 1
+</span><span class='line'>    var purchased = false
+</span><span class='line'>}
+</span><span class='line'>var item = ShoppingListItem()</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+<code>ShoppingListItem</code>类没有父类（是基类），所有属性都有默认值（可选属性默认值为<code>nil</code>），所以可以直接调用默认的无参数构造器来初始化。<br/>
+除上面提到的默认构造器，如果结构体对所有存储型属性提供了默认值且自身没有提供定制的构造器，它们能自动获得一个<strong>逐一成员构造器（Memberwise Initializers）</strong>：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Size {
+</span><span class='line'>    var width = 0.0, height = 0.0
+</span><span class='line'>}
+</span><span class='line'>let twoByTwo = Size(width: 2.0, height: 2.0)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+逐一成员构造器是用来初始化结构体新实例里成员属性的快捷方法。我们在调用逐一成员构造器时，通过与成员属性名相同的参数名进行传值来完成对成员属性的初始赋值。</p>
+
+<h2>值类型的构造器代理</h2>
+
+<p>构造器可以通过调用其它构造器来完成实例的部分构造过程。这一过程称为构造器代理，它能减少多个构造器间的代码重复：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Size {
+</span><span class='line'>    var width = 0.0, height = 0.0
+</span><span class='line'>}
+</span><span class='line'>struct Point {
+</span><span class='line'>    var x = 0.0, y = 0.0
+</span><span class='line'>}
+</span><span class='line'>struct Rect {
+</span><span class='line'>    var origin = Point()
+</span><span class='line'>    var size = Size()
+</span><span class='line'>    init() {}
+</span><span class='line'>    init(origin: Point, size: Size) {
+</span><span class='line'>        self.origin = origin
+</span><span class='line'>        self.size = size
+</span><span class='line'>    }
+</span><span class='line'>    init(center: Point, size: Size) {
+</span><span class='line'>        let originX = center.x - (size.width / 2)
+</span><span class='line'>        let originY = center.y - (size.height / 2)
+</span><span class='line'>        self.init(origin: Point(x: originX, y: originY), size: size)
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+在值类型中，如果你添加了自定义构造器（如<code>init(center: Point, size: Size)</code>），Swift不会再为结构体生成一个默认构造器和逐一成员构造器，所以我们自己定义了<code>init()</code>和<code>init(origin: Point, size: Size)</code>，他们与自动生成的默认构造器和逐一成员构造器是一样的。这样子会显得很麻烦，我们可以将自定义构造器<code>init(center: Point, size: Size)</code>写在结构体<code>Rect</code>的扩展（<code>extension</code>）里，这样就不用自己把默认构造器和逐一成员构造器写一遍了。</p>
+
+<p>构造器<code>init(center:size:)</code>先通过<code>center</code>和<code>size</code>的值计算出<code>origin</code>的坐标。然后再调用（或代理给）<code>init(origin:size:)</code>构造器来将新的<code>origin</code>和<code>size</code>值赋值到对应的属性中。因为值类型（结构体和枚举类型）不支持继承，所以构造器代理的过程相对简单，因为它们只能代理给本身提供的其它构造器：你只能在构造器内部调用<code>self.init</code></p>
+
+<h2>类的继承和构造过程</h2>
+
+<p>类里面的所有存储型属性&mdash;包括所有继承自父类的属性&mdash;都必须在构造过程中设置初始值。</p>
+
+<p>Swift 提供了两种类型的类构造器来确保所有类实例中存储型属性都能获得初始值，它们分别是指定构造器(<code>Designated Initializers</code>)和便利构造器(<code>Convenience Initializers</code>)。</p>
+
+<h3>指定构造器和便利构造器</h3>
+
+<p>指定构造器是类中最主要的构造器。一个指定构造器将初始化类中提供的所有属性，并根据父类链往上调用父类的构造器来实现父类的初始化。<strong>每一个类都必须拥有至少一个指定构造器。</strong></p>
+
+<p>便利构造器是类中比较次要的、辅助型的构造器。你可以定义便利构造器来调用同一个类中的指定构造器，并为其参数提供默认值。你也可以定义便利构造器来创建一个特殊用途或特定输入的实例。</p>
+
+<p>类的指定构造器的写法跟值类型简单构造器一样，便利构造器也采用相同样式的写法，但需要在init关键字之前放置convenience关键字：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>convenience init(parameters) {
+</span><span class='line'>    statements
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>构造器链</h3>
+
+<p>为了简化指定构造器和便利构造器之间的调用关系，Swift 采用以下三条规则来限制构造器之间的代理调用：</p>
+
+<ol>
+<li>指定构造器必须调用其直接父类的的指定构造器。</li>
+<li>便利构造器必须调用同一类中定义的其它构造器。</li>
+<li>便利构造器必须最终以调用一个指定构造器结束。</li>
+</ol>
+
+
+<p>一个更方便记忆的方法是:</p>
+
+<ul>
+<li>指定构造器必须总是向上代理</li>
+<li>便利构造器必须总是横向代理</li>
+</ul>
+
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/initializerDelegation01_2x.png" alt="" />
+举个栗子：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Food {
+</span><span class='line'>    var name: String
+</span><span class='line'>    init(name: String) {
+</span><span class='line'>        self.name = name
+</span><span class='line'>    }
+</span><span class='line'>    convenience init() {
+</span><span class='line'>        self.init(name: "[Unnamed]")
+</span><span class='line'>    }
+</span><span class='line'>}
+</span><span class='line'>let namedMeat = Food(name: "Bacon")
+</span><span class='line'>// namedMeat 的名字是 "Bacon”
+</span><span class='line'>let mysteryMeat = Food()
+</span><span class='line'>// mysteryMeat 的名字是 [Unnamed]</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/initializersExample01_2x.png" alt="" /></p>
+
+<h3>两段式构造过程</h3>
+
+<p>Swift 中类的构造过程包含两个阶段。第一个阶段，每个存储型属性通过引入它们的类的构造器来设置初始值。当每一个存储型属性值被确定后，第二阶段开始，它给每个类一次机会在新实例准备使用之前进一步定制它们的存储型属性。<br/>
+下图展示了在假定的子类和父类之间构造的阶段1：</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/twoPhaseInitialization01_2x.png" alt="" /></p>
+
+<p>指定构造器将确保所有子类的属性都有值，然后它将调用父类的指定构造器，并沿着造器链一直往上完成父类的构建过程。一旦父类中所有属性都有了初始值，实例的内存被认为是完全初始化，而阶段1也已完成。</p>
+
+<p>以下展示了相同构造过程的阶段2：</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/twoPhaseInitialization02_2x.png" alt="" /></p>
+
+<p>父类中的指定构造器现在有机会进一步来定制实例（尽管它没有这种必要）。</p>
+
+<p>一旦父类中的指定构造器完成调用，子类的构指定构造器可以执行更多的定制操作（同样，它也没有这种必要）。</p>
+
+<p>最终，一旦子类的指定构造器完成调用，最开始被调用的便利构造器可以执行更多的定制操作。</p>
+
+<p>两段式构造过程是基于<strong>安全检查</strong>的，可以简单的理解为：</p>
+
+<ul>
+<li>指定构造器初始化顺序：初始化类自己引入的属性->向上代理调用父类指定构造器->为继承的属性设置新值</li>
+<li>便利构造器初始化顺序：代理调用同一类中的其它构造器->为任意属性赋新值</li>
+<li>构造器在第一阶段构造完成之前，不能调用任何实例方法、不能读取任何实例属性的值，也不能引用self的值。</li>
+</ul>
+
+
+<h3>构造器的继承和重载</h3>
+
+<p><strong>跟 Objective-C 中的子类不同，Swift 中的子类不会默认继承父类的构造器。</strong>这是为了防止你想初始化一个很牛逼的类，但是调用的却是它继承于父类的菜逼构造器，那将会是个悲剧。</p>
+
+<p><strong>但是如果特定条件可以满足，父类构造器是可以被自动继承的：</strong></p>
+
+<ol>
+<li>如果子类没有定义任何指定构造器，它将自动继承所有父类的指定构造器。</li>
+<li>如果子类提供了所有父类指定构造器的实现&mdash;不管是通过规则1继承过来的，还是通过自定义实现的&mdash;它将自动继承所有父类的便利构造器。</li>
+</ol>
+
+
+<p>即使你在子类中添加了更多的便利构造器，这两条规则仍然适用。子类可以通过定义便利构造器来实现父类中的指定构造器，来部分满足规则2</p>
+
+<p>如果你需要重写一个跟父类一样的构造器，无论是指定构造器还是便利构造器，不同于重载方法、属性和下标，在重载构造器时你没有必要使用关键字<code>override</code></p>
+
+<p>还记得之前指定的<code>Food</code>类吧，现在它多了一个子类<code>RecipeIngredient</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class RecipeIngredient: Food {
+</span><span class='line'>    var quantity: Int
+</span><span class='line'>    init(name: String, quantity: Int) {
+</span><span class='line'>        self.quantity = quantity
+</span><span class='line'>        super.init(name: name)
+</span><span class='line'>    }
+</span><span class='line'>    convenience init(name: String) {
+</span><span class='line'>        self.init(name: name, quantity: 1)
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+可以看出来<code>RecipeIngredient</code>类的指定构造器和便利构造器都符合两段式构造安全检查，并且便利构造器跟<code>Food</code>类中的指定构造器具有相同的参数，尽管<code>RecipeIngredient</code>这个构造器是便利构造器，<code>RecipeIngredient</code>依然提供了对所有父类指定构造器的实现。因此，<code>RecipeIngredient</code>也能自动继承了所有父类的便利构造器(也就是<code>init()</code>):</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/initializersExample02_2x.png" alt="" /></p>
+
+<p>上图中<code>RecipeIngredient</code>类继承的init()函数版本跟Food提供的版本是一样的，除了它是将任务代理给RecipeIngredient版本的init(name: String)而不是Food提供的版本。</p>
+
+<p>食材都已经建立好了，下面开始采购吧！我们需要一个购物单，购物单中每一项是这样子的：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class ShoppingListItem: RecipeIngredient {
+</span><span class='line'>    var purchased = false
+</span><span class='line'>    var description: String {
+</span><span class='line'>    var output = "\(quantity) x \(name.lowercaseString)"
+</span><span class='line'>        output += purchased ? " ✔" : " ✘"
+</span><span class='line'>        return output
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>由于它为自己引入的所有属性都提供了默认值，并且自己没有定义任何构造器，ShoppingListItem将自动继承所有父类中的指定构造器和便利构造器。</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/initializersExample03_2x.png" alt="" /></p>
+
+<p>你可以使用全部三个继承来的构造器来创建ShoppingListItem的新实例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var breakfastList = [
+</span><span class='line'>    ShoppingListItem(),
+</span><span class='line'>    ShoppingListItem(name: "Bacon"),
+</span><span class='line'>    ShoppingListItem(name: "Eggs", quantity: 6),
+</span><span class='line'>]
+</span><span class='line'>breakfastList[0].name = "Orange juice"
+</span><span class='line'>breakfastList[0].purchased = true
+</span><span class='line'>for item in breakfastList {
+</span><span class='line'>    println(item.description)
+</span><span class='line'>}
+</span><span class='line'>// 1 x orange juice ✔
+</span><span class='line'>// 1 x bacon ✘
+</span><span class='line'>// 6 x eggs ✘</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h2>通过闭包和函数来设置属性的默认值</h2>
+
+<p>如果某个存储型属性的默认值需要特别的定制或准备，你就可以使用闭包或全局函数来为其属性提供定制的默认值。每当某个属性所属的新类型实例创建时，对应的闭包或函数会被调用，而它们的返回值会当做默认值赋值给这个属性。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class SomeClass {
+</span><span class='line'>    let someProperty: SomeType = {
+</span><span class='line'>        // 在这个闭包中给 someProperty 创建一个默认值
+</span><span class='line'>        // someValue 必须和 SomeType 类型相同
+</span><span class='line'>        return someValue
+</span><span class='line'>        }()
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>注意闭包结尾的大括号后面接了一对空的小括号。这是用来告诉 Swift 需要立刻执行此闭包。如果你忽略了这对括号，相当于是将闭包本身作为值赋值给了属性，而不是将闭包的返回值赋值给属性。</p>
+
+<p>如果你使用闭包来初始化属性的值，请记住在闭包执行时，实例的其它部分都还没有初始化。这意味着你不能够在闭包里访问其它的属性，就算这个属性有默认值也不允许。同样，你也不能使用隐式的self属性，或者调用其它的实例方法。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[让软件支持Retina]]></title>
@@ -4607,7 +5080,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#58;&#115;&#x75;&#112;&#112;&#x6f;&#114;&#x74;&#x40;&#x67;&#x69;&#x74;&#104;&#x75;&#x62;&#46;&#99;&#111;&#109;&#x2e;">&#x73;&#x75;&#112;&#112;&#111;&#x72;&#116;&#x40;&#x67;&#x69;&#x74;&#x68;&#x75;&#98;&#x2e;&#x63;&#111;&#109;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#x73;&#x75;&#112;&#112;&#x6f;&#x72;&#x74;&#x40;&#103;&#x69;&#x74;&#x68;&#x75;&#98;&#x2e;&#99;&#x6f;&#x6d;&#x2e;">&#x73;&#x75;&#x70;&#x70;&#x6f;&#114;&#116;&#64;&#x67;&#105;&#116;&#x68;&#x75;&#x62;&#x2e;&#99;&#111;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
@@ -6385,793 +6858,6 @@ MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainSce
 
 <p>
 感谢StackOverFlow网友的回答：<a href="http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values">http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[GCD 深入理解：第一部分]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/"/>
-    <updated>2014-04-19T19:11:18+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/19/grand-central-dispatch-in-depth-part-1</id>
-    <content type="html"><![CDATA[<p><strong>本文转载自<a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md">NIX</a></strong></p>
-
-<hr />
-
-<p>本文翻译至 <a href="http://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1">http://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1</a></p>
-
-<p>原作者：<a href="http://www.raywenderlich.com/u/Lolgrep">Derek Selander</a></p>
-
-<p>译者：<a href="https://twitter.com/nixzhu">@nixzhu</a></p>
-
-<!--more-->
-
-
-<hr />
-
-<p>虽然 GCD 已经出现过一段时间了，但不是每个人都明了其主要内容。这是可以理解的；并发一直很棘手，而 GCD 是基于 C 的 API ，它们就像一组尖锐的棱角戳进 Objective-C 的平滑世界。我们将分两个部分的教程来深入学习 GCD 。</p>
-
-<p>在这两部分的系列中，第一个部分的将解释 GCD 是做什么的，并从许多基本的 GCD 函数中找出几个来展示。在第二部分，你将学到几个 GCD 提供的高级函数。</p>
-
-<h2>什么是 GCD</h2>
-
-<p>GCD 是 <code>libdispatch</code> 的市场名称，而 libdispatch 作为 Apple 的一个库，为并发代码在多核硬件（跑 iOS 或 OS X ）上执行提供有力支持。它具有以下优点：</p>
-
-<ul>
-<li>GCD 能通过推迟昂贵计算任务并在后台运行它们来改善你的应用的响应性能。</li>
-<li>GCD 提供一个易于使用的并发模型而不仅仅只是锁和线程，以帮助我们避开并发陷阱。</li>
-<li>GCD 具有在常见模式（例如单例）上用更高性能的原语优化你的代码的潜在能力。</li>
-</ul>
-
-
-<p>本教程假设你对 Block 和 GCD 有基础了解。如果你对 GCD 完全陌生，先看看 <a href="http://www.raywenderlich.com/4295/multithreading-and-grand-central-dispatch-on-ios-for-beginners-tutorial">iOS 上的多线程和 GCD 入门教程</a> 学习其要领。</p>
-
-<h2>GCD 术语</h2>
-
-<p>要理解 GCD ，你要先熟悉与线程和并发相关的几个概念。这两者都可能模糊和微妙，所以在开始 GCD 之前先简要地回顾一下它们。</p>
-
-<h4>Serial vs. Concurrent 串行 vs. 并行</h4>
-
-<p>这些术语描述当任务相对于其它任务被执行，任务串行执行就是每次只有一个任务被执行，任务并行执行就是在同一时间可以有多个任务被执行。</p>
-
-<p>虽然这些术语被广泛使用，本教程中你可以将任务设定为一个 Objective-C 的 Block 。不明白什么是 Block ？看看 <a href="http://www.raywenderlich.com/9328/creating-a-diner-app-using-blocks-part-1">iOS 5 教程中的如何使用 Block</a> 。实际上，你也可以在 GCD 上使用函数指针，但在大多数场景中，这实际上更难于使用。Block 就是更加容易些！</p>
-
-<h4>Synchronous vs. Asynchronous 同步 vs. 异步</h4>
-
-<p>在 GCD 中，这些术语描述当一个函数相对于另一个任务完成，此任务是该函数要求 GCD 执行的。一个<em>同步</em>函数只在完成了它预定的任务后才返回。</p>
-
-<p>一个<em>异步</em>函数，刚好相反，会立即返回，预定的任务会完成但不会等它完成。因此，一个异步函数不会阻塞当前线程去执行下一个函数。</p>
-
-<p>注意——当你读到同步函数“阻塞（Block）”当前线程，或函数是一个“阻塞”函数或阻塞操作时，不要被搞糊涂了！动词“阻塞”描述了函数如何影响它所在的线程而与名词“代码块（Block）”没有关系。代码块描述了用 Objective-C 编写的一个匿名函数，它能定义一个任务并被提交到 GCD 。</p>
-
-<p>译者注：中文不会有这个问题，“阻塞”和“代码块”是两个词。</p>
-
-<h4>Critical Section 临界区</h4>
-
-<p>就是一段代码不能被并行执行，也就是，两个线程不能同时执行这段代码。这很常见，因为代码去操作一个共享资源，例如一个变量若能被并发进程访问，那么它很可能会变质（译者注：它的值不再可信）。</p>
-
-<h4>Race Condition 竞态条件</h4>
-
-<p>这种状况是指基于特定序列或时机的事件的软件系统以不受控制的方式运行的行为，例如程序的并发任务执行的确切顺序。竞态条件可导致无法预测的行为，而不能通过代码检查立即发现。</p>
-
-<h4>Deadlock 死锁</h4>
-
-<p>两个（有时更多）东西——在大多数情况下，是线程——所谓的死锁是指它们都卡住了，并等待对方完成或执行其它操作。第一个不能完成是因为它在等待第二个的完成。但第二个也不能完成，因为它在等待第一个的完成。</p>
-
-<h4>Thread Safe 线程安全</h4>
-
-<p>线程安全的代码能在多线程或并发任务中被安全的调用，而不会导致任何问题（数据损坏，崩溃，等）。线程不安全的代码在某个时刻只能在一个上下文中运行。一个线程安全代码的例子是 <code>NSDictionary</code> 。你可以在同一时间在多个线程中使用它而不会有问题。另一方面，<code>NSMutableDictionary</code> 就不是线程安全的，应该保证一次只能有一个线程访问它。</p>
-
-<h4>Context Switch 上下文切换</h4>
-
-<p>一个上下文切换指当你在单个进程里切换执行不同的线程时存储与恢复执行状态的过程。这个过程在编写多任务应用时很普遍，但会带来一些额外的开销。</p>
-
-<h3>Concurrency vs Parallelism 并发与并行</h3>
-
-<p>并发和并行通常被一起提到，所以值得花些时间解释它们之间的区别。</p>
-
-<p>并发代码的不同部分可以“同步”执行。然而，该怎样发生或是否发生都取决于系统。多核设备通过并行来同时执行多个线程；然而，为了使单核设备也能实现这一点，它们必须先运行一个线程，执行一个上下文切换，然后运行另一个线程或进程。这通常发生地足够快以致给我们并发执行地错觉，如下图所示：</p>
-
-<p><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2014/01/Concurrency_vs_Parallelism.png" alt="Concurrency_vs_Parallelism" /></p>
-
-<p>虽然你可以编写代码在 GCD 下并发执行，但 GCD 会决定有多少并行的需求。并行<em>要求</em>并发，但并发并不能<em>保证</em>并行。</p>
-
-<p>更深入的观点是并发实际上是关于<em>构造</em>。当你在脑海中用 GCD 编写代码，你组织你的代码来暴露能同时运行的多个工作片段，以及不能同时运行的那些。如果你想深入此主题，看看 <a href="http://vimeo.com/49718712">this excellent talk by Rob Pike</a> 。</p>
-
-<h3>Queues 队列</h3>
-
-<p>GCD 提供有 <code>dispatch queues</code> 来处理代码块，这些队列管理你提供给 GCD 的任务并用 FIFO 顺序执行这些任务。这就保证了第一个被添加到队列里的任务会是队列中第一个开始的任务，而第二个被添加的任务将第二个开始，如此直到队列的终点。</p>
-
-<p>所有的调度队列（dispatch queues）自身都是线程安全的，你能从多个线程并行的访问它们。 GCD 的优点是显而易见的，即当你了解了调度队列如何为你自己代码的不同部分提供线程安全。关于这一点的关键是选择正确<em>类型</em>的调度队列和正确的<em>调度函数</em>来提交你的工作。</p>
-
-<p>在本节你会看到两种调度队列，都是由 GCD 提供的，然后看一些描述如何用调度函数添加工作到队列的列子。</p>
-
-<h4>Serial Queues 串行队列</h4>
-
-<p>串行队列中的任务一次执行一个，每个任务只在前一个任务完成是才开始。而且，你不知道在一个 Block 结束和下一个开始之间的时间长度，如下图所示：</p>
-
-<p><img src="http://cdn4.raywenderlich.com/wp-content/uploads/2014/01/Serial-Queue-480x272.png" alt="Serial-Queue" /></p>
-
-<p>这些任务的执行时机受到 GCD 的控制；唯一能确保的事情是 GCD 一次只执行一个任务，并且按照我们添加到队列的顺序来执行。</p>
-
-<p>由于在串行队列中不会有两个任务并发运行，因此不会出现同时访问临界区的风险；相对于这些任务来说，这就从竞态条件下保护了临界区。所以如果访问临界区的唯一方式是通过提交到调度队列的任务，那么你就不需要担心临界区的安全问题了。</p>
-
-<h4>Concurrent Queues 并发队列</h4>
-
-<p>在并发队列中的任务能得到的保证是它们会按照被添加的顺序开始执行，但这就是全部的保证了。任务可能以任意顺序完成，你不会知道何时开始运行下一个任务，或者任意时刻有多少 Block 在运行。再说一遍，这完全取决于 GCD 。</p>
-
-<p>下图展示了一个示例任务执行计划，GCD 管理着四个并发任务：</p>
-
-<p><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2014/01/Concurrent-Queue-480x272.png" alt="Concurrent-Queue" /></p>
-
-<p>注意 Block 1,2 和 3 都立马开始运行，一个接一个。在 Block 0 开始后，Block 1等待了好一会儿才开始。同样， Block 3 在 Block 2 之后才开始，但它先于 Block 2 完成。</p>
-
-<p>何时开始一个 Block 完全取决于 GCD 。如果一个 Block 的执行时间与另一个重叠，也是由 GCD 来决定是否将其运行在另一个不同的核心上，如果那个核心可用，否则就用上下文切换的方式来执行不同的 Block 。</p>
-
-<p>有趣的是， GCD 提供给你至少五个特定的队列，可根据队列类型选择使用。</p>
-
-<h4>Queue Types 队列类型</h4>
-
-<p>首先，系统提供给你一个叫做 <code>主队列（main queue）</code> 的特殊队列。和其它串行队列一样，这个队列中的任务一次只能执行一个。然而，它能保证所有的任务都在主线程执行，而主线程是唯一可用于更新 UI 的线程。这个队列就是用于发生消息给 <code>UIView</code> 或发送通知的。</p>
-
-<p>系统同时提供给你好几个并发队列。它们叫做 <code>全局调度队列（Global Dispatch Queues）</code> 。目前的四个全局队列有着不同的优先级：<code>background</code>、<code>low</code>、<code>default</code> 以及 <code>high</code>。要知道，Apple 的 API 也会使用这些队列，所以你添加的任何任务都不会是这些队列中唯一的任务。</p>
-
-<p>最后，你也可以创建自己的串行队列或并发队列。这就是说，至少有<em>五个</em>队列任你处置：主队列、四个全局调度队列，再加上任何你自己创建的队列。</p>
-
-<p>以上是调度队列的大框架！</p>
-
-<p>GCD 的“艺术”归结为选择合适的队列来调度函数以提交你的工作。体验这一点的最好方式是走一遍下边的列子，我们沿途会提供一些一般性的建议。</p>
-
-<h2>入门</h2>
-
-<p>既然本教程的目标是优化且安全的使用 GCD 调用来自不同线程的代码，那么你将从一个近乎完成的叫做 <code>GooglyPuff</code> 的项目入手。</p>
-
-<p>GooglyPuff 是一个没有优化，线程不安全的应用，它使用 Core Image 的人脸检测 API 来覆盖一对曲棍球眼睛到被检测到的人脸上。对于基本的图像，可以从相机胶卷选择，或用预设好的URL从互联网下载。</p>
-
-<p><a href="http://cdn4.raywenderlich.com/wp-content/uploads/2014/01/GooglyPuff_Start_1.zip">点击此处下载项目</a></p>
-
-<p>完成项目下载之后，将其解压到某个方便的目录，再用 Xcode 打开它并编译运行。这个应用看起来如下图所示：</p>
-
-<p><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2014/01/Workflow1.png" alt="Workflow" /></p>
-
-<p>注意当你选择 <code>Le Internet</code> 选项下载图片时，一个 <code>UIAlertView</code> 过早地弹出。你将在本系列教程地第二部分修复这个问题。</p>
-
-<p>这个项目中有四个有趣的类：</p>
-
-<ul>
-<li>PhotoCollectionViewController：它是应用开始的第一个视图控制器。它用缩略图展示所有选定的照片。</li>
-<li>PhotoDetailViewController：它执行添加曲棍球眼睛到图像上的逻辑，并用一个 UIScrollView 来显示结果图片。</li>
-<li>Photo：这是一个类簇，它根据一个 <code>NSURL</code> 的实例或一个 <code>ALAsset</code> 的实例来实例化照片。这个类提供一个图像、缩略图以及从 URL 下载的状态。</li>
-<li>PhotoManager：它管理所有 <code>Photo</code> 的实例.</li>
-</ul>
-
-
-<h2>用 dispatch_async 处理后台任务</h2>
-
-<p>回到应用并从你的相机胶卷添加一些照片或使用 <code>Le Internet</code> 选项下载一些。</p>
-
-<p>注意在按下 <code>PhotoCollectionViewController</code> 中的一个 <code>UICollectionViewCell</code> 到生成一个新的 <code>PhotoDetailViewController</code> 之间花了多久时间；你会注意到一个明显的滞后，特别是在比较慢的设备上查看很大的图。</p>
-
-<p>在重载 <code>UIViewController 的 viewDidLoad</code> 时容易加入太多杂波（too much clutter），这通常会引起视图控制器出现前更长的等待。如果可能，最好是卸下一些工作放到后台，如果它们不是绝对必须要运行在加载时间里。</p>
-
-<p>这听起来像是 <code>dispatch_async</code> 能做的事情！</p>
-
-<p>打开 <code>PhotoDetailViewController</code> 并用下面的实现替换 <code>viewDidLoad</code> ：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSAssert</span><span class="p">(</span><span class="n">_image</span><span class="p">,</span> <span class="s">@&quot;Image not set; required to use view controller&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">photoImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">_image</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//Resize if neccessary to ensure it&#39;s not pixelated</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">&lt;=</span> <span class="n">self</span><span class="p">.</span><span class="n">photoImageView</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">&amp;&amp;</span>
-</span><span class='line'>        <span class="n">_image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">&lt;=</span> <span class="n">self</span><span class="p">.</span><span class="n">photoImageView</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">photoImageView</span> <span class="nl">setContentMode:</span><span class="n">UIViewContentModeCenter</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_HIGH</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">{</span> <span class="c1">// 1</span>
-</span><span class='line'>        <span class="n">UIImage</span> <span class="o">*</span><span class="n">overlayImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">faceOverlayImageFromImage:</span><span class="n">_image</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span> <span class="c1">// 2</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">fadeInNewImage:</span><span class="n">overlayImage</span><span class="p">];</span> <span class="c1">// 3</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>下面来说明上面的新代码所做的事：</p>
-
-<ol>
-<li>你首先将工作从主线程移到全局线程。因为这是一个 <code>dispatch_async()</code> ，Block 会被异步地提交，意味着调用线程地执行将会继续。这就使得 <code>viewDidLoad</code> 更早地在主线程完成，让加载过程感觉起来更加快速。同时，一个人脸检测过程会启动并将在稍后完成。</li>
-<li>在这里，人脸检测过程完成，并生成了一个新的图像。既然你要使用此新图像更新你的 <code>UIImageView</code> ，那么你就添加一个新的 Block 到主线程。记住——你必须总是在主线程访问 UIKit 的类。</li>
-<li>最后，你用 <code>fadeInNewImage:</code> 更新 UI ，它执行一个淡入过程切换到新的曲棍球眼睛图像。</li>
-</ol>
-
-
-<p>编译并运行你的应用；选择一个图像然后你会注意到视图控制器加载明显变快，曲棍球眼睛稍微在之后就加上了。这给应用带来了不错的效果，和之前的显示差别巨大。</p>
-
-<p>进一步，如果你试着加载一个超大的图像，应用不会在加载视图控制器上“挂住”，这就使得应用具有很好伸缩性。</p>
-
-<p>正如之前提到的， <code>dispatch_async</code> 添加一个 Block 都队列就立即返回了。任务会在之后由 GCD 决定执行。当你需要在后台执行一个基于网络或 CPU 紧张的任务时就使用 <code>dispatch_async</code> ，这样就不会阻塞当前线程。</p>
-
-<p>下面是一个关于在 <code>dispatch_async</code> 上如何以及何时使用不同的队列类型的快速指导：</p>
-
-<ul>
-<li>自定义串行队列：当你想串行执行后台任务并追踪它时就是一个好选择。这消除了资源争用，因为你知道一次只有一个任务在执行。注意若你需要来自某个方法的数据，你必须内联另一个 Block 来找回它或考虑使用 <code>dispatch_sync</code>。</li>
-<li>主队列（串行）：这是在一个并发队列上完成任务后更新 UI 的共同选择。要这样做，你将在一个 Block 内部编写另一个 Block 。以及，如果你在主队列调用 <code>dispatch_async</code> 到主队列，你能确保这个新任务将在当前方法完成后的某个时间执行。</li>
-<li>并发队列：这是在后台执行非 UI 工作的共同选择。</li>
-</ul>
-
-
-<h2>使用 dispatch_after 延后工作</h2>
-
-<p>稍微考虑一下应用的 UX 。是否用户第一次打开应用时会困惑于不知道做什么？你是这样吗？ :]</p>
-
-<p>如果用户的 <code>PhotoManager</code> 里还没有任何照片，那么显示一个提示会是个好主意！然而，你同样要考虑用户的眼睛会如何在主屏幕上浏览：如果你太快的显示一个提示，他们的眼睛还徘徊在视图的其它部分上，他们很可能会错过它。</p>
-
-<p>显示提示之前延迟一秒钟就足够捕捉到用户的注意，他们此时已经第一次看过了应用。</p>
-
-<p>添加如下代码到到 PhotoCollectionViewController.m 中 showOrHideNavPrompt 的废止实现里：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showOrHideNavPrompt</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSUInteger</span> <span class="n">count</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">photos</span><span class="p">].</span><span class="n">count</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">double</span> <span class="n">delayInSeconds</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">dispatch_time_t</span> <span class="n">popTime</span> <span class="o">=</span> <span class="n">dispatch_time</span><span class="p">(</span><span class="n">DISPATCH_TIME_NOW</span><span class="p">,</span> <span class="p">(</span><span class="n">int64_t</span><span class="p">)(</span><span class="n">delayInSeconds</span> <span class="o">*</span> <span class="n">NSEC_PER_SEC</span><span class="p">));</span> <span class="c1">// 1 </span>
-</span><span class='line'>    <span class="n">dispatch_after</span><span class="p">(</span><span class="n">popTime</span><span class="p">,</span> <span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span> <span class="c1">// 2 </span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">count</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationItem</span> <span class="nl">setPrompt:</span><span class="s">@&quot;Add photos with faces to Googlyify them!&quot;</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationItem</span> <span class="nl">setPrompt:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>showOrHideNavPrompt 在 viewDidLoad 中执行，以及 UICollectionView 被重新加载的任何时候。按照注释数字顺序看看：</p>
-
-<ol>
-<li>你声明了一个变量指定要延迟的时长。</li>
-<li>然后等待 <code>delayInSeconds</code> 给定的时长，再异步地添加一个 Block 到主线程。</li>
-</ol>
-
-
-<p>编译并运行应用。应该有一个轻微地延迟，这有助于抓住用户的注意力并展示所要做的事情。</p>
-
-<p><code>dispatch_after</code> 工作起来就像一个延迟版的 <code>dispatch_async</code> 。你依然不能控制实际的执行时间，且一旦 <code>dispatch_after</code> 返回也就不能再取消它。</p>
-
-<p>不知道何时适合使用 <code>dispatch_after</code> ？</p>
-
-<ul>
-<li>自定义串行队列：在一个自定义串行队列上使用 <code>dispatch_after</code> 要小心。你最好坚持使用主队列。</li>
-<li>主队列（串行）：是使用 <code>dispatch_after</code> 的好选择；Xcode 提供了一个不错的自动完成模版。</li>
-<li>并发队列：在并发队列上使用 <code>dispatch_after</code> 也要小心；你会这样做就比较罕见。还是在主队列做这些操作吧。</li>
-</ul>
-
-
-<h2>让你的单例线程安全</h2>
-
-<p>单例，不论喜欢还是讨厌，它们在 iOS 上的流行情况就像网上的猫。 :]</p>
-
-<p>一个常见的担忧是它们常常不是线程安全的。这个担忧十分合理，基于它们的用途：单例常常被多个控制器同时访问。</p>
-
-<p>单例的线程担忧范围从初始化开始，到信息的读和写。<code>PhotoManager</code> 类被实现为单例——它在目前的状态下就会被这些问题所困扰。要看看事情如何很快地失去控制，你将在单例实例上创建一个控制好的竞态条件。</p>
-
-<p>导航到 <code>PhotoManager.m</code> 并找到 <code>sharedManager</code> ；它看起来如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">sharedManager</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">PhotoManager</span> <span class="o">*</span><span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sharedPhotoManager</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span><span class="o">-&gt;</span><span class="n">_photosArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">sharedPhotoManager</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>当前状态下，代码相当简单；你创建了一个单例并初始化一个叫做 <code>photosArray</code> 的 <code>NSMutableArray</code> 属性。</p>
-
-<p>然而，<code>if</code> 条件分支不是<a href="http://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1#Terminology">线程安全</a>的；如果你多次调用这个方法，有一个可能性是在某个线程（就叫它线程A）上进入 <code>if</code> 语句块并可能在 <code>sharedPhotoManager</code> 被分配内存前发生一个上下文切换。然后另一个线程（线程B）可能进入 <code>if</code> ，分配单例实例的内存，然后退出。</p>
-
-<p>当系统上下文切换回线程A，你会分配另外一个单例实例的内存，然后退出。在那个时间点，你有了两个单例的实例——很明显这不是你想要的（译者注：这还能叫单例吗？）！</p>
-
-<p>要强制这个（竞态）条件发生，替换 <code>PhotoManager.m</code> 中的 <code>sharedManager</code> 为下面的实现：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">sharedManager</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">PhotoManager</span> <span class="o">*</span><span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sharedPhotoManager</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">NSThread</span> <span class="nl">sleepForTimeInterval:</span><span class="mi">2</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Singleton has memory address at: %@&quot;</span><span class="p">,</span> <span class="n">sharedPhotoManager</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">NSThread</span> <span class="nl">sleepForTimeInterval:</span><span class="mi">2</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span><span class="o">-&gt;</span><span class="n">_photosArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">sharedPhotoManager</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的代码中你用 <code>NSThread 的 sleepForTimeInterval:</code> 类方法来强制发生一个上下文切换。</p>
-
-<p>打开 <code>AppDelegate.m</code> 并添加如下代码到 <code>application:didFinishLaunchingWithOptions:</code> 的最开始处：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_HIGH</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">PhotoManager</span> <span class="n">sharedManager</span><span class="p">];</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_HIGH</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">PhotoManager</span> <span class="n">sharedManager</span><span class="p">];</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里创建了多个异步并发调用来实例化单例，然后引发上面描述的竞态条件。</p>
-
-<p>编译并运行项目；查看控制台输出，你会看到多个单例被实例化，如下所示：</p>
-
-<p><img src="http://cdn2.raywenderlich.com/wp-content/uploads/2014/01/NSLog-Race-Condition-700x90.png" alt="NSLog-Race-Condition" /></p>
-
-<p>注意到这里有好几行显示着不同地址的单例实例。这明显违背了单例的目的，对吧？:]</p>
-
-<p>这个输出向你展示了临界区被执行多次，而它只应该执行一次。现在，固然是你自己强制这样的状况发生，但你可以想像一下这个状况会怎样在无意间发生。</p>
-
-<blockquote><p>注意：基于其它你无法控制的系统事件，NSLog 的数量有时会显示多个。线程问题极其难以调试，因为它们往往难以重现。</p></blockquote>
-
-<p>要纠正这个状况，实例化代码应该只执行一次，并阻塞其它实例在 <code>if</code> 条件的临界区运行。这刚好就是 <code>dispatch_once</code> 能做的事。</p>
-
-<p>在单例初始化方法中用 <code>dispatch_once</code> 取代 <code>if</code> 条件判断，如下所示：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">sharedManager</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">PhotoManager</span> <span class="o">*</span><span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">NSThread</span> <span class="nl">sleepForTimeInterval:</span><span class="mi">2</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Singleton has memory address at: %@&quot;</span><span class="p">,</span> <span class="n">sharedPhotoManager</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">NSThread</span> <span class="nl">sleepForTimeInterval:</span><span class="mi">2</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span><span class="o">-&gt;</span><span class="n">_photosArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">sharedPhotoManager</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>编译并运行你的应用；查看控制台输出，你会看到有且仅有一个单例的实例——这就是你对单例的期望！:]</p>
-
-<p>现在你已经明白了防止竞态条件的重要性，从 <code>AppDelegate.m</code> 中移除 <code>dispatch_async</code> 语句，并用下面的实现替换 <code>PhotoManager</code> 单例的初始化：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">sharedManager</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">PhotoManager</span> <span class="o">*</span><span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span><span class="o">-&gt;</span><span class="n">_photosArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">sharedPhotoManager</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>dispatch_once()</code> 以线程安全的方式执行且仅执行其代码块一次。试图访问临界区（即传递给 <code>dispatch_once</code> 的代码）的不同的线程会在临界区已有一个线程的情况下被阻塞，直到临界区完成为止。</p>
-
-<p><img src="http://cdn3.raywenderlich.com/wp-content/uploads/2014/01/Highlander_dispatch_once-480x274.png" alt="Highlander_dispatch_once" /></p>
-
-<p>需要记住的是，这只是让访问共享实例线程安全。它绝对没有让类本身线程安全。类中可能还有其它竞态条件，例如任何操纵内部数据的情况。这些需要用其它方式来保证线程安全，例如同步访问数据，你将在下面几个小节看到。</p>
-
-<h2>处理读者与写者问题</h2>
-
-<p>线程安全实例不是处理单例时的唯一问题。如果单例属性表示一个可变对象，那么你就需要考虑是否那个对象自身线程安全。</p>
-
-<p>如果问题中的这个对象是一个 Foundation 容器类，那么答案是——“很可能不安全”！Apple 维护一个<a href="https://developer.apple.com/library/mac/documentation/cocoa/conceptual/multithreading/ThreadSafetySummary/ThreadSafetySummary.html">有用且有些心寒的列表</a>，众多的 Foundation 类都不是线程安全的。 <code>NSMutableArray</code>，已用于你的单例，正在那个列表里休息。</p>
-
-<p>虽然许多线程可以同时读取 <code>NSMutableArray</code> 的一个实例而不会产生问题，但当一个线程正在读取时让另外一个线程修改数组就是不安全的。你的单例在目前的状况下不能预防这种情况的发生。</p>
-
-<p>要分析这个问题，看看 <code>PhotoManager.m</code> 中的 <code>addPhoto:</code>，转载如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addPhoto:</span><span class="p">(</span><span class="n">Photo</span> <span class="o">*</span><span class="p">)</span><span class="nv">photo</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">photo</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_photosArray</span> <span class="nl">addObject:</span><span class="n">photo</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">postContentAddedNotification</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这是一个<code>写</code>方法，它修改一个私有可变数组对象。</p>
-
-<p>现在看看 <code>photos</code> ，转载如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">photos</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithArray:</span><span class="n">_photosArray</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这是所谓的<code>读</code>方法，它读取可变数组。它为调用者生成一个不可变的拷贝，防止调用者不当地改变数组，但这不能提供任何保护来对抗当一个线程调用读方法 <code>photos</code> 的同时另一个线程调用写方法 <code>addPhoto:</code> 。</p>
-
-<p>这就是软件开发中经典的<code>读者写者问题</code>。GCD 通过用 <code>dispatch barriers</code> 创建一个<code>读者写者锁</code> 提供了一个优雅的解决方案。</p>
-
-<p>Dispatch barriers 是一组函数，在并发队列上工作时扮演一个串行式的瓶颈。使用 GCD 的障碍（barrier）API 确保提交的 Block 在那个特定时间上是指定队列上唯一被执行的条目。这就意味着所有的先于调度障碍提交到队列的条目必能在这个 Block 执行前完成。</p>
-
-<p>当这个 Block 的时机到达，调度障碍执行这个 Block 并确保在那个时间里队列不会执行任何其它 Block 。一旦完成，队列就返回到它默认的实现状态。 GCD 提供了同步和异步两种障碍函数。</p>
-
-<p>下图显示了障碍函数对多个异步队列的影响：</p>
-
-<p><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2014/01/Dispatch-Barrier-480x272.png" alt="Dispatch-Barrier" /></p>
-
-<p>注意到正常部分的操作就如同一个正常的并发队列。但当障碍执行时，它本质上就如同一个串行队列。也就是，障碍是唯一在执行的事物。在障碍完成后，队列回到一个正常并发队列的样子。</p>
-
-<p>下面是你何时会——和不会——使用障碍函数的情况：</p>
-
-<ul>
-<li>自定义串行队列：一个很坏的选择；障碍不会有任何帮助，因为不管怎样，一个串行队列一次都只执行一个操作。</li>
-<li>全局并发队列：要小心；这可能不是最好的主意，因为其它系统可能在使用队列而且你不能垄断它们只为你自己的目的。</li>
-<li>自定义并发队列：这对于原子或临界区代码来说是极佳的选择。任何你在设置或实例化的需要线程安全的事物都是使用障碍的最佳候选。</li>
-</ul>
-
-
-<p>由于上面唯一像样的选择是自定义并发队列，你将创建一个你自己的队列去处理你的障碍函数并分开读和写函数。且这个并发队列将允许多个多操作同时进行。</p>
-
-<p>打开 <code>PhotoManager.m</code>，添加如下私有属性到类扩展中：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">PhotoManager</span> <span class="p">()</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span><span class="n">strong</span><span class="p">,</span><span class="n">readonly</span><span class="p">)</span> <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">photosArray</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">dispatch_queue_t</span> <span class="n">concurrentPhotoQueue</span><span class="p">;</span> <span class="c1">///&lt; Add this</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>找到 <code>addPhoto:</code> 并用下面的实现替换它：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addPhoto:</span><span class="p">(</span><span class="n">Photo</span> <span class="o">*</span><span class="p">)</span><span class="nv">photo</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">photo</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 1</span>
-</span><span class='line'>        <span class="n">dispatch_barrier_async</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">concurrentPhotoQueue</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span> <span class="c1">// 2 </span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_photosArray</span> <span class="nl">addObject:</span><span class="n">photo</span><span class="p">];</span> <span class="c1">// 3</span>
-</span><span class='line'>            <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span> <span class="c1">// 4</span>
-</span><span class='line'>                <span class="p">[</span><span class="n">self</span> <span class="n">postContentAddedNotification</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">});</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>你新写的函数是这样工作的：</p>
-
-<ol>
-<li>在执行下面所有的工作前检查是否有合法的相片。</li>
-<li>添加写操作到你的自定义队列。当临界区在稍后执行时，这将是你队列中唯一执行的条目。</li>
-<li>这是添加对象到数组的实际代码。由于它是一个障碍 Block ，这个 Block 永远不会同时和其它 Block 一起在 concurrentPhotoQueue 中执行。</li>
-<li>最后你发送一个通知说明完成了添加图片。这个通知将在主线程被发送因为它将会做一些 UI 工作，所以在此为了通知，你异步地调度另一个任务到主线程。</li>
-</ol>
-
-
-<p>这就处理了写操作，但你还需要实现 <code>photos</code> 读方法并实例化 <code>concurrentPhotoQueue</code> 。</p>
-
-<p>在写者打扰的情况下，要确保线程安全，你需要在 <code>concurrentPhotoQueue</code> 队列上执行读操作。既然你需要从函数返回，你就不能异步调度到队列，因为那样在读者函数返回之前不一定运行。</p>
-
-<p>在这种情况下，<code>dispatch_sync</code> 就是一个绝好的候选。</p>
-
-<p><code>dispatch_sync()</code> 同步地提交工作并在返回前等待它完成。使用 <code>dispatch_sync</code> 跟踪你的调度障碍工作，或者当你需要等待操作完成后才能使用 Block 处理过的数据。如果你使用第二种情况做事，你将不时看到一个 <code>__block</code> 变量写在 <code>dispatch_sync</code> 范围之外，以便返回时在 <code>dispatch_sync</code> 使用处理过的对象。</p>
-
-<p>但你需要很小心。想像如果你调用 <code>dispatch_sync</code> 并放在你已运行着的当前队列。这会导致死锁，因为调用会一直等待直到 Block 完成，但 Block 不能完成（它甚至不会开始！），直到当前已经存在的任务完成，而当前任务无法完成！这将迫使你自觉于你正从哪个队列调用——以及你正在传递进入哪个队列。</p>
-
-<p>下面是一个快速总览，关于在何时以及何处使用 <code>dispatch_sync</code> ：</p>
-
-<ul>
-<li>自定义串行队列：在这个状况下要非常小心！如果你正运行在一个队列并调用 <code>dispatch_sync</code> 放在同一个队列，那你就百分百地创建了一个死锁。</li>
-<li>主队列（串行）：同上面的理由一样，必须非常小心！这个状况同样有潜在的导致死锁的情况。</li>
-<li>并发队列：这才是做同步工作的好选择，不论是通过调度障碍，或者需要等待一个任务完成才能执行进一步处理的情况。</li>
-</ul>
-
-
-<p>继续在 <code>PhotoManager.m</code> 上工作，用下面的实现替换 <code>photos</code> ：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">photos</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">__block</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">array</span><span class="p">;</span> <span class="c1">// 1</span>
-</span><span class='line'>    <span class="n">dispatch_sync</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">concurrentPhotoQueue</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span> <span class="c1">// 2</span>
-</span><span class='line'>        <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithArray:</span><span class="n">_photosArray</span><span class="p">];</span> <span class="c1">// 3</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">array</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这就是你的读函数。按顺序看看编过号的注释，有这些：</p>
-
-<ol>
-<li><code>__block</code> 关键字允许对象在 Block 内可变。没有它，<code>array</code> 在 Block 内部就只是只读的，你的代码甚至不能通过编译。</li>
-<li>在 <code>concurrentPhotoQueue</code> 上同步调度来执行读操作。</li>
-<li>将相片数组存储在 <code>array</code> 内并返回它。</li>
-</ol>
-
-
-<p>最后，你需要实例化你的 <code>concurrentPhotoQueue</code> 属性。修改 <code>sharedManager</code> 以便像下面这样初始化队列：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">sharedManager</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">PhotoManager</span> <span class="o">*</span><span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PhotoManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span><span class="o">-&gt;</span><span class="n">_photosArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// ADD THIS:</span>
-</span><span class='line'>        <span class="n">sharedPhotoManager</span><span class="o">-&gt;</span><span class="n">_concurrentPhotoQueue</span> <span class="o">=</span> <span class="n">dispatch_queue_create</span><span class="p">(</span><span class="s">&quot;com.selander.GooglyPuff.photoQueue&quot;</span><span class="p">,</span>
-</span><span class='line'>                                                    <span class="n">DISPATCH_QUEUE_CONCURRENT</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">sharedPhotoManager</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里使用 <code>dispatch_queue_create</code> 初始化 <code>concurrentPhotoQueue</code> 为一个并发队列。第一个参数是反向DNS样式命名惯例；确保它是描述性的，将有助于调试。第二个参数指定你的队列是串行还是并发。</p>
-
-<blockquote><p>注意：当你在网上搜索例子时，你会经常看人们传递 <code>0</code> 或者 <code>NULL</code> 给 <code>dispatch_queue_create</code> 的第二个参数。这是一个创建串行队列的过时方式；明确你的参数总是更好。</p></blockquote>
-
-<p>恭喜——你的 <code>PhotoManager</code> 单例现在是线程安全的了。不论你在何处或怎样读或写你的照片，你都有这样的自信，即它将以安全的方式完成，不会出现任何惊吓。</p>
-
-<h2>A Visual Review of Queueing 队列的虚拟回顾</h2>
-
-<p>依然没有 100% 地掌握 GCD 的要领？确保你可以使用 GCD 函数轻松地创建简单的例子，使用断点和 <code>NSLog</code> 语句保证自己明白当下发生的情况。</p>
-
-<p>我在下面提供了两个 GIF动画来帮助你巩固对 <code>dispatch_async</code> 和 <code>dispatch_sync</code> 的理解。包含在每个 GIF 中的代码可以提供视觉辅助；仔细注意 GIF 左边显示代码断点的每一步，以及右边相关队列的状态。</p>
-
-<h3>dispatch_sync 回顾</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">dispatch_sync</span><span class="p">(</span><span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_HIGH</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;First Log&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Second Log&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2014/01/dispatch_sync_in_action.gif" alt="dispatch_sync_in_action" /></p>
-
-<p>下面是图中几个步骤的说明：</p>
-
-<ol>
-<li>主队列一路按顺序执行任务——接着是一个实例化 <code>UIViewController</code> 的任务，其中包含了 <code>viewDidLoad</code> 。</li>
-<li><code>viewDidLoad</code> 在主线程执行。</li>
-<li>主线程目前在 <code>viewDidLoad</code> 内，正要到达 <code>dispatch_sync</code> 。</li>
-<li><code>dispatch_sync</code> Block 被添加到一个全局队列中，将在稍后执行。进程将在主线程挂起直到该 Block 完成。同时，全局队列并发处理任务；要记得 Block 在全局队列中将按照 FIFO 顺序出列，但可以并发执行。</li>
-<li>全局队列处理 <code>dispatch_sync</code> Block 加入之前已经出现在队列中的任务。</li>
-<li>终于，轮到 <code>dispatch_sync</code> Block 。</li>
-<li>这个 Block 完成，因此主线程上的任务可以恢复。</li>
-<li><code>viewDidLoad</code> 方法完成，主队列继续处理其他任务。</li>
-</ol>
-
-
-<p><code>dispatch_sync</code> 添加任务到一个队列并等待直到任务完成。<code>dispatch_async</code> 做类似的事情，但不同之处是它不会等待任务的完成，而是立即继续“调用线程”的其它任务。</p>
-
-<h3>dispatch_async 回顾</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_HIGH</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;First Log&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Second Log&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://cdn1.raywenderlich.com/wp-content/uploads/2014/01/dispatch_async_in_action.gif" alt="dispatch_async_in_action" /></p>
-
-<ol>
-<li>主队列一路按顺序执行任务——接着是一个实例化 <code>UIViewController</code> 的任务，其中包含了 <code>viewDidLoad</code> 。</li>
-<li><code>viewDidLoad</code> 在主线程执行。</li>
-<li>主线程目前在 <code>viewDidLoad</code> 内，正要到达 <code>dispatch_async</code> 。</li>
-<li><code>dispatch_async</code> Block 被添加到一个全局队列中，将在稍后执行。</li>
-<li><code>viewDidLoad</code> 在添加 <code>dispatch_async</code> 到全局队列后继续进行，主线程把注意力转向剩下的任务。同时，全局队列并发地处理它未完成地任务。记住 Block 在全局队列中将按照 FIFO 顺序出列，但可以并发执行。</li>
-<li>添加到 <code>dispatch_async</code> 的代码块开始执行。</li>
-<li><code>dispatch_async</code> Block 完成，两个 <code>NSLog</code> 语句将它们的输出放在控制台上。</li>
-</ol>
-
-
-<p>在这个特定的实例中，第二个 <code>NSLog</code> 语句执行，跟着是第一个 <code>NSLog</code> 语句。并不总是这样——着取决于给定时刻硬件正在做的事情，而且你无法控制或知晓哪个语句会先执行。“第一个” <code>NSLog</code> 在某些调用情况下会第一个执行。</p>
-
-<h2>下一步怎么走？</h2>
-
-<p>在本教程中，你学习了如何让你的代码线程安全，以及在执行 CPU 密集型任务时如何保持主线程的响应性。</p>
-
-<p>你可以下载<a href="http://cdn2.raywenderlich.com/wp-content/uploads/2014/01/GooglyPuff_End_1.zip"> GooglyPuff 项目</a>，它包含了目前所有本教程中编写的实现。在本教程的第二部分，你将继续改进这个项目。</p>
-
-<p>如果你计划优化你自己的应用，那你应该用 <code>Instruments</code> 中的 <code>Time Profile</code> 模版分析你的工作。对这个工具的使用超出了本教程的范围，你可以看看 <a href="http://www.raywenderlich.com/23037/how-to-use-instruments-in-xcode">如何使用Instruments</a> 来得到一个很好的概述。</p>
-
-<p>同时请确保在真实设备上分析，而在模拟器上测试会对程序速度产生非常不准确的印象。</p>
-
-<p>在教程的下一部分，你将更加深入到 GCD 的 API 中，做一些更 Cool 的东西。</p>
-
-<p>如果你有任何问题或评论，可自由地加入下方的讨论！</p>
-
-<p>===============================================</p>
-
-<p>译者注：欢迎转载，但请一定注明出处！</p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,704 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Initialization in Swift - 玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="Initialization in Swift 本文参考自Swift文档，主要包括以下内容： 简介
+自定义构造过程
+默认构造器
+值类型的构造器代理
+类的继承和构造过程
+通过闭包和函数来设置属性的默认值 简介 构造过程是为了使用某个类、结构体或枚举类型的实例而进行的准备过程。 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/06/24/initialization-in-swift/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I'm not a hacker.</p>
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">博客</a></li>
+    <li><a href="/blog/archives">所有文章</a></li>
+    <li><a href="/about">关于我</a></li>
+    
+</ul>
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Farc%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EARC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+16.153846153846153%25%27%3EC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcocoapods%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ECocoaPods%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcode-snippets%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ECode+Snippets%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+16.153846153846153%25%27%3ECore+Data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdfssuan-fa%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EDFS%E7%AE%97%E6%B3%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+16.153846153846153%25%27%3EGCD%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+22.307692307692307%25%27%3EGitHub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3EiOS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EMacOSX%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+34.61538461538461%25%27%3EObjective-C%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsksprite%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ESKSprite%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+13.076923076923077%25%27%3ESocial+Framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+19.23076923076923%25%27%3ESpriteKit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fswift%27+style%3D%27font-size%3A+25.384615384615387%25%27%3ESwift%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+13.076923076923077%25%27%3EXCode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+16.153846153846153%25%27%3EXcode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdan-yuan-ce-shi%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fji-chu-zhi-shi%27+style%3D%27font-size%3A+16.153846153846153%25%27%3E%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjie-ping%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E6%88%AA%E5%B1%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+22.307692307692307%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+13.076923076923077%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+34.61538461538461%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
+<br>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Initialization in Swift</h1>
+	<div class="entry-content" itemprop="articleBody"><p>本文参考自Swift文档，主要包括以下内容：</p>
+
+<ul>
+<li>简介</li>
+<li>自定义构造过程</li>
+<li>默认构造器</li>
+<li>值类型的构造器代理</li>
+<li>类的继承和构造过程</li>
+<li>通过闭包和函数来设置属性的默认值</li>
+</ul>
+
+
+<!--more-->
+
+
+<h2>简介</h2>
+
+<p>构造过程是为了使用某个类、结构体或枚举类型的实例而进行的准备过程。这个过程包含了为实例中的每个属性设置初始值和为其执行必要的准备和初始化任务。</p>
+
+<p>Swift中的构造器不像Objective-C那样有返回值，但是跟C++有点像：所有的构造器都以<code>init</code>命名，用参数列表来区分各个构造器</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Fahrenheit {
+</span><span class='line'>    var temperature = 16.0
+</span><span class='line'>    init() {
+</span><span class='line'>        temperature = 32.0
+</span><span class='line'>    }
+</span><span class='line'>}
+</span><span class='line'>var f = Fahrenheit()</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><code>Fahrenheit</code>是一个结构体，与类一样，Swift中的值类型也有构造器和普通方法。上面的代码先是定义了<code>temperature</code>属性的默认值，然后又在构造器中将其赋值，最后<code>temperature</code>属性的值为32。对于<code>temperature</code>这种存储型属性，无论定义默认值还是在构造器中赋值，最终它们实现的效果是一样的。</p>
+
+<p><strong>给存储型类型属性赋默认值或在初始构造器中设置初始值时，此属性的属性观察者不会被调用</strong></p>
+
+<h2>自定义构造过程</h2>
+
+<p>你可以定义一些带参数的构造器</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Celsius {
+</span><span class='line'>    var temperatureInCelsius: Double = 0.0
+</span><span class='line'>    init(fromFahrenheit fahrenheit: Double) {
+</span><span class='line'>        temperatureInCelsius = (fahrenheit - 32.0) / 1.8
+</span><span class='line'>    }
+</span><span class='line'>    init(fromKelvin kelvin: Double) {
+</span><span class='line'>        temperatureInCelsius = kelvin - 273.15
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+构造器的参数也跟Swift中的方法定义（注意不是函数）一样，也分内部和外部参数名。上面代码中两个构造器外部参数名不同，调用构造器的时候也是通过外部参数名来区分的：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>let boilingPointOfWater = Celsius(fromFahrenheit: 212.0)
+</span><span class='line'>// boilingPointOfWater.temperatureInCelsius 是 100.0
+</span><span class='line'>let freezingPointOfWater = Celsius(fromKelvin: 273.15)
+</span><span class='line'>// freezingPointOfWater.temperatureInCelsius 是 0.0”</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+如果不写外部参数名那么外部参数名就等于内部参数名。如果你不希望为构造器的某个参数提供外部名字，你还可以使用下划线<code>_</code>来显示描述它的外部名：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Color {
+</span><span class='line'>    let red = 0.0, green = 0.0, blue = 0.0
+</span><span class='line'>    init(red: Double, green: Double, blue: Double) {
+</span><span class='line'>        self.red   = red
+</span><span class='line'>        self.green = green
+</span><span class='line'>        self.blue  = blue
+</span><span class='line'>    }
+</span><span class='line'>}
+</span><span class='line'>let magenta = Color(red: 1.0, green: 0.0, blue: 1.0)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+你会发现构造器的第一个内部参数名也会默认作为其外部参数名供调用，这一点与方法不同（方法不会默认将第一个内部参数名作为外部参数名使用），因为方法名可以在结尾加上介词来烘托出第一个参数的名字，这样就不需要为第一个参数弄一个外部参数名了，但是构造器只能用<code>init</code>关键字来定义。</p>
+
+<p>如果你定制的类型包含一个逻辑上允许取值为空的存储型属性&mdash;不管是因为它无法在初始化时赋值，还是因为它可以在之后某个时间点可以赋值为空&mdash;你都需要将它定义为可选类型<code>optional type</code>。可选类型的属性将自动初始化为空<code>nil</code>，表示这个属性是故意在初始化时设置为空的。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class SurveyQuestion {
+</span><span class='line'>    let text: String
+</span><span class='line'>    var response: String?
+</span><span class='line'>    init(text: String) {
+</span><span class='line'>        self.text = text
+</span><span class='line'>    }
+</span><span class='line'>    func ask() {
+</span><span class='line'>        println(text)
+</span><span class='line'>    }
+</span><span class='line'>}
+</span><span class='line'>let cheeseQuestion = SurveyQuestion(text: "Do you like cheese?")
+</span><span class='line'>cheeseQuestion.ask()
+</span><span class='line'>// 输出 "Do you like cheese?"
+</span><span class='line'>cheeseQuestion.response = "Yes, I do like cheese.</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>调查问题在问题提出之后，我们才能得到回答。所以我们将属性回答response声明为String?类型，或者说是可选字符串类型optional String。当SurveyQuestion实例化时，它将自动赋值为空nil，表明暂时还不存在此字符串。<br/>
+只要在构造过程结束前常量的值能确定，你可以在构造过程中的任意时间点修改常量属性的值。尽管text属性是常量，我们仍然可以在其类的构造器中设置它的值。<strong>对某个类实例来说，它的常量属性只能在定义它的类的构造过程中修改；不能在子类中修改。</strong></p>
+
+<h2>默认构造器</h2>
+
+<p>Swift将为所有属性已提供默认值的且自身没有定义任何构造器的结构体或基类，提供一个默认的构造器。这个默认构造器将简单的创建一个所有属性值都设置为默认值的实例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class ShoppingListItem {
+</span><span class='line'>    var name: String?
+</span><span class='line'>    var quantity = 1
+</span><span class='line'>    var purchased = false
+</span><span class='line'>}
+</span><span class='line'>var item = ShoppingListItem()</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+<code>ShoppingListItem</code>类没有父类（是基类），所有属性都有默认值（可选属性默认值为<code>nil</code>），所以可以直接调用默认的无参数构造器来初始化。<br/>
+除上面提到的默认构造器，如果结构体对所有存储型属性提供了默认值且自身没有提供定制的构造器，它们能自动获得一个<strong>逐一成员构造器（Memberwise Initializers）</strong>：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Size {
+</span><span class='line'>    var width = 0.0, height = 0.0
+</span><span class='line'>}
+</span><span class='line'>let twoByTwo = Size(width: 2.0, height: 2.0)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+逐一成员构造器是用来初始化结构体新实例里成员属性的快捷方法。我们在调用逐一成员构造器时，通过与成员属性名相同的参数名进行传值来完成对成员属性的初始赋值。</p>
+
+<h2>值类型的构造器代理</h2>
+
+<p>构造器可以通过调用其它构造器来完成实例的部分构造过程。这一过程称为构造器代理，它能减少多个构造器间的代码重复：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>struct Size {
+</span><span class='line'>    var width = 0.0, height = 0.0
+</span><span class='line'>}
+</span><span class='line'>struct Point {
+</span><span class='line'>    var x = 0.0, y = 0.0
+</span><span class='line'>}
+</span><span class='line'>struct Rect {
+</span><span class='line'>    var origin = Point()
+</span><span class='line'>    var size = Size()
+</span><span class='line'>    init() {}
+</span><span class='line'>    init(origin: Point, size: Size) {
+</span><span class='line'>        self.origin = origin
+</span><span class='line'>        self.size = size
+</span><span class='line'>    }
+</span><span class='line'>    init(center: Point, size: Size) {
+</span><span class='line'>        let originX = center.x - (size.width / 2)
+</span><span class='line'>        let originY = center.y - (size.height / 2)
+</span><span class='line'>        self.init(origin: Point(x: originX, y: originY), size: size)
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+在值类型中，如果你添加了自定义构造器（如<code>init(center: Point, size: Size)</code>），Swift不会再为结构体生成一个默认构造器和逐一成员构造器，所以我们自己定义了<code>init()</code>和<code>init(origin: Point, size: Size)</code>，他们与自动生成的默认构造器和逐一成员构造器是一样的。这样子会显得很麻烦，我们可以将自定义构造器<code>init(center: Point, size: Size)</code>写在结构体<code>Rect</code>的扩展（<code>extension</code>）里，这样就不用自己把默认构造器和逐一成员构造器写一遍了。</p>
+
+<p>构造器<code>init(center:size:)</code>先通过<code>center</code>和<code>size</code>的值计算出<code>origin</code>的坐标。然后再调用（或代理给）<code>init(origin:size:)</code>构造器来将新的<code>origin</code>和<code>size</code>值赋值到对应的属性中。因为值类型（结构体和枚举类型）不支持继承，所以构造器代理的过程相对简单，因为它们只能代理给本身提供的其它构造器：你只能在构造器内部调用<code>self.init</code></p>
+
+<h2>类的继承和构造过程</h2>
+
+<p>类里面的所有存储型属性&mdash;包括所有继承自父类的属性&mdash;都必须在构造过程中设置初始值。</p>
+
+<p>Swift 提供了两种类型的类构造器来确保所有类实例中存储型属性都能获得初始值，它们分别是指定构造器(<code>Designated Initializers</code>)和便利构造器(<code>Convenience Initializers</code>)。</p>
+
+<h3>指定构造器和便利构造器</h3>
+
+<p>指定构造器是类中最主要的构造器。一个指定构造器将初始化类中提供的所有属性，并根据父类链往上调用父类的构造器来实现父类的初始化。<strong>每一个类都必须拥有至少一个指定构造器。</strong></p>
+
+<p>便利构造器是类中比较次要的、辅助型的构造器。你可以定义便利构造器来调用同一个类中的指定构造器，并为其参数提供默认值。你也可以定义便利构造器来创建一个特殊用途或特定输入的实例。</p>
+
+<p>类的指定构造器的写法跟值类型简单构造器一样，便利构造器也采用相同样式的写法，但需要在init关键字之前放置convenience关键字：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>convenience init(parameters) {
+</span><span class='line'>    statements
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>构造器链</h3>
+
+<p>为了简化指定构造器和便利构造器之间的调用关系，Swift 采用以下三条规则来限制构造器之间的代理调用：</p>
+
+<ol>
+<li>指定构造器必须调用其直接父类的的指定构造器。</li>
+<li>便利构造器必须调用同一类中定义的其它构造器。</li>
+<li>便利构造器必须最终以调用一个指定构造器结束。</li>
+</ol>
+
+
+<p>一个更方便记忆的方法是:</p>
+
+<ul>
+<li>指定构造器必须总是向上代理</li>
+<li>便利构造器必须总是横向代理</li>
+</ul>
+
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/initializerDelegation01_2x.png" alt="" />
+举个栗子：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Food {
+</span><span class='line'>    var name: String
+</span><span class='line'>    init(name: String) {
+</span><span class='line'>        self.name = name
+</span><span class='line'>    }
+</span><span class='line'>    convenience init() {
+</span><span class='line'>        self.init(name: "[Unnamed]")
+</span><span class='line'>    }
+</span><span class='line'>}
+</span><span class='line'>let namedMeat = Food(name: "Bacon")
+</span><span class='line'>// namedMeat 的名字是 "Bacon”
+</span><span class='line'>let mysteryMeat = Food()
+</span><span class='line'>// mysteryMeat 的名字是 [Unnamed]</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/initializersExample01_2x.png" alt="" /></p>
+
+<h3>两段式构造过程</h3>
+
+<p>Swift 中类的构造过程包含两个阶段。第一个阶段，每个存储型属性通过引入它们的类的构造器来设置初始值。当每一个存储型属性值被确定后，第二阶段开始，它给每个类一次机会在新实例准备使用之前进一步定制它们的存储型属性。<br/>
+下图展示了在假定的子类和父类之间构造的阶段1：</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/twoPhaseInitialization01_2x.png" alt="" /></p>
+
+<p>指定构造器将确保所有子类的属性都有值，然后它将调用父类的指定构造器，并沿着造器链一直往上完成父类的构建过程。一旦父类中所有属性都有了初始值，实例的内存被认为是完全初始化，而阶段1也已完成。</p>
+
+<p>以下展示了相同构造过程的阶段2：</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/twoPhaseInitialization02_2x.png" alt="" /></p>
+
+<p>父类中的指定构造器现在有机会进一步来定制实例（尽管它没有这种必要）。</p>
+
+<p>一旦父类中的指定构造器完成调用，子类的构指定构造器可以执行更多的定制操作（同样，它也没有这种必要）。</p>
+
+<p>最终，一旦子类的指定构造器完成调用，最开始被调用的便利构造器可以执行更多的定制操作。</p>
+
+<p>两段式构造过程是基于<strong>安全检查</strong>的，可以简单的理解为：</p>
+
+<ul>
+<li>指定构造器初始化顺序：初始化类自己引入的属性->向上代理调用父类指定构造器->为继承的属性设置新值</li>
+<li>便利构造器初始化顺序：代理调用同一类中的其它构造器->为任意属性赋新值</li>
+<li>构造器在第一阶段构造完成之前，不能调用任何实例方法、不能读取任何实例属性的值，也不能引用self的值。</li>
+</ul>
+
+
+<h3>构造器的继承和重载</h3>
+
+<p><strong>跟 Objective-C 中的子类不同，Swift 中的子类不会默认继承父类的构造器。</strong>这是为了防止你想初始化一个很牛逼的类，但是调用的却是它继承于父类的菜逼构造器，那将会是个悲剧。</p>
+
+<p><strong>但是如果特定条件可以满足，父类构造器是可以被自动继承的：</strong></p>
+
+<ol>
+<li>如果子类没有定义任何指定构造器，它将自动继承所有父类的指定构造器。</li>
+<li>如果子类提供了所有父类指定构造器的实现&mdash;不管是通过规则1继承过来的，还是通过自定义实现的&mdash;它将自动继承所有父类的便利构造器。</li>
+</ol>
+
+
+<p>即使你在子类中添加了更多的便利构造器，这两条规则仍然适用。子类可以通过定义便利构造器来实现父类中的指定构造器，来部分满足规则2</p>
+
+<p>如果你需要重写一个跟父类一样的构造器，无论是指定构造器还是便利构造器，不同于重载方法、属性和下标，在重载构造器时你没有必要使用关键字<code>override</code></p>
+
+<p>还记得之前指定的<code>Food</code>类吧，现在它多了一个子类<code>RecipeIngredient</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class RecipeIngredient: Food {
+</span><span class='line'>    var quantity: Int
+</span><span class='line'>    init(name: String, quantity: Int) {
+</span><span class='line'>        self.quantity = quantity
+</span><span class='line'>        super.init(name: name)
+</span><span class='line'>    }
+</span><span class='line'>    convenience init(name: String) {
+</span><span class='line'>        self.init(name: name, quantity: 1)
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+可以看出来<code>RecipeIngredient</code>类的指定构造器和便利构造器都符合两段式构造安全检查，并且便利构造器跟<code>Food</code>类中的指定构造器具有相同的参数，尽管<code>RecipeIngredient</code>这个构造器是便利构造器，<code>RecipeIngredient</code>依然提供了对所有父类指定构造器的实现。因此，<code>RecipeIngredient</code>也能自动继承了所有父类的便利构造器(也就是<code>init()</code>):</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/initializersExample02_2x.png" alt="" /></p>
+
+<p>上图中<code>RecipeIngredient</code>类继承的init()函数版本跟Food提供的版本是一样的，除了它是将任务代理给RecipeIngredient版本的init(name: String)而不是Food提供的版本。</p>
+
+<p>食材都已经建立好了，下面开始采购吧！我们需要一个购物单，购物单中每一项是这样子的：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class ShoppingListItem: RecipeIngredient {
+</span><span class='line'>    var purchased = false
+</span><span class='line'>    var description: String {
+</span><span class='line'>    var output = "\(quantity) x \(name.lowercaseString)"
+</span><span class='line'>        output += purchased ? " ✔" : " ✘"
+</span><span class='line'>        return output
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>由于它为自己引入的所有属性都提供了默认值，并且自己没有定义任何构造器，ShoppingListItem将自动继承所有父类中的指定构造器和便利构造器。</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/initializersExample03_2x.png" alt="" /></p>
+
+<p>你可以使用全部三个继承来的构造器来创建ShoppingListItem的新实例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var breakfastList = [
+</span><span class='line'>    ShoppingListItem(),
+</span><span class='line'>    ShoppingListItem(name: "Bacon"),
+</span><span class='line'>    ShoppingListItem(name: "Eggs", quantity: 6),
+</span><span class='line'>]
+</span><span class='line'>breakfastList[0].name = "Orange juice"
+</span><span class='line'>breakfastList[0].purchased = true
+</span><span class='line'>for item in breakfastList {
+</span><span class='line'>    println(item.description)
+</span><span class='line'>}
+</span><span class='line'>// 1 x orange juice ✔
+</span><span class='line'>// 1 x bacon ✘
+</span><span class='line'>// 6 x eggs ✘</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h2>通过闭包和函数来设置属性的默认值</h2>
+
+<p>如果某个存储型属性的默认值需要特别的定制或准备，你就可以使用闭包或全局函数来为其属性提供定制的默认值。每当某个属性所属的新类型实例创建时，对应的闭包或函数会被调用，而它们的返回值会当做默认值赋值给这个属性。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class SomeClass {
+</span><span class='line'>    let someProperty: SomeType = {
+</span><span class='line'>        // 在这个闭包中给 someProperty 创建一个默认值
+</span><span class='line'>        // someValue 必须和 SomeType 类型相同
+</span><span class='line'>        return someValue
+</span><span class='line'>        }()
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>注意闭包结尾的大括号后面接了一对空的小括号。这是用来告诉 Swift 需要立刻执行此闭包。如果你忽略了这对括号，相当于是将闭包本身作为值赋值给了属性，而不是将闭包的返回值赋值给属性。</p>
+
+<p>如果你使用闭包来初始化属性的值，请记住在闭包执行时，实例的其它部分都还没有初始化。这意味着你不能够在闭包里访问其它的属性，就算这个属性有默认值也不允许。同样，你也不能使用隐式的self属性，或者调用其它的实例方法。</p>
+</div>
+
+</article>
+
+
+
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+  	
+     <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_xiaoyou"></a>
+	<a href="http://www.jiathis.com/share?uid=1912336" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1912336" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1912336"></script>
+<!-- UY END -->
+<script>document.write(unescape('%3Cdiv id="hm_t_33672"%3E%3C/div%3E%3Cscript charset="utf-8" src="http://crs.baidu.com/t.js?siteId=b5cb508df15ee6247a8c32c64eadb075&planId=33672&async=0&referer=') + encodeURIComponent(document.referrer) + '&title=' + encodeURIComponent(document.title) + '&rnd=' + (+new Date) + unescape('"%3E%3C/script%3E'));</script>
+
+ 	
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    玉令天下
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'yulingtianxia';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/06/24/initialization-in-swift/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/06/24/initialization-in-swift/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+		</div>
+	</div>
+</body>
+</html>
