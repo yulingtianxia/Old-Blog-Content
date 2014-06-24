@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-24T16:26:01+08:00</updated>
+  <updated>2014-06-24T16:31:43+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -39,7 +39,7 @@
 
 <p>Swift中的构造器不像Objective-C那样有返回值，但是跟C++有点像：所有的构造器都以<code>init</code>命名，用参数列表来区分各个构造器</p>
 
-<p>```
+<p>``` js
 struct Fahrenheit {</p>
 
 <pre><code>var temperature = 16.0

@@ -173,20 +173,21 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>Swift中的构造器不像Objective-C那样有返回值，但是跟C++有点像：所有的构造器都以<code>init</code>命名，用参数列表来区分各个构造器</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>struct Fahrenheit {
-</span><span class='line'>    var temperature = 16.0
-</span><span class='line'>    init() {
-</span><span class='line'>        temperature = 32.0
-</span><span class='line'>    }
-</span><span class='line'>}
-</span><span class='line'>var f = Fahrenheit()</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Fahrenheit</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">temperature</span> <span class="o">=</span> <span class="mf">16.0</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">temperature</span> <span class="o">=</span> <span class="mf">32.0</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">Fahrenheit</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -199,7 +200,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>你可以定义一些带参数的构造器</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -208,34 +209,36 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>struct Celsius {
-</span><span class='line'>    var temperatureInCelsius: Double = 0.0
-</span><span class='line'>    init(fromFahrenheit fahrenheit: Double) {
-</span><span class='line'>        temperatureInCelsius = (fahrenheit - 32.0) / 1.8
-</span><span class='line'>    }
-</span><span class='line'>    init(fromKelvin kelvin: Double) {
-</span><span class='line'>        temperatureInCelsius = kelvin - 273.15
-</span><span class='line'>    }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Celsius</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">temperatureInCelsius</span><span class="o">:</span> <span class="nx">Double</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">fromFahrenheit</span> <span class="nx">fahrenheit</span><span class="o">:</span> <span class="nx">Double</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">temperatureInCelsius</span> <span class="o">=</span> <span class="p">(</span><span class="nx">fahrenheit</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.8</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">fromKelvin</span> <span class="nx">kelvin</span><span class="o">:</span> <span class="nx">Double</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">temperatureInCelsius</span> <span class="o">=</span> <span class="nx">kelvin</span> <span class="o">-</span> <span class="mf">273.15</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 构造器的参数也跟Swift中的方法定义（注意不是函数）一样，也分内部和外部参数名。上面代码中两个构造器外部参数名不同，调用构造器的时候也是通过外部参数名来区分的：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>let boilingPointOfWater = Celsius(fromFahrenheit: 212.0)
-</span><span class='line'>// boilingPointOfWater.temperatureInCelsius 是 100.0
-</span><span class='line'>let freezingPointOfWater = Celsius(fromKelvin: 273.15)
-</span><span class='line'>// freezingPointOfWater.temperatureInCelsius 是 0.0”</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">boilingPointOfWater</span> <span class="o">=</span> <span class="nx">Celsius</span><span class="p">(</span><span class="nx">fromFahrenheit</span><span class="o">:</span> <span class="mf">212.0</span><span class="p">)</span>
+</span><span class='line'><span class="c1">// boilingPointOfWater.temperatureInCelsius 是 100.0</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">freezingPointOfWater</span> <span class="o">=</span> <span class="nx">Celsius</span><span class="p">(</span><span class="nx">fromKelvin</span><span class="o">:</span> <span class="mf">273.15</span><span class="p">)</span>
+</span><span class='line'><span class="c1">// freezingPointOfWater.temperatureInCelsius 是 0.0”</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 如果不写外部参数名那么外部参数名就等于内部参数名。如果你不希望为构造器的某个参数提供外部名字，你还可以使用下划线<code>_</code>来显示描述它的外部名：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -244,15 +247,16 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>struct Color {
-</span><span class='line'>    let red = 0.0, green = 0.0, blue = 0.0
-</span><span class='line'>    init(red: Double, green: Double, blue: Double) {
-</span><span class='line'>        self.red   = red
-</span><span class='line'>        self.green = green
-</span><span class='line'>        self.blue  = blue
-</span><span class='line'>    }
-</span><span class='line'>}
-</span><span class='line'>let magenta = Color(red: 1.0, green: 0.0, blue: 1.0)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Color</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">red</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nx">green</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nx">blue</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">red</span><span class="o">:</span> <span class="nx">Double</span><span class="p">,</span> <span class="nx">green</span><span class="o">:</span> <span class="nx">Double</span><span class="p">,</span> <span class="nx">blue</span><span class="o">:</span> <span class="nx">Double</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">red</span>   <span class="o">=</span> <span class="nx">red</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">green</span> <span class="o">=</span> <span class="nx">green</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">blue</span>  <span class="o">=</span> <span class="nx">blue</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">magenta</span> <span class="o">=</span> <span class="nx">Color</span><span class="p">(</span><span class="nx">red</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nx">green</span><span class="o">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nx">blue</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -260,7 +264,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>如果你定制的类型包含一个逻辑上允许取值为空的存储型属性&mdash;不管是因为它无法在初始化时赋值，还是因为它可以在之后某个时间点可以赋值为空&mdash;你都需要将它定义为可选类型<code>optional type</code>。可选类型的属性将自动初始化为空<code>nil</code>，表示这个属性是故意在初始化时设置为空的。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -274,20 +278,21 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class SurveyQuestion {
-</span><span class='line'>    let text: String
-</span><span class='line'>    var response: String?
-</span><span class='line'>    init(text: String) {
-</span><span class='line'>        self.text = text
-</span><span class='line'>    }
-</span><span class='line'>    func ask() {
-</span><span class='line'>        println(text)
-</span><span class='line'>    }
-</span><span class='line'>}
-</span><span class='line'>let cheeseQuestion = SurveyQuestion(text: "Do you like cheese?")
-</span><span class='line'>cheeseQuestion.ask()
-</span><span class='line'>// 输出 "Do you like cheese?"
-</span><span class='line'>cheeseQuestion.response = "Yes, I do like cheese.</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">SurveyQuestion</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">text</span><span class="o">:</span> <span class="nb">String</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">response</span><span class="o">:</span> <span class="nb">String</span><span class="o">?</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">text</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="nx">text</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">ask</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">println</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">cheeseQuestion</span> <span class="o">=</span> <span class="nx">SurveyQuestion</span><span class="p">(</span><span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;Do you like cheese?&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="nx">cheeseQuestion</span><span class="p">.</span><span class="nx">ask</span><span class="p">()</span>
+</span><span class='line'><span class="c1">// 输出 &quot;Do you like cheese?&quot;</span>
+</span><span class='line'><span class="nx">cheeseQuestion</span><span class="p">.</span><span class="nx">response</span> <span class="o">=</span> <span class="err">&quot;</span><span class="nx">Yes</span><span class="p">,</span> <span class="nx">I</span> <span class="k">do</span> <span class="nx">like</span> <span class="nx">cheese</span><span class="p">.</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -299,32 +304,34 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>Swift将为所有属性已提供默认值的且自身没有定义任何构造器的结构体或基类，提供一个默认的构造器。这个默认构造器将简单的创建一个所有属性值都设置为默认值的实例：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class ShoppingListItem {
-</span><span class='line'>    var name: String?
-</span><span class='line'>    var quantity = 1
-</span><span class='line'>    var purchased = false
-</span><span class='line'>}
-</span><span class='line'>var item = ShoppingListItem()</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">ShoppingListItem</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="o">?</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">quantity</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">purchased</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">item</span> <span class="o">=</span> <span class="nx">ShoppingListItem</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 <code>ShoppingListItem</code>类没有父类（是基类），所有属性都有默认值（可选属性默认值为<code>nil</code>），所以可以直接调用默认的无参数构造器来初始化。<br/>
 除上面提到的默认构造器，如果结构体对所有存储型属性提供了默认值且自身没有提供定制的构造器，它们能自动获得一个<strong>逐一成员构造器（Memberwise Initializers）</strong>：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>struct Size {
-</span><span class='line'>    var width = 0.0, height = 0.0
-</span><span class='line'>}
-</span><span class='line'>let twoByTwo = Size(width: 2.0, height: 2.0)</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Size</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nx">height</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">twoByTwo</span> <span class="o">=</span> <span class="nx">Size</span><span class="p">(</span><span class="nx">width</span><span class="o">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="nx">height</span><span class="o">:</span> <span class="mf">2.0</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -334,7 +341,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>构造器可以通过调用其它构造器来完成实例的部分构造过程。这一过程称为构造器代理，它能减少多个构造器间的代码重复：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -354,26 +361,27 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>struct Size {
-</span><span class='line'>    var width = 0.0, height = 0.0
-</span><span class='line'>}
-</span><span class='line'>struct Point {
-</span><span class='line'>    var x = 0.0, y = 0.0
-</span><span class='line'>}
-</span><span class='line'>struct Rect {
-</span><span class='line'>    var origin = Point()
-</span><span class='line'>    var size = Size()
-</span><span class='line'>    init() {}
-</span><span class='line'>    init(origin: Point, size: Size) {
-</span><span class='line'>        self.origin = origin
-</span><span class='line'>        self.size = size
-</span><span class='line'>    }
-</span><span class='line'>    init(center: Point, size: Size) {
-</span><span class='line'>        let originX = center.x - (size.width / 2)
-</span><span class='line'>        let originY = center.y - (size.height / 2)
-</span><span class='line'>        self.init(origin: Point(x: originX, y: originY), size: size)
-</span><span class='line'>    }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Size</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nx">height</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">struct</span> <span class="nx">Point</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">struct</span> <span class="nx">Rect</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">origin</span> <span class="o">=</span> <span class="nx">Point</span><span class="p">()</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">size</span> <span class="o">=</span> <span class="nx">Size</span><span class="p">()</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">()</span> <span class="p">{}</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">origin</span><span class="o">:</span> <span class="nx">Point</span><span class="p">,</span> <span class="nx">size</span><span class="o">:</span> <span class="nx">Size</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">origin</span> <span class="o">=</span> <span class="nx">origin</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">size</span> <span class="o">=</span> <span class="nx">size</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">center</span><span class="o">:</span> <span class="nx">Point</span><span class="p">,</span> <span class="nx">size</span><span class="o">:</span> <span class="nx">Size</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">originX</span> <span class="o">=</span> <span class="nx">center</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="p">(</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">originY</span> <span class="o">=</span> <span class="nx">center</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="p">(</span><span class="nx">size</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">origin</span><span class="o">:</span> <span class="nx">Point</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">originX</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">originY</span><span class="p">),</span> <span class="nx">size</span><span class="o">:</span> <span class="nx">size</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -395,12 +403,13 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>类的指定构造器的写法跟值类型简单构造器一样，便利构造器也采用相同样式的写法，但需要在init关键字之前放置convenience关键字：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>convenience init(parameters) {
-</span><span class='line'>    statements
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">convenience</span> <span class="nx">init</span><span class="p">(</span><span class="nx">parameters</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">statements</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -427,7 +436,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/initializerDelegation01_2x.png" alt="" />
 举个栗子：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -440,19 +449,20 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class Food {
-</span><span class='line'>    var name: String
-</span><span class='line'>    init(name: String) {
-</span><span class='line'>        self.name = name
-</span><span class='line'>    }
-</span><span class='line'>    convenience init() {
-</span><span class='line'>        self.init(name: "[Unnamed]")
-</span><span class='line'>    }
-</span><span class='line'>}
-</span><span class='line'>let namedMeat = Food(name: "Bacon")
-</span><span class='line'>// namedMeat 的名字是 "Bacon”
-</span><span class='line'>let mysteryMeat = Food()
-</span><span class='line'>// mysteryMeat 的名字是 [Unnamed]</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">Food</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">name</span><span class="o">:</span> <span class="nb">String</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">convenience</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;[Unnamed]&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">namedMeat</span> <span class="o">=</span> <span class="nx">Food</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Bacon&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1">// namedMeat 的名字是 &quot;Bacon”</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">mysteryMeat</span> <span class="o">=</span> <span class="nx">Food</span><span class="p">()</span>
+</span><span class='line'><span class="c1">// mysteryMeat 的名字是 [Unnamed]</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -505,7 +515,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>还记得之前指定的<code>Food</code>类吧，现在它多了一个子类<code>RecipeIngredient</code>:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -515,16 +525,17 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class RecipeIngredient: Food {
-</span><span class='line'>    var quantity: Int
-</span><span class='line'>    init(name: String, quantity: Int) {
-</span><span class='line'>        self.quantity = quantity
-</span><span class='line'>        super.init(name: name)
-</span><span class='line'>    }
-</span><span class='line'>    convenience init(name: String) {
-</span><span class='line'>        self.init(name: name, quantity: 1)
-</span><span class='line'>    }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">RecipeIngredient</span><span class="o">:</span> <span class="nx">Food</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">quantity</span><span class="o">:</span> <span class="nx">Int</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">,</span> <span class="nx">quantity</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">quantity</span> <span class="o">=</span> <span class="nx">quantity</span>
+</span><span class='line'>        <span class="kr">super</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nx">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">convenience</span> <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">quantity</span><span class="o">:</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -536,7 +547,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>食材都已经建立好了，下面开始采购吧！我们需要一个购物单，购物单中每一项是这样子的：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -544,14 +555,15 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class ShoppingListItem: RecipeIngredient {
-</span><span class='line'>    var purchased = false
-</span><span class='line'>    var description: String {
-</span><span class='line'>    var output = "\(quantity) x \(name.lowercaseString)"
-</span><span class='line'>        output += purchased ? " ✔" : " ✘"
-</span><span class='line'>        return output
-</span><span class='line'>    }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">ShoppingListItem</span><span class="o">:</span> <span class="nx">RecipeIngredient</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">purchased</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">description</span><span class="o">:</span> <span class="nb">String</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">output</span> <span class="o">=</span> <span class="s2">&quot;\(quantity) x \(name.lowercaseString)&quot;</span>
+</span><span class='line'>        <span class="nx">output</span> <span class="o">+=</span> <span class="nx">purchased</span> <span class="o">?</span> <span class="s2">&quot; ✔&quot;</span> <span class="o">:</span> <span class="s2">&quot; ✘&quot;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">output</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -562,7 +574,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>你可以使用全部三个继承来的构造器来创建ShoppingListItem的新实例：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -575,19 +587,20 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var breakfastList = [
-</span><span class='line'>    ShoppingListItem(),
-</span><span class='line'>    ShoppingListItem(name: "Bacon"),
-</span><span class='line'>    ShoppingListItem(name: "Eggs", quantity: 6),
-</span><span class='line'>]
-</span><span class='line'>breakfastList[0].name = "Orange juice"
-</span><span class='line'>breakfastList[0].purchased = true
-</span><span class='line'>for item in breakfastList {
-</span><span class='line'>    println(item.description)
-</span><span class='line'>}
-</span><span class='line'>// 1 x orange juice ✔
-</span><span class='line'>// 1 x bacon ✘
-</span><span class='line'>// 6 x eggs ✘</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">breakfastList</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class='line'>    <span class="nx">ShoppingListItem</span><span class="p">(),</span>
+</span><span class='line'>    <span class="nx">ShoppingListItem</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Bacon&quot;</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">ShoppingListItem</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Eggs&quot;</span><span class="p">,</span> <span class="nx">quantity</span><span class="o">:</span> <span class="mi">6</span><span class="p">),</span>
+</span><span class='line'><span class="p">]</span>
+</span><span class='line'><span class="nx">breakfastList</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Orange juice&quot;</span>
+</span><span class='line'><span class="nx">breakfastList</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">purchased</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span class='line'><span class="k">for</span> <span class="nx">item</span> <span class="k">in</span> <span class="nx">breakfastList</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">description</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 1 x orange juice ✔</span>
+</span><span class='line'><span class="c1">// 1 x bacon ✘</span>
+</span><span class='line'><span class="c1">// 6 x eggs ✘</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -596,20 +609,21 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>如果某个存储型属性的默认值需要特别的定制或准备，你就可以使用闭包或全局函数来为其属性提供定制的默认值。每当某个属性所属的新类型实例创建时，对应的闭包或函数会被调用，而它们的返回值会当做默认值赋值给这个属性。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>class SomeClass {
-</span><span class='line'>    let someProperty: SomeType = {
-</span><span class='line'>        // 在这个闭包中给 someProperty 创建一个默认值
-</span><span class='line'>        // someValue 必须和 SomeType 类型相同
-</span><span class='line'>        return someValue
-</span><span class='line'>        }()
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">SomeClass</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">someProperty</span><span class="o">:</span> <span class="nx">SomeType</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 在这个闭包中给 someProperty 创建一个默认值</span>
+</span><span class='line'>        <span class="c1">// someValue 必须和 SomeType 类型相同</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">someValue</span>
+</span><span class='line'>        <span class="p">}()</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
