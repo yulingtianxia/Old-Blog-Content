@@ -5,11 +5,13 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>GitHub Page build warning - 玉令天下的Blog</title>
+	<title>关于玉令天下 - 玉令天下的Blog</title>
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="GitHub Page Build Warning 几天前博主的GitHub Page闹了些小情绪： The page build completed successfully, but returned the following warning: GitHub Pages recently &hellip;">
+	<meta name="description" content="About Sorry（骚瑞） 清华&amp;MIT男
+大家自由发表意见
+">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +21,7 @@
 
 	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
 	
-	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/05/02/github-page-build-warning/">
+	<link rel="canonical" href="http://yulingtianxia.com/sorry/">
 	<link href="/favicon.png" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -145,68 +147,16 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 				
 			
 			<div class="mid-col-container">
-				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">GitHub Page Build Warning</h1>
-	<div class="entry-content" itemprop="articleBody"><p>几天前博主的GitHub Page闹了些小情绪：</p>
+				<div id="content" class="inner"><article class="page">
+    
+    <h1 class="title">关于玉令天下</h1>
+    
+    <div class="entry-content"><h2>About Sorry（骚瑞）</h2>
 
-<!--more-->
-
-
-<p></p>
-
-<blockquote><p>The page build completed successfully, but returned the following warning:</p>
-
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#115;&#x75;&#112;&#x70;&#111;&#114;&#x74;&#x40;&#103;&#x69;&#x74;&#x68;&#117;&#x62;&#x2e;&#x63;&#111;&#x6d;&#46;">&#x73;&#x75;&#x70;&#112;&#x6f;&#x72;&#x74;&#64;&#103;&#105;&#116;&#104;&#117;&#98;&#46;&#99;&#111;&#109;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
-
-<p>For information on troubleshooting Jekyll see:</p>
-
-<p><a href="https://help.github.com/articles/using-jekyll-with-pages#troubleshooting">https://help.github.com/articles/using-jekyll-with-pages#troubleshooting</a></p>
-
-<p>If you have any questions please contact us at <a href="https://github.com/contact.">https://github.com/contact.</a></p></blockquote>
-
-<p>也就是说只是warning而已，程序员根本不理睬的，加载速度慢点就慢点儿呗，可是。。。每次pushGitHub都发一次邮件啊，博主强迫症犯了，决心搞定它。<br/>
-GitHub很贴心的给出了整改意见啊，也就是第一个URL：<a href="https://github.com/blog/1715-faster-more-awesome-github-pages  ">https://github.com/blog/1715-faster-more-awesome-github-pages  </a>
-简单的说，就是因为我的自定义一级域名需要指向一个可以让GitHub Page加载更快的IP，或者是让我的子域名指向<code>username.github.io</code>(username为GitHub用户名，我的是yulingtianxia)，如果你没有自己的域名，那么根本不会出现warning邮件，因为<code>username.github.io</code>本身已经做了加速优化。<br/>
-我在terminal中运行了dig命令：<br/>
-<code>dig yulingtianxia.github.io +nostats +nocomments +nocmd</code><br/>
-结果如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>; &lt;&lt;&gt;&gt; DiG 9.8.3-P1 &lt;&lt;&gt;&gt; yulingtianxia.github.io +nostats +nocomments +nocmd
-</span><span class='line'>;; global options: +cmd
-</span><span class='line'>;yulingtianxia.github.io. IN  A
-</span><span class='line'>yulingtianxia.github.io. 2684 IN  CNAME   github.map.fastly.net.
-</span><span class='line'>github.map.fastly.net.    7   IN  A   103.245.222.133
-</span><span class='line'>fastly.net.       12821   IN  NS  ns3.p04.dynect.net.
-</span><span class='line'>fastly.net.       12821   IN  NS  ns1.p04.dynect.net.
-</span><span class='line'>fastly.net.       12821   IN  NS  ns2.p04.dynect.net.
-</span><span class='line'>fastly.net.       12821   IN  NS  ns4.p04.dynect.net.
-</span><span class='line'>ns1.p04.dynect.net.   21893   IN  A   208.78.70.4
-</span><span class='line'>ns2.p04.dynect.net.   20599   IN  A   204.13.250.4
-</span><span class='line'>ns3.p04.dynect.net.   21929   IN  A   208.78.71.4
-</span><span class='line'>ns4.p04.dynect.net.   26356   IN  A   204.13.251.4</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-于是我在我的域名管理后台将我的一级域名<code>yulingtianxia.com</code>指向<code>103.245.222.133</code>，问题解决。</p>
+<p>清华&amp;MIT男<br/>
+大家自由发表意见</p>
 </div>
-
 </article>
-
-
-
 
 	<div class="share">
 	<div class="addthis_toolbox addthis_default_style ">
@@ -255,6 +205,7 @@ var jiathis_config = {data_track_clickback:'true'};
     <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
 </section>
+
 </div>
 			</div>
 			<footer id="footer" class="inner">Copyright &copy; 2014
@@ -270,8 +221,8 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/05/02/github-page-build-warning/';
-        var disqus_url = 'http://yulingtianxia.com/blog/2014/05/02/github-page-build-warning/';
+        var disqus_identifier = 'http://yulingtianxia.com/sorry/index.html';
+        var disqus_url = 'http://yulingtianxia.com/sorry/index.html';
         var disqus_script = 'embed.js';
       
     (function () {
