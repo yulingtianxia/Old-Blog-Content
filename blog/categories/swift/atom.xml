@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-06-29T18:48:43+08:00</updated>
+  <updated>2014-07-03T21:13:39+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,435 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[初识Core Data(3)]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3/"/>
+    <updated>2014-07-03T10:28:28+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3</id>
+    <content type="html"><![CDATA[<p>在Swift发布后，我尝试用Swift和Core Data做了一个小Demo，名字叫“HardChoice”。它用于帮助人们随机生成一个问题的结果，当然结果是预设好的，并可以加入权值。本文将通过这个Demo来进一步阐述Core Data的知识。</p>
+
+<p>本文包含以下内容：</p>
+
+<ul>
+<li>建立数据模型</li>
+<li>Swift与Objective-C桥接</li>
+<li>NSFetchedResultsController</li>
+<li>UITextField键盘响应</li>
+<li>随机选择算法</li>
+</ul>
+
+
+<!--more-->
+
+
+<p>你可以在<a href="https://github.com/yulingtianxia/HardChoice">GitHub</a>上下载HardChoice的代码</p>
+
+<p>在没弄懂Core Data的基础知识之前，我建议你先阅读我之前的两篇博文：</p>
+
+<p><a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/">初识Core Data(1)</a><br/>
+<a href="http://yulingtianxia.com/blog/2014/05/02/chu-shi-core-data-2/">初识Core Data(2)</a></p>
+
+<p>如果你不懂Swift也没关系，只要了解OC和Core Data，总是能看懂的</p>
+
+<p>在写代码前先了解下我们要做什么：<br/>
+<img src="http://wal8.com/64224622" alt="" />
+<img src="http://wal8.com/64224623" alt="" /></p>
+
+<p>先在第一个页面添加问题（吃啥？），然后点击问题进入到第二个添加选项（鸭子，蛋，猪）的页面。每个选项左边是选项名，右边是该选项的权值。摇动手机就能随机从所有选项中选出答案（就像第二张图那样）。</p>
+
+<h2>建立数据模型</h2>
+
+<p>还是像以前那样新建一个Master-Detail Application，勾选Use Core Data选项，语言选择Swift，然后Xcode会自动生成一个具有<code>UITableView</code>的Demo，这些内容之前说过。下面我们需要打开xcdatamodeld文件来建立我们的数据模型：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140436356516.png" alt="" /></p>
+
+<p><code>Question</code>这个实体只具有一个属性，那就是问题内容<code>content</code>，类型为<code>String</code>；<code>Choice</code>实体有一个类型为<code>String</code>的<code>name</code>属性和一个类型为<code>Integer32</code>的<code>weight</code>属性，分别代表问题选项的名字和权重。</p>
+
+<p>下面我们来建立<code>Question</code>和<code>Choice</code>这两个实体之间的关系：</p>
+
+<p>假设每个问题都对应多个选项，也可以没有选项：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/14043675716.png" alt="" /></p>
+
+<p><code>Optional</code>被打钩是因为问题可以没有任何选项，在Tpye那里我们选择<code>To Many</code></p>
+
+<p>相反，每个选项一定会对应一个问题，并且是唯一的问题：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140436793089.png" alt="" /></p>
+
+<p><code>Optional</code>那里不打钩是为了避免关系的目标为空，在<code>Tpye</code>那里我们选择了<code>To One</code></p>
+
+<p><strong>关于<code>Delete Rule</code>的选择</strong></p>
+
+<p>下面会通过部门与员工的例子来阐述<code>Delete Rule</code>的用法</p>
+
+<ul>
+<li><strong><code>Deny</code></strong> 如果关系指向的目标仍然有对象，那么关系的源对象就不会被删除，比如你想删除一个部门，必须先确保该部门所有员工已经调到其他部门（或被解雇），否则这个部门就不会被删除。</li>
+<li><strong><code>Nullify</code></strong> 将被删除对象反向关系的目标设为null，比如如果你删除了一个部门，那么将这个部门所有成员的department关系目标设为null。需要注意的是员工的department关系应该被勾选为Optional，或者是在删除部门之后马上给该部门员工设置一个新的部门。</li>
+<li><strong><code>Cascade</code></strong> 顾名思义它会传递删除命令，删除一个对象会导致这个对象关系中所指向的所有目标对象也被删除。比如如果你删除了一个部门那么这个部门所有员工都会被立即删除。</li>
+<li><strong><code>No Action</code></strong> 无为而治。比如如果你删除了一个部门，那么这个部门底下的所有员工什么都不知道，他们还以为自己还属于这个部门。</li>
+</ul>
+
+
+<p>回到我们的例子，因为<code>Question</code>指向<code>Choice</code>的<code>choices</code>关系具有从属的性质，问题被删除后<code>choices</code>所指向的选项也应该被删除，所以<code>choices</code>关系中的<code>Delete Rule</code>我们选择<code>Cascade</code>；而<code>Choice</code>指向<code>Question</code>的<code>question</code>关系中<code>Delete Rule</code>被设置成了<code>Nullify</code>，也就是解除了<code>Question</code>与这个<code>Choice</code>的关系，并且我们之前已经设置<code>Question</code>的<code>choices</code>关系设置为<code>Optional</code>来满足<code>Nullify</code>这一选项的要求。</p>
+
+<p><strong>注意：每当你修改过数据模型后，需要将以前生成好的APP删除后再重新Run一下，这样才不会发生错误。这是因为手动删除APP会连同将其数据一起删除，然后重新Run一下会将新的数据表结构安装在模拟器或真机上</strong></p>
+
+<p>如果你对建立数据模型的过程生疏，建议回到<a href="http://yulingtianxia.com/blog/2014/05/02/chu-shi-core-data-2/">初识Core Data(2)</a>中复习下“使用数据模型设计器”一节</p>
+
+<h2>Swift与Objective-C桥接</h2>
+
+<p>在使用Xcode6 Beta2生成<code>NSManagedObject</code>子类的时候，生成的代码依然是Objective-C的代码（即使我的工程是用Swift语言建立的），这就涉及到在Swift工程中调用Objective-C类的问题。苹果给我们提供了一个比较简单的解决方案。在你向工程中加入OC文件时，Xcode会自动弹出消息问你是否需要生成一个桥接头文件（“工程名-Bridging-Header.h”），然后我们在这个头文件中加入想要在Swift中调用的OC类的头文件：</p>
+
+<p>``` objc
+//
+//  Use this file to import your target&rsquo;s public headers that you would like to expose to Swift.
+//</p>
+
+<h1>import &ldquo;Question.h&rdquo;</h1>
+
+<h1>import &ldquo;Choice.h&rdquo;</h1>
+
+<h1>import &ldquo;CustomIOS7AlertView.h&rdquo;</h1>
+
+<p>```</p>
+
+<p><code>Question</code>和<code>Choice</code>这两个类是用之前数据模型中同名实例创建的<code>NSManagedObject</code>子类，<code>CustomIOS7AlertView</code>类是本项目用到的一个自定义AlertView（iOS7之后苹果不再允许自定义<code>UIAlertView</code>了）</p>
+
+<p>这样在Swift文件中不用<code>import</code>任何东西就可以直接使用上面被引入的OC类了</p>
+
+<p>有关Swift和OC在同一项目中混合使用的方法详见<a href="https://github.com/CocoaChina-editors/Welcome-to-Swift/blob/master/Using%20Swift%20with%20Cocoa%20and%20Objective-C/03Mix%20and%20Match/Swift%20and%20Objective-C%20in%20the%20Same%20Project.md">这里</a></p>
+
+<h2>NSFetchedResultsController</h2>
+
+<p>在<a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/">初识Core Data(1)</a>中我们提到过<code>NSFetchedResultsController</code>的作用，简单地说，<code>NSFetchedResultsController</code>的作用就是有效率的管理从CoreData获取请求的数据结果，并将结果提供给<code>UITableView</code>作为数据源。</p>
+
+<p>在<code>MasterViewController.swift</code>文件中，Xcode生成了两个<code>NSFetchedResultsController</code>属性：一个只读计算属性<code>fetchedResultsController</code>和一个可选存储属性<code>_fetchedResultsController</code>，通过两者搭配来实现setter，这里不再多说，将计算属性<code>fetchedResultsController</code>的定义替换如下：</p>
+
+<p>``` js</p>
+
+<pre><code>var fetchedResultsController: NSFetchedResultsController {
+    if _fetchedResultsController != nil {
+        return _fetchedResultsController!
+    }
+
+    let fetchRequest = NSFetchRequest()
+    // Edit the entity name as appropriate.
+    let entity = NSEntityDescription.entityForName("Question", inManagedObjectContext: self.managedObjectContext)
+    fetchRequest.entity = entity
+
+    // Set the batch size to a suitable number.
+    fetchRequest.fetchBatchSize = 20
+
+    // Edit the sort key as appropriate.
+    let sortDescriptor = NSSortDescriptor(key: "content", ascending: true)
+    let sortDescriptors = [sortDescriptor]
+
+    fetchRequest.sortDescriptors = sortDescriptors
+
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext, sectionNameKeyPath: nil, cacheName: "Master")
+    aFetchedResultsController.delegate = self
+    _fetchedResultsController = aFetchedResultsController
+
+    var error: NSError? = nil
+    if !_fetchedResultsController!.performFetch(&amp;error) {
+         // Replace this implementation with code to handle the error appropriately.
+         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+         //println("Unresolved error \(error), \(error.userInfo)")
+         abort()
+    }
+
+    return _fetchedResultsController!
+}
+</code></pre>
+
+<p>```</p>
+
+<p><code>NSFetchRequest</code>对象描述了从数据持久层获取数据的标准，也就是相当于SQL中的from和where等条件语句，它是初始化<code>NSFetchedResultsController</code>的必要参数之一，因为它规定了从<code>NSManagedObjectContext</code>实例中获取什么样的数据。</p>
+
+<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389167.png" alt="" /></p>
+
+<p><code>NSFetchRequest</code>的属性<code>NSEntityDescription</code>，<code>predicate</code>和<code>sortDescriptors</code>分别对应着SQL中的from，where和order by语句，只不过<code>NSFetchRequest</code>把复杂的SQL语句进行了简化，查抄条件和排序方法更加灵活。</p>
+
+<p>在上面的<code>fetchedResultsController</code>属性中我们设置了<code>NSFetchRequest</code>实例：获取所有<code>Question</code>实体对应的数据，并将结果按照<code>content</code>属性的升序排列。</p>
+
+<p><code>init(fetchRequest: NSFetchRequest!, managedObjectContext context: NSManagedObjectContext!, sectionNameKeyPath: String!, cacheName name: String!)</code>是<code>NSFetchedResultsController</code>的指定构造器，除了刚才提到的<code>fetchRequest</code>参数外，还需传入一个必要参数<code>managedObjectContext</code>，在这里我们传入的<code>managedObjectContext</code>是来自<code>AppDelegate</code>的<code>managedObjectContext</code>属性。有关<code>NSManagedObjectContext</code>的知识参见<a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/">初识Core Data(1)</a>，这里不再赘述。<strong>当构造器执行结束后，你就不能再修改<code>NSFetchedResultsController</code>的<code>fetchRequest</code>属性了</strong>。</p>
+
+<p><code>sectionNameKeyPath</code>参数是用来指定抓取数据结果的<code>section</code>信息的，这样<code>UITableView</code>的<code>section</code>信息此时已经预编译好了。因为我们的程序只需要一个<code>section</code>，所以只需传入<code>nil</code>；<code>cacheName</code>参数用于指定缓存<code>section</code>预编译信息的文件名，我们不需要缓存<code>section</code>信息，所以传入<code>nil</code>。</p>
+
+<p>当执行<code>performFetch(error: NSErrorPointer) -&gt; Bool</code>方法成功后，你可以通过<code>NSFetchedResultsController</code>的<code>fetchedObjects</code>属性来获取数据结果，如果为<code>UITableView</code>提供数据，可以用<code>objectAtIndexPath(indexPath: NSIndexPath!) -&gt; AnyObject!</code>方法来更加便捷的将数据与<code>NSIndexPath</code>对接上。在我们的例子中，会把数据结果转化为<code>NSManagedObject</code>的子类<code>Question</code>或<code>Choice</code>类：</p>
+
+<p>```</p>
+
+<pre><code>func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
+    let object = self.fetchedResultsController.objectAtIndexPath(indexPath) as Question
+    cell.textLabel.text = object.content
+}
+</code></pre>
+
+<p>```</p>
+
+<p>下面修改<code>insertNewObject</code>方法来添加新的<code>Question</code>：</p>
+
+<p>```</p>
+
+<pre><code>var addAV = CustomIOS7AlertView()
+func insertNewObject(sender: AnyObject) {
+    let textField = UITextField(frame:CGRectMake(0,0,290,50))
+    textField.becomeFirstResponder()
+    textField.placeholder = "question"
+    textField.keyboardType = .Default
+    textField.returnKeyType = .Done
+    textField.delegate = self
+    addAV.containerView = textField
+    addAV.buttonTitles = ["OK","Cancel"]
+    addAV.delegate = self
+    addAV.useMotionEffects = true
+    addAV.show()
+
+}
+</code></pre>
+
+<p>```</p>
+
+<p>有了添加<code>Question</code>功能，当然还会有修改功能：</p>
+
+<p>```</p>
+
+<pre><code>var modifyAV = CustomIOS7AlertView()
+func modifyObject(indexPath:NSIndexPath){
+    let question = self.fetchedResultsController.objectAtIndexPath(indexPath) as Question
+    let textField = UITextField(frame:CGRectMake(0,0,290,50))
+    textField.becomeFirstResponder()
+    textField.placeholder = "question"
+    textField.keyboardType = .Default
+    textField.returnKeyType = .Done
+    textField.delegate = self
+    modifyAV.containerView = textField
+    modifyAV.buttonTitles = ["OK","Cancel"]
+    modifyAV.delegate = self
+    modifyAV.useMotionEffects = true
+    (modifyAV.containerView as UITextField).text = question.content
+    modifyAV.show()
+}
+</code></pre>
+
+<p>```</p>
+
+<p><code>CustomIOS7AlertView</code>是一个第三方的开源AlertView，它允许我们自定义AlertView的内容，并提供了<code>CustomIOS7AlertViewDelegate</code>协议来用于按钮点击的回调，我们将这两个<code>CustomIOS7AlertView</code>实例的<code>delegate</code>属性都设置为<code>self</code>，然后在<code>MasterViewController</code>中的实现协议中唯一的方法<code>customIOS7dialogButtonTouchUpInside(alertView:AnyObject!, clickedButtonAtIndex buttonIndex:Int)</code>：</p>
+
+<p>```</p>
+
+<pre><code>func customIOS7dialogButtonTouchUpInside(alertView:AnyObject!, clickedButtonAtIndex buttonIndex:Int){
+    switch buttonIndex{
+        case 0:
+        let context = self.fetchedResultsController.managedObjectContext
+        let entity = self.fetchedResultsController.fetchRequest.entity
+        var newManagedObject:Question!
+        let av = alertView as CustomIOS7AlertView
+        if addAV == av{
+            newManagedObject = NSEntityDescription.insertNewObjectForEntityForName(entity.name, inManagedObjectContext: context) as Question
+        }
+        if modifyAV == av{
+            newManagedObject = self.fetchedResultsController.objectAtIndexPath(selectedIndexPath) as Question
+        }
+        // If appropriate, configure the new managed object.
+        // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
+        newManagedObject.content = (av.containerView as UITextField).text
+
+        // Save the context.
+        var error: NSError? = nil
+        if !context.save(&amp;error) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            //println("Unresolved error \(error), \(error.userInfo)")
+            abort()
+        }
+        alertView.close()
+        default:
+        alertView.close()
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>当用户点击<code>alertView</code>的OK按钮时，判断<code>alertView</code>对象是<code>addAV</code>还是<code>modifyAV</code>，然后对应通过不同途径（新插入到<code>ManagedObjectContext</code>还是从<code>ManagedObjectContext</code>中取出）产生<code>Question</code>实例<code>newManagedObject</code>，最后的结果会保存回<code>ManagedObjectContext</code>中，最后关闭<code>alertView</code>。</p>
+
+<p>添加<code>Question</code>时使用的<code>insertNewObjectForEntityForName(entityName: String!, inManagedObjectContext context: NSManagedObjectContext!) -&gt; AnyObject!</code>方法是一个配置和添加实体，并返回该实体对应<code>NSManagedObject</code>子类（在这里是<code>Question</code>类）的便捷方法，这是一个很强大的类方法，我们无需知道创建<code>Question</code>类的细节就能创建并添加一个<code>Question</code>实例到<code>NSManagedObjectContext</code>中，在保存前我们还可以对这个方法返回的<code>Question</code>实例做修改，然后再通过<code>save(error: NSErrorPointer) -&gt; Bool</code>方法保存。</p>
+
+<p>修改<code>Question</code>的过程其实就是先通过<code>objectAtIndexPath(indexPath: NSIndexPath!) -&gt; AnyObject!</code>方法取出数据请求结果当中的某一项并转换成<code>Question</code>对象，对其进行修改后再保存。在界面中通过点击cell右侧带有字母i的蓝色圆圈来修改<code>Question</code>内容：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140438530596.png" alt="" /></p>
+
+<p>上图的中的蓝色圆圈是<code>AccessoryButton</code>，需要在IB中设置<code>TableViewCell</code>的<code>Identifier</code>为<code>QuestionCell</code>，<code>Accessory</code>为<code>Detail Disclosure</code>，这样我们就能在<code>UITableViewDelegate</code>的<code>tableView(tableView: UITableView!, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath!)</code>方法中响应<code>AccessoryButton</code>了：</p>
+
+<p>```</p>
+
+<pre><code>override func tableView(tableView: UITableView!, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath!){
+    selectedIndexPath = indexPath
+    modifyObject(indexPath)
+
+}
+</code></pre>
+
+<p>```</p>
+
+<p>导航栏右侧的添加<code>Question</code>按钮已经通过下面的代码配置了响应函数：</p>
+
+<p><code>
+let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
+self.navigationItem.rightBarButtonItem = addButton
+</code>
+在<code>UITableViewDelegate</code>中删除<code>Question</code>的代码如下：</p>
+
+<p>```</p>
+
+<pre><code>override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    if editingStyle == .Delete {
+        let context = self.fetchedResultsController.managedObjectContext
+        context.deleteObject(self.fetchedResultsController.objectAtIndexPath(indexPath) as NSManagedObject)
+
+        var error: NSError? = nil
+        if !context.save(&amp;error) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            //println("Unresolved error \(error), \(error.userInfo)")
+            abort()
+        }
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>这里多说一嘴，如果你想打印出错误信息的话，不要直接反注释那行<code>println</code>代码，还需要在<code>error</code>后加上感叹号，因为<code>error</code>是可选类型，需要强制解析：</p>
+
+<p><code>
+println("Unresolved error \(error!), \(error!.userInfo)")
+</code></p>
+
+<h2>UITextField键盘响应</h2>
+
+<p>在将<code>UITextField</code>实例赋值给<code>CustomIOS7AlertView</code>的<code>containerView</code>属性前需要先让其获取当前焦点，并将<code>UITextField</code>的<code>delegate</code>属性设为<code>self</code>：</p>
+
+<p>```</p>
+
+<pre><code>var addAV = CustomIOS7AlertView()
+func insertNewObject(sender: AnyObject) {
+    let textField = UITextField(frame:CGRectMake(0,0,290,50))
+    textField.becomeFirstResponder()//获取当前焦点
+    textField.placeholder = "question"
+    textField.keyboardType = .Default
+    textField.returnKeyType = .Done
+    textField.delegate = self
+    addAV.containerView = textField
+    addAV.buttonTitles = ["OK","Cancel"]
+    addAV.delegate = self
+    addAV.useMotionEffects = true
+    addAV.show()
+
+}
+</code></pre>
+
+<p>```</p>
+
+<p>然后让<code>MasterViewController</code>遵循<code>UITextFieldDelegate</code>协议，并实现下面两个协议中的方法：</p>
+
+<p>```</p>
+
+<pre><code>func textFieldDidBeginEditing(textField: UITextField!){
+    let animationDuration:NSTimeInterval  = 1
+    var frame = self.view.frame;
+    frame.origin.y-=116
+    frame.size.height+=116
+    self.view.frame = frame;
+    UIView.animateWithDuration(animationDuration){
+        self.view.frame = frame;
+    }
+}
+
+func textFieldShouldEndEditing(textField: UITextField!) -&gt; Bool{
+    let animationDuration:NSTimeInterval  = 1
+    var frame = self.view.frame;
+    frame.origin.y+=116;
+    frame.size.height-=116;
+    self.view.frame = frame;
+    //self.view移回原位置
+    UIView.animateWithDuration(animationDuration){
+        self.view.frame = frame;
+    }
+    textField.resignFirstResponder();
+    return true
+}
+</code></pre>
+
+<p>```</p>
+
+<p>这里我将键盘高度硬编码为116，当<code>UITextField</code>开始编辑时获取焦点键盘弹出，背景上移；当其结束编辑时键盘消失，背景移回原位。</p>
+
+<p>在Xcode6 beta2中的模拟器不是很好使，经常不能弹出键盘，这里给出的代码有很多疏漏，只提供个参考，主要是处理<code>UITextField</code>代理的思想</p>
+
+<h2>随机选择算法</h2>
+
+<p><code>DetailViewController</code>的内容跟<code>MasterViewController</code>内容很像，最大的区别在于多了一个从<code>Choice</code>数据中随机抽选的一个方法。因为是通过摇一摇的方式来触发随机算法，所以我们重载<code>motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!)</code>方法来响应手机摇动：</p>
+
+<p>```
+override func motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!) {</p>
+
+<pre><code>    if motion == .MotionShake{
+
+        let count = self.fetchedResultsController.fetchedObjects.count
+        var arr = fetchedResultsController.fetchedObjects
+        var sum:Int = 0
+        for object : AnyObject in arr{
+            sum+=(object as Choice).weight.integerValue
+        }
+        if sum&gt;0{
+            var lucknum = arc4random()%UInt32(sum)
+</code></pre>
+
+<p>//                println(&ldquo;(lucknum)&rdquo;)</p>
+
+<pre><code>            var num = 0
+            var n:UInt32 = 0
+            while lucknum&gt;0{
+                if lucknum &lt;= n{
+                    break
+                }
+                else{
+                    num++
+                    lucknum-=n
+                    if num&gt;=count{
+                        break
+                    }
+                    n = UInt32((arr[num] as Choice).weight.integerValue)
+                }
+            }
+</code></pre>
+
+<p>//                println(&ldquo;(num)&rdquo;)</p>
+
+<pre><code>            var alertView = UIAlertView()
+            alertView.alertViewStyle = .Default
+            alertView.title = "恭喜"
+            alertView.message = "\(detailItem!.content)的答案是：\n\((arr[num] as Choice).name)"
+            alertView.addButtonWithTitle("OK")
+            alertView.show()
+        }
+
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>前面提到过<code>NSFetchedResultsController</code>对象在执行<code>performFetch(error: NSErrorPointer) -&gt; Bool</code>方法后会讲获取的数据存在<code>fetchedObjects</code>数组中，上面这段代码首先获取该问题对应的选项数量，并通过加权运算得到总的权重，然后通过随机数算法生成一个幸运数字，最后计算幸运数字落在哪个选项上。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Initialization in Swift]]></title>
@@ -1317,32 +1746,6 @@ let secondVector = Vector2D(x: 3.0, y: 4.0)
 let plusMinusVector = firstVector +&ndash; secondVector
 // plusMinusVector 此时的值为 (4.0, -2.0)
 ```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[XCode,Swift和Objective-C Cheat Sheet]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
-    <updated>2014-04-06T18:38:24+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
-    <content type="html"><![CDATA[<p>关于XCode,Swift和OC的速查，方便记忆，以后会更新</p>
-
-<!-- more-->
-
-
-<p>XCode5 Cheat Sheet:(<a href="http://www.git-tower.com/blog/xcode-cheat-sheet/">作者</a>)</p>
-
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140353412989.jpg" alt="" /></p>
-
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140353414151.jpg" alt="" /></p>
-
-<p>Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(摘自<a href="http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5">raywenderlich</a>)</p>
-
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140353409554.jpg" alt="" /></p>
-
-<p>Swift Cheat Sheet and Quick Reference:(摘自<a href="http://www.raywenderlich.com/73967/swift-cheat-sheet-and-quick-reference">raywenderlich</a>)</p>
-
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140353410275.png" alt="" /></p>
 ]]></content>
   </entry>
   
