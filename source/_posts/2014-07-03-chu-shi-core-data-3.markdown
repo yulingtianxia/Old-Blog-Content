@@ -381,7 +381,7 @@ override func motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!) {
     }
 ``` 
 
-前面提到过`NSFetchedResultsController`对象在执行`performFetch(error: NSErrorPointer) -> Bool`方法后会讲获取的数据存在`fetchedObjects`数组中，上面这段代码首先获取该问题对应的选项数量，并通过加权运算得到总的权重，然后通过随机数算法生成一个幸运数字，最后计算幸运数字落在哪个选项上。  
+前面提到过`NSFetchedResultsController`对象在执行`performFetch(error: NSErrorPointer) -> Bool`方法后会将获取的数据存在`fetchedObjects`数组中，上面这段代码首先获取该问题对应的选项数量，并通过加权运算得到总的权重，然后通过随机数算法生成一个幸运数字，最后计算幸运数字落在哪个选项上。  
 
 
 
