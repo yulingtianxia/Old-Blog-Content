@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-10T23:16:34+08:00</updated>
+  <updated>2014-07-11T14:19:21+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -905,6 +905,8 @@ protocol LogicValue {</p>
 var nil: NilType { get }
 </code>
 <code>nil</code>是<code>NilType</code>类型唯一的实例，好特殊啊。Swift 的<code>nil</code>和 Objective-C 中的<code>nil</code>并不一样。在 Objective-C 中，<code>nil</code>是一个指向不存在对象的指针。在 Swift 中，<code>nil</code>不是指针——它是一个确定的值，用来表示值缺失。任何类型的可选状态都可以被设置为<code>nil</code>，不只是对象类型。</p>
+
+<p><strong>在Xcode6Beta3发布后，Swift中的nil类型被修改为字面量了，不再是NilType的实例</strong></p>
 
 <p><strong>可选类型默认值为<code>nil</code></strong></p>
 
