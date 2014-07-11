@@ -4,7 +4,7 @@ title: "函数指针与指针函数"
 date: 2014-04-17 19:24:39 +0800
 comments: true
 categories: 
-- 基础知识
+
 - 转载
 - C
 

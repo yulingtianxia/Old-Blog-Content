@@ -70,6 +70,8 @@ var nil: NilType { get }
 ``` 
 `nil`是`NilType`类型唯一的实例，好特殊啊。Swift 的`nil`和 Objective-C 中的`nil`并不一样。在 Objective-C 中，`nil`是一个指向不存在对象的指针。在 Swift 中，`nil`不是指针——它是一个确定的值，用来表示值缺失。任何类型的可选状态都可以被设置为`nil`，不只是对象类型。  
 
+**在Xcode6Beta3发布后，Swift中的nil类型被修改为字面量了，不再是NilType的实例**
+
 **可选类型默认值为`nil`**  
 
 除了用if语句判断和强制解析来获取可选类型中的值，还可以用可选绑定的方式来来判断可选类型是否包含值：  

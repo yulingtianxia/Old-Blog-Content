@@ -5,7 +5,6 @@ date: 2014-04-17 18:38:37 +0800
 comments: true
 categories: 
 - C
-- 基础知识
 
 ---
 第一次对typedef语法产生疑惑是在大一使用struct的时候，而在使用Objective－C对Block进行操作的时候，再一次困惑  
