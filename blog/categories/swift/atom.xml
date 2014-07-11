@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-11T14:26:20+08:00</updated>
+  <updated>2014-07-11T17:55:44+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,106 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Swift中的位运算符合溢出运算符]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/07/11/bitwise-and-overflow-operators-in-swift/"/>
+    <updated>2014-07-11T15:15:59+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/07/11/bitwise-and-overflow-operators-in-swift</id>
+    <content type="html"><![CDATA[<p>位运算符（Bitwise Operators），在各种语言中都存在，虽然用的有些少，但是在诸如类别判断，类型检测等方案中经常用位运算来实现。很多枚举类型的成员都是将<code>0x1</code>左移位来赋值，而不是从0递增，这其中就蕴含着位运算。而数值运算中的溢出也是一个不常遇到但又值得注意的地方，虽然很少有人用<code>Int8</code>来存储大数，但了解下Swift处理溢出的这一特性也是很有用的。</p>
+
+<!--more-->
+
+
+<h2>基本位运算符</h2>
+
+<p><code>~</code>,<code>&amp;</code>,<code>|</code>,<code>^</code>分别为取反，与，或，异或运算：</p>
+
+<p><code>
+let firstBit: UInt8 = 0b10000000
+let lastBit: UInt8  = 0b00000001
+let invertedBits = ~lastBit  // 等于 0b11111110
+let noneBit = firstBit &amp; lastBit  // 等于 0b00000000
+let twoSideBits = firstBit | lastBit //等于 0b10000001
+let middleSixBits = firstBit ^ lastBit //等于 0b10000001
+</code>
+左移运算符<code>&lt;&lt;</code>和右移运算符<code>&gt;&gt;</code>分别扮演着乘2和除2的角色，对于<code>UInt</code>来讲很简单，只需要填充0就行：</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/bitshiftUnsigned_2x.png" alt="" /></p>
+
+<p>但对于有符号整型数，移位时需要考虑到符号位，第一个比特位表达这个整数是正数还是负数。0代表正数，1代表负数。也就是说<code>Int8</code>最大是127，因为只有7位存储实际值，而且负数采用补码来表示。</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/bitshiftSignedFour_2x.png" alt="" /></p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/bitshiftSignedMinusFour_2x.png" alt="" /></p>
+
+<p>正数的补码是原码；负数的补码是符号位不变，数值位各位取反，最后整个数加1，补码之所以被机器采用是因为它符合机器的架构设计，只用加法就能算减法：</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/bitshiftSignedAddition_2x.png" alt="" /></p>
+
+<p>有符号整型右移运算时用符号位填充：</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/bitshiftSigned_2x.png" alt="" /></p>
+
+<p>这就确保了在右移的过程中，有符整型的符号不会发生变化。这称为算术移位。</p>
+
+<h2>溢出运算符</h2>
+
+<p>Swift中如果计算结果超出了它的类型能承载的范围，那么就会发生溢出错误，除非你已经使用溢出运算符来进行操作：</p>
+
+<ul>
+<li>溢出加法 <code>&amp;+</code></li>
+<li>溢出减法 <code>&amp;-</code></li>
+<li>溢出乘法 <code>&amp;*</code></li>
+<li>溢出除法 <code>&amp;/</code></li>
+<li>溢出求余 <code>&amp;%</code></li>
+</ul>
+
+
+<h3>值的上溢出</h3>
+
+<p><code>
+var willOverflow = UInt8.max
+// willOverflow 等于UInt8的最大整数 255
+willOverflow = willOverflow &amp;+ 1
+// 此时 willOverflow 等于 0
+</code></p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/overflowAddition_2x.png" alt="" /></p>
+
+<h3>值的下溢出</h3>
+
+<p><code>
+var willUnderflow = UInt8.min
+// willUnderflow 等于UInt8的最小值0
+willUnderflow = willUnderflow &amp;- 1
+// 此时 willUnderflow 等于 255
+</code></p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/overflowUnsignedSubtraction_2x.png" alt="" /></p>
+
+<p>有符整型也有类似的下溢出</p>
+
+<p><code>
+var signedUnderflow = Int8.min
+// signedUnderflow 等于最小的有符整数 -128
+signedUnderflow = signedUnderflow &amp;- 1
+// 此时 signedUnderflow 等于 127
+</code></p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/overflowSignedSubtraction_2x.png" alt="" /></p>
+
+<h3>除零溢出</h3>
+
+<p>一个数除以0，或者对0求余数，就会产生一个错误；使用它们对应的可溢出的版本的运算符<code>&amp;/</code>和<code>&amp;%</code>进行除0操作时就会得到0值。</p>
+
+<p><code>
+let x = 1
+let y = x &amp;/ 0
+// y 等于 0
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[初识Core Data(3)]]></title>
@@ -1564,190 +1664,6 @@ deinit {
 paragraph = nil
 // prints "p is being deinitialized"
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Swift重载和自定义运算符]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/06/16/swiftzhong-zai-yun-suan-fu/"/>
-    <updated>2014-06-16T20:45:20+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/06/16/swiftzhong-zai-yun-suan-fu</id>
-    <content type="html"><![CDATA[<p>最近一直边忙毕设边学Swift，终于看完了官方的教程（语言参考暂不打算看），在iBooks上做了一些笔记（看英文伤不起），感觉Swift是一门大杂烩类型的语言，我会记录一些我自认为以前遇到较少或者需要重点记忆的语法特性，在此作为分享，这次是运算符的重载，几乎每门语言都有，只是语法不一样罢了。</p>
-
-<!--more-->
-
-
-<h2>运算符重载</h2>
-
-<p>在Swift的官方文档中运算符重载叫做运算符函数（Operator Functions），顾名思义就是对已经有的运算符覆盖定义自己的函数实现。三元运算符（a？b：c）和默认的默认的赋值符(=)是不可重载的。</p>
-
-<h3>中缀运算符的重载</h3>
-
-<p>在<code>func</code>关键字前使用属性<code>@infix</code>来重载中缀运算符，函数名为想要重载的中缀运算符：</p>
-
-<p>``` js
-struct Vector2D {</p>
-
-<pre><code>var x = 0.0, y = 0.0
-</code></pre>
-
-<p>}
-@infix func + (left: Vector2D, right: Vector2D) &ndash;> Vector2D {</p>
-
-<pre><code>return Vector2D(x: left.x + right.x, y: left.y + right.y)
-</code></pre>
-
-<p>}
-<code>``
-上面的代码是对结构体</code>Vector2D<code>之间双目运算符</code>+<code>的重载，下面可以直接使用</code>+<code>对</code>Vector2D`进行操作了：</p>
-
-<p><code>
-let vector = Vector2D(x: 3.0, y: 1.0)
-let anotherVector = Vector2D(x: 2.0, y: 4.0)
-let combinedVector = vector + anotherVector
-// combinedVector 是一个新的Vector2D, 值为 (5.0, 5.0)
-</code></p>
-
-<p>除了对双目运算符的重载，还有对比较运算符的重载</p>
-
-<p>```
-@infix func == (left: Vector2D, right: Vector2D) &ndash;> Bool {</p>
-
-<pre><code>return (left.x == right.x) &amp;&amp; (left.y == right.y)
-</code></pre>
-
-<p>}</p>
-
-<p>@infix func != (left: Vector2D, right: Vector2D) &ndash;> Bool {</p>
-
-<pre><code>return !(left == right)
-</code></pre>
-
-<p>}
-```</p>
-
-<p>现在我们可以使用这两个运算符来判断两个Vector2D对象是否相等</p>
-
-<p>```
-let twoThree = Vector2D(x: 2.0, y: 3.0)
-let anotherTwoThree = Vector2D(x: 2.0, y: 3.0)
-if twoThree == anotherTwoThree {</p>
-
-<pre><code>println("这两个向量是相等的.")
-</code></pre>
-
-<p>}
-// prints &ldquo;这两个向量是相等的.&rdquo;
-```</p>
-
-<h3>前缀和后缀运算符的重载</h3>
-
-<p>前缀和后缀运算符重载跟中缀运算符重载类似，只是将<code>func</code>关键字前的属性替换成<code>@prefix</code>和<code>@postfix</code>，比如：</p>
-
-<p>```
-@prefix func &ndash; (vector: Vector2D) &ndash;> Vector2D {</p>
-
-<pre><code>return Vector2D(x: -vector.x, y: -vector.y)
-</code></pre>
-
-<p>}
-```</p>
-
-<p>这段代码为<code>Vector2D</code>类型提供了单目减运算，并且是前缀，也就是取负操作。</p>
-
-<p><code>
-let positive = Vector2D(x: 3.0, y: 4.0)
-let negative = -positive
-// negative 为 (-3.0, -4.0)
-let alsoPositive = -negative
-// alsoPositive 为 (3.0, 4.0)
-</code></p>
-
-<h3>组合赋值运算符的重载</h3>
-
-<p>组合赋值是其他运算符和赋值运算符一起执行的运算。如<code>+=</code>把加运算和赋值运算组合成一个操作。实现一个组合赋值符号需要使用<code>@assignment</code>属性，还需要把运算符的左参数设置成<code>inout</code>，因为这个参数会在运算符函数内直接修改它的值。</p>
-
-<p>```
-@assignment func += (inout left: Vector2D, right: Vector2D) {</p>
-
-<pre><code>left = left + right
-</code></pre>
-
-<p>}
-```</p>
-
-<p>因为加法运算在之前定义过了，这里无需重新定义。所以，加赋运算符函数使用已经存在的高级加法运算符函数来执行左值加右值的运算。</p>
-
-<p><code>
-var original = Vector2D(x: 1.0, y: 2.0)
-let vectorToAdd = Vector2D(x: 3.0, y: 4.0)
-original += vectorToAdd
-// original 现在为 (4.0, 6.0)
-</code>
-你可以将<code>@assignment</code>属性和 <code>@prefix</code> 或 <code>@postfix</code> 属性起来组合，实现一个<code>Vector2D</code>的前缀运算符。</p>
-
-<p>```
-@prefix @assignment func ++ (inout vector: Vector2D) &ndash;> Vector2D {</p>
-
-<pre><code>vector += Vector2D(x: 1.0, y: 1.0)
-return vector
-</code></pre>
-
-<p>}
-<code>``
-这个前缀使用了已经定义好的高级加赋运算，将自己加上一个值为</code> (1.0，1.0) `的对象然后赋给自己，然后再将自己返回。</p>
-
-<p><code>
-var toIncrement = Vector2D(x: 3.0, y: 4.0)
-let afterIncrement = ++toIncrement
-// toIncrement 现在是 (4.0, 5.0)
-// afterIncrement 现在也是 (4.0, 5.0)
-</code></p>
-
-<h2>自定义运算符</h2>
-
-<p>标准的运算符不够玩，那你可以声明一些个性的运算符，但个性的运算符只能使用这些字符 <code>/ = - + * % &lt; &gt;！&amp; | ^。~</code>  <br/>
-新的运算符声明需在全局域使用<code>operator</code>关键字声明，可以声明为前缀，中缀或后缀的。</p>
-
-<p><code>
-operator prefix +++ {}
-</code>
-这段代码定义了一个新的前缀运算符叫<code>+++</code>，此前Swift并不存在这个运算符。此处为了演示，我们让<code>+++</code>对<code>Vector2D</code>对象的操作定义为“双自增”（prefix doubling incrementer） 这样一个独有的操作，这个操作使用了之前定义的加赋运算（<code>+=</code>）实现了自已加上自己然后返回的运算。</p>
-
-<p>```
-@prefix @assignment func +++ (inout vector: Vector2D) &ndash;> Vector2D {</p>
-
-<pre><code>vector += vector
-return vector
-</code></pre>
-
-<p>}
-```</p>
-
-<p><code>+++</code>运算的实现是把自己再加上自己</p>
-
-<p><code>
-var toBeDoubled = Vector2D(x: 1.0, y: 4.0)
-let afterDoubling = +++toBeDoubled
-// toBeDoubled 现在是 (2.0, 8.0)
-// afterDoubling 现在也是 (2.0, 8.0)
-</code>
-此外还可以定义运算符的结合性(associativity)和优先级(precedence)，结合性(associativity)的值可取的值有left，right和none。左结合运算符跟其他优先级相同的左结合运算符写在一起时，会跟左边的操作数结合。同理，右结合运算符会跟右边的操作数结合。而非结合运算符不能跟其他相同优先级的运算符写在一起。<br/>
-结合性(associativity)的值默认为none，优先级(precedence)默认为100。</p>
-
-<p>```
-operator infix +&ndash; { associativity left precedence 140 }
-func +&ndash; (left: Vector2D, right: Vector2D) &ndash;> Vector2D {</p>
-
-<pre><code>return Vector2D(x: left.x + right.x, y: left.y - right.y)
-</code></pre>
-
-<p>}
-let firstVector = Vector2D(x: 1.0, y: 2.0)
-let secondVector = Vector2D(x: 3.0, y: 4.0)
-let plusMinusVector = firstVector +&ndash; secondVector
-// plusMinusVector 此时的值为 (4.0, -2.0)
-```</p>
 ]]></content>
   </entry>
   
