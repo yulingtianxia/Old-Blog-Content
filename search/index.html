@@ -9,7 +9,9 @@
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="(function() { var cx = '007120364111268919138:tex1pcfht90'; var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async &hellip;">
+	<meta name="description" content="function g(formname) {
+var url = &#8220;http://www.baidu.com/baidu&#8221;;
+if (formname.s[1].checked) { formname.ct.value = &#8220;2097152&#8221 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -150,21 +152,36 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
     
     <h1 class="title">站内搜索</h1>
     
-    <div class="entry-content"><script>
-  (function() {
-    var cx = '007120364111268919138:tex1pcfht90';
-    var gcse = document.createElement('script');
-    gcse.type = 'text/javascript';
-    gcse.async = true;
-    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-        '//www.google.com/cse/cse.js?cx=' + cx;
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(gcse, s);
-  })();
-</script>
+    <div class="entry-content"><SCRIPT language=javascript>
+function g(formname)    {
+var url = &#8220;http://www.baidu.com/baidu&#8221;;
+if (formname.s[1].checked) {
+    formname.ct.value = &#8220;2097152&#8221;;
+}
+else {
+    formname.ct.value = &#8220;0&#8221;;
+}
+formname.action = url;
+return true;
+}
+</SCRIPT>
 
 
-<p>&lt;gcse:search>&lt;/gcse:search></p>
+<p><form name="f1" onsubmit="return g(this)"></p>
+
+<table bgcolor="#FFFFFF" style="font-size:9pt;">
+<tr height="60">
+<td>
+<input name=word size="30" maxlength="100">
+<input type="submit" value="博客搜索"><br>
+<input name=tn type=hidden value="bds">
+<input name=cl type=hidden value="3">
+<input name=ct type=hidden>
+<input name=si type=hidden value="yulingtianxia.com">
+</td></tr></table>
+
+
+<p></form></p>
 </div>
 </article>
 
