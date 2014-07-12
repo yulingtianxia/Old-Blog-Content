@@ -9,9 +9,8 @@
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="function g(formname) {
-var url = &#8220;http://www.baidu.com/baidu&#8221;;
-if (formname.s[1].checked) { formname.ct.value = &#8220;2097152&#8221 &hellip;">
+	<meta name="description" content="Loading google.load(&lsquo;search&rsquo;, &lsquo;1&rsquo;, {language: &lsquo;zh-Hans&rsquo;, style: google.loader.themes.V2_DEFAULT});
+google. &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -152,36 +151,24 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
     
     <h1 class="title">站内搜索</h1>
     
-    <div class="entry-content"><SCRIPT language=javascript>
-function g(formname)    {
-var url = &#8220;http://www.baidu.com/baidu&#8221;;
-if (formname.s[1].checked) {
-    formname.ct.value = &#8220;2097152&#8221;;
-}
-else {
-    formname.ct.value = &#8220;0&#8221;;
-}
-formname.action = url;
-return true;
-}
-</SCRIPT>
+    <div class="entry-content"><div id='cse' style='width: 100%;'>Loading</div>
 
 
-<p><form name="f1" onsubmit="return g(this)"></p>
-
-<table bgcolor="#FFFFFF" style="font-size:9pt;">
-<tr height="60">
-<td>
-<input name=word size="30" maxlength="100">
-<input type="submit" value="博客搜索"><br>
-<input name=tn type=hidden value="bds">
-<input name=cl type=hidden value="3">
-<input name=ct type=hidden>
-<input name=si type=hidden value="yulingtianxia.com">
-</td></tr></table>
+<script src='//www.google.com/jsapi' type='text/javascript'></script>
 
 
-<p></form></p>
+<p><script type='text/javascript'>
+google.load(&lsquo;search&rsquo;, &lsquo;1&rsquo;, {language: &lsquo;zh-Hans&rsquo;, style: google.loader.themes.V2_DEFAULT});
+google.setOnLoadCallback(function() {
+  var customSearchOptions = {};
+  var orderByOptions = {};
+  orderByOptions[&lsquo;keys&rsquo;] = [{label: &lsquo;Relevance&rsquo;, key: &lsquo;&rsquo;} , {label: &lsquo;Date&rsquo;, key: &lsquo;date&rsquo;}];
+  customSearchOptions[&lsquo;enableOrderBy&rsquo;] = true;
+  customSearchOptions[&lsquo;orderByOptions&rsquo;] = orderByOptions;
+  var imageSearchOptions = {};
+  imageSearchOptions[&lsquo;layout&rsquo;] = &lsquo;google.search.ImageSearch.LAYOUT_POPUP&rsquo;;
+  customSearchOptions[&lsquo;enableImageSearch&rsquo;] = true;
+  customSearchOptions[&lsquo;overlayResults&rsquo;] = true;</p>
 </div>
 </article>
 
