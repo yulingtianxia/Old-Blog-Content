@@ -247,7 +247,7 @@ println(paragraph!.asHTML())
 
 虽然闭包多次使用了`self`，它只捕获`HTMLElement`实例的一个强引用。如果设置`paragraph`变量为`nil`，打破它持有的`HTMLElement`实例的强引用，`HTMLElement`实例和它的闭包都不会被销毁，也是因为强引用循环  
 ##解决闭包引起的循环强引用
-Swift 提供了一种优雅的方法来解决这个问题，称之为闭包占用列表（closuer capture list）  
+Swift 提供了一种优雅的方法来解决这个问题，称之为闭包捕获列表（closuer capture list）  
 ###定义捕获列表
 捕获列表放置在闭包参数列表和返回类型之前，列表中每项都是由weak或unowned关键字和实例的引用（如self或someInstance）成对组成。每项都通过逗号分开写在方括号中。  
 
