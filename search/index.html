@@ -9,8 +9,7 @@
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="Loading google.load('search', '1', {language: 'zh-Hans', style: google.loader.themes.V2_DEFAULT});
-google.setOnLoadCallback(function() { var &hellip;">
+	<meta name="description" content="(function() { var cx = '007120364111268919138:tex1pcfht90'; var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -151,28 +150,25 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
     
     <h1 class="title">站内搜索</h1>
     
-    <div class="entry-content"><div id='cse' style='width: 100%;'>Loading</div>
+    <div class="entry-content"><p><body></p>
 
-
-<script src='//www.google.com/jsapi' type='text/javascript'></script>
-
-
-<script type='text/javascript'>
-google.load('search', '1', {language: 'zh-Hans', style: google.loader.themes.V2_DEFAULT});
-google.setOnLoadCallback(function() {
-  var customSearchOptions = {};
-  var orderByOptions = {};
-  orderByOptions['keys'] = [{label: 'Relevance', key: ''} , {label: 'Date', key: 'date'}];
-  customSearchOptions['enableOrderBy'] = true;
-  customSearchOptions['orderByOptions'] = orderByOptions;
-  var imageSearchOptions = {};
-  imageSearchOptions['layout'] = 'google.search.ImageSearch.LAYOUT_POPUP';
-  customSearchOptions['enableImageSearch'] = true;
-  customSearchOptions['overlayResults'] = true;
+<script>
+  (function() {
+    var cx = '007120364111268919138:tex1pcfht90';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+  
 </script>
 
 
-
+<p>&lt;gcse:search>&lt;/gcse:search>
+</body></p>
 </div>
 </article>
 
