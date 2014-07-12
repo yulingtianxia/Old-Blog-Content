@@ -9,8 +9,8 @@
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="Loading google.load(&lsquo;search&rsquo;, &lsquo;1&rsquo;, {language: &lsquo;zh-Hans&rsquo;, style: google.loader.themes.V2_DEFAULT});
-google. &hellip;">
+	<meta name="description" content="Loading google.load('search', '1', {language: 'zh-Hans', style: google.loader.themes.V2_DEFAULT});
+google.setOnLoadCallback(function() { var &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -157,18 +157,22 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <script src='//www.google.com/jsapi' type='text/javascript'></script>
 
 
-<p><script type='text/javascript'>
-google.load(&lsquo;search&rsquo;, &lsquo;1&rsquo;, {language: &lsquo;zh-Hans&rsquo;, style: google.loader.themes.V2_DEFAULT});
+<script type='text/javascript'>
+google.load('search', '1', {language: 'zh-Hans', style: google.loader.themes.V2_DEFAULT});
 google.setOnLoadCallback(function() {
   var customSearchOptions = {};
   var orderByOptions = {};
-  orderByOptions[&lsquo;keys&rsquo;] = [{label: &lsquo;Relevance&rsquo;, key: &lsquo;&rsquo;} , {label: &lsquo;Date&rsquo;, key: &lsquo;date&rsquo;}];
-  customSearchOptions[&lsquo;enableOrderBy&rsquo;] = true;
-  customSearchOptions[&lsquo;orderByOptions&rsquo;] = orderByOptions;
+  orderByOptions['keys'] = [{label: 'Relevance', key: ''} , {label: 'Date', key: 'date'}];
+  customSearchOptions['enableOrderBy'] = true;
+  customSearchOptions['orderByOptions'] = orderByOptions;
   var imageSearchOptions = {};
-  imageSearchOptions[&lsquo;layout&rsquo;] = &lsquo;google.search.ImageSearch.LAYOUT_POPUP&rsquo;;
-  customSearchOptions[&lsquo;enableImageSearch&rsquo;] = true;
-  customSearchOptions[&lsquo;overlayResults&rsquo;] = true;</p>
+  imageSearchOptions['layout'] = 'google.search.ImageSearch.LAYOUT_POPUP';
+  customSearchOptions['enableImageSearch'] = true;
+  customSearchOptions['overlayResults'] = true;
+</script>
+
+
+
 </div>
 </article>
 
