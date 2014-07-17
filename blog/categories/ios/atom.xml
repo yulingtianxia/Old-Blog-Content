@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-15T20:25:27+08:00</updated>
+  <updated>2014-07-17T23:36:45+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,556 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[用Swift和SpriteKit开发iOS游戏]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit/"/>
+    <updated>2014-07-17T12:54:13+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit</id>
+    <content type="html"><![CDATA[<p>之前用SpriteKit做过一个叫做<a href="https://github.com/yulingtianxia/ColorAtom">ColorAtom</a>的小游戏，用了访问者模式处理碰撞检测，还用了SpriteKit中的粒子系统、连接体、力场和动画等，可以说是一个学习SpriteKit比较不错的Demo，随着Swift的火热，我也用Swift和SpriteKit写了一个更为简单的小游戏<a href="https://github.com/yulingtianxia/Spiral">Spiral</a></p>
+
+<!--more-->
+
+
+<p>附上Spiral的动图：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140557437844.gif" alt="" /></p>
+
+<p>游戏规则是：玩家是五角星小球，小球自动沿着陀螺线向外运动，当玩家点击屏幕时五角星小球会跳跃到内层螺旋，当五角星小球碰到红色旋风或滚动到螺旋线终点时游戏结束。玩家吃掉绿色旋风来得2分，吃到紫色三角得一分并获得保护罩，保护罩用来抵挡一次红色旋风。随着分数的增加游戏会升级，速度加快。</p>
+
+<p>以下是本文内容：</p>
+
+<ol>
+<li>准备工作</li>
+<li>绘制基本界面</li>
+<li>Swift中用访问者模式处理碰撞</li>
+<li>界面数据显示</li>
+<li>按钮的绘制和截图分享</li>
+</ol>
+
+
+<h2>准备工作</h2>
+
+<p>SpriteKit是苹果iOS7新推出的2D游戏引擎，这里不再过多介绍。我们新建工程的时候选取iOS中的Game，然后选择SpriteKit作为游戏引擎，语言选择Swift，Xcode6会为我们自动创建一个游戏场景<code>GameScene</code>，它包含<code>GameScene.swift</code>和<code>GameScene.sks</code>两个文件，<code>sks</code>文件可以让我们可视化拖拽游戏控件到场景上，然后再代码中加载<code>sks</code>文件来完成场景的初始化：</p>
+
+<p>``` js</p>
+
+<p>extension SKNode {</p>
+
+<pre><code>class func unarchiveFromFile(file : NSString) -&gt; SKNode? {
+
+    let path = NSBundle.mainBundle().pathForResource(file, ofType: "sks")
+
+    var sceneData = NSData.dataWithContentsOfFile(path, options: .DataReadingMappedIfSafe, error: nil)
+    var archiver = NSKeyedUnarchiver(forReadingWithData: sceneData)
+
+    archiver.setClass(self.classForKeyedUnarchiver(), forClassName: "SKScene")
+    let scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as GameScene
+    archiver.finishDecoding()
+    return scene
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>但我比较喜欢纯写代码的方式来搭接面，因为<code>sks</code>文件作为游戏场景布局还不成熟，它是iOS8新加入的功能，以前在iOS7的时候<code>sks</code>文件只是作为粒子系统的可视化编辑文件。</p>
+
+<p>所以我们修改<code>GameViewController.swift</code>文件的<code>viewDidLoad()</code>函数，像以前那样直接用代码加载游戏场景：</p>
+
+<p>```
+override func viewDidLoad() {</p>
+
+<pre><code>    super.viewDidLoad()
+    // Configure the view.
+    let skView = self.view as SKView
+    /* Sprite Kit applies additional optimizations to improve rendering performance */
+    skView.ignoresSiblingOrder = true
+    let scene = GameScene(size: skView.bounds.size)
+    /* Set the scale mode to scale to fit the window */
+    scene.scaleMode = .AspectFill
+    skView.presentScene(scene)
+
+}
+</code></pre>
+
+<p>```</p>
+
+<p><code>GameScene</code>虽然是Xcode自动生成的，但是只是个空架子，我们需要把它生成的没用的代码删掉，比如初始化函数里内容为“HelloWorld”的<code>SKLabelNode</code>，还有<code>touchesBegan(touches: NSSet, withEvent event: UIEvent)</code>方法中绘制飞船的代码。把这些删光后，我们还需要有图片素材来绘制这四类精灵节点：<code>Player</code>（五角星），<code>Killer</code>（红色旋风），<code>Score</code>（绿色旋风）和<code>Shield</code>（紫色三角）。我是用Sketch来绘制这些矢量图形的，文件名为<code>spiral.sketch</code>，随同工程文件一同放到GitHub上了。当然你不需要手动导出图片到工程，直接下载工程文件就好了：</p>
+
+<p><a href="https://github.com/yulingtianxia/Spiral">https://github.com/yulingtianxia/Spiral</a></p>
+
+<h2>绘制基本界面</h2>
+
+<p>这部分的工作主要是绘制出螺旋线作为地图，并让四种精灵节点动起来。</p>
+
+<h3>螺旋线的绘制</h3>
+
+<p><code>SKNode</code>有一个子类<code>SKShapeNode</code>，专门用于绘制线条的，我们新建一个<code>Map</code>类，继承<code>SKShapeNode</code>。下面我们需要生成一个<code>CGPath</code>来赋值给<code>Map</code>的<code>path</code>属性：</p>
+
+<p>```
+import UIKit
+import SpriteKit
+class Map: SKShapeNode {</p>
+
+<pre><code>let spacing:CGFloat = 35
+var points:[CGPoint] = []
+convenience init(origin:CGPoint,layer:CGFloat){
+
+    var x:CGFloat = origin.x
+    var y:CGFloat = origin.y
+    var path = CGPathCreateMutable()
+    self.init()
+    CGPathMoveToPoint(path, nil, x, y)
+    points.append(CGPointMake(x, y))
+    for index in 1..&lt;layer{
+        y-=spacing*(2*index-1)
+        CGPathAddLineToPoint(path, nil , x, y)
+        points.append(CGPointMake(x, y))
+        x-=spacing*(2*index-1)
+        CGPathAddLineToPoint(path, nil , x, y)
+        points.append(CGPointMake(x, y))
+        y+=spacing*2*index
+        CGPathAddLineToPoint(path, nil , x, y)
+        points.append(CGPointMake(x, y))
+        x+=spacing*2*index
+        CGPathAddLineToPoint(path, nil , x, y)
+        points.append(CGPointMake(x, y))
+    }
+    self.path = path
+    self.glowWidth = 1
+    self.antialiased = true
+    CGPathGetCurrentPoint(path)
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>算法很简单，就是顺时针计算点坐标然后画线，这里把每一步的坐标都存入了<code>points</code>数组里，是为了以后计算其他数据时方便。因为这部分算法不难而且不是我们的重点，这里不过多介绍了。</p>
+
+<h3>四种精灵的绘制</h3>
+
+<p>因为四种精灵都是沿着<code>Map</code>类的路径来顺时针运动，它们的动画绘制是相似的，所以我建立了一个<code>Shape</code>类作为基类来绘制动画，它继承于<code>SKSpriteKit</code>类，并拥有半径（<code>radius</code>）、移动速度（<code>moveSpeed</code>）和线段计数（<code>lineNum</code>）这三个属性。其中<code>lineNum</code>是用于标记精灵在螺旋线第几条线段上的，这样比较方便计算动画的参数。</p>
+
+<p>```
+class Shape: SKSpriteNode {</p>
+
+<pre><code>let radius:CGFloat = 10
+var moveSpeed:CGFloat = 50
+var lineNum = 0
+init(name:String,imageName:String){
+    super.init(texture: SKTexture(imageNamed: imageName),color:SKColor.clearColor(), size: CGSizeMake(radius*2, radius*2))
+    self.physicsBody = SKPhysicsBody(circleOfRadius: radius)
+    self.physicsBody.usesPreciseCollisionDetection = true
+    self.physicsBody.collisionBitMask = 0
+    self.physicsBody.contactTestBitMask = playerCategory|killerCategory|scoreCategory
+    moveSpeed += CGFloat(Data.speedScale) * self.moveSpeed
+    self.name = name
+    self.physicsBody.angularDamping = 0
+
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>构造函数中设定了<code>Shape</code>类的一些物理参数，比如物理体的形状大小，碰撞检测掩码等。这里设定<code>usesPreciseCollisionDetection</code>为<code>true</code>是为了增加碰撞检测的精度，常用于体积小速度快的物体。<code>collisionBitMask</code>属性标记了需要模拟物理碰撞的类别，<code>contactTestBitMask</code>属性标记了需要检测到碰撞的类别。这里说的“类别”指的是物体的类别：</p>
+
+<p><code>
+let playerCategory:UInt32      =  0x1 &lt;&lt; 0;
+let killerCategory:UInt32      =  0x1 &lt;&lt; 1;
+let scoreCategory:UInt32       =  0x1 &lt;&lt; 2;
+let shieldCategory:UInt32      =  0x1 &lt;&lt; 3;
+</code>
+这种用位运算来判断和存储物体类别的方式很常用，上面这段代码写在了<code>NodeCategories.swift</code>文件中。</p>
+
+<p>为了描述<code>Shape</code>的速度随着游戏等级上升而增加，这里速度的计算公式含有<code>Data.speedScale</code>作为参数，关于<code>Data</code>“类”在后面会讲到。</p>
+
+<p>为了让精灵动起来，需要知道动画的移动目的地是什么。虽然<code>SKAction</code>有<code>followPath(path: CGPath?, speed: CGFloat)</code>方法，但是在这里并不实用，因为<code>Player</code>会经常改变路线，所以我写了一个<code>runInMap(map:Map)</code>方法让精灵每次只移动到路径上的下一个节点（之前<code>Map</code>类存储的<code>points</code>属性用到了吧！嘿嘿）</p>
+
+<p>```
+func runInMap(map:Map){</p>
+
+<pre><code>    let distance = calDistanceInMap(map)
+    let duration = distance/moveSpeed
+    let rotate = SKAction.rotateByAngle(distance/10, duration: duration)
+    let move = SKAction.moveTo(map.points[lineNum+1], duration: duration)
+    let group = SKAction.group([rotate,move])
+    self.runAction(group, completion: {
+        self.lineNum++
+        if self.lineNum==map.points.count-1 {
+            if self is Player{
+                Data.gameOver = true
+            }
+            if self is Killer{
+                self.removeFromParent()
+            }
+            if self is Score{
+                self.removeFromParent()
+            }
+            if self is Shield{
+                self.removeFromParent()
+            }
+        }
+        else {
+            self.runInMap(map)
+        }
+        })
+}
+</code></pre>
+
+<p>```</p>
+
+<p>上面的代码先是调用<code>calDistanceInMap(map:Map)-&gt;CGFloat</code>方法计算精灵距离下一个节点的距离（也就是需要移动的距离），然后计算精灵需要旋转动画时间和移动动画时间，最后将两个动画作为一个<code>group</code>来运行，在动画运行结束后判断精灵是否运行到了最后一个节点，也就是螺旋线的终点：如果到终点了则移除精灵，否则开始递归调用方法，来开始下一段动画（奔向下一个节点）。</p>
+
+<p>计算距离的<code>calDistanceInMap(map:Map)-&gt;CGFloat</code>方法代码如下：</p>
+
+<p>```
+func calDistanceInMap(map:Map)&ndash;>CGFloat{</p>
+
+<pre><code>    if self.lineNum==map.points.count {
+        return 0
+    }
+    switch lineNum%4{
+    case 0:
+        return position.y-map.points[lineNum+1].y
+    case 1:
+        return position.x-map.points[lineNum+1].x
+    case 2:
+        return map.points[lineNum+1].y-position.y
+    case 3:
+        return map.points[lineNum+1].x-position.x
+    default:
+        return 0
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>到此为止<code>Shape</code>类完成了，<code>Killer</code>、<code>Score</code>和<code>Shield</code>类比较简单，继承<code>Shape</code>类并设置自身纹理和类别即可：</p>
+
+<p>```
+class Killer: Shape {</p>
+
+<pre><code>convenience init() {
+    self.init(name:"Killer",imageName:"killer")
+    self.physicsBody.categoryBitMask = killerCategory
+}
+</code></pre>
+
+<p>}
+class Score: Shape {</p>
+
+<pre><code>convenience init() {
+    self.init(name:"Score",imageName:"score")
+    self.physicsBody.categoryBitMask = scoreCategory
+}
+</code></pre>
+
+<p>}
+class Shield: Shape {</p>
+
+<pre><code>convenience init() {
+    self.init(name:"Shield",imageName:"shield")
+    self.physicsBody.categoryBitMask = shieldCategory
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>而<code>Player</code>因为有护盾状态并可以在螺旋线上跳跃到内层，所以稍微复杂些：</p>
+
+<p>```
+class Player: Shape {</p>
+
+<pre><code>var jump = false
+var shield:Bool = false {
+willSet{
+    if newValue{
+        self.texture = SKTexture(imageNamed: "player0")
+    }
+    else{
+        self.texture = SKTexture(imageNamed: "player")
+    }
+}
+}
+convenience init() {
+    self.init(name:"Player",imageName:"player")
+    self.physicsBody.categoryBitMask = playerCategory
+    self.moveSpeed = 70
+    self.lineNum = 3
+}
+func restart(map:Map) {
+    self.alpha = 1
+    self.removeAllActions()
+    self.lineNum = 3
+    self.moveSpeed = 70
+    self.jump = false
+    self.shield = false
+    self.position = map.points[self.lineNum]
+    self.runInMap(map)
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p><code>Player</code>类的初始位置是螺旋线第四个节点，而且移动速度要略快于其他三种精灵，所以在这里设置为70（<code>Shape</code>默认速度50）。<code>jump</code>和<code>shield</code>是用来标记<code>Player</code>当前状态的属性，其中<code>shield</code>属性还定义了属性监察器，这是Swift中存储属性具有的响应机制，类似于<code>KVO</code>。在<code>shield</code>状态改变时也同时改变<code>Player</code>的纹理。<strong>需要注意的是构造器中对属性的改变并不会调用属性检查器，在<code>willSet</code>和<code>didSet</code>中改变自身属性也不会调用属性检查器，因为那样会造成死循环。</strong></p>
+
+<p><code>restart(map:Map)</code>方法用于在游戏重新开始时重置<code>Player</code>的相关数据。</p>
+
+<h2>Swift中用访问者模式处理碰撞</h2>
+
+<p>访问者模式是双分派（Double Dispatch）模式的一种实现，关于双分派模式的详细解释，参考我的另一篇文章：<a href="http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/">Double Dispatch模式及其在iOS开发中实践</a>，里面包含了C++，Java和Obje-C的实现，这次我们用Swift实现访问者模式。</p>
+
+<p>因为SpriteKit中物理碰撞检测到的都是<code>SKPhysicsBody</code>，所以我们的被访问者需要包含一个<code>SKPhysicsBody</code>对象：</p>
+
+<p>```
+class VisitablePhysicsBody{</p>
+
+<pre><code>let body:SKPhysicsBody
+init(body:SKPhysicsBody){
+    self.body = body
+}
+func acceptVisitor(visitor:ContactVisitor){
+    visitor.visitBody(body)
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p><code>acceptVisitor</code>方法传入的是一个<code>ContactVisitor</code>类，它是访问者的基类（也相当于接口），访问者的<code>visitBody(body:SKPhysicsBody)</code>方法会根据传入的<code>body</code>实例来推断出被访问者的真实类别，然后调用对应的方法来处理碰撞：</p>
+
+<p>```
+func visitBody(body:SKPhysicsBody){</p>
+
+<pre><code>    //第二次dispatch，通过构造方法名来执行对应方法
+    // 生成方法名，比如"visitPlayer"
+    var contactSelectorString = "visit" + body.node.name + ":"
+    let selector = NSSelectorFromString(contactSelectorString)
+    if self.respondsToSelector(selector){
+        dispatch_after(0, dispatch_get_main_queue(), {
+            NSThread.detachNewThreadSelector(selector, toTarget:self, withObject: body)
+            })
+    }
+
+}
+</code></pre>
+
+<p>```</p>
+
+<p>Swift废弃了<code>performSelector</code>方法，所以这里刷了个小聪明来将消息传给具体的访问者。有关Swift中替代<code>performSelector</code>的方案，参见<a href="http://www.cnblogs.com/yangzhou1030/p/3830592.html">这里</a></p>
+
+<p>下面让<code>GameScene</code>实现<code>SKPhysicsContactDelegate</code>协议：</p>
+
+<p>```
+func didBeginContact(contact:SKPhysicsContact){</p>
+
+<pre><code>    //A-&gt;B
+    let visitorA = ContactVisitor.contactVisitorWithBody(contact.bodyA, forContact: contact)
+    let visitableBodyB = VisitablePhysicsBody(body: contact.bodyB)
+    visitableBodyB.acceptVisitor(visitorA)
+    //B-&gt;A
+    let visitorB = ContactVisitor.contactVisitorWithBody(contact.bodyB, forContact: contact)
+    let visitableBodyA = VisitablePhysicsBody(body: contact.bodyA)
+    visitableBodyA.acceptVisitor(visitorB)
+}
+</code></pre>
+
+<p><code>``
+跟Objective-C中实现访问者模式类似，也是通过</code>ContactVisitor<code>类的工厂方法返回一个对应的子类实例来作为访问者，然后实例化一个被访问者，被访问者接受访问者的访问。A访问B和B访问A在大多数场合是相同的，但是你不知道谁是A谁是B，所以需要两种情况都调用。下面是</code>ContactVisitor`类的工厂方法和构造器：</p>
+
+<p>```
+class ContactVisitor:NSObject{</p>
+
+<pre><code>let body:SKPhysicsBody!
+let contact:SKPhysicsContact!
+class func contactVisitorWithBody(body:SKPhysicsBody,forContact contact:SKPhysicsContact)-&gt;ContactVisitor!{
+    //第一次dispatch，通过node类别返回对应的实例
+    if 0 != body.categoryBitMask&amp;playerCategory {
+        return PlayerContactVisitor(body: body, forContact: contact)
+    }
+    if 0 != body.categoryBitMask&amp;killerCategory {
+        return KillerContactVisitor(body: body, forContact: contact)
+    }
+    if 0 != body.categoryBitMask&amp;scoreCategory {
+        return ScoreContactVisitor(body: body, forContact: contact)
+    }
+    if 0 != body.categoryBitMask&amp;shieldCategory {
+        return ShieldContactVisitor(body: body, forContact: contact)
+    }
+    return nil
+
+}
+init(body:SKPhysicsBody, forContact contact:SKPhysicsContact){
+    self.body = body
+    self.contact = contact
+    super.init()
+
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>PS：上面的代码省略了已经提到过的<code>visitBody(body:SKPhysicsBody)</code>方法</p>
+
+<p>因为这个游戏逻辑比较简单，所有碰撞后的逻辑都写到了<code>PlayerContactVisitor</code>类里：</p>
+
+<p>```
+func visitKiller(body:SKPhysicsBody){</p>
+
+<pre><code>    let thisNode = self.body.node as Player
+    let otherNode = body.node
+</code></pre>
+
+<p>//        println(thisNode.name+&ldquo;&ndash;>&rdquo;+otherNode.name)</p>
+
+<pre><code>    if thisNode.shield {
+        otherNode.removeFromParent()
+        thisNode.shield = false
+    }
+    else {
+        Data.gameOver = true
+    }
+}
+func visitScore(body:SKPhysicsBody){
+    let thisNode = self.body.node
+    let otherNode = body.node
+</code></pre>
+
+<p>//        println(thisNode.name+&ldquo;&ndash;>&rdquo;+otherNode.name)</p>
+
+<pre><code>    otherNode.removeFromParent()
+    Data.score += 2
+}
+func visitShield(body:SKPhysicsBody){
+    let thisNode = self.body.node as Player
+    let otherNode = body.node
+    otherNode.removeFromParent()
+    thisNode.shield = true
+    Data.score++
+    //        println(thisNode.name+"-&gt;"+otherNode.name)
+}
+</code></pre>
+
+<p>```</p>
+
+<p>上面的方法都是“visit+类名”格式的，处理的是<code>Player</code>碰撞到其他三种精灵的逻辑。而其他三种精灵之间的碰撞不需要处理，所以<code>KillerContactVisitor</code>、<code>ScoreContactVisitor</code>和<code>ShieldContactVisitor</code>这三个<code>ContactVisitor</code>的子类很空旷，这里不再赘述。</p>
+
+<p>我们设置<code>Player</code>碰撞到<code>Killer</code>游戏结束，碰撞到<code>Score</code>加两分，碰撞到<code>Shield</code>加一分并获得护甲（shield属性设为true）。可以看到这里大量用到了<code>Data</code>“类“”，它其实是一个存储并管理全局数据的结构体，它里面存储了一些静态的成员属性，也可看做非线程安全的单例。</p>
+
+<h2>界面数据显示</h2>
+
+<p>这部分很简单，主要是将<code>Data</code>结构体中存储的分数和等级等数据通过<code>SKLabelNode</code>显示在界面上，只不过我封装了一个<code>Display</code>类来将所有的<code>SKLabelNode</code>统一管理，并让其实现我定义的<code>DisplayData</code>协议来让<code>Data</code>中的数据变化驱动界面更新：</p>
+
+<p>```
+protocol DisplayData{</p>
+
+<pre><code>func updateData()
+func levelUp()
+func gameOver()
+func restart()
+</code></pre>
+
+<p>}
+```</p>
+
+<p>下面是Data结构体代码，大量使用了存储属性的监察器来响应数据变化：</p>
+
+<p>```
+struct Data{</p>
+
+<pre><code>static var display:DisplayData?
+static var updateScore:Int = 5
+static var score:Int = 0{
+willSet{
+    if newValue&gt;=updateScore{
+        updateScore+=5 * ++level
+    }
+}
+didSet{
+    display?.updateData()
+}
+}
+static var highScore:Int = 0
+static var gameOver:Bool = false {
+willSet{
+    if newValue {
+        let standardDefaults = NSUserDefaults.standardUserDefaults()
+        Data.highScore = standardDefaults.integerForKey("highscore")
+        if Data.highScore &lt; Data.score {
+            Data.highScore = Data.score
+            standardDefaults.setInteger(Data.score, forKey: "highscore")
+            standardDefaults.synchronize()
+        }
+        display?.gameOver()
+    }
+    else {
+        display?.restart()
+    }
+}
+didSet{
+
+}
+}
+static var level:Int = 1{
+willSet{
+    speedScale = Float(newValue)*0.1
+    if newValue != 1{
+        display?.levelUp()
+    }
+}
+didSet{
+    display?.updateData()
+
+}
+}
+static var speedScale:Float = 0{
+willSet{
+
+}
+didSet{
+
+}
+}
+
+static func restart(){
+    Data.updateScore = 5
+    Data.score = 0
+    Data.level = 1
+    Data.speedScale = 0
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>这里不得不提到一个更新界面时遇到的一个坑，当我想通过名字遍历<code>GameScene</code>子节点的时候，一般会用到<code>enumerateChildNodesWithName(name: String?, usingBlock: ((SKNode!, UnsafePointer&lt;ObjCBool&gt;) -&gt; Void)?)</code>方法，但是这个方法在Xcode6Beta3更新后经常会抛异常强退，这让我很费解，恰巧遇到此问题的不只是我一个人，所以还是老老实实的自己写循环遍历加判断吧。</p>
+
+<h2>按钮的绘制和截图分享</h2>
+
+<p>参考我的另外两篇文章：<a href="http://yulingtianxia.com/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/">在游戏的SKScene中添加Button</a>和<a href="http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/">SpriteKit截屏并分享至社交网络</a></p>
+
+<p>在本工程中只有<code>ShareButton</code>和<code>ReplayButton</code>两个按钮，Swift版本的代码很简洁，而我通过<code>Social.Framework</code>中的<code>UIActivityViewController</code>来分享得分，这部分代码写在了<code>ShareButton.swift</code>中：</p>
+
+<p>```
+let scene = self.scene as GameScene</p>
+
+<pre><code>    let image = scene.imageFromNode(scene)
+    let text = "我在Spiral游戏中得了\(Data.score)分，快来追逐我的步伐吧！"
+    let activityItems = [image,text]
+    let activityController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    (scene.view.nextResponder() as UIViewController).presentViewController(activityController, animated: true, completion: nil)
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SpriteKit坐标系]]></title>
@@ -709,192 +1259,6 @@ mainScene.position = CGPointMake(self.size.width/2, self.size.height/2);
  Font: BodoniSvtyTwoOSITCTT-BookIt<br/>
  Family: DIN Condensed<br/>
  Font: DINCondensed-Bold</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[SpriteKit截屏并分享至社交网络]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/"/>
-    <updated>2014-04-22T17:36:25+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo</id>
-    <content type="html"><![CDATA[<p>本文讲述在用<code>SpriteKit</code>制作iOS游戏的时候，如何让在用户在达到某种成就后分享自己的成就或分数，并附上一张游戏截屏，然后发到社交网络上</p>
-
-<!--more-->
-
-
-<h2>SpriteKit截屏</h2>
-
-<p>传统的截屏方法是用UIView的layer来读取渲染上下文，生成图片</p>
-
-<p>``` objc</p>
-
-<p>UIGraphicsBeginImageContext(self.view.frame.size); //currentView 当前的view
-[self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
-UIGraphicsEndImageContext();
-```</p>
-
-<p>viewImage就是获取的截图，如果要将图片存入相册，只需在后面调用</p>
-
-<p><code>
-UIImageWriteToSavedPhotosAlbum(viewImage,nil,nil,nil);
-</code>
-而这一切都是基于<code>UIKit</code>的，在<code>SpriteKit</code>中，上面的方法是实效的，截屏的效果就是一张白色图片
-但在苹果的官方文档中，明确提到了<code>SKTexture</code>的作用，最后一条是说可以将节点树渲染成纹理，可以应用于对游戏截屏。苹果还告诉了我们<code>SKView</code>的一个方法：<code>textureFromNode:</code>，该方法将以node包含的内容渲染成一个纹理，但是如何将<code>SKTexture</code>转换为<code>UIView</code>呢？我在workoverflow的一个<a href="http://stackoverflow.com/questions/21061248/uiimage-from-sktexture">提问</a>中找到了答案：</p>
-
-<h3>方法一：</h3>
-
-<p>```
-&ndash; (UIImage<em>) imageWithView:(UIView </em>)view
-{</p>
-
-<pre><code>UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0);
-
-[view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
-
-UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
-UIGraphicsEndImageContext();
-
-return img;
-</code></pre>
-
-<p>}</p>
-
-<ul>
-<li><p>(UIImage<em>) imageFromNode:(SKNode</em>)node
-{
-  SKTexture<em>      tex     = [self.scene.view textureFromNode:node];
-  SKView</em>         view    = [[SKView alloc]initWithFrame:CGRectMake(0, 0, tex.size.width, tex.size.height)];
-  SKScene<em>        scene   = [SKScene sceneWithSize:tex.size];
-  SKSpriteNode</em>   sprite  = [SKSpriteNode spriteNodeWithTexture:tex];
-  sprite.position = CGPointMake( CGRectGetMidX(view.frame), CGRectGetMidY(view.frame) );
-  [scene addChild:sprite];
-  [view presentScene:scene];</p>
-
-<p>  return [self imageWithView:view];
-}
-```</p></li>
-<li>get the SKTexture for your node using the current SKView</li>
-<li>make another SKView that is just big enough for your texture</li>
-<li>add a SKSpriteNode with the texture into your new scene, placing it in the middle</li>
-<li>render the view into a graphics context</li>
-</ul>
-
-
-<h3>方法二:</h3>
-
-<p>```
-&ndash;(UIImage <em>)imageFromNode:(SKNode </em>)node {</p>
-
-<pre><code>SKView *view = node.scene.view;
-CGFloat scale = [UIScreen mainScreen].scale;
-CGRect nodeFrame = [node calculateAccumulatedFrame];
-
-// render SKView into UIImage
-UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
-[view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
-UIImage *sceneSnapshot = UIGraphicsGetImageFromCurrentImageContext();
-UIGraphicsEndImageContext();
-
-// crop to the requested node (making sure to flip the y-coordinate)
-CGFloat originY = sceneSnapshot.size.height*scale - nodeFrame.origin.y*scale - nodeFrame.size.height*scale;
-CGRect cropRect = CGRectMake(nodeFrame.origin.x * scale, originY, nodeFrame.size.width*scale, nodeFrame.size.height*scale);
-CGImageRef croppedSnapshot = CGImageCreateWithImageInRect(sceneSnapshot.CGImage, cropRect);
-UIImage *nodeSnapshot = [UIImage imageWithCGImage:croppedSnapshot];
-CGImageRelease(croppedSnapshot);
-
-return nodeSnapshot;
-</code></pre>
-
-<p>}
-```
-<strong>以上两个方法亲测好使！</strong></p>
-
-<h2>使用Social.Framework分享游戏战绩</h2>
-
-<p>因为比较懒不想在各种第三方社交网站申请APP注册然后使用SDK等，有点复杂，所以暂时用了苹果自带的Social.Framework</p>
-
-<p>首先推荐一个比较好的<a href="https://github.com/yulingtianxia/ios6ShareDemo.git">Demo</a>，代码很容易读，容易上手</p>
-
-<p>首先到target，Build Phases->link binary with libraries，添加social.framework，然后在要使用这个framework的文件头添加<code>@import Social;</code></p>
-
-<p>记得要到iphone或者simulator里设置好对应社交网络的账号，填上用户名密码登录上，不然找不到account，不能post。如果找不到新浪微博，把系统语言调到中文。如果没有预先设置好账号，social.framework在真机和simulator上表现会不同。</p>
-
-<h3>使用UIActivityViewController</h3>
-
-<p>```
-//某个SKScene中添加的代码</p>
-
-<pre><code>    sharingImage = [self imageFromNode:self];//获取截屏图片
-    NSArray *activityItems;
-    if (sharingImage != nil) {
-        activityItems = @[sharingText, sharingImage];
-    } else {
-        activityItems = @[sharingText];
-    }
-
-    UIActivityViewController *activityController =
-    [[UIActivityViewController alloc] initWithActivityItems:activityItems
-                                      applicationActivities:nil];
-
-    [(UIViewController *)[self.view nextResponder] presentViewController:activityController
-                       animated:YES completion:nil];
-</code></pre>
-
-<p>```</p>
-
-<p><code>[self.view nextResponder]</code>的作用是获取当前<code>SKScene</code>的<code>UIViewController</code></p>
-
-<p>如果想系统的学一下<code>UIActivityViewController</code>，建立看看这篇翻译自<a href="http://nshipster.com/uiactivityviewcontroller/">Mattt Thompson</a>的<a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-22-ui-activity-viewcontroller.md">博文</a></p>
-
-<h3>使用SLComposeViewController</h3>
-
-<p>这个就相当于上面里介绍的单个分享service
-目前支持的平台有以下这些：</p>
-
-<p><code>
-SOCIAL_EXTERN NSString *const SLServiceTypeTwitter NS_AVAILABLE(10_8, 6_0);
-SOCIAL_EXTERN NSString *const SLServiceTypeFacebook NS_AVAILABLE(10_8, 6_0);
-SOCIAL_EXTERN NSString *const SLServiceTypeSinaWeibo NS_AVAILABLE(10_8, 6_0);
-SOCIAL_EXTERN NSString *const SLServiceTypeTencentWeibo NS_AVAILABLE(10_9, 7_0);
-SOCIAL_EXTERN NSString *const SLServiceTypeLinkedIn NS_AVAILABLE(10_9, NA);
-</code>
-先声明一个<code>SLComposeViewController *slComposerSheet;</code>，然后在需要添加分享逻辑的地方加入下面代码：(依然以微博为例子)</p>
-
-<p>```</p>
-
-<pre><code>[slComposerSheet setCompletionHandler:^(SLComposeViewControllerResult result) {
-    NSLog(@"start completion block");
-    NSString *output;
-    switch (result) {
-        case SLComposeViewControllerResultCancelled:
-            output = @"Action Cancelled";
-            break;
-        case SLComposeViewControllerResultDone:
-            output = @"Post Successfull";
-            break;
-        default:
-            break;
-    }
-    if (result != SLComposeViewControllerResultCancelled)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Weibo Message" message:output delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
-    }
-}];
-
-if([SLComposeViewController isAvailableForServiceType:SLServiceTypeSinaWeibo])
-{
-    slComposerSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
-    [slComposerSheet setInitialText:self.sharingText];
-    [slComposerSheet addImage:self.sharingImage];
-    [slComposerSheet addURL:[NSURL URLWithString:@"http://www.weibo.com/"]];
-    [self presentViewController:slComposerSheet animated:YES completion:nil];
-}
-</code></pre>
-
-<p>```
-这种方法我没试过，代码是照抄自前面提到的<a href="https://github.com/yulingtianxia/ios6ShareDemo.git">Demo</a>里</p>
 ]]></content>
   </entry>
   

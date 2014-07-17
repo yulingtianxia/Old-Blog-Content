@@ -1,0 +1,1079 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>用Swift和SpriteKit开发iOS游戏 - 玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="用Swift和SpriteKit开发iOS游戏 之前用SpriteKit做过一个叫做ColorAtom的小游戏，用了访问者模式处理碰撞检测，还用了SpriteKit中的粒子系统、连接体、力场和动画等，可以说是一个学习SpriteKit比较不错的Demo，随着Swift的火热， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I'm not a hacker.</p>
+<nav id="main-nav"><ul class="main">
+    <li><a href="/search">博客搜索</a></li>
+    <li><a href="/blog/archives">所有文章</a></li>
+    <li><a href="/about">关于我</a></li>
+
+</ul>
+
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Farc%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EARC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcocoapods%27+style%3D%27font-size%3A+12.857142857142858%25%27%3ECocoaPods%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcode-snippets%27+style%3D%27font-size%3A+12.857142857142858%25%27%3ECode+Snippets%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+18.57142857142857%25%27%3ECore+Data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdfssuan-fa%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EDFS%E7%AE%97%E6%B3%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EGCD%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EGitHub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3EiOS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EMacOSX%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+32.85714285714286%25%27%3EObjective-C%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsksprite%27+style%3D%27font-size%3A+12.857142857142858%25%27%3ESKSprite%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+12.857142857142858%25%27%3ESocial+Framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ESpriteKit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fswift%27+style%3D%27font-size%3A+32.85714285714286%25%27%3ESwift%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fvpn%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EVPN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EXcode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EXCode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdan-yuan-ce-shi%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjie-ping%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E6%88%AA%E5%B1%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
+<br>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">用Swift和SpriteKit开发iOS游戏</h1>
+	<div class="entry-content" itemprop="articleBody"><p>之前用SpriteKit做过一个叫做<a href="https://github.com/yulingtianxia/ColorAtom">ColorAtom</a>的小游戏，用了访问者模式处理碰撞检测，还用了SpriteKit中的粒子系统、连接体、力场和动画等，可以说是一个学习SpriteKit比较不错的Demo，随着Swift的火热，我也用Swift和SpriteKit写了一个更为简单的小游戏<a href="https://github.com/yulingtianxia/Spiral">Spiral</a></p>
+
+<!--more-->
+
+
+<p>附上Spiral的动图：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140557437844.gif" alt="" /></p>
+
+<p>游戏规则是：玩家是五角星小球，小球自动沿着陀螺线向外运动，当玩家点击屏幕时五角星小球会跳跃到内层螺旋，当五角星小球碰到红色旋风或滚动到螺旋线终点时游戏结束。玩家吃掉绿色旋风来得2分，吃到紫色三角得一分并获得保护罩，保护罩用来抵挡一次红色旋风。随着分数的增加游戏会升级，速度加快。</p>
+
+<p>以下是本文内容：</p>
+
+<ol>
+<li>准备工作</li>
+<li>绘制基本界面</li>
+<li>Swift中用访问者模式处理碰撞</li>
+<li>界面数据显示</li>
+<li>按钮的绘制和截图分享</li>
+</ol>
+
+
+<h2>准备工作</h2>
+
+<p>SpriteKit是苹果iOS7新推出的2D游戏引擎，这里不再过多介绍。我们新建工程的时候选取iOS中的Game，然后选择SpriteKit作为游戏引擎，语言选择Swift，Xcode6会为我们自动创建一个游戏场景<code>GameScene</code>，它包含<code>GameScene.swift</code>和<code>GameScene.sks</code>两个文件，<code>sks</code>文件可以让我们可视化拖拽游戏控件到场景上，然后再代码中加载<code>sks</code>文件来完成场景的初始化：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">extension</span> <span class="nx">SKNode</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">class</span> <span class="nx">func</span> <span class="nx">unarchiveFromFile</span><span class="p">(</span><span class="nx">file</span> <span class="o">:</span> <span class="nx">NSString</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">SKNode</span><span class="o">?</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">NSBundle</span><span class="p">.</span><span class="nx">mainBundle</span><span class="p">().</span><span class="nx">pathForResource</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">ofType</span><span class="o">:</span> <span class="s2">&quot;sks&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">sceneData</span> <span class="o">=</span> <span class="nx">NSData</span><span class="p">.</span><span class="nx">dataWithContentsOfFile</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">options</span><span class="o">:</span> <span class="p">.</span><span class="nx">DataReadingMappedIfSafe</span><span class="p">,</span> <span class="nx">error</span><span class="o">:</span> <span class="nx">nil</span><span class="p">)</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">archiver</span> <span class="o">=</span> <span class="nx">NSKeyedUnarchiver</span><span class="p">(</span><span class="nx">forReadingWithData</span><span class="o">:</span> <span class="nx">sceneData</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">archiver</span><span class="p">.</span><span class="nx">setClass</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">classForKeyedUnarchiver</span><span class="p">(),</span> <span class="nx">forClassName</span><span class="o">:</span> <span class="s2">&quot;SKScene&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">scene</span> <span class="o">=</span> <span class="nx">archiver</span><span class="p">.</span><span class="nx">decodeObjectForKey</span><span class="p">(</span><span class="nx">NSKeyedArchiveRootObjectKey</span><span class="p">)</span> <span class="nx">as</span> <span class="nx">GameScene</span>
+</span><span class='line'>        <span class="nx">archiver</span><span class="p">.</span><span class="nx">finishDecoding</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">scene</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>但我比较喜欢纯写代码的方式来搭接面，因为<code>sks</code>文件作为游戏场景布局还不成熟，它是iOS8新加入的功能，以前在iOS7的时候<code>sks</code>文件只是作为粒子系统的可视化编辑文件。</p>
+
+<p>所以我们修改<code>GameViewController.swift</code>文件的<code>viewDidLoad()</code>函数，像以前那样直接用代码加载游戏场景：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">override</span> <span class="nx">func</span> <span class="nx">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kr">super</span><span class="p">.</span><span class="nx">viewDidLoad</span><span class="p">()</span>
+</span><span class='line'>        <span class="c1">// Configure the view.</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">skView</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">view</span> <span class="nx">as</span> <span class="nx">SKView</span>
+</span><span class='line'>        <span class="cm">/* Sprite Kit applies additional optimizations to improve rendering performance */</span>
+</span><span class='line'>        <span class="nx">skView</span><span class="p">.</span><span class="nx">ignoresSiblingOrder</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">scene</span> <span class="o">=</span> <span class="nx">GameScene</span><span class="p">(</span><span class="nx">size</span><span class="o">:</span> <span class="nx">skView</span><span class="p">.</span><span class="nx">bounds</span><span class="p">.</span><span class="nx">size</span><span class="p">)</span>
+</span><span class='line'>        <span class="cm">/* Set the scale mode to scale to fit the window */</span>
+</span><span class='line'>        <span class="nx">scene</span><span class="p">.</span><span class="nx">scaleMode</span> <span class="o">=</span> <span class="p">.</span><span class="nx">AspectFill</span>
+</span><span class='line'>        <span class="nx">skView</span><span class="p">.</span><span class="nx">presentScene</span><span class="p">(</span><span class="nx">scene</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><code>GameScene</code>虽然是Xcode自动生成的，但是只是个空架子，我们需要把它生成的没用的代码删掉，比如初始化函数里内容为“HelloWorld”的<code>SKLabelNode</code>，还有<code>touchesBegan(touches: NSSet, withEvent event: UIEvent)</code>方法中绘制飞船的代码。把这些删光后，我们还需要有图片素材来绘制这四类精灵节点：<code>Player</code>（五角星），<code>Killer</code>（红色旋风），<code>Score</code>（绿色旋风）和<code>Shield</code>（紫色三角）。我是用Sketch来绘制这些矢量图形的，文件名为<code>spiral.sketch</code>，随同工程文件一同放到GitHub上了。当然你不需要手动导出图片到工程，直接下载工程文件就好了：</p>
+
+<p><a href="https://github.com/yulingtianxia/Spiral">https://github.com/yulingtianxia/Spiral</a></p>
+
+<h2>绘制基本界面</h2>
+
+<p>这部分的工作主要是绘制出螺旋线作为地图，并让四种精灵节点动起来。</p>
+
+<h3>螺旋线的绘制</h3>
+
+<p><code>SKNode</code>有一个子类<code>SKShapeNode</code>，专门用于绘制线条的，我们新建一个<code>Map</code>类，继承<code>SKShapeNode</code>。下面我们需要生成一个<code>CGPath</code>来赋值给<code>Map</code>的<code>path</code>属性：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="nx">UIKit</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">SpriteKit</span>
+</span><span class='line'><span class="kr">class</span> <span class="nx">Map</span><span class="o">:</span> <span class="nx">SKShapeNode</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">spacing</span><span class="o">:</span><span class="nx">CGFloat</span> <span class="o">=</span> <span class="mi">35</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">points</span><span class="o">:</span><span class="p">[</span><span class="nx">CGPoint</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="nx">convenience</span> <span class="nx">init</span><span class="p">(</span><span class="nx">origin</span><span class="o">:</span><span class="nx">CGPoint</span><span class="p">,</span><span class="nx">layer</span><span class="o">:</span><span class="nx">CGFloat</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">x</span><span class="o">:</span><span class="nx">CGFloat</span> <span class="o">=</span> <span class="nx">origin</span><span class="p">.</span><span class="nx">x</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">y</span><span class="o">:</span><span class="nx">CGFloat</span> <span class="o">=</span> <span class="nx">origin</span><span class="p">.</span><span class="nx">y</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">CGPathCreateMutable</span><span class="p">()</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">()</span>
+</span><span class='line'>        <span class="nx">CGPathMoveToPoint</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">nil</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">points</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">CGPointMake</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">))</span>
+</span><span class='line'>        <span class="k">for</span> <span class="nx">index</span> <span class="k">in</span> <span class="mi">1</span><span class="p">..</span><span class="o">&lt;</span><span class="nx">layer</span><span class="p">{</span>
+</span><span class='line'>            <span class="nx">y</span><span class="o">-=</span><span class="nx">spacing</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nx">index</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>            <span class="nx">CGPathAddLineToPoint</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">nil</span> <span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
+</span><span class='line'>            <span class="nx">points</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">CGPointMake</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">))</span>
+</span><span class='line'>            <span class="nx">x</span><span class="o">-=</span><span class="nx">spacing</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nx">index</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>            <span class="nx">CGPathAddLineToPoint</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">nil</span> <span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
+</span><span class='line'>            <span class="nx">points</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">CGPointMake</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">))</span>
+</span><span class='line'>            <span class="nx">y</span><span class="o">+=</span><span class="nx">spacing</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="nx">index</span>
+</span><span class='line'>            <span class="nx">CGPathAddLineToPoint</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">nil</span> <span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
+</span><span class='line'>            <span class="nx">points</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">CGPointMake</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">))</span>
+</span><span class='line'>            <span class="nx">x</span><span class="o">+=</span><span class="nx">spacing</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="nx">index</span>
+</span><span class='line'>            <span class="nx">CGPathAddLineToPoint</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">nil</span> <span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
+</span><span class='line'>            <span class="nx">points</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">CGPointMake</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">))</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">path</span> <span class="o">=</span> <span class="nx">path</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">glowWidth</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">antialiased</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span class='line'>        <span class="nx">CGPathGetCurrentPoint</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>算法很简单，就是顺时针计算点坐标然后画线，这里把每一步的坐标都存入了<code>points</code>数组里，是为了以后计算其他数据时方便。因为这部分算法不难而且不是我们的重点，这里不过多介绍了。</p>
+
+<h3>四种精灵的绘制</h3>
+
+<p>因为四种精灵都是沿着<code>Map</code>类的路径来顺时针运动，它们的动画绘制是相似的，所以我建立了一个<code>Shape</code>类作为基类来绘制动画，它继承于<code>SKSpriteKit</code>类，并拥有半径（<code>radius</code>）、移动速度（<code>moveSpeed</code>）和线段计数（<code>lineNum</code>）这三个属性。其中<code>lineNum</code>是用于标记精灵在螺旋线第几条线段上的，这样比较方便计算动画的参数。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">Shape</span><span class="o">:</span> <span class="nx">SKSpriteNode</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">radius</span><span class="o">:</span><span class="nx">CGFloat</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">moveSpeed</span><span class="o">:</span><span class="nx">CGFloat</span> <span class="o">=</span> <span class="mi">50</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">lineNum</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="nb">String</span><span class="p">,</span><span class="nx">imageName</span><span class="o">:</span><span class="nb">String</span><span class="p">){</span>
+</span><span class='line'>        <span class="kr">super</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">texture</span><span class="o">:</span> <span class="nx">SKTexture</span><span class="p">(</span><span class="nx">imageNamed</span><span class="o">:</span> <span class="nx">imageName</span><span class="p">),</span><span class="nx">color</span><span class="o">:</span><span class="nx">SKColor</span><span class="p">.</span><span class="nx">clearColor</span><span class="p">(),</span> <span class="nx">size</span><span class="o">:</span> <span class="nx">CGSizeMake</span><span class="p">(</span><span class="nx">radius</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="nx">radius</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">physicsBody</span> <span class="o">=</span> <span class="nx">SKPhysicsBody</span><span class="p">(</span><span class="nx">circleOfRadius</span><span class="o">:</span> <span class="nx">radius</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">physicsBody</span><span class="p">.</span><span class="nx">usesPreciseCollisionDetection</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">physicsBody</span><span class="p">.</span><span class="nx">collisionBitMask</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">physicsBody</span><span class="p">.</span><span class="nx">contactTestBitMask</span> <span class="o">=</span> <span class="nx">playerCategory</span><span class="o">|</span><span class="nx">killerCategory</span><span class="o">|</span><span class="nx">scoreCategory</span>
+</span><span class='line'>        <span class="nx">moveSpeed</span> <span class="o">+=</span> <span class="nx">CGFloat</span><span class="p">(</span><span class="nx">Data</span><span class="p">.</span><span class="nx">speedScale</span><span class="p">)</span> <span class="o">*</span> <span class="nx">self</span><span class="p">.</span><span class="nx">moveSpeed</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">physicsBody</span><span class="p">.</span><span class="nx">angularDamping</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>构造函数中设定了<code>Shape</code>类的一些物理参数，比如物理体的形状大小，碰撞检测掩码等。这里设定<code>usesPreciseCollisionDetection</code>为<code>true</code>是为了增加碰撞检测的精度，常用于体积小速度快的物体。<code>collisionBitMask</code>属性标记了需要模拟物理碰撞的类别，<code>contactTestBitMask</code>属性标记了需要检测到碰撞的类别。这里说的“类别”指的是物体的类别：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">playerCategory</span><span class="o">:</span><span class="nx">UInt32</span>      <span class="o">=</span>  <span class="mh">0x1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">killerCategory</span><span class="o">:</span><span class="nx">UInt32</span>      <span class="o">=</span>  <span class="mh">0x1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">scoreCategory</span><span class="o">:</span><span class="nx">UInt32</span>       <span class="o">=</span>  <span class="mh">0x1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">shieldCategory</span><span class="o">:</span><span class="nx">UInt32</span>      <span class="o">=</span>  <span class="mh">0x1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+这种用位运算来判断和存储物体类别的方式很常用，上面这段代码写在了<code>NodeCategories.swift</code>文件中。</p>
+
+<p>为了描述<code>Shape</code>的速度随着游戏等级上升而增加，这里速度的计算公式含有<code>Data.speedScale</code>作为参数，关于<code>Data</code>“类”在后面会讲到。</p>
+
+<p>为了让精灵动起来，需要知道动画的移动目的地是什么。虽然<code>SKAction</code>有<code>followPath(path: CGPath?, speed: CGFloat)</code>方法，但是在这里并不实用，因为<code>Player</code>会经常改变路线，所以我写了一个<code>runInMap(map:Map)</code>方法让精灵每次只移动到路径上的下一个节点（之前<code>Map</code>类存储的<code>points</code>属性用到了吧！嘿嘿）</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">func</span> <span class="nx">runInMap</span><span class="p">(</span><span class="nx">map</span><span class="o">:</span><span class="nx">Map</span><span class="p">){</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">distance</span> <span class="o">=</span> <span class="nx">calDistanceInMap</span><span class="p">(</span><span class="nx">map</span><span class="p">)</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">duration</span> <span class="o">=</span> <span class="nx">distance</span><span class="o">/</span><span class="nx">moveSpeed</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">rotate</span> <span class="o">=</span> <span class="nx">SKAction</span><span class="p">.</span><span class="nx">rotateByAngle</span><span class="p">(</span><span class="nx">distance</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span> <span class="nx">duration</span><span class="o">:</span> <span class="nx">duration</span><span class="p">)</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">move</span> <span class="o">=</span> <span class="nx">SKAction</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="nx">map</span><span class="p">.</span><span class="nx">points</span><span class="p">[</span><span class="nx">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="nx">duration</span><span class="o">:</span> <span class="nx">duration</span><span class="p">)</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">group</span> <span class="o">=</span> <span class="nx">SKAction</span><span class="p">.</span><span class="nx">group</span><span class="p">([</span><span class="nx">rotate</span><span class="p">,</span><span class="nx">move</span><span class="p">])</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">runAction</span><span class="p">(</span><span class="nx">group</span><span class="p">,</span> <span class="nx">completion</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">self</span><span class="p">.</span><span class="nx">lineNum</span><span class="o">++</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nx">self</span><span class="p">.</span><span class="nx">lineNum</span><span class="o">==</span><span class="nx">map</span><span class="p">.</span><span class="nx">points</span><span class="p">.</span><span class="nx">count</span><span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">if</span> <span class="nx">self</span> <span class="nx">is</span> <span class="nx">Player</span><span class="p">{</span>
+</span><span class='line'>                    <span class="nx">Data</span><span class="p">.</span><span class="nx">gameOver</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">if</span> <span class="nx">self</span> <span class="nx">is</span> <span class="nx">Killer</span><span class="p">{</span>
+</span><span class='line'>                    <span class="nx">self</span><span class="p">.</span><span class="nx">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">if</span> <span class="nx">self</span> <span class="nx">is</span> <span class="nx">Score</span><span class="p">{</span>
+</span><span class='line'>                    <span class="nx">self</span><span class="p">.</span><span class="nx">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">if</span> <span class="nx">self</span> <span class="nx">is</span> <span class="nx">Shield</span><span class="p">{</span>
+</span><span class='line'>                    <span class="nx">self</span><span class="p">.</span><span class="nx">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">self</span><span class="p">.</span><span class="nx">runInMap</span><span class="p">(</span><span class="nx">map</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="p">})</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>上面的代码先是调用<code>calDistanceInMap(map:Map)-&gt;CGFloat</code>方法计算精灵距离下一个节点的距离（也就是需要移动的距离），然后计算精灵需要旋转动画时间和移动动画时间，最后将两个动画作为一个<code>group</code>来运行，在动画运行结束后判断精灵是否运行到了最后一个节点，也就是螺旋线的终点：如果到终点了则移除精灵，否则开始递归调用方法，来开始下一段动画（奔向下一个节点）。</p>
+
+<p>计算距离的<code>calDistanceInMap(map:Map)-&gt;CGFloat</code>方法代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">func</span> <span class="nx">calDistanceInMap</span><span class="p">(</span><span class="nx">map</span><span class="o">:</span><span class="nx">Map</span><span class="p">)</span><span class="o">-&gt;</span><span class="nx">CGFloat</span><span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">self</span><span class="p">.</span><span class="nx">lineNum</span><span class="o">==</span><span class="nx">map</span><span class="p">.</span><span class="nx">points</span><span class="p">.</span><span class="nx">count</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">switch</span> <span class="nx">lineNum</span><span class="o">%</span><span class="mi">4</span><span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">position</span><span class="p">.</span><span class="nx">y</span><span class="o">-</span><span class="nx">map</span><span class="p">.</span><span class="nx">points</span><span class="p">[</span><span class="nx">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="nx">y</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">position</span><span class="p">.</span><span class="nx">x</span><span class="o">-</span><span class="nx">map</span><span class="p">.</span><span class="nx">points</span><span class="p">[</span><span class="nx">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="nx">x</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">map</span><span class="p">.</span><span class="nx">points</span><span class="p">[</span><span class="nx">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="nx">y</span><span class="o">-</span><span class="nx">position</span><span class="p">.</span><span class="nx">y</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">map</span><span class="p">.</span><span class="nx">points</span><span class="p">[</span><span class="nx">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="nx">x</span><span class="o">-</span><span class="nx">position</span><span class="p">.</span><span class="nx">x</span>
+</span><span class='line'>        <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>到此为止<code>Shape</code>类完成了，<code>Killer</code>、<code>Score</code>和<code>Shield</code>类比较简单，继承<code>Shape</code>类并设置自身纹理和类别即可：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">Killer</span><span class="o">:</span> <span class="nx">Shape</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">convenience</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="s2">&quot;Killer&quot;</span><span class="p">,</span><span class="nx">imageName</span><span class="o">:</span><span class="s2">&quot;killer&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">physicsBody</span><span class="p">.</span><span class="nx">categoryBitMask</span> <span class="o">=</span> <span class="nx">killerCategory</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kr">class</span> <span class="nx">Score</span><span class="o">:</span> <span class="nx">Shape</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">convenience</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="s2">&quot;Score&quot;</span><span class="p">,</span><span class="nx">imageName</span><span class="o">:</span><span class="s2">&quot;score&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">physicsBody</span><span class="p">.</span><span class="nx">categoryBitMask</span> <span class="o">=</span> <span class="nx">scoreCategory</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kr">class</span> <span class="nx">Shield</span><span class="o">:</span> <span class="nx">Shape</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">convenience</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="s2">&quot;Shield&quot;</span><span class="p">,</span><span class="nx">imageName</span><span class="o">:</span><span class="s2">&quot;shield&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">physicsBody</span><span class="p">.</span><span class="nx">categoryBitMask</span> <span class="o">=</span> <span class="nx">shieldCategory</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>而<code>Player</code>因为有护盾状态并可以在螺旋线上跳跃到内层，所以稍微复杂些：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">Player</span><span class="o">:</span> <span class="nx">Shape</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">jump</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">shield</span><span class="o">:</span><span class="nx">Bool</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">willSet</span><span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">newValue</span><span class="p">{</span>
+</span><span class='line'>            <span class="nx">self</span><span class="p">.</span><span class="nx">texture</span> <span class="o">=</span> <span class="nx">SKTexture</span><span class="p">(</span><span class="nx">imageNamed</span><span class="o">:</span> <span class="s2">&quot;player0&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">{</span>
+</span><span class='line'>            <span class="nx">self</span><span class="p">.</span><span class="nx">texture</span> <span class="o">=</span> <span class="nx">SKTexture</span><span class="p">(</span><span class="nx">imageNamed</span><span class="o">:</span> <span class="s2">&quot;player&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">convenience</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="s2">&quot;Player&quot;</span><span class="p">,</span><span class="nx">imageName</span><span class="o">:</span><span class="s2">&quot;player&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">physicsBody</span><span class="p">.</span><span class="nx">categoryBitMask</span> <span class="o">=</span> <span class="nx">playerCategory</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">moveSpeed</span> <span class="o">=</span> <span class="mi">70</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">lineNum</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">restart</span><span class="p">(</span><span class="nx">map</span><span class="o">:</span><span class="nx">Map</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">alpha</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">removeAllActions</span><span class="p">()</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">lineNum</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">moveSpeed</span> <span class="o">=</span> <span class="mi">70</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">jump</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">shield</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">position</span> <span class="o">=</span> <span class="nx">map</span><span class="p">.</span><span class="nx">points</span><span class="p">[</span><span class="nx">self</span><span class="p">.</span><span class="nx">lineNum</span><span class="p">]</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">runInMap</span><span class="p">(</span><span class="nx">map</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><code>Player</code>类的初始位置是螺旋线第四个节点，而且移动速度要略快于其他三种精灵，所以在这里设置为70（<code>Shape</code>默认速度50）。<code>jump</code>和<code>shield</code>是用来标记<code>Player</code>当前状态的属性，其中<code>shield</code>属性还定义了属性监察器，这是Swift中存储属性具有的响应机制，类似于<code>KVO</code>。在<code>shield</code>状态改变时也同时改变<code>Player</code>的纹理。<strong>需要注意的是构造器中对属性的改变并不会调用属性检查器，在<code>willSet</code>和<code>didSet</code>中改变自身属性也不会调用属性检查器，因为那样会造成死循环。</strong></p>
+
+<p><code>restart(map:Map)</code>方法用于在游戏重新开始时重置<code>Player</code>的相关数据。</p>
+
+<h2>Swift中用访问者模式处理碰撞</h2>
+
+<p>访问者模式是双分派（Double Dispatch）模式的一种实现，关于双分派模式的详细解释，参考我的另一篇文章：<a href="http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/">Double Dispatch模式及其在iOS开发中实践</a>，里面包含了C++，Java和Obje-C的实现，这次我们用Swift实现访问者模式。</p>
+
+<p>因为SpriteKit中物理碰撞检测到的都是<code>SKPhysicsBody</code>，所以我们的被访问者需要包含一个<code>SKPhysicsBody</code>对象：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">VisitablePhysicsBody</span><span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">body</span><span class="o">:</span><span class="nx">SKPhysicsBody</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span><span class="nx">SKPhysicsBody</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">body</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">acceptVisitor</span><span class="p">(</span><span class="nx">visitor</span><span class="o">:</span><span class="nx">ContactVisitor</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">visitor</span><span class="p">.</span><span class="nx">visitBody</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><code>acceptVisitor</code>方法传入的是一个<code>ContactVisitor</code>类，它是访问者的基类（也相当于接口），访问者的<code>visitBody(body:SKPhysicsBody)</code>方法会根据传入的<code>body</code>实例来推断出被访问者的真实类别，然后调用对应的方法来处理碰撞：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">func</span> <span class="nx">visitBody</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span><span class="nx">SKPhysicsBody</span><span class="p">){</span>
+</span><span class='line'>        <span class="c1">//第二次dispatch，通过构造方法名来执行对应方法</span>
+</span><span class='line'>        <span class="c1">// 生成方法名，比如&quot;visitPlayer&quot;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">contactSelectorString</span> <span class="o">=</span> <span class="s2">&quot;visit&quot;</span> <span class="o">+</span> <span class="nx">body</span><span class="p">.</span><span class="nx">node</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">selector</span> <span class="o">=</span> <span class="nx">NSSelectorFromString</span><span class="p">(</span><span class="nx">contactSelectorString</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">self</span><span class="p">.</span><span class="nx">respondsToSelector</span><span class="p">(</span><span class="nx">selector</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">dispatch_after</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">dispatch_get_main_queue</span><span class="p">(),</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">NSThread</span><span class="p">.</span><span class="nx">detachNewThreadSelector</span><span class="p">(</span><span class="nx">selector</span><span class="p">,</span> <span class="nx">toTarget</span><span class="o">:</span><span class="nx">self</span><span class="p">,</span> <span class="nx">withObject</span><span class="o">:</span> <span class="nx">body</span><span class="p">)</span>
+</span><span class='line'>                <span class="p">})</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Swift废弃了<code>performSelector</code>方法，所以这里刷了个小聪明来将消息传给具体的访问者。有关Swift中替代<code>performSelector</code>的方案，参见<a href="http://www.cnblogs.com/yangzhou1030/p/3830592.html">这里</a></p>
+
+<p>下面让<code>GameScene</code>实现<code>SKPhysicsContactDelegate</code>协议：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">func</span> <span class="nx">didBeginContact</span><span class="p">(</span><span class="nx">contact</span><span class="o">:</span><span class="nx">SKPhysicsContact</span><span class="p">){</span>
+</span><span class='line'>        <span class="c1">//A-&gt;B</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">visitorA</span> <span class="o">=</span> <span class="nx">ContactVisitor</span><span class="p">.</span><span class="nx">contactVisitorWithBody</span><span class="p">(</span><span class="nx">contact</span><span class="p">.</span><span class="nx">bodyA</span><span class="p">,</span> <span class="nx">forContact</span><span class="o">:</span> <span class="nx">contact</span><span class="p">)</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">visitableBodyB</span> <span class="o">=</span> <span class="nx">VisitablePhysicsBody</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span> <span class="nx">contact</span><span class="p">.</span><span class="nx">bodyB</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">visitableBodyB</span><span class="p">.</span><span class="nx">acceptVisitor</span><span class="p">(</span><span class="nx">visitorA</span><span class="p">)</span>
+</span><span class='line'>        <span class="c1">//B-&gt;A</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">visitorB</span> <span class="o">=</span> <span class="nx">ContactVisitor</span><span class="p">.</span><span class="nx">contactVisitorWithBody</span><span class="p">(</span><span class="nx">contact</span><span class="p">.</span><span class="nx">bodyB</span><span class="p">,</span> <span class="nx">forContact</span><span class="o">:</span> <span class="nx">contact</span><span class="p">)</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">visitableBodyA</span> <span class="o">=</span> <span class="nx">VisitablePhysicsBody</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span> <span class="nx">contact</span><span class="p">.</span><span class="nx">bodyA</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">visitableBodyA</span><span class="p">.</span><span class="nx">acceptVisitor</span><span class="p">(</span><span class="nx">visitorB</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+跟Objective-C中实现访问者模式类似，也是通过<code>ContactVisitor</code>类的工厂方法返回一个对应的子类实例来作为访问者，然后实例化一个被访问者，被访问者接受访问者的访问。A访问B和B访问A在大多数场合是相同的，但是你不知道谁是A谁是B，所以需要两种情况都调用。下面是<code>ContactVisitor</code>类的工厂方法和构造器：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">ContactVisitor</span><span class="o">:</span><span class="nx">NSObject</span><span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">body</span><span class="o">:</span><span class="nx">SKPhysicsBody</span><span class="o">!</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">contact</span><span class="o">:</span><span class="nx">SKPhysicsContact</span><span class="o">!</span>
+</span><span class='line'>    <span class="kr">class</span> <span class="nx">func</span> <span class="nx">contactVisitorWithBody</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span><span class="nx">SKPhysicsBody</span><span class="p">,</span><span class="nx">forContact</span> <span class="nx">contact</span><span class="o">:</span><span class="nx">SKPhysicsContact</span><span class="p">)</span><span class="o">-&gt;</span><span class="nx">ContactVisitor</span><span class="o">!</span><span class="p">{</span>
+</span><span class='line'>        <span class="c1">//第一次dispatch，通过node类别返回对应的实例</span>
+</span><span class='line'>        <span class="k">if</span> <span class="mi">0</span> <span class="o">!=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">categoryBitMask</span><span class="o">&amp;</span><span class="nx">playerCategory</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">PlayerContactVisitor</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span> <span class="nx">body</span><span class="p">,</span> <span class="nx">forContact</span><span class="o">:</span> <span class="nx">contact</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">if</span> <span class="mi">0</span> <span class="o">!=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">categoryBitMask</span><span class="o">&amp;</span><span class="nx">killerCategory</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">KillerContactVisitor</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span> <span class="nx">body</span><span class="p">,</span> <span class="nx">forContact</span><span class="o">:</span> <span class="nx">contact</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">if</span> <span class="mi">0</span> <span class="o">!=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">categoryBitMask</span><span class="o">&amp;</span><span class="nx">scoreCategory</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">ScoreContactVisitor</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span> <span class="nx">body</span><span class="p">,</span> <span class="nx">forContact</span><span class="o">:</span> <span class="nx">contact</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">if</span> <span class="mi">0</span> <span class="o">!=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">categoryBitMask</span><span class="o">&amp;</span><span class="nx">shieldCategory</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">ShieldContactVisitor</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span> <span class="nx">body</span><span class="p">,</span> <span class="nx">forContact</span><span class="o">:</span> <span class="nx">contact</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">nil</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span><span class="nx">SKPhysicsBody</span><span class="p">,</span> <span class="nx">forContact</span> <span class="nx">contact</span><span class="o">:</span><span class="nx">SKPhysicsContact</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">body</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">contact</span> <span class="o">=</span> <span class="nx">contact</span>
+</span><span class='line'>        <span class="kr">super</span><span class="p">.</span><span class="nx">init</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>PS：上面的代码省略了已经提到过的<code>visitBody(body:SKPhysicsBody)</code>方法</p>
+
+<p>因为这个游戏逻辑比较简单，所有碰撞后的逻辑都写到了<code>PlayerContactVisitor</code>类里：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">func</span> <span class="nx">visitKiller</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span><span class="nx">SKPhysicsBody</span><span class="p">){</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">thisNode</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">node</span> <span class="nx">as</span> <span class="nx">Player</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">otherNode</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">node</span>
+</span><span class='line'><span class="c1">//        println(thisNode.name+&quot;-&gt;&quot;+otherNode.name)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">thisNode</span><span class="p">.</span><span class="nx">shield</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">otherNode</span><span class="p">.</span><span class="nx">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>            <span class="nx">thisNode</span><span class="p">.</span><span class="nx">shield</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">Data</span><span class="p">.</span><span class="nx">gameOver</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">visitScore</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span><span class="nx">SKPhysicsBody</span><span class="p">){</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">thisNode</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">node</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">otherNode</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">node</span>
+</span><span class='line'><span class="c1">//        println(thisNode.name+&quot;-&gt;&quot;+otherNode.name)</span>
+</span><span class='line'>        <span class="nx">otherNode</span><span class="p">.</span><span class="nx">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>        <span class="nx">Data</span><span class="p">.</span><span class="nx">score</span> <span class="o">+=</span> <span class="mi">2</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">visitShield</span><span class="p">(</span><span class="nx">body</span><span class="o">:</span><span class="nx">SKPhysicsBody</span><span class="p">){</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">thisNode</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">node</span> <span class="nx">as</span> <span class="nx">Player</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">otherNode</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">node</span>
+</span><span class='line'>        <span class="nx">otherNode</span><span class="p">.</span><span class="nx">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>        <span class="nx">thisNode</span><span class="p">.</span><span class="nx">shield</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span class='line'>        <span class="nx">Data</span><span class="p">.</span><span class="nx">score</span><span class="o">++</span>
+</span><span class='line'>        <span class="c1">//        println(thisNode.name+&quot;-&gt;&quot;+otherNode.name)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>上面的方法都是“visit+类名”格式的，处理的是<code>Player</code>碰撞到其他三种精灵的逻辑。而其他三种精灵之间的碰撞不需要处理，所以<code>KillerContactVisitor</code>、<code>ScoreContactVisitor</code>和<code>ShieldContactVisitor</code>这三个<code>ContactVisitor</code>的子类很空旷，这里不再赘述。</p>
+
+<p>我们设置<code>Player</code>碰撞到<code>Killer</code>游戏结束，碰撞到<code>Score</code>加两分，碰撞到<code>Shield</code>加一分并获得护甲（shield属性设为true）。可以看到这里大量用到了<code>Data</code>“类“”，它其实是一个存储并管理全局数据的结构体，它里面存储了一些静态的成员属性，也可看做非线程安全的单例。</p>
+
+<h2>界面数据显示</h2>
+
+<p>这部分很简单，主要是将<code>Data</code>结构体中存储的分数和等级等数据通过<code>SKLabelNode</code>显示在界面上，只不过我封装了一个<code>Display</code>类来将所有的<code>SKLabelNode</code>统一管理，并让其实现我定义的<code>DisplayData</code>协议来让<code>Data</code>中的数据变化驱动界面更新：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">protocol</span> <span class="nx">DisplayData</span><span class="p">{</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">updateData</span><span class="p">()</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">levelUp</span><span class="p">()</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">gameOver</span><span class="p">()</span>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">restart</span><span class="p">()</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>下面是Data结构体代码，大量使用了存储属性的监察器来响应数据变化：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Data</span><span class="p">{</span>
+</span><span class='line'>    <span class="kr">static</span> <span class="kd">var</span> <span class="nx">display</span><span class="o">:</span><span class="nx">DisplayData</span><span class="o">?</span>
+</span><span class='line'>    <span class="kr">static</span> <span class="kd">var</span> <span class="nx">updateScore</span><span class="o">:</span><span class="nx">Int</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'>    <span class="kr">static</span> <span class="kd">var</span> <span class="nx">score</span><span class="o">:</span><span class="nx">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">{</span>
+</span><span class='line'>    <span class="nx">willSet</span><span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">newValue</span><span class="o">&gt;=</span><span class="nx">updateScore</span><span class="p">{</span>
+</span><span class='line'>            <span class="nx">updateScore</span><span class="o">+=</span><span class="mi">5</span> <span class="o">*</span> <span class="o">++</span><span class="nx">level</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">didSet</span><span class="p">{</span>
+</span><span class='line'>        <span class="nx">display</span><span class="o">?</span><span class="p">.</span><span class="nx">updateData</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="kr">static</span> <span class="kd">var</span> <span class="nx">highScore</span><span class="o">:</span><span class="nx">Int</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="kr">static</span> <span class="kd">var</span> <span class="nx">gameOver</span><span class="o">:</span><span class="nx">Bool</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">willSet</span><span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">newValue</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">let</span> <span class="nx">standardDefaults</span> <span class="o">=</span> <span class="nx">NSUserDefaults</span><span class="p">.</span><span class="nx">standardUserDefaults</span><span class="p">()</span>
+</span><span class='line'>            <span class="nx">Data</span><span class="p">.</span><span class="nx">highScore</span> <span class="o">=</span> <span class="nx">standardDefaults</span><span class="p">.</span><span class="nx">integerForKey</span><span class="p">(</span><span class="s2">&quot;highscore&quot;</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nx">Data</span><span class="p">.</span><span class="nx">highScore</span> <span class="o">&lt;</span> <span class="nx">Data</span><span class="p">.</span><span class="nx">score</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">Data</span><span class="p">.</span><span class="nx">highScore</span> <span class="o">=</span> <span class="nx">Data</span><span class="p">.</span><span class="nx">score</span>
+</span><span class='line'>                <span class="nx">standardDefaults</span><span class="p">.</span><span class="nx">setInteger</span><span class="p">(</span><span class="nx">Data</span><span class="p">.</span><span class="nx">score</span><span class="p">,</span> <span class="nx">forKey</span><span class="o">:</span> <span class="s2">&quot;highscore&quot;</span><span class="p">)</span>
+</span><span class='line'>                <span class="nx">standardDefaults</span><span class="p">.</span><span class="nx">synchronize</span><span class="p">()</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="nx">display</span><span class="o">?</span><span class="p">.</span><span class="nx">gameOver</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">display</span><span class="o">?</span><span class="p">.</span><span class="nx">restart</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">didSet</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="kr">static</span> <span class="kd">var</span> <span class="nx">level</span><span class="o">:</span><span class="nx">Int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">{</span>
+</span><span class='line'>    <span class="nx">willSet</span><span class="p">{</span>
+</span><span class='line'>        <span class="nx">speedScale</span> <span class="o">=</span> <span class="nx">Float</span><span class="p">(</span><span class="nx">newValue</span><span class="p">)</span><span class="o">*</span><span class="mf">0.1</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">newValue</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">{</span>
+</span><span class='line'>            <span class="nx">display</span><span class="o">?</span><span class="p">.</span><span class="nx">levelUp</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">didSet</span><span class="p">{</span>
+</span><span class='line'>        <span class="nx">display</span><span class="o">?</span><span class="p">.</span><span class="nx">updateData</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="kr">static</span> <span class="kd">var</span> <span class="nx">speedScale</span><span class="o">:</span><span class="nx">Float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">{</span>
+</span><span class='line'>    <span class="nx">willSet</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">didSet</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kr">static</span> <span class="nx">func</span> <span class="nx">restart</span><span class="p">(){</span>
+</span><span class='line'>        <span class="nx">Data</span><span class="p">.</span><span class="nx">updateScore</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'>        <span class="nx">Data</span><span class="p">.</span><span class="nx">score</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="nx">Data</span><span class="p">.</span><span class="nx">level</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="nx">Data</span><span class="p">.</span><span class="nx">speedScale</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>这里不得不提到一个更新界面时遇到的一个坑，当我想通过名字遍历<code>GameScene</code>子节点的时候，一般会用到<code>enumerateChildNodesWithName(name: String?, usingBlock: ((SKNode!, UnsafePointer&lt;ObjCBool&gt;) -&gt; Void)?)</code>方法，但是这个方法在Xcode6Beta3更新后经常会抛异常强退，这让我很费解，恰巧遇到此问题的不只是我一个人，所以还是老老实实的自己写循环遍历加判断吧。</p>
+
+<h2>按钮的绘制和截图分享</h2>
+
+<p>参考我的另外两篇文章：<a href="http://yulingtianxia.com/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/">在游戏的SKScene中添加Button</a>和<a href="http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/">SpriteKit截屏并分享至社交网络</a></p>
+
+<p>在本工程中只有<code>ShareButton</code>和<code>ReplayButton</code>两个按钮，Swift版本的代码很简洁，而我通过<code>Social.Framework</code>中的<code>UIActivityViewController</code>来分享得分，这部分代码写在了<code>ShareButton.swift</code>中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">scene</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">scene</span> <span class="nx">as</span> <span class="nx">GameScene</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">image</span> <span class="o">=</span> <span class="nx">scene</span><span class="p">.</span><span class="nx">imageFromNode</span><span class="p">(</span><span class="nx">scene</span><span class="p">)</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">text</span> <span class="o">=</span> <span class="s2">&quot;我在Spiral游戏中得了\(Data.score)分，快来追逐我的步伐吧！&quot;</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">activityItems</span> <span class="o">=</span> <span class="p">[</span><span class="nx">image</span><span class="p">,</span><span class="nx">text</span><span class="p">]</span>
+</span><span class='line'>        <span class="kd">let</span> <span class="nx">activityController</span> <span class="o">=</span> <span class="nx">UIActivityViewController</span><span class="p">(</span><span class="nx">activityItems</span><span class="o">:</span> <span class="nx">activityItems</span><span class="p">,</span> <span class="nx">applicationActivities</span><span class="o">:</span> <span class="nx">nil</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">(</span><span class="nx">scene</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">nextResponder</span><span class="p">()</span> <span class="nx">as</span> <span class="nx">UIViewController</span><span class="p">).</span><span class="nx">presentViewController</span><span class="p">(</span><span class="nx">activityController</span><span class="p">,</span> <span class="nx">animated</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">completion</span><span class="o">:</span> <span class="nx">nil</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+</div>
+
+</article>
+
+
+
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+  	
+     <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_xiaoyou"></a>
+	<a href="http://www.jiathis.com/share?uid=1912336" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1912336" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1912336"></script>
+<!-- UY END -->
+<script>document.write(unescape('%3Cdiv id="hm_t_33672"%3E%3C/div%3E%3Cscript charset="utf-8" src="http://crs.baidu.com/t.js?siteId=b5cb508df15ee6247a8c32c64eadb075&planId=33672&async=0&referer=') + encodeURIComponent(document.referrer) + '&title=' + encodeURIComponent(document.title) + '&rnd=' + (+new Date) + unescape('"%3E%3C/script%3E'));</script>
+
+ 	
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    玉令天下
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'yulingtianxia';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+		</div>
+	</div>
+</body>
+</html>

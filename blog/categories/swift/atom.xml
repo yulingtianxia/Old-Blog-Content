@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-15T20:25:27+08:00</updated>
+  <updated>2014-07-17T23:36:45+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,556 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[用Swift和SpriteKit开发iOS游戏]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit/"/>
+    <updated>2014-07-17T12:54:13+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit</id>
+    <content type="html"><![CDATA[<p>之前用SpriteKit做过一个叫做<a href="https://github.com/yulingtianxia/ColorAtom">ColorAtom</a>的小游戏，用了访问者模式处理碰撞检测，还用了SpriteKit中的粒子系统、连接体、力场和动画等，可以说是一个学习SpriteKit比较不错的Demo，随着Swift的火热，我也用Swift和SpriteKit写了一个更为简单的小游戏<a href="https://github.com/yulingtianxia/Spiral">Spiral</a></p>
+
+<!--more-->
+
+
+<p>附上Spiral的动图：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140557437844.gif" alt="" /></p>
+
+<p>游戏规则是：玩家是五角星小球，小球自动沿着陀螺线向外运动，当玩家点击屏幕时五角星小球会跳跃到内层螺旋，当五角星小球碰到红色旋风或滚动到螺旋线终点时游戏结束。玩家吃掉绿色旋风来得2分，吃到紫色三角得一分并获得保护罩，保护罩用来抵挡一次红色旋风。随着分数的增加游戏会升级，速度加快。</p>
+
+<p>以下是本文内容：</p>
+
+<ol>
+<li>准备工作</li>
+<li>绘制基本界面</li>
+<li>Swift中用访问者模式处理碰撞</li>
+<li>界面数据显示</li>
+<li>按钮的绘制和截图分享</li>
+</ol>
+
+
+<h2>准备工作</h2>
+
+<p>SpriteKit是苹果iOS7新推出的2D游戏引擎，这里不再过多介绍。我们新建工程的时候选取iOS中的Game，然后选择SpriteKit作为游戏引擎，语言选择Swift，Xcode6会为我们自动创建一个游戏场景<code>GameScene</code>，它包含<code>GameScene.swift</code>和<code>GameScene.sks</code>两个文件，<code>sks</code>文件可以让我们可视化拖拽游戏控件到场景上，然后再代码中加载<code>sks</code>文件来完成场景的初始化：</p>
+
+<p>``` js</p>
+
+<p>extension SKNode {</p>
+
+<pre><code>class func unarchiveFromFile(file : NSString) -&gt; SKNode? {
+
+    let path = NSBundle.mainBundle().pathForResource(file, ofType: "sks")
+
+    var sceneData = NSData.dataWithContentsOfFile(path, options: .DataReadingMappedIfSafe, error: nil)
+    var archiver = NSKeyedUnarchiver(forReadingWithData: sceneData)
+
+    archiver.setClass(self.classForKeyedUnarchiver(), forClassName: "SKScene")
+    let scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as GameScene
+    archiver.finishDecoding()
+    return scene
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>但我比较喜欢纯写代码的方式来搭接面，因为<code>sks</code>文件作为游戏场景布局还不成熟，它是iOS8新加入的功能，以前在iOS7的时候<code>sks</code>文件只是作为粒子系统的可视化编辑文件。</p>
+
+<p>所以我们修改<code>GameViewController.swift</code>文件的<code>viewDidLoad()</code>函数，像以前那样直接用代码加载游戏场景：</p>
+
+<p>```
+override func viewDidLoad() {</p>
+
+<pre><code>    super.viewDidLoad()
+    // Configure the view.
+    let skView = self.view as SKView
+    /* Sprite Kit applies additional optimizations to improve rendering performance */
+    skView.ignoresSiblingOrder = true
+    let scene = GameScene(size: skView.bounds.size)
+    /* Set the scale mode to scale to fit the window */
+    scene.scaleMode = .AspectFill
+    skView.presentScene(scene)
+
+}
+</code></pre>
+
+<p>```</p>
+
+<p><code>GameScene</code>虽然是Xcode自动生成的，但是只是个空架子，我们需要把它生成的没用的代码删掉，比如初始化函数里内容为“HelloWorld”的<code>SKLabelNode</code>，还有<code>touchesBegan(touches: NSSet, withEvent event: UIEvent)</code>方法中绘制飞船的代码。把这些删光后，我们还需要有图片素材来绘制这四类精灵节点：<code>Player</code>（五角星），<code>Killer</code>（红色旋风），<code>Score</code>（绿色旋风）和<code>Shield</code>（紫色三角）。我是用Sketch来绘制这些矢量图形的，文件名为<code>spiral.sketch</code>，随同工程文件一同放到GitHub上了。当然你不需要手动导出图片到工程，直接下载工程文件就好了：</p>
+
+<p><a href="https://github.com/yulingtianxia/Spiral">https://github.com/yulingtianxia/Spiral</a></p>
+
+<h2>绘制基本界面</h2>
+
+<p>这部分的工作主要是绘制出螺旋线作为地图，并让四种精灵节点动起来。</p>
+
+<h3>螺旋线的绘制</h3>
+
+<p><code>SKNode</code>有一个子类<code>SKShapeNode</code>，专门用于绘制线条的，我们新建一个<code>Map</code>类，继承<code>SKShapeNode</code>。下面我们需要生成一个<code>CGPath</code>来赋值给<code>Map</code>的<code>path</code>属性：</p>
+
+<p>```
+import UIKit
+import SpriteKit
+class Map: SKShapeNode {</p>
+
+<pre><code>let spacing:CGFloat = 35
+var points:[CGPoint] = []
+convenience init(origin:CGPoint,layer:CGFloat){
+
+    var x:CGFloat = origin.x
+    var y:CGFloat = origin.y
+    var path = CGPathCreateMutable()
+    self.init()
+    CGPathMoveToPoint(path, nil, x, y)
+    points.append(CGPointMake(x, y))
+    for index in 1..&lt;layer{
+        y-=spacing*(2*index-1)
+        CGPathAddLineToPoint(path, nil , x, y)
+        points.append(CGPointMake(x, y))
+        x-=spacing*(2*index-1)
+        CGPathAddLineToPoint(path, nil , x, y)
+        points.append(CGPointMake(x, y))
+        y+=spacing*2*index
+        CGPathAddLineToPoint(path, nil , x, y)
+        points.append(CGPointMake(x, y))
+        x+=spacing*2*index
+        CGPathAddLineToPoint(path, nil , x, y)
+        points.append(CGPointMake(x, y))
+    }
+    self.path = path
+    self.glowWidth = 1
+    self.antialiased = true
+    CGPathGetCurrentPoint(path)
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>算法很简单，就是顺时针计算点坐标然后画线，这里把每一步的坐标都存入了<code>points</code>数组里，是为了以后计算其他数据时方便。因为这部分算法不难而且不是我们的重点，这里不过多介绍了。</p>
+
+<h3>四种精灵的绘制</h3>
+
+<p>因为四种精灵都是沿着<code>Map</code>类的路径来顺时针运动，它们的动画绘制是相似的，所以我建立了一个<code>Shape</code>类作为基类来绘制动画，它继承于<code>SKSpriteKit</code>类，并拥有半径（<code>radius</code>）、移动速度（<code>moveSpeed</code>）和线段计数（<code>lineNum</code>）这三个属性。其中<code>lineNum</code>是用于标记精灵在螺旋线第几条线段上的，这样比较方便计算动画的参数。</p>
+
+<p>```
+class Shape: SKSpriteNode {</p>
+
+<pre><code>let radius:CGFloat = 10
+var moveSpeed:CGFloat = 50
+var lineNum = 0
+init(name:String,imageName:String){
+    super.init(texture: SKTexture(imageNamed: imageName),color:SKColor.clearColor(), size: CGSizeMake(radius*2, radius*2))
+    self.physicsBody = SKPhysicsBody(circleOfRadius: radius)
+    self.physicsBody.usesPreciseCollisionDetection = true
+    self.physicsBody.collisionBitMask = 0
+    self.physicsBody.contactTestBitMask = playerCategory|killerCategory|scoreCategory
+    moveSpeed += CGFloat(Data.speedScale) * self.moveSpeed
+    self.name = name
+    self.physicsBody.angularDamping = 0
+
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>构造函数中设定了<code>Shape</code>类的一些物理参数，比如物理体的形状大小，碰撞检测掩码等。这里设定<code>usesPreciseCollisionDetection</code>为<code>true</code>是为了增加碰撞检测的精度，常用于体积小速度快的物体。<code>collisionBitMask</code>属性标记了需要模拟物理碰撞的类别，<code>contactTestBitMask</code>属性标记了需要检测到碰撞的类别。这里说的“类别”指的是物体的类别：</p>
+
+<p><code>
+let playerCategory:UInt32      =  0x1 &lt;&lt; 0;
+let killerCategory:UInt32      =  0x1 &lt;&lt; 1;
+let scoreCategory:UInt32       =  0x1 &lt;&lt; 2;
+let shieldCategory:UInt32      =  0x1 &lt;&lt; 3;
+</code>
+这种用位运算来判断和存储物体类别的方式很常用，上面这段代码写在了<code>NodeCategories.swift</code>文件中。</p>
+
+<p>为了描述<code>Shape</code>的速度随着游戏等级上升而增加，这里速度的计算公式含有<code>Data.speedScale</code>作为参数，关于<code>Data</code>“类”在后面会讲到。</p>
+
+<p>为了让精灵动起来，需要知道动画的移动目的地是什么。虽然<code>SKAction</code>有<code>followPath(path: CGPath?, speed: CGFloat)</code>方法，但是在这里并不实用，因为<code>Player</code>会经常改变路线，所以我写了一个<code>runInMap(map:Map)</code>方法让精灵每次只移动到路径上的下一个节点（之前<code>Map</code>类存储的<code>points</code>属性用到了吧！嘿嘿）</p>
+
+<p>```
+func runInMap(map:Map){</p>
+
+<pre><code>    let distance = calDistanceInMap(map)
+    let duration = distance/moveSpeed
+    let rotate = SKAction.rotateByAngle(distance/10, duration: duration)
+    let move = SKAction.moveTo(map.points[lineNum+1], duration: duration)
+    let group = SKAction.group([rotate,move])
+    self.runAction(group, completion: {
+        self.lineNum++
+        if self.lineNum==map.points.count-1 {
+            if self is Player{
+                Data.gameOver = true
+            }
+            if self is Killer{
+                self.removeFromParent()
+            }
+            if self is Score{
+                self.removeFromParent()
+            }
+            if self is Shield{
+                self.removeFromParent()
+            }
+        }
+        else {
+            self.runInMap(map)
+        }
+        })
+}
+</code></pre>
+
+<p>```</p>
+
+<p>上面的代码先是调用<code>calDistanceInMap(map:Map)-&gt;CGFloat</code>方法计算精灵距离下一个节点的距离（也就是需要移动的距离），然后计算精灵需要旋转动画时间和移动动画时间，最后将两个动画作为一个<code>group</code>来运行，在动画运行结束后判断精灵是否运行到了最后一个节点，也就是螺旋线的终点：如果到终点了则移除精灵，否则开始递归调用方法，来开始下一段动画（奔向下一个节点）。</p>
+
+<p>计算距离的<code>calDistanceInMap(map:Map)-&gt;CGFloat</code>方法代码如下：</p>
+
+<p>```
+func calDistanceInMap(map:Map)&ndash;>CGFloat{</p>
+
+<pre><code>    if self.lineNum==map.points.count {
+        return 0
+    }
+    switch lineNum%4{
+    case 0:
+        return position.y-map.points[lineNum+1].y
+    case 1:
+        return position.x-map.points[lineNum+1].x
+    case 2:
+        return map.points[lineNum+1].y-position.y
+    case 3:
+        return map.points[lineNum+1].x-position.x
+    default:
+        return 0
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>到此为止<code>Shape</code>类完成了，<code>Killer</code>、<code>Score</code>和<code>Shield</code>类比较简单，继承<code>Shape</code>类并设置自身纹理和类别即可：</p>
+
+<p>```
+class Killer: Shape {</p>
+
+<pre><code>convenience init() {
+    self.init(name:"Killer",imageName:"killer")
+    self.physicsBody.categoryBitMask = killerCategory
+}
+</code></pre>
+
+<p>}
+class Score: Shape {</p>
+
+<pre><code>convenience init() {
+    self.init(name:"Score",imageName:"score")
+    self.physicsBody.categoryBitMask = scoreCategory
+}
+</code></pre>
+
+<p>}
+class Shield: Shape {</p>
+
+<pre><code>convenience init() {
+    self.init(name:"Shield",imageName:"shield")
+    self.physicsBody.categoryBitMask = shieldCategory
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>而<code>Player</code>因为有护盾状态并可以在螺旋线上跳跃到内层，所以稍微复杂些：</p>
+
+<p>```
+class Player: Shape {</p>
+
+<pre><code>var jump = false
+var shield:Bool = false {
+willSet{
+    if newValue{
+        self.texture = SKTexture(imageNamed: "player0")
+    }
+    else{
+        self.texture = SKTexture(imageNamed: "player")
+    }
+}
+}
+convenience init() {
+    self.init(name:"Player",imageName:"player")
+    self.physicsBody.categoryBitMask = playerCategory
+    self.moveSpeed = 70
+    self.lineNum = 3
+}
+func restart(map:Map) {
+    self.alpha = 1
+    self.removeAllActions()
+    self.lineNum = 3
+    self.moveSpeed = 70
+    self.jump = false
+    self.shield = false
+    self.position = map.points[self.lineNum]
+    self.runInMap(map)
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p><code>Player</code>类的初始位置是螺旋线第四个节点，而且移动速度要略快于其他三种精灵，所以在这里设置为70（<code>Shape</code>默认速度50）。<code>jump</code>和<code>shield</code>是用来标记<code>Player</code>当前状态的属性，其中<code>shield</code>属性还定义了属性监察器，这是Swift中存储属性具有的响应机制，类似于<code>KVO</code>。在<code>shield</code>状态改变时也同时改变<code>Player</code>的纹理。<strong>需要注意的是构造器中对属性的改变并不会调用属性检查器，在<code>willSet</code>和<code>didSet</code>中改变自身属性也不会调用属性检查器，因为那样会造成死循环。</strong></p>
+
+<p><code>restart(map:Map)</code>方法用于在游戏重新开始时重置<code>Player</code>的相关数据。</p>
+
+<h2>Swift中用访问者模式处理碰撞</h2>
+
+<p>访问者模式是双分派（Double Dispatch）模式的一种实现，关于双分派模式的详细解释，参考我的另一篇文章：<a href="http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/">Double Dispatch模式及其在iOS开发中实践</a>，里面包含了C++，Java和Obje-C的实现，这次我们用Swift实现访问者模式。</p>
+
+<p>因为SpriteKit中物理碰撞检测到的都是<code>SKPhysicsBody</code>，所以我们的被访问者需要包含一个<code>SKPhysicsBody</code>对象：</p>
+
+<p>```
+class VisitablePhysicsBody{</p>
+
+<pre><code>let body:SKPhysicsBody
+init(body:SKPhysicsBody){
+    self.body = body
+}
+func acceptVisitor(visitor:ContactVisitor){
+    visitor.visitBody(body)
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p><code>acceptVisitor</code>方法传入的是一个<code>ContactVisitor</code>类，它是访问者的基类（也相当于接口），访问者的<code>visitBody(body:SKPhysicsBody)</code>方法会根据传入的<code>body</code>实例来推断出被访问者的真实类别，然后调用对应的方法来处理碰撞：</p>
+
+<p>```
+func visitBody(body:SKPhysicsBody){</p>
+
+<pre><code>    //第二次dispatch，通过构造方法名来执行对应方法
+    // 生成方法名，比如"visitPlayer"
+    var contactSelectorString = "visit" + body.node.name + ":"
+    let selector = NSSelectorFromString(contactSelectorString)
+    if self.respondsToSelector(selector){
+        dispatch_after(0, dispatch_get_main_queue(), {
+            NSThread.detachNewThreadSelector(selector, toTarget:self, withObject: body)
+            })
+    }
+
+}
+</code></pre>
+
+<p>```</p>
+
+<p>Swift废弃了<code>performSelector</code>方法，所以这里刷了个小聪明来将消息传给具体的访问者。有关Swift中替代<code>performSelector</code>的方案，参见<a href="http://www.cnblogs.com/yangzhou1030/p/3830592.html">这里</a></p>
+
+<p>下面让<code>GameScene</code>实现<code>SKPhysicsContactDelegate</code>协议：</p>
+
+<p>```
+func didBeginContact(contact:SKPhysicsContact){</p>
+
+<pre><code>    //A-&gt;B
+    let visitorA = ContactVisitor.contactVisitorWithBody(contact.bodyA, forContact: contact)
+    let visitableBodyB = VisitablePhysicsBody(body: contact.bodyB)
+    visitableBodyB.acceptVisitor(visitorA)
+    //B-&gt;A
+    let visitorB = ContactVisitor.contactVisitorWithBody(contact.bodyB, forContact: contact)
+    let visitableBodyA = VisitablePhysicsBody(body: contact.bodyA)
+    visitableBodyA.acceptVisitor(visitorB)
+}
+</code></pre>
+
+<p><code>``
+跟Objective-C中实现访问者模式类似，也是通过</code>ContactVisitor<code>类的工厂方法返回一个对应的子类实例来作为访问者，然后实例化一个被访问者，被访问者接受访问者的访问。A访问B和B访问A在大多数场合是相同的，但是你不知道谁是A谁是B，所以需要两种情况都调用。下面是</code>ContactVisitor`类的工厂方法和构造器：</p>
+
+<p>```
+class ContactVisitor:NSObject{</p>
+
+<pre><code>let body:SKPhysicsBody!
+let contact:SKPhysicsContact!
+class func contactVisitorWithBody(body:SKPhysicsBody,forContact contact:SKPhysicsContact)-&gt;ContactVisitor!{
+    //第一次dispatch，通过node类别返回对应的实例
+    if 0 != body.categoryBitMask&amp;playerCategory {
+        return PlayerContactVisitor(body: body, forContact: contact)
+    }
+    if 0 != body.categoryBitMask&amp;killerCategory {
+        return KillerContactVisitor(body: body, forContact: contact)
+    }
+    if 0 != body.categoryBitMask&amp;scoreCategory {
+        return ScoreContactVisitor(body: body, forContact: contact)
+    }
+    if 0 != body.categoryBitMask&amp;shieldCategory {
+        return ShieldContactVisitor(body: body, forContact: contact)
+    }
+    return nil
+
+}
+init(body:SKPhysicsBody, forContact contact:SKPhysicsContact){
+    self.body = body
+    self.contact = contact
+    super.init()
+
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>PS：上面的代码省略了已经提到过的<code>visitBody(body:SKPhysicsBody)</code>方法</p>
+
+<p>因为这个游戏逻辑比较简单，所有碰撞后的逻辑都写到了<code>PlayerContactVisitor</code>类里：</p>
+
+<p>```
+func visitKiller(body:SKPhysicsBody){</p>
+
+<pre><code>    let thisNode = self.body.node as Player
+    let otherNode = body.node
+</code></pre>
+
+<p>//        println(thisNode.name+&ldquo;&ndash;>&rdquo;+otherNode.name)</p>
+
+<pre><code>    if thisNode.shield {
+        otherNode.removeFromParent()
+        thisNode.shield = false
+    }
+    else {
+        Data.gameOver = true
+    }
+}
+func visitScore(body:SKPhysicsBody){
+    let thisNode = self.body.node
+    let otherNode = body.node
+</code></pre>
+
+<p>//        println(thisNode.name+&ldquo;&ndash;>&rdquo;+otherNode.name)</p>
+
+<pre><code>    otherNode.removeFromParent()
+    Data.score += 2
+}
+func visitShield(body:SKPhysicsBody){
+    let thisNode = self.body.node as Player
+    let otherNode = body.node
+    otherNode.removeFromParent()
+    thisNode.shield = true
+    Data.score++
+    //        println(thisNode.name+"-&gt;"+otherNode.name)
+}
+</code></pre>
+
+<p>```</p>
+
+<p>上面的方法都是“visit+类名”格式的，处理的是<code>Player</code>碰撞到其他三种精灵的逻辑。而其他三种精灵之间的碰撞不需要处理，所以<code>KillerContactVisitor</code>、<code>ScoreContactVisitor</code>和<code>ShieldContactVisitor</code>这三个<code>ContactVisitor</code>的子类很空旷，这里不再赘述。</p>
+
+<p>我们设置<code>Player</code>碰撞到<code>Killer</code>游戏结束，碰撞到<code>Score</code>加两分，碰撞到<code>Shield</code>加一分并获得护甲（shield属性设为true）。可以看到这里大量用到了<code>Data</code>“类“”，它其实是一个存储并管理全局数据的结构体，它里面存储了一些静态的成员属性，也可看做非线程安全的单例。</p>
+
+<h2>界面数据显示</h2>
+
+<p>这部分很简单，主要是将<code>Data</code>结构体中存储的分数和等级等数据通过<code>SKLabelNode</code>显示在界面上，只不过我封装了一个<code>Display</code>类来将所有的<code>SKLabelNode</code>统一管理，并让其实现我定义的<code>DisplayData</code>协议来让<code>Data</code>中的数据变化驱动界面更新：</p>
+
+<p>```
+protocol DisplayData{</p>
+
+<pre><code>func updateData()
+func levelUp()
+func gameOver()
+func restart()
+</code></pre>
+
+<p>}
+```</p>
+
+<p>下面是Data结构体代码，大量使用了存储属性的监察器来响应数据变化：</p>
+
+<p>```
+struct Data{</p>
+
+<pre><code>static var display:DisplayData?
+static var updateScore:Int = 5
+static var score:Int = 0{
+willSet{
+    if newValue&gt;=updateScore{
+        updateScore+=5 * ++level
+    }
+}
+didSet{
+    display?.updateData()
+}
+}
+static var highScore:Int = 0
+static var gameOver:Bool = false {
+willSet{
+    if newValue {
+        let standardDefaults = NSUserDefaults.standardUserDefaults()
+        Data.highScore = standardDefaults.integerForKey("highscore")
+        if Data.highScore &lt; Data.score {
+            Data.highScore = Data.score
+            standardDefaults.setInteger(Data.score, forKey: "highscore")
+            standardDefaults.synchronize()
+        }
+        display?.gameOver()
+    }
+    else {
+        display?.restart()
+    }
+}
+didSet{
+
+}
+}
+static var level:Int = 1{
+willSet{
+    speedScale = Float(newValue)*0.1
+    if newValue != 1{
+        display?.levelUp()
+    }
+}
+didSet{
+    display?.updateData()
+
+}
+}
+static var speedScale:Float = 0{
+willSet{
+
+}
+didSet{
+
+}
+}
+
+static func restart(){
+    Data.updateScore = 5
+    Data.score = 0
+    Data.level = 1
+    Data.speedScale = 0
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>这里不得不提到一个更新界面时遇到的一个坑，当我想通过名字遍历<code>GameScene</code>子节点的时候，一般会用到<code>enumerateChildNodesWithName(name: String?, usingBlock: ((SKNode!, UnsafePointer&lt;ObjCBool&gt;) -&gt; Void)?)</code>方法，但是这个方法在Xcode6Beta3更新后经常会抛异常强退，这让我很费解，恰巧遇到此问题的不只是我一个人，所以还是老老实实的自己写循环遍历加判断吧。</p>
+
+<h2>按钮的绘制和截图分享</h2>
+
+<p>参考我的另外两篇文章：<a href="http://yulingtianxia.com/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/">在游戏的SKScene中添加Button</a>和<a href="http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/">SpriteKit截屏并分享至社交网络</a></p>
+
+<p>在本工程中只有<code>ShareButton</code>和<code>ReplayButton</code>两个按钮，Swift版本的代码很简洁，而我通过<code>Social.Framework</code>中的<code>UIActivityViewController</code>来分享得分，这部分代码写在了<code>ShareButton.swift</code>中：</p>
+
+<p>```
+let scene = self.scene as GameScene</p>
+
+<pre><code>    let image = scene.imageFromNode(scene)
+    let text = "我在Spiral游戏中得了\(Data.score)分，快来追逐我的步伐吧！"
+    let activityItems = [image,text]
+    let activityController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    (scene.view.nextResponder() as UIViewController).presentViewController(activityController, animated: true, completion: nil)
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Swift中的位运算符合溢出运算符]]></title>
@@ -957,7 +1507,7 @@ if convertedNumber {</p>
 <p>}
 // 输出 &ldquo;123 has an integer value of 123&rdquo;
 ```
-当你确定可选类型确实包含值之后，你可以在可选的名字后面加一个感叹号（!）来获取值。这个惊叹号表示“我知道这个可选有值，请使用它。”这被称为可选值的强制解析（forced unwrapping）</p>
+当你确定可选类型确实包含值之后，你可以在可选的名字后面加一个感叹号（!）来获取值。这个惊叹号表示“我知道这个可选有值，请使用它。”这被称为可选值的<strong>强制解析（forced unwrapping）</strong></p>
 
 <p>这里细心的同学可能看不懂了：<code>convertedNumber</code>不是应该是一个可选的整型值么，怎么还能作为条件判断的逻辑值（Bool）呢？让我们来分析下<code>Optional</code>类型的真身：</p>
 
@@ -1010,7 +1560,7 @@ var nil: NilType { get }
 
 <p><strong>可选类型默认值为<code>nil</code></strong></p>
 
-<p>除了用if语句判断和强制解析来获取可选类型中的值，还可以用可选绑定的方式来来判断可选类型是否包含值：</p>
+<p>除了用if语句判断和强制解析来获取可选类型中的值，还可以用<strong>可选绑定</strong>的方式来来判断可选类型是否包含值：</p>
 
 <p>```
 if let constantName = someOptional {</p>
@@ -1306,364 +1856,6 @@ if let upper = john.residence?.address?.buildingIdentifier()?.uppercaseString {<
 // 打印 &ldquo;John&rsquo;s uppercase building identifier is THE LARCHES.&rdquo;
 <code>``
 你将可选链问号符放在括号后面是因为你想要链接的可选值是</code>buildingIdentifier<code>方法的返回值，不是</code>buildingIdentifier`方法本身。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Swift中的ARC]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/06/17/swiftzhong-de-arc/"/>
-    <updated>2014-06-17T10:32:38+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/06/17/swiftzhong-de-arc</id>
-    <content type="html"><![CDATA[<p>Objective-C中的ARC被Swift很好的继承下来了，本文参考自Swift文档网上的翻译，主要重点记录下Swift中的ARC与OC对比需要注意的地方。</p>
-
-<!--more-->
-
-
-<h2>简介</h2>
-
-<p>当你每次创建一个类的新的实例的时候，ARC 会分配一大块内存用来储存实例的信息。内存中会包含实例的类型信息，以及这个实例所有相关属性的值。此外，当实例不再被使用时，ARC 释放实例所占用的内存，并让释放的内存能挪作他用。这确保了不再被使用的实例，不会一直占用内存空间。</p>
-
-<h2>类实例之间强引用循环的产生</h2>
-
-<p>如果你对OC中的强引用循环很了解，可以直接跳过这节。</p>
-
-<p>但是如果两个类的实例之间互相引用，这样就产生了强引用循环。下面展示了一个不经意产生强引用循环的例子。例子定义了两个类：<code>Person</code>和<code>Apartment</code>，用来建模公寓和它其中的居民:</p>
-
-<p>``` js
-class Person {</p>
-
-<pre><code>let name: String
-init(name: String) { self.name = name }
-var apartment: Apartment?
-deinit { println("\(name) is being deinitialized") }
-</code></pre>
-
-<p>}</p>
-
-<p>class Apartment {</p>
-
-<pre><code>let number: Int
-init(number: Int) { self.number = number }
-var tenant: Person?
-deinit { println("Apartment #\(number) is being deinitialized") }
-</code></pre>
-
-<p>}
-```</p>
-
-<p>接下来的代码片段定义了两个可选类型的变量<code>john</code>和<code>number73</code>,并分别被设定为下面的<code>Apartment</code>和<code>Person</code>的实例。这两个变量都被初始化为<code>nil</code>，并为可选的（让它们可选是为了以后能销毁，为了演示程序）：</p>
-
-<p><code>
-var john: Person?
-var number73: Apartment?
-</code></p>
-
-<p>现在你可以创建特定的<code>Person</code>和<code>Apartment</code>实例并将类实例赋值给<code>john</code>和<code>number73</code>变量：</p>
-
-<p><code>
-john = Person(name: "John Appleseed")
-number73 = Apartment(number: 73)
-</code></p>
-
-<p>在<code>john</code>和<code>number73</code>互相引用之前，它们的强引用关系是这样的：</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/referenceCycle01_2x.png" alt="" /></p>
-
-<p>现在你能够将这两个实例关联在一起，这样人就能有公寓住了，而公寓也有了房客。注意感叹号是用来强制解析可选变量<code>john</code>和<code>number73</code>中的实例：</p>
-
-<p><code>
-john!.apartment = number73
-number73!.tenant = john
-</code>
-在将两个实例联系在一起之后，强引用的关系变成了这样：</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/referenceCycle02_2x.png" alt="" /></p>
-
-<p>这样即使让<code>john</code>和<code>number73</code>断开它们持有的强引用，内存中的那两个<code>Person</code>和<code>Apartment</code>实例并不会销毁，因为它们互相引用，引用计数都为1：</p>
-
-<p><code>
-john = nil
-number73 = nil
-</code>
-当你把这两个变量设为<code>nil</code>时，没有任何一个析构函数被调用。强引用循环阻止了<code>Person</code>和<code>Apartment</code>类实例的销毁，并在你的应用程序中造成了内存泄漏。</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/referenceCycle03_2x.png" alt="" /></p>
-
-<h2>如何解决实例间强引用循环</h2>
-
-<h3>弱引用</h3>
-
-<p>跟OC中的弱引用相似，声明属性或者变量时，在前面加上<code>weak</code>关键字表明这是一个弱引用。弱引用不会牢牢保持住引用的实例，并且不会阻止 ARC 销毁被引用的实例。因为弱引用的值会变化并可能为<code>nil</code>，所以弱引用不能是常量，必须是可选类型（Optional）。因为弱引用不会保持所引用的实例，即使引用存在，实例也有可能被销毁。因此，ARC 会在引用的实例被销毁后自动将其赋值为nil。</p>
-
-<p>下面的例子跟上面<code>Person</code>和<code>Apartment</code>的例子一致，但是有一个重要的区别。这一次，<code>Apartment</code>的<code>tenant</code>属性被声明为弱引用：</p>
-
-<p>```
-class Person {</p>
-
-<pre><code>let name: String
-init(name: String) { self.name = name }
-var apartment: Apartment?
-deinit { println("\(name) is being deinitialized") }
-</code></pre>
-
-<p>}
-class Apartment {</p>
-
-<pre><code>let number: Int
-init(number: Int) { self.number = number }
-weak var tenant: Person?
-deinit { println("Apartment #\(number) is being deinitialized") }
-</code></pre>
-
-<p>}
-<code>``
-然后跟之前一样，建立两个变量（</code>john<code>和</code>number73`）之间的强引用，并关联两个实例：</p>
-
-<p>```
-var john: Person?
-var number73: Apartment?</p>
-
-<p>john = Person(name: &ldquo;John Appleseed&rdquo;)
-number73 = Apartment(number: 73)</p>
-
-<p>john!.apartment = number73
-number73!.tenant = john
-```
-现在的引用关系如下：</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/weakReference01_2x.png" alt="" /></p>
-
-<p>当<code>john</code>的强引用断开后，引用关系变成了这样子：</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/weakReference02_2x.png" alt="" /></p>
-
-<p>因为没有强引用指向<code>Person</code>实例，它的引用计数为0，所以该实例会被销毁。因此<code>number73</code>指向的<code>Apartment</code>实例的的引用计数会变为1，因为<code>Person</code>实例销毁后，其<code>apartment</code>属性对<code>Apartment</code>实例的强引用也会断开。此时如果再断开<code>number73</code>对<code>Apartment</code>实例的强引用：</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/weakReference03_2x.png" alt="" /></p>
-
-<p><code>Apartment</code>实例因为引用计数为0，会被销毁，到此为止强引用循环被打破。</p>
-
-<h3>无主引用</h3>
-
-<p>和弱引用类似，无主引用不会牢牢保持住引用的实例。和弱引用不同的是，无主引用是永远有值的（不能为<code>nil</code>）。因此，无主引用总是被定义为非可选类型（non-optional type）。你可以在声明属性或者变量时，在前面加上关键字<code>unowned</code>表示这是一个无主引用。</p>
-
-<p>下面的例子定义了两个类，<code>Customer</code>和<code>CreditCard</code>，模拟了银行客户和客户的信用卡。一个客户可能有或者没有信用卡，但是一张信用卡总是关联着一个客户。所以<code>Customer</code>类的<code>card</code>属性可以为<code>nil</code>，但是<code>CreditCard</code>类的<code>customer</code>属性不能为<code>nil</code>，所以创建CreditCard实例的时候必须给<code>customer</code>属性赋值避免其为<code>nil</code>。将<code>customer</code>属性定义为无主引用，用以避免循环强引用：</p>
-
-<p>```
-class Customer {</p>
-
-<pre><code>let name: String
-var card: CreditCard?
-init(name: String) {
-    self.name = name
-}
-deinit { println("\(name) is being deinitialized") }
-</code></pre>
-
-<p>}
-class CreditCard {</p>
-
-<pre><code>let number: Int
-unowned let customer: Customer
-init(number: Int, customer: Customer) {
-    self.number = number
-    self.customer = customer
-}
-deinit { println("Card #\(number) is being deinitialized") }
-</code></pre>
-
-<p>}
-var john: Customer?
-john = Customer(name: &ldquo;John Appleseed&rdquo;)
-john!.card = CreditCard(number: 1234_5678_9012_3456, customer: john!)
-```
-关联两个实例后，引用关系如下：</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/unownedReference01_2x.png" alt="" /></p>
-
-<p>由于<code>customer</code>的无主引用，当你断开<code>john</code>变量持有的强引用时，再也没有指向<code>Customer</code>实例的强引用了：</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/unownedReference02_2x.png" alt="" /></p>
-
-<p>于是<code>Customer</code>实例被销毁，这样又导致没有强引用指向<code>CreditCard</code>实例，最后<code>CreditCard</code>实例也被销毁了，这样说明强引用循环被打破了。</p>
-
-<h3>无主引用以及隐式解析可选属性</h3>
-
-<p>下面的例子定义了两个类，<code>Country</code>和<code>City</code>，每个类将另外一个类的实例保存为属性。在这个模型中，每个国家必须有首都，而每一个城市必须属于一个国家。为了实现这种关系，<code>Country</code>类拥有一个<code>capitalCity</code>属性，而<code>City</code>类有一个<code>country</code>属性：</p>
-
-<p>```
-class Country {</p>
-
-<pre><code>let name: String
-let capitalCity: City!
-init(name: String, capitalName: String) {
-    self.name = name
-    self.capitalCity = City(name: capitalName, country: self)
-}
-</code></pre>
-
-<p>}
-class City {</p>
-
-<pre><code>let name: String
-unowned let country: Country
-init(name: String, country: Country) {
-    self.name = name
-    self.country = country
-}
-</code></pre>
-
-<p>}
-<code>``
-在这种场景中，两个属性都必须有值，并且初始化完成后不能为</code>nil`。在这种场景中，需要一个类使用无主属性，而另外一个类使用隐式解析可选属性。</p>
-
-<p>隐式解析可选(<code>Implicitly Unwrapped Optionals</code>)被用于类的初始化方法中，避免循环引用，因为编译器会将其认为默认<code>nil</code>，不需赋值就可以完成类的初始化，在例子中一旦<code>name</code>属性被赋值后(但<code>capitalCity</code>还没被赋值时)<code>Country</code>类就已经初始化并且自身（<code>self</code>）可以被引用；这样就能实现一行代码建立<code>Country</code>和<code>City</code>实例而不造成强引用循环。</p>
-
-<p><code>
-var country = Country(name: "Canada", capitalName: "Ottawa")
-println("\(country.name)'s capital city is called \(country.capitalCity.name)")
-// prints "Canada's capital city is called Ottawa"
-</code>
-使用隐式解析可选值的意义在于满足了两个类构造函数的需求。<code>capitalCity</code>属性在初始化完成后，能像非可选值一样使用和存取同时还避免了循环强引用。</p>
-
-<h3>总结</h3>
-
-<p><code>Person</code>和<code>Apartment</code>的例子展示了两个属性的值都允许为<code>nil</code>，并会潜在的产生循环强引用。这种场景最适合用弱引用来解决。</p>
-
-<p><code>Customer</code>和<code>CreditCard</code>的例子展示了一个属性的值允许为<code>nil</code>，而另一个属性的值不允许为<code>nil</code>，并会潜在的产生循环强引用。这种场景最适合通过无主引用来解决。</p>
-
-<p><code>Country</code>和<code>City</code>的例子展示了两个属性的值都不允许为<code>nil</code>，并会潜在的产生循环强引用。这种场景需要一个类使用无主属性，而另外一个类使用隐式解析可选属性。</p>
-
-<h2>闭包引起的强引用循环</h2>
-
-<p>强引用循环还会发生在当你将一个闭包赋值给类实例的某个属性，并且这个闭包体中又使用了实例。这个闭包体中可能访问了实例的某个属性，例如<code>self.someProperty</code>，或者闭包中调用了实例的某个方法，例如<code>self.someMethod</code>。这两种情况都导致了闭包 “捕获" <code>self</code>，因为闭包也是引用类型，从而产生了强引用循环。在Swift中闭包如果想使用外部的实例，不必像OC中的Block那样在外部实例前加<code>__block</code>加以修饰，而是可以直接用“值捕获”的方式捕获到闭包外面的实例。Swift 会决定捕获引用还是拷贝值，并负责管理内存释放。</p>
-
-<p>Swift 有如下要求：只要在闭包内使用self的成员，就要用self.someProperty或者self.someMethod（而不只是someProperty或someMethod）。这提醒你可能会不小心就捕获了self。</p>
-
-<p>在OC中也存在<code>Block</code>中引用<code>self</code>或<code>self</code>的属性而导致<code>self</code>被<code>Block</code> retain，进而产生引用循环，这也是为什么代理属性都被声明为<code>weak</code>的原因。</p>
-
-<p>下面的例子为你展示了当一个闭包引用了self后是如何产生一个循环强引用的。例子中定义了一个叫HTMLElement的类，用一种简单的模型表示 HTML 中的一个单独的元素：</p>
-
-<p>```
-class HTMLElement {</p>
-
-<pre><code>let name: String
-let text: String?
-
-@lazy var asHTML: () -&gt; String = {
-    if let text = self.text {
-        return "&lt;\(self.name)&gt;\(text)&lt;/\(self.name)&gt;"
-    } else {
-        return "&lt;\(self.name) /&gt;"
-    }
-}
-
-init(name: String, text: String? = nil) {
-    self.name = name
-    self.text = text
-}
-
-deinit {
-    println("\(name) is being deinitialized")
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p><code>HTMLElement</code>定义了一个<code>lazy</code>属性<code>asHTML</code>。这个属性引用了一个闭包，将<code>name</code>和<code>text</code>组合成 HTML 字符串片段。该属性是<code>() -&gt; String</code>类型，或者可以理解为“一个没有参数，返回<code>String</code>的函数”。因为该闭包无参数并可推断出返回值类型，所以采取了简写，省略了关键字<code>in</code>和闭包的参数和返回值类型声明。</p>
-
-<p><code>asHTML</code>声明为<code>lazy</code>属性，因为只有当元素确实需要处理为HTML输出的字符串时，才需要使用<code>asHTML</code>。也就是说，在默认的闭包中可以使用<code>self</code>，因为只有当初始化完成以及<code>self</code>确实存在后，才能访问<code>lazy</code>属性。</p>
-
-<p>下面的代码展示了如何用HTMLElement类创建实例并打印消息</p>
-
-<p><code>
-var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
-println(paragraph!.asHTML())
-// prints"hello, world"
-</code></p>
-
-<p>不幸的是，上面写的HTMLElement类产生了类实例和asHTML默认值的闭包之间的循环强引用。循环强引用如下图所示：</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/closureReferenceCycle01_2x.png" alt="" /></p>
-
-<p>虽然闭包多次使用了<code>self</code>，它只捕获<code>HTMLElement</code>实例的一个强引用。如果设置<code>paragraph</code>变量为<code>nil</code>，打破它持有的<code>HTMLElement</code>实例的强引用，<code>HTMLElement</code>实例和它的闭包都不会被销毁，也是因为强引用循环</p>
-
-<h2>解决闭包引起的循环强引用</h2>
-
-<p>Swift 提供了一种优雅的方法来解决这个问题，称之为闭包捕获列表（closuer capture list）</p>
-
-<h3>定义捕获列表</h3>
-
-<p>捕获列表放置在闭包参数列表和返回类型之前，列表中每项都是由weak或unowned关键字和实例的引用（如self或someInstance）成对组成。每项都通过逗号分开写在方括号中。</p>
-
-<p>```
-@lazy var someClosure: (Int, String) &ndash;> String = {</p>
-
-<pre><code>[unowned self] (index: Int, stringToProcess: String) -&gt; String in
-// closure body goes here
-</code></pre>
-
-<p>}
-<code>``
-如果闭包没有指定参数列表或者返回类型，则可以通过上下文推断，那么可以捕获列表放在闭包开始的地方，跟着是关键字</code>in`：</p>
-
-<p>```
-@lazy var someClosure: () &ndash;> String = {</p>
-
-<pre><code>[unowned self] in
-// closure body goes here
-</code></pre>
-
-<p>}
-```</p>
-
-<h3>捕获列表中的弱引用和无主引用</h3>
-
-<p>当捕获引用有时可能会是nil时，将闭包内的捕获定义为弱引用。<br/>
-当闭包和捕获的实例总是互相引用时并且总是同时销毁时，将闭包内的捕获定义为无主引用。<br/>
-如果捕获的引用绝对不会置为nil，应该用无主引用，而不是弱引用。</p>
-
-<p>前面的<code>HTMLElement</code>例子中，无主引用是正确的解决循环强引用的方法。这样编写<code>HTMLElement</code>类来避免循环强引用：</p>
-
-<p>```
-class HTMLElement {</p>
-
-<pre><code>let name: String
-let text: String?
-
-@lazy var asHTML: () -&gt; String = {
-    [unowned self] in
-    if let text = self.text {
-        return "&lt;\(self.name)&gt;\(text)&lt;/\(self.name)&gt;"
-    } else {
-        return "&lt;\(self.name) /&gt;"
-    }
-}
-
-init(name: String, text: String? = nil) {
-    self.name = name
-    self.text = text
-}
-
-deinit {
-    println("\(name) is being deinitialized")
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>上面的例子只是多了一个捕获列表并增加关键字<code>in</code>，使用捕获列表后引用关系如下图所示：</p>
-
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/closureReferenceCycle02_2x.png" alt="" /></p>
-
-<p>这一次，闭包以无主引用的形式捕获<code>self</code>，并不会持有<code>HTMLElement</code>实例的强引用。如果将<code>paragraph</code>赋值为<code>nil</code>，<code>HTMLElement</code>实例将会被销毁，并能看到它的析构函数打印出的消息。</p>
-
-<p><code>
-paragraph = nil
-// prints "p is being deinitialized"
-</code></p>
 ]]></content>
   </entry>
   
