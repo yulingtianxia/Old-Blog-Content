@@ -4,7 +4,7 @@
   <title><![CDATA[Category: RAC | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/rac/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-29T16:53:57+08:00</updated>
+  <updated>2014-07-29T17:51:42+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -235,10 +235,15 @@ deliverOn:RACScheduler.mainThreadScheduler];
 
 <h2>优秀文章</h2>
 
-<p><a href="http://limboy.me/ios/2013/06/19/frp-reactivecocoa.html">ReactiveCocoa与Functional Reactive Programming</a><br/>
+<p><a href="http://nshipster.cn/reactivecocoa/">nshipster-Reactive​Cocoa</a><br/>
+<a href="http://limboy.me/ios/2013/06/19/frp-reactivecocoa.html">ReactiveCocoa与Functional Reactive Programming</a><br/>
 <a href="http://limboy.me/ios/2013/12/27/reactivecocoa-2.html">说说ReactiveCocoa 2</a><br/>
 <a href="http://blog.csdn.net/xdrt81y/article/details/30624469">使用ReactiveCocoa实现iOS平台响应式编程</a><br/>
-<a href="http://limboy.me/tech/2014/06/06/deep-into-reactivecocoa2.html">ReactiveCocoa2实战</a></p>
+<a href="http://limboy.me/tech/2014/06/06/deep-into-reactivecocoa2.html">ReactiveCocoa2实战</a><br/>
+<a href="http://www.raywenderlich.com/62699/reactivecocoa-tutorial-pt1">ReactiveCocoa Tutorial – The Definitive Introduction: Part &frac12;</a><br/>
+<a href="http://www.raywenderlich.com/62796/reactivecocoa-tutorial-pt2">ReactiveCocoa Tutorial – The Definitive Introduction: Part 2/2</a><br/>
+<a href="http://www.raywenderlich.com/74106/mvvm-tutorial-with-reactivecocoa-part-1">MVVM Tutorial with ReactiveCocoa: Part &frac12;</a><br/>
+<a href="http://www.raywenderlich.com/74131/mvvm-tutorial-with-reactivecocoa-part-2">MVVM Tutorial with ReactiveCocoa: Part 2/2</a></p>
 
 <h2>视频</h2>
 

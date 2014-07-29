@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-29T16:53:57+08:00</updated>
+  <updated>2014-07-29T17:51:42+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -332,10 +332,15 @@
 
 <h2>优秀文章</h2>
 
-<p><a href="http://limboy.me/ios/2013/06/19/frp-reactivecocoa.html">ReactiveCocoa与Functional Reactive Programming</a><br/>
+<p><a href="http://nshipster.cn/reactivecocoa/">nshipster-Reactive​Cocoa</a><br/>
+<a href="http://limboy.me/ios/2013/06/19/frp-reactivecocoa.html">ReactiveCocoa与Functional Reactive Programming</a><br/>
 <a href="http://limboy.me/ios/2013/12/27/reactivecocoa-2.html">说说ReactiveCocoa 2</a><br/>
 <a href="http://blog.csdn.net/xdrt81y/article/details/30624469">使用ReactiveCocoa实现iOS平台响应式编程</a><br/>
-<a href="http://limboy.me/tech/2014/06/06/deep-into-reactivecocoa2.html">ReactiveCocoa2实战</a></p>
+<a href="http://limboy.me/tech/2014/06/06/deep-into-reactivecocoa2.html">ReactiveCocoa2实战</a><br/>
+<a href="http://www.raywenderlich.com/62699/reactivecocoa-tutorial-pt1">ReactiveCocoa Tutorial – The Definitive Introduction: Part &frac12;</a><br/>
+<a href="http://www.raywenderlich.com/62796/reactivecocoa-tutorial-pt2">ReactiveCocoa Tutorial – The Definitive Introduction: Part 2/2</a><br/>
+<a href="http://www.raywenderlich.com/74106/mvvm-tutorial-with-reactivecocoa-part-1">MVVM Tutorial with ReactiveCocoa: Part &frac12;</a><br/>
+<a href="http://www.raywenderlich.com/74131/mvvm-tutorial-with-reactivecocoa-part-2">MVVM Tutorial with ReactiveCocoa: Part 2/2</a></p>
 
 <h2>视频</h2>
 
@@ -7062,7 +7067,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#58;&#115;&#117;&#x70;&#x70;&#x6f;&#114;&#116;&#x40;&#103;&#x69;&#x74;&#104;&#x75;&#98;&#x2e;&#99;&#x6f;&#109;&#46;">&#x73;&#x75;&#112;&#112;&#111;&#x72;&#116;&#x40;&#x67;&#x69;&#116;&#x68;&#x75;&#98;&#x2e;&#99;&#111;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#115;&#x75;&#x70;&#112;&#x6f;&#x72;&#x74;&#64;&#103;&#x69;&#x74;&#104;&#x75;&#98;&#46;&#x63;&#x6f;&#109;&#46;">&#115;&#x75;&#112;&#112;&#111;&#114;&#x74;&#64;&#x67;&#105;&#x74;&#104;&#117;&#x62;&#x2e;&#99;&#111;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
