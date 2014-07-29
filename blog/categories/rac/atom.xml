@@ -4,7 +4,7 @@
   <title><![CDATA[Category: RAC | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/rac/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-29T16:45:48+08:00</updated>
+  <updated>2014-07-29T16:53:57+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -19,6 +19,9 @@
     <updated>2014-07-29T14:15:57+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/07/29/reactivecocoa</id>
     <content type="html"><![CDATA[<p>几个月前看了一点RAC的介绍，感觉很强大但也很难入门，这次挖个坑，整理下RAC的资源。</p>
+
+<!--more-->
+
 
 <h2>官方介绍</h2>
 
