@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-30T14:47:12+08:00</updated>
+  <updated>2014-07-30T19:42:31+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -358,7 +358,10 @@
 <code>map:</code> 会将事件中的数据转换成你想要的数据，返回一个转换事件内容后的instancetype<br/>
 <code>flattenMap:</code> 在map的基础上使其flatten，也就是当Signal嵌套（一个Signal的事件是另一个Signal）的时候，会将内部Signal的事件传递给外部Signal</p>
 
-<p>PS：instancetype是程序运行时对象的类型，有可能为RACStream，也可以为其子类RACSignal。正是因为这些操作事件的方法都会返回事件源对象相同的类型，事件可以被一连串的被这些方法修改，过滤等，这就形成了管道，管道中传递着事件，包含着value。</p>
+<p>PS：instancetype是程序运行时对象的类型，有可能为RACStream，也可以为其子类RACSignal。正是因为这些操作事件的方法都会返回事件源对象相同的类型，事件可以被一连串的被这些方法修改，过滤等，这就形成了管道，管道中传递着事件，包含着value。<br/>
+建议管道的语法格式是每个操作新起一行，并在垂直方向上对齐：<br/>
+<img src="http://cdn4.raywenderlich.com/wp-content/uploads/2014/01/PipelineFormatting.png" alt="" /><br/>
+可惜Xcode的自动缩进并不会按照这样的格式对齐，是时候与它斗智斗勇啦！</p>
 
 <p>RACSignal还有一些方法是对Signal做操作的，在RACSignal (Operations)类别中有详细的描述，比较常用的如下：</p>
 
@@ -386,6 +389,80 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 
 <p>上面工厂方法用于创建一个Signal，当Signal被订阅时，<code>createSignal:</code>的参数block中的内容被执行。block的参数是一个实现RACSubscriber协议的对象，然后向这个订阅者发送了next事件（内容为NSNumber类型的@YES值）和completed事件。<br/>
 PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribeWithDisposable:</code>两个方法。</p>
+
+<h4>RACDisposable</h4>
+
+<p>你会发现RACSignal (Subscription)类别中所有方法的返回值类型都是RACDisposable，它的<code>dispose</code>方法可以让我们手动移除订阅者。举个栗子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">RACSignal</span> <span class="o">*</span><span class="n">backgroundColorSignal</span> <span class="o">=</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">searchText</span><span class="p">.</span><span class="n">rac_textSignal</span>
+</span><span class='line'>    <span class="nl">map:</span><span class="o">^</span><span class="kt">id</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">text</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">[</span><span class="n">self</span> <span class="nl">isValidSearchText:</span><span class="n">text</span><span class="p">]</span> <span class="o">?</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span> <span class="o">:</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">yellowColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">RACDisposable</span> <span class="o">*</span><span class="n">subscription</span> <span class="o">=</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">backgroundColorSignal</span>
+</span><span class='line'>    <span class="nl">subscribeNext:</span><span class="o">^</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">self</span><span class="p">.</span><span class="n">searchText</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="n">color</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// at some point in the future ...</span>
+</span><span class='line'><span class="p">[</span><span class="n">subscription</span> <span class="n">dispose</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>当管道（好吧比较短）的订阅者全部被移除后，管道中的代码不会执行，包括三种事件参数block中的代码和诸如<code>doNext:</code>等副作用的block。可以简单理解为，当管道中的Signal没人订阅，它的事件就不会发出了。</p>
+
+<h4>解决引用循环</h4>
+
+<p>使用RAC会写大量的block，这就会涉及到引用循环的问题，如果你细心的话会发现上一节的代码就存在这个问题，一种普遍的解决办法是声明一个weak变量，并将self赋值给它，然后再block中使用这个weak变量，但这样太繁琐了。</p>
+
+<p>在这里又有一个语法糖：<code>@weakify()</code>和<code>@strongify</code>，想使用它，得先导入类头文件：<code>#import "RACEXTScope.h"</code>。其实这个语法糖来自于<a href="https://github.com/jspahrsummers/libextobjc">Extended Objective-C</a>，有关它的原理请见<a href="http://aceontech.com/objc/ios/2014/01/10/weakify-a-more-elegant-solution-to-weakself.html">&ldquo;@weakify(self): A more elegant solution to weakSelf in Objective-C&rdquo;</a></p>
+
+<p>于是上一节的代码可以改成下面这样：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="err">@</span><span class="n">weakify</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
+</span><span class='line'><span class="p">[[</span><span class="n">self</span><span class="p">.</span><span class="n">searchText</span><span class="p">.</span><span class="n">rac_textSignal</span>
+</span><span class='line'>  <span class="nl">map:</span><span class="o">^</span><span class="kt">id</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="n">text</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">self</span> <span class="nl">isValidSearchText:</span><span class="n">text</span><span class="p">]</span> <span class="o">?</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span> <span class="o">:</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">yellowColor</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}]</span>
+</span><span class='line'>  <span class="nl">subscribeNext:</span><span class="o">^</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="err">@</span><span class="n">strongify</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">searchText</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="n">color</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
 
 <h3>常用宏定义</h3>
 
@@ -6444,6 +6521,8 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p><strong>文章所使用的项目代码可以到<a href="https://github.com/yulingtianxia/MyCDDemo">这里</a>下载</strong></p>
 
+<p>在<a href="http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3/">下一篇文章</a>里，我将会通过教程的方式，讲述如何用Swift结合CoreData的NSFetchedResultsController写一个小Demo-<a href="https://github.com/yulingtianxia/HardChoice">HardChoice</a></p>
+
 <!--more-->
 
 
@@ -7129,7 +7208,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#111;&#x3a;&#x73;&#117;&#112;&#x70;&#x6f;&#x72;&#x74;&#64;&#103;&#x69;&#x74;&#x68;&#x75;&#98;&#x2e;&#x63;&#x6f;&#109;&#x2e;">&#x73;&#117;&#x70;&#112;&#x6f;&#x72;&#116;&#x40;&#x67;&#x69;&#x74;&#104;&#117;&#x62;&#x2e;&#x63;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#x73;&#117;&#112;&#x70;&#111;&#114;&#x74;&#x40;&#103;&#105;&#x74;&#104;&#x75;&#98;&#x2e;&#99;&#x6f;&#x6d;&#x2e;">&#115;&#x75;&#x70;&#112;&#111;&#114;&#x74;&#x40;&#x67;&#105;&#116;&#104;&#117;&#98;&#46;&#x63;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 

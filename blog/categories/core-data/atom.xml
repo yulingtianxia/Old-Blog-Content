@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Core Data | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/core-data/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-30T14:47:12+08:00</updated>
+  <updated>2014-07-30T19:42:31+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -459,6 +459,8 @@ override func motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!) {</
 <p>推荐先阅读上一篇文章：<a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/">初识Core Data(1)</a></p>
 
 <p><strong>文章所使用的项目代码可以到<a href="https://github.com/yulingtianxia/MyCDDemo">这里</a>下载</strong></p>
+
+<p>在<a href="http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3/">下一篇文章</a>里，我将会通过教程的方式，讲述如何用Swift结合CoreData的NSFetchedResultsController写一个小Demo-<a href="https://github.com/yulingtianxia/HardChoice">HardChoice</a></p>
 
 <!--more-->
 

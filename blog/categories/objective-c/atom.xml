@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-30T14:47:12+08:00</updated>
+  <updated>2014-07-30T19:42:31+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -698,7 +698,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#x6f;&#58;&#x65;&#109;&#112;&#108;&#x6f;&#121;&#101;&#x65;&#115;&#x2e;&#64;&#115;&#117;&#x6d;&#46;&#x73;&#97;&#x6c;&#x61;&#x72;&#x79;">&#x65;&#x6d;&#112;&#108;&#x6f;&#x79;&#x65;&#x65;&#115;&#x2e;&#x40;&#115;&#x75;&#x6d;&#46;&#115;&#x61;&#x6c;&#97;&#x72;&#x79;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#58;&#101;&#x6d;&#112;&#x6c;&#x6f;&#121;&#x65;&#x65;&#115;&#46;&#x40;&#x73;&#117;&#109;&#x2e;&#115;&#97;&#x6c;&#97;&#114;&#x79;">&#101;&#x6d;&#112;&#108;&#111;&#121;&#x65;&#101;&#x73;&#x2e;&#64;&#115;&#x75;&#x6d;&#46;&#x73;&#x61;&#x6c;&#x61;&#x72;&#121;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 
@@ -1088,6 +1088,8 @@ UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropSh
 <p>推荐先阅读上一篇文章：<a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/">初识Core Data(1)</a></p>
 
 <p><strong>文章所使用的项目代码可以到<a href="https://github.com/yulingtianxia/MyCDDemo">这里</a>下载</strong></p>
+
+<p>在<a href="http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3/">下一篇文章</a>里，我将会通过教程的方式，讲述如何用Swift结合CoreData的NSFetchedResultsController写一个小Demo-<a href="https://github.com/yulingtianxia/HardChoice">HardChoice</a></p>
 
 <!--more-->
 
