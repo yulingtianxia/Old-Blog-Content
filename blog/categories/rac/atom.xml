@@ -4,7 +4,7 @@
   <title><![CDATA[Category: RAC | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/rac/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-29T17:51:42+08:00</updated>
+  <updated>2014-07-30T14:47:12+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -232,6 +232,65 @@ deliverOn:RACScheduler.mainThreadScheduler];
 
 <p>更多的例子，参见 <a href="https://github.com/AshFurrow/C-41">C-41</a> 或 <a href="https://github.com/jspahrsummers/GroceryList">GroceryList</a>, 都是用ReactiveCocoa写的真实的iOS应用
 . 关于 RAC 更多的详细信息可以在<a href="https://github.com/ReactiveCocoa/ReactiveCocoa/tree/master/Documentation">Documentation</a> 文件夹中找到.</p>
+
+<h2>我的学习笔记（不断更新）</h2>
+
+<h3>函数式编程</h3>
+
+<p>参考维基百科上的<a href="http://zh.wikipedia.org/wiki/%E5%87%BD%E6%95%B8%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80">概念</a>，简单理解为可以将函数作为其他函数的参数，具有block或λ表达式。</p>
+
+<h3>响应式编程</h3>
+
+<p>参考维基百科上的<a href="http://zh.wikipedia.org/wiki/%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B">概念</a>，简单地理解为专注于数据流和变化的传播。</p>
+
+<h3>RAC中的类和方法</h3>
+
+<h4>RACSignal和RACStream</h4>
+
+<p>RAC的核心是Signal，对应的类为RACSignal，它其实是一个事件源，Signal会给它的订阅者（subscribers）发送一连串的事件。有三种事件：next，error和completed。Signal可以在error或completed事件发出前发出任意多的next事件。</p>
+
+<p>RACSignal有很多方法用于订阅事件，查看RACSignal (Subscription)类别可以看到所有的订阅事件的方法，每个方法都会将类型为(void (^)(id x))的block作为参数，当事件发生时block中的代码会执行，例如<code>subscribeNext:</code>方法会传入一个block作为参数，当Signal的next事件发出后，block会接收到事件并执行。</p>
+
+<p>RAC为UIKit添加了很多类别来让我们可以订阅UI组件的事件，比如UITextField (RACSignalSupport)中的rac_textSignal会在文本域内容变化时发出next事件。</p>
+
+<p>事件包含的内容可以是类型，只要是对象就行，如果是一些数字，布尔值等字面量，可以用<code>@()</code>语法装箱成NSNumber。</p>
+
+<p>RACSignal是RACStream的子类，RACStream是一个抽象类，描述了值的流动，列举一下它比较常用的操作（Operations类别）：</p>
+
+<p><code>filter:</code> 对RACStream中的事件内容进行过滤，返回一个过滤事件内容后的instancetype<br/>
+<code>map:</code> 会将事件中的数据转换成你想要的数据，返回一个转换事件内容后的instancetype<br/>
+<code>flattenMap:</code> 在map的基础上使其flatten，也就是当Signal嵌套（一个Signal的事件是另一个Signal）的时候，会将内部Signal的事件传递给外部Signal</p>
+
+<p>PS：instancetype是程序运行时对象的类型，有可能为RACStream，也可以为其子类RACSignal。正是因为这些操作事件的方法都会返回事件源对象相同的类型，事件可以被一连串的被这些方法修改，过滤等，这就形成了管道，管道中传递着事件，包含着value。</p>
+
+<p>RACSignal还有一些方法是对Signal做操作的，在RACSignal (Operations)类别中有详细的描述，比较常用的如下：</p>
+
+<p><code>combineLatest:reduce:</code> 将一组Signal发出的最新的事件合并成一个Signal，每当这组Signal发出新事件时，reduce的block会执行，将所有新事件的值合并成一个值，并当做合并后Signal的事件发出去。这个方法会返回合并后的Signal。<br/>
+PS：关于reduce的block中参数，其实是与combineLatest中数组元素一一对应的，这里RAC用了一个黑魔法，参看<a href="https://github.com/ReactiveCocoa/ReactiveCocoa/blob/master/ReactiveCocoaFramework/ReactiveCocoa/RACBlockTrampoline.m?source=c">RACBlockTrampoline</a></p>
+
+<p><code>doNext:</code> 这个向Signal管道上添加添加副作用。它并不会改变事件，参数block也没有返回值，它返回一个执行了block的Signal，这样block中的副作用就被注入到了以前的Signal。</p>
+
+<h4>RACSubscriber</h4>
+
+<p>RACSubscriber是一个协议，包含了向订阅者发送事件的方法。</p>
+
+<p>```
+[RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {</p>
+
+<pre><code>         [subscriber sendNext:@(YES)];
+         [subscriber sendCompleted];
+    return nil;
+}];
+</code></pre>
+
+<p><code>``
+上面工厂方法用于创建一个Signal，当Signal被订阅时，</code>createSignal:<code>的参数block中的内容被执行。block的参数是一个实现RACSubscriber协议的对象，然后向这个订阅者发送了next事件（内容为NSNumber类型的@YES值）和completed事件。  
+PS：除此之外RACSubscriber还有</code>sendError:<code>和</code>didSubscribeWithDisposable:`两个方法。</p>
+
+<h3>常用宏定义</h3>
+
+<p><code>RAC()</code> 可以将Signal发出事件的值赋值给某个对象的某个属性，其参数为对象名和属性名<br/>
+<code>RACObserve()</code> 参数为对象名和属性名，新建一个Signal并对对象的属性的值进行观察，当值变化时Signal会发出事件</p>
 
 <h2>优秀文章</h2>
 
