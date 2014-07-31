@@ -500,6 +500,8 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 
 <p><code>doNext:</code> 这个向Signal管道上添加添加副作用。它并不会改变事件，参数block也没有返回值，它返回一个执行了block的Signal，这样block中的副作用就被注入到了以前的Signal。</p>
 
+<p><code>then:</code> 当一个订阅者被发送了completed事件后，<code>then:</code>方法才会执行，订阅者会订阅<code>then:</code>方法返回的Signal，这个Signal是在block中返回的。这样优雅的实现了从一个Signal到另一个Signal的订阅。</p>
+
 <h4>RACSubscriber</h4>
 
 <p>RACSubscriber是一个协议，包含了向订阅者发送事件的方法。</p>
