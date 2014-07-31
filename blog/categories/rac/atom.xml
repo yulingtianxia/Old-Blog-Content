@@ -4,7 +4,7 @@
   <title><![CDATA[Category: RAC | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/rac/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-31T13:27:42+08:00</updated>
+  <updated>2014-07-31T15:19:54+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -277,6 +277,10 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 
 <p><code>deliverOn:</code> 参数为RACScheduler类的对象scheduler，这个方法会返回一个Signal，它的所有事件都会传递给scheduler参数所表示的线程，而以前管道上的副作用还会在以前的线程上。这个方法主要是切换线程。</p>
 
+<p><code>subscribeOn:</code> 功能跟<code>deliverOn:</code>相同，但是它也会将副作用也切换到制定线程中。</p>
+
+<p><code>throttle:</code>  它接收一个时间间隔interval作为参数，如果Signal发出的next事件之后interval时间内不再发出next事件，那么它返回的Signal会将这个next事件发出。也就是说，这个方法会将发送比较频繁的next事件舍弃，只保留一段“静默”时间之前的那个next事件，这个方法常用于处理输入框等信号（用户打字很快），因为它只保留用户最后输入的文字并返回一个新的Signal，将最后的文字作为next事件参数发出。</p>
+
 <h4>RACSubscriber</h4>
 
 <p>RACSubscriber是一个协议，包含了向订阅者发送事件的方法。</p>
@@ -324,7 +328,7 @@ RACSignal *backgroundColorSignal =
 
 <h4>RACScheduler</h4>
 
-<p>类似于GCD的线程管理类，负责RAC中让信号发出的事件华丽丽的在线程中穿梭，尤其是想更新UI必须在主线程中的时候，可以让事件直接从其他线程跳到主线程。</p>
+<p>类似于GCD中的序列，是管理线程的类，负责RAC中让信号发出的事件华丽丽的在线程中穿梭，尤其是想更新UI必须在主线程中的时候，可以让事件直接从其他线程跳到主线程。此外RACScheduler也有优先级、延时等GCD中的特性。</p>
 
 <h3>解决引用循环</h3>
 
