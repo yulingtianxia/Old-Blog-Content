@@ -502,6 +502,8 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 
 <p><code>then:</code> 当一个订阅者被发送了completed事件后，<code>then:</code>方法才会执行，订阅者会订阅<code>then:</code>方法返回的Signal，这个Signal是在block中返回的。这样优雅的实现了从一个Signal到另一个Signal的订阅。</p>
 
+<p><code>deliverOn:</code> 参数为RACScheduler类的对象scheduler，这个方法会返回一个Signal，它的所有事件都会传递给scheduler参数所表示的线程，而以前管道上的副作用还会在以前的线程上。这个方法主要是切换线程。</p>
+
 <h4>RACSubscriber</h4>
 
 <p>RACSubscriber是一个协议，包含了向订阅者发送事件的方法。</p>
@@ -563,7 +565,11 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p>当管道（好吧比较短）的订阅者全部被移除后，管道中的代码不会执行，包括三种事件参数block中的代码和诸如<code>doNext:</code>等副作用的block。可以简单理解为，当管道中的Signal没人订阅，它的事件就不会发出了。</p>
 
-<h4>解决引用循环</h4>
+<h4>RACScheduler</h4>
+
+<p>类似于GCD的线程管理类，负责RAC中让信号发出的事件华丽丽的在线程中穿梭，尤其是想更新UI必须在主线程中的时候，可以让事件直接从其他线程跳到主线程。</p>
+
+<h3>解决引用循环</h3>
 
 <p>使用RAC会写大量的block，这就会涉及到引用循环的问题，如果你细心的话会发现上一节的代码就存在这个问题，一种普遍的解决办法是声明一个weak变量，并将self赋值给它，然后再block中使用这个weak变量，但这样太繁琐了。</p>
 
