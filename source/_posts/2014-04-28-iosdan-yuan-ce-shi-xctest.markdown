@@ -1,11 +1,10 @@
 ---
 layout: post
-title: "iOS单元测试-XCTest"
+title: "Xcode单元测试-XCTest"
 date: 2014-04-28 13:25:12 +0800
 comments: true
 categories: 
-- iOS
-- 单元测试
+- Xcode
 
 ---
 第一次接触单元测试还是在SQA课程上，那时我用的是JUnit来对Java程序进行单元测试。如今XCode自带的单元测试工具已经从OCUnit演变到了XCTest，但其本质还是差不多的，其好处在于XCode集成，简单方便    
