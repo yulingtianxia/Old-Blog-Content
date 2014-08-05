@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Core Data | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/core-data/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-07-31T15:19:54+08:00</updated>
+  <updated>2014-08-05T18:32:16+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,94 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CoreData处理海量数据]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju/"/>
+    <updated>2014-08-05T18:15:03+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju</id>
+    <content type="html"><![CDATA[<p>随着iOS8和OSX10.10的发布，Core Data也迎来了更新。这次的更新可谓是重量级的，它使得程序员能够更加直接高效的操作数据库，在处理大量数据时速度明显提升（这在以前不知有多少程序员因为Core Data批量更新数据效率之低而不得不放弃使用它）。Batch Updates可用于批量快速更新数据，Asynchronous Fetching可用于异步抓取海量数据，并可以通过<code>NSProgress</code>实现进度跟踪和取消。</p>
+
+<!--more-->
+
+
+<h2>Batch Updates</h2>
+
+<p>在CoreData中想要更新大量数据，我们往往要将大量修改后的<code>NSManagedObject</code>加载到<code>NSManagedObjectContext</code>中并保存，这会占用大量内存，试想想在iPhone这样的内存有限的移动设备上将是个灾难，数据有可能丢失。你可能会采取批处理的方式，即一小批一小批的更新<code>NSManagedObject</code>并保存到<code>NSManagedObjectContext</code>中，但这样会花费很多时间，用户体验较差。</p>
+
+<p>为了解决这个问题，苹果在<code>NSManagedObjectContext</code>加入了一个新的方法：<code>executeRequest:error:</code>，它接受一个<code>NSPersistentStoreRequest</code>类型的参数，返回类型为<code>NSPersistentStoreResult</code>。<br/>
+关于<code>NSPersistentStoreRequest</code>有些人可能比较熟悉，它是<code>NSFetchRequest</code>、<code>NSSaveChangesRequest</code>、<code>NSBatchUpdateRequest</code>和<code>NSAsynchronousFetchRequest</code>的基类。后两个类是这次iOS8新加的，也是这篇文章将要讨论的内容。<br/>
+<code>NSPersistentStoreResult</code>是一个新加入的类，它也是一个基类，而且是抽象类，这个类作为<code>executeRequest:error:</code>返回内容的父类，相当于一个接口，它目前有两个子类：<code>NSPersistentStoreAsynchronousResult</code>和<code>NSBatchUpdateResult</code>。<br/>
+你大概猜到了，<code>NSBatchUpdateResult</code>对应着前面的<code>NSBatchUpdateRequest</code>，下面说说<code>NSBatchUpdateRequest</code>。它有点像<code>NSFetchRequest</code>：它允许你指定一个想要更新数据的实体；也可以指定一个<code>affectedStores</code>，它存储了一个接受更新请求的<code>NSPersistentStore</code>数组。（其实它是<code>NSPersistentStoreRequest</code>的属性）；它也有一个谓词属性来做更新的条件，它跟<code>NSFetchRequest</code>中的谓词一样强大和灵活，类似于SQL的where语句；它允许你指定想要更新的字段，通过<code>propertiesToUpdate</code>属性来描述字段更新，它是一个字段，key为<code>NSPropertyDescription</code>或属性名字符串，value为<code>NSExpression</code>或常量。<br/>
+接着谈谈<code>NSBatchUpdateResult</code>，它有一个<code>result</code>属性和<code>resultType</code>属性，<code>result</code>中的内容跟<code>resultType</code>有关，可能是成功或者失败，有可能是每行被更新的ID，也可能是被更新的行数。</p>
+
+<p>需要注意的是，由于<code>NSBatchUpdateRequest</code>并不会先将数据存入内存，而是直接操作数据库，所以并不会引起NSManagedObjectContext的同步更新，所以你不仅需要获取<code>NSBatchUpdateResult</code>然后刷新<code>NSManagedObjectContext</code>对应的数据和UI界面，还需要保证更新后的数据满足数据库模型上的<code>validation</code>，因为<code>NSManagedObjectContext</code>没有感知Batch Updates，一些数据验证工作就落在了程序员的身上（你需要写一段代码验证更新后的数据是合法的，用户可不希望在跑步APP上看到自己今天跑步里程是个负数）。一旦有非法数据录入数据库，下次加载并修改<code>NSManagedObject</code>的时候就会导致数据验证失败。除了上面提到的这些，还要注意Batch Updates对数据库的操作是乐观锁，也就是假定很少会发生同时存取同一块数据的情况，所以你需要制定一个合理的"merge"策略来应付因同时更新数据产生的冲突。</p>
+
+<p>Batch Updates的优势在于其效率，在处理上万条数据的时候，它执行的时间跟SQL语句执行时间相当。</p>
+
+<h2>Asynchronous Fetching</h2>
+
+<p>Asynchronous Fetching的加入依然是为了解决CoreData读取海量数据所带来的问题。通过使用Asynchronous Fetching，我们可以在抓取数据的同时不阻塞占用<code>NSManagedObjectContext</code>，并可以随时取消抓取行为，随时跟踪抓取数据的进度。</p>
+
+<p>设想我们平时用<code>NSFetchRequest</code>抓取数据的时候，我们会先用<code>NSManagedObjectContext</code>的<code>executeFetchRequest:error:</code>方法传入一个<code>NSFetchRequest</code>，然后请求会被发送到<code>NSPersistentStore</code>，然后执行一段时间后返回一个数组，在<code>NSManagedObjectContext</code>更新后，这个数组被当做<code>executeFetchRequest:error:</code>的返回值返回到我们这里。</p>
+
+<p>而Asynchronous Fetching则不同，当我们将一个<code>NSAsynchronousFetchRequest</code>对象传入<code>executeRequest:error:</code>方法后会立即返回一个“future”&mdash;<code>NSAsynchronousFetchResult</code>。<code>NSAsynchronousFetchRequest</code>初始化时需要传入两个参数赋值给属性：<br/>
+1. <code>completionBlock</code>属性，允许我们在抓取完成后执行回调block；<br/>
+2. <code>fetchRequest</code>属性，类型是<code>NSFetchRequest</code>。也即是说虽然是异步抓取，其实我们用的还是以前的<code>NSFetchRequest</code>，当<code>NSFetchRequest</code>抓取结束后会更新<code>NSManagedObjectContext</code>，这也就意味着<code>NSManagedObjectContext</code>的并发类型只能是<code>NSPrivateQueueConcurrencyType</code>或<code>NSMainQueueConcurrencyType</code>。</p>
+
+<p>于是当我们用<code>NSAsynchronousFetchRequest</code>抓取数据时，我们会先用<code>NSManagedObjectContext</code>的<code>executeRequest:error:</code>方法传入一个<code>NSAsynchronousFetchRequest</code>，这个方法在<code>NSManagedObjectContext</code>上执行时，<code>NSManagedObjectContext</code>会立即制造并返回一个<code>NSAsynchronousFetchResult</code>，同时<code>NSAsynchronousFetchRequest</code>会被发送到<code>NSPersistentStore</code>。你现在可以继续编辑这个<code>NSManagedObjectContext</code>中的<code>NSManagedObject</code>，等到<code>NSPersistentStore</code>执行请求完毕时会将结果返回给<code>NSAsynchronousFetchResult</code>的<code>finalResult</code>属性，更新<code>NSManagedObjectContext</code>，执行<code>NSAsynchronousFetchRequest</code>的回调block。</p>
+
+<p>举个栗子：</p>
+
+<p>```
+let request = NSFetchRequest(entityName: &ldquo;MyEntity&rdquo;)</p>
+
+<pre><code>    let async = NSAsynchronousFetchRequest(fetchRequest: request){
+        (id result) in
+        if result.finalResult {
+            //TODO..
+        }
+    }
+</code></pre>
+
+<p>```</p>
+
+<p>Swift代码很简洁，并用了尾随闭包语法，看不懂的朋友也不用着急，知道<code>NSAsynchronousFetchRequest</code>大概的用法就行。</p>
+
+<p>之前提到过<code>NSAsynchronousFetchRequest</code>能在抓取数据的过程中跟踪进度，于是乎<code>NSProgress</code>登场了！一行代码顶十句话：</p>
+
+<p>```
+let request = NSFetchRequest(entityName: &ldquo;MyEntity&rdquo;)
+var asyncResult:NSPersistentStoreResult!
+let async = NSAsynchronousFetchRequest(fetchRequest: request){</p>
+
+<pre><code>        (id result) in
+        if result.finalResult {
+            //TODO..
+        }
+    }
+</code></pre>
+
+<p>let progress = NSProgress(totalUnitCount: 1)
+progress.becomeCurrentWithPendingUnitCount(1)
+managedObjectContext?.performBlock{</p>
+
+<pre><code>        [unowned self] in
+        let error = NSErrorPointer()
+        asyncResult = self.managedObjectContext?.executeRequest(async, error: error)
+    }
+</code></pre>
+
+<p>progress.resignCurrent()
+<code>``
+而取消获取数据只需要取消</code>NSProgress`就可以了！取消行为会沿着数的根节点蔓延到叶子。</p>
+
+<p><code>
+progress.cancel()
+</code>
+可以在<code>cancellationHandler</code>属性设置取消后执行的block，这里不再多说。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[初识Core Data(3)]]></title>

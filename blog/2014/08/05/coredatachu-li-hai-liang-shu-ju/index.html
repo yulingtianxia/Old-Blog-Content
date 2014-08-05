@@ -5,12 +5,11 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>MacOSX10.9上用Octopress和GitHub搭建个人博客 - 玉令天下的Blog</title>
+	<title>CoreData处理海量数据 - 玉令天下的Blog</title>
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="MacOSX10.9上用Octopress和GitHub搭建个人博客 网上已经有很多关于搭建Octopress的文章了，但我写这篇文章的目的是帮助Mac新手们搭建自己的Octopress，尤其是最新的Mavericks系统 这篇博文包括： Octopress搭建
-Github Page 部署 &hellip;">
+	<meta name="description" content="CoreData处理海量数据 随着iOS8和OSX10.10的发布，Core Data也迎来了更新。这次的更新可谓是重量级的，它使得程序员能够更加直接高效的操作数据库，在处理大量数据时速度明显提升（这在以前不知有多少程序员因为Core Data批量更新数据效率之低而不得不放弃使用它）。Batch &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +19,7 @@ Github Page 部署 &hellip;">
 
 	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
 	
-	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/">
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju/">
 	<link href="/favicon.png" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -148,143 +147,105 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 			
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">MacOSX10.9上用Octopress和GitHub搭建个人博客</h1>
-	<div class="entry-content" itemprop="articleBody"><p>网上已经有很多关于搭建Octopress的文章了，但我写这篇文章的目的是帮助Mac新手们搭建自己的Octopress，尤其是最新的Mavericks系统</p>
+	<h1 class="title" itemprop="name">CoreData处理海量数据</h1>
+	<div class="entry-content" itemprop="articleBody"><p>随着iOS8和OSX10.10的发布，Core Data也迎来了更新。这次的更新可谓是重量级的，它使得程序员能够更加直接高效的操作数据库，在处理大量数据时速度明显提升（这在以前不知有多少程序员因为Core Data批量更新数据效率之低而不得不放弃使用它）。Batch Updates可用于批量快速更新数据，Asynchronous Fetching可用于异步抓取海量数据，并可以通过<code>NSProgress</code>实现进度跟踪和取消。</p>
 
-<p>这篇博文包括：</p>
-
-<ul>
-<li>Octopress搭建</li>
-<li>Github Page 部署</li>
-<li>Blog的美化工作</li>
-</ul>
+<!--more-->
 
 
-<!-- more -->
+<h2>Batch Updates</h2>
 
+<p>在CoreData中想要更新大量数据，我们往往要将大量修改后的<code>NSManagedObject</code>加载到<code>NSManagedObjectContext</code>中并保存，这会占用大量内存，试想想在iPhone这样的内存有限的移动设备上将是个灾难，数据有可能丢失。你可能会采取批处理的方式，即一小批一小批的更新<code>NSManagedObject</code>并保存到<code>NSManagedObjectContext</code>中，但这样会花费很多时间，用户体验较差。</p>
 
-<hr />
+<p>为了解决这个问题，苹果在<code>NSManagedObjectContext</code>加入了一个新的方法：<code>executeRequest:error:</code>，它接受一个<code>NSPersistentStoreRequest</code>类型的参数，返回类型为<code>NSPersistentStoreResult</code>。<br/>
+关于<code>NSPersistentStoreRequest</code>有些人可能比较熟悉，它是<code>NSFetchRequest</code>、<code>NSSaveChangesRequest</code>、<code>NSBatchUpdateRequest</code>和<code>NSAsynchronousFetchRequest</code>的基类。后两个类是这次iOS8新加的，也是这篇文章将要讨论的内容。<br/>
+<code>NSPersistentStoreResult</code>是一个新加入的类，它也是一个基类，而且是抽象类，这个类作为<code>executeRequest:error:</code>返回内容的父类，相当于一个接口，它目前有两个子类：<code>NSPersistentStoreAsynchronousResult</code>和<code>NSBatchUpdateResult</code>。<br/>
+你大概猜到了，<code>NSBatchUpdateResult</code>对应着前面的<code>NSBatchUpdateRequest</code>，下面说说<code>NSBatchUpdateRequest</code>。它有点像<code>NSFetchRequest</code>：它允许你指定一个想要更新数据的实体；也可以指定一个<code>affectedStores</code>，它存储了一个接受更新请求的<code>NSPersistentStore</code>数组。（其实它是<code>NSPersistentStoreRequest</code>的属性）；它也有一个谓词属性来做更新的条件，它跟<code>NSFetchRequest</code>中的谓词一样强大和灵活，类似于SQL的where语句；它允许你指定想要更新的字段，通过<code>propertiesToUpdate</code>属性来描述字段更新，它是一个字段，key为<code>NSPropertyDescription</code>或属性名字符串，value为<code>NSExpression</code>或常量。<br/>
+接着谈谈<code>NSBatchUpdateResult</code>，它有一个<code>result</code>属性和<code>resultType</code>属性，<code>result</code>中的内容跟<code>resultType</code>有关，可能是成功或者失败，有可能是每行被更新的ID，也可能是被更新的行数。</p>
 
-<h1>Octopress搭建</h1>
+<p>需要注意的是，由于<code>NSBatchUpdateRequest</code>并不会先将数据存入内存，而是直接操作数据库，所以并不会引起NSManagedObjectContext的同步更新，所以你不仅需要获取<code>NSBatchUpdateResult</code>然后刷新<code>NSManagedObjectContext</code>对应的数据和UI界面，还需要保证更新后的数据满足数据库模型上的<code>validation</code>，因为<code>NSManagedObjectContext</code>没有感知Batch Updates，一些数据验证工作就落在了程序员的身上（你需要写一段代码验证更新后的数据是合法的，用户可不希望在跑步APP上看到自己今天跑步里程是个负数）。一旦有非法数据录入数据库，下次加载并修改<code>NSManagedObject</code>的时候就会导致数据验证失败。除了上面提到的这些，还要注意Batch Updates对数据库的操作是乐观锁，也就是假定很少会发生同时存取同一块数据的情况，所以你需要制定一个合理的&#8221;merge&#8221;策略来应付因同时更新数据产生的冲突。</p>
 
-<p>众所周知，MacOSX自带Ruby，10.9系统带了两个版本的Ruby：1.8和2.0，因为Octopress需要Ruby1.9.3以上的支持，所以Mavericks自带的Ruby2.0是可以胜任的，新手们可以松一口气了。<br/>
-如果没有安装command line tools，可以直接安装Xcode。Xcode5之后，command line tools都是跟随Xcode自带的，不用单独安装，想卸载也就麻烦了，可以在Xcode中Preferences->Locations中查看command line tools版本。</p>
+<p>Batch Updates的优势在于其效率，在处理上万条数据的时候，它执行的时间跟SQL语句执行时间相当。</p>
 
-<p>系统没升级到最新版的童鞋，可以打开终端（terminal）通过下面的命令查看自己的Ruby版本：</p>
+<h2>Asynchronous Fetching</h2>
 
-<pre><code>ruby --version
-</code></pre>
+<p>Asynchronous Fetching的加入依然是为了解决CoreData读取海量数据所带来的问题。通过使用Asynchronous Fetching，我们可以在抓取数据的同时不阻塞占用<code>NSManagedObjectContext</code>，并可以随时取消抓取行为，随时跟踪抓取数据的进度。</p>
 
-<p>没安装RVM的童鞋运行下面的命令：</p>
+<p>设想我们平时用<code>NSFetchRequest</code>抓取数据的时候，我们会先用<code>NSManagedObjectContext</code>的<code>executeFetchRequest:error:</code>方法传入一个<code>NSFetchRequest</code>，然后请求会被发送到<code>NSPersistentStore</code>，然后执行一段时间后返回一个数组，在<code>NSManagedObjectContext</code>更新后，这个数组被当做<code>executeFetchRequest:error:</code>的返回值返回到我们这里。</p>
 
-<pre><code>curl -L https://get.rvm.io | bash -s stable --ruby
-</code></pre>
+<p>而Asynchronous Fetching则不同，当我们将一个<code>NSAsynchronousFetchRequest</code>对象传入<code>executeRequest:error:</code>方法后会立即返回一个“future”&mdash;<code>NSAsynchronousFetchResult</code>。<code>NSAsynchronousFetchRequest</code>初始化时需要传入两个参数赋值给属性：<br/>
+1. <code>completionBlock</code>属性，允许我们在抓取完成后执行回调block；<br/>
+2. <code>fetchRequest</code>属性，类型是<code>NSFetchRequest</code>。也即是说虽然是异步抓取，其实我们用的还是以前的<code>NSFetchRequest</code>，当<code>NSFetchRequest</code>抓取结束后会更新<code>NSManagedObjectContext</code>，这也就意味着<code>NSManagedObjectContext</code>的并发类型只能是<code>NSPrivateQueueConcurrencyType</code>或<code>NSMainQueueConcurrencyType</code>。</p>
 
-<p>下面我们需要从Github上clone下Octopress</p>
+<p>于是当我们用<code>NSAsynchronousFetchRequest</code>抓取数据时，我们会先用<code>NSManagedObjectContext</code>的<code>executeRequest:error:</code>方法传入一个<code>NSAsynchronousFetchRequest</code>，这个方法在<code>NSManagedObjectContext</code>上执行时，<code>NSManagedObjectContext</code>会立即制造并返回一个<code>NSAsynchronousFetchResult</code>，同时<code>NSAsynchronousFetchRequest</code>会被发送到<code>NSPersistentStore</code>。你现在可以继续编辑这个<code>NSManagedObjectContext</code>中的<code>NSManagedObject</code>，等到<code>NSPersistentStore</code>执行请求完毕时会将结果返回给<code>NSAsynchronousFetchResult</code>的<code>finalResult</code>属性，更新<code>NSManagedObjectContext</code>，执行<code>NSAsynchronousFetchRequest</code>的回调block。</p>
 
-<pre><code>git clone git://github.com/imathis/octopress.git octopress
-</code></pre>
-
-<p>这条命令将octopress的源码下载到了你个人文件夹下的octopress文件夹，如果对git命令不太熟，可以在<a href="https://mac.github.com">这里</a>下载Github的Mac客户端，关于Github的使用，网上有很多教程。<br/>
-下一步，安装依赖</p>
-
-<pre><code>cd octopress ＃进入octopress目录
-gem install bundler
-</code></pre>
-
-<p>这里碰到的问题可能有两种：<br/>
-1. 权限不够，无法访问到一些文件夹<br/>
-2. 等了很久没有反应<br/>
-如果你之前对Linux比较熟，第一个问题可以很简单的解决，这是因为一些文件夹需要root权限访问，运行</p>
-
-<pre><code>sudo gem install bundler
-</code></pre>
-
-<p>提示输入密码的时候，输入你自己的MacOSX开机密码后回车，注意输入密码的过程中终端无任何显示，这跟Linux一样<br/>
-如果半天都没有反应，这是因为rubygems.org 的文件资源被墙了，可以在<a href="http://ruby.taobao.org">这里</a>查看解决方法，或者干脆翻墙，推荐一款Mac上比较傻瓜式的翻墙软件－－<a href="http://macappbox.com/yubaibai/">鱼摆摆</a>,我个人比较推荐翻墙。</p>
-
-<p>接下来运行：</p>
-
-<pre><code>bundle install
-</code></pre>
-
-<p>不出意外，肯定会出错，最后一句应该是“Make sure that <code>gem install RedCloth -v '4.2.9'</code> succeeds before bundling.”再往前追寻问题的根源，会发现这么一句“clang: error: unknown argument: &lsquo;-multiply_definedsuppress&rsquo; [-Wunused-command-line-argument-hard-err”。<br/>
-这是因为Xcode 5.1的LLVM编译器将未识别的命令行选项认为是error，导致诸如Python本地拓展和Ruby Gem报错，解决方案：在执行命令行前加ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future，这样就忽略了报错。感谢<a href="http://www.andrewhay.ca/archives/2558?utm_source=tuicool">Andrew Hay的文章</a>帮我解决了问题。<br/>
-所以应该这样：</p>
-
-<pre><code>ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bundle install
-</code></pre>
-
-<p>问题解决<br/>
-最后安装默认的主题</p>
-
-<pre><code>rake install    
-</code></pre>
-
-<p>如果出现“You have already activated rake 10.3.1, but your Gemfile requires rake 0.9.6. Prepending <code>bundle exec</code> to your command may solve this.”这样的提示，有三种解决方法：<br/>
-1. 运行<code>bundle update</code>
-2. 按照提示在前面加上<code>bundle exec</code>，即运行<code>bundle exec rake install</code>
-3. 卸载不一样的版本 gem uninstall rake -v=10.3.1
-这三种方法建议先用方法1，如果不行再用方法3，方法2是无奈之举</p>
-
-<p><strong>关于创建博文</strong></p>
-
-<pre><code>rake new_post["first post"]＃双引号中为博文标题，可以自己定义，生成markdown文件
-rake generate ＃生成HTML文件
-</code></pre>
-
-<p>这里推荐一个markdown编辑器<a href="http://mouapp.com">Mou</a>，markdown是用来编写我们博客的语言，文件后缀名为md或markdown，学过Latex的童鞋可能会了解得更快一些，用markdown编写HTML版面是再好不过得了，markdown速成<a href="http://www.ituring.com.cn/article/23">传送门</a>。网上教程也挺多的，语法风格跟Latex有点像。</p>
-
-<h1>Github Page 部署</h1>
-
-<p>首先要有一个Github账号，假设用户名为username，那么新建一个仓库，名字叫“username.github.io”，Github会自动识别它为你的个人页面。你可以通过username.github.io这个网址来访问你部署的静态网页。创建完成后，获取你这个仓库的Git Url，SSH或者Http协议的都可以，然后执行<code>rake setup_github_pages</code>，当提示你的时候输入你前面创建的仓库的Git Url。比如<code>git@github.com:username/username.github.com.git</code><br/>
-你会发现octopress文件夹中多了_deploy目录，并将这个目录当作master分支，而其余的文件都作为新建立的source分支。octopress原理是在source分支保存框架所需要的文件，还有博客的markdown文件，然后每次将生成的html文件放入master分支，通过username.github.io访问到的是已经生成好的master分支的文件，也就是_deploy文件夹的内容。<br/>
-运行下面代码来生成部署网页到Github：</p>
-
-<pre><code>rake generate
-rake deploy
-</code></pre>
-
-<p>现在访问你的网站，已经有了一个页面，使用的是系统默认主题。为了避免博客的源码受到破坏，需要把source分支也commit上去。不会用git命令的同学可以用Github的Mac客户端。</p>
-
-<pre><code>git add .
-git commit -m 'your message'
-git push origin source
-</code></pre>
-
-<p>如果你有自己的域名，可以通过在仓库中新建CNAME文件进行配置映射，这里不再细说。</p>
-
-<h1>Blog的美化工作</h1>
-
-<p>可以用<a href="https://github.com/shashankmehta/greyshade">greyshade</a>或者<a href="https://github.com/tommy351/Octopress-Theme-Slash">slash</a>主题美化博客，根据个人喜好了。需要注意的是，greyshade这个主题有些不足之处，比如，disqus实效，还有如何添加新浪微博链接，请看<a href="http://bryanone.com/blog/2014/03/01/problem-with-greyshade/">这里</a>和<a href="http://imallen.com/blog/2013/05/12/add-support-for-weibo-and-dribbble-to-greyshade.html">这里</a>。如果首页左侧没有显示title和subtitle等信息，可以修改/source/_includes/header.html文件，添加</p>
-
-<pre><code>&lt;h1&gt;&lt;a href="/"&gt;玉令天下的Blog&lt;/a&gt;&lt;/h1&gt;
-&lt;p class="subtitle"&gt;I'm not a hacker.&lt;/p&gt;
-</code></pre>
-
-<p>修改_config.yml文件，可以配置博客的参数，网上有很多详细的教程来说明每个属性是干什么的，需要注意的一点就是冒号后面一定要加空格，否则编译不通过。建议下载一个Sublime Text来打开这些前台文件，增加效率。博客头像和Github一样采用<a href="www.gravatar.com">gravatar</a>的头像托管服务，在_config.yml文件中的email属性中填入你在gravatar的邮件或者在email_md5属性中填入md5码也可。<br/>
-<strong>关于添加标签云效果</strong><br/>
-1. 将<a href="https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/plugins/category_cloud.rb">category_cloud.rb</a>复制到你的<code>/octopress/plugins/</code>文件夹下<br/>
-2. 拷贝<a href="https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/source/_includes/custom/asides/category_cloud.html">category_cloud.html</a>到你的<code>octopress/source/_includes/custom/asides/</code>目录<br/>
-3. 在你的 <code>octopress/_config.yml</code> 文件中的<code>default_asides</code>项中加入第二步添加的路径：<code>custom/asides/category_cloud.html</code><br/>
-4. 拷贝<a href="https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/source/javascripts/tagcloud.swf">tagcloud.swf</a>到<code>source/javascripts/</code>文件夹<br/>
-如果想修改标签云的颜色可以在<code>category_cloud.rb</code>文件中改变：</p>
+<p>举个栗子：</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'> @opts['bgcolor'] = '#3D4349'
-</span><span class='line'>  @opts['tcolor1'] = '#8B85C3'
-</span><span class='line'>  @opts['tcolor2'] = '#C03999'
-</span><span class='line'>  @opts['hicolor'] = '#ffffff'</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>let request = NSFetchRequest(entityName: "MyEntity")
+</span><span class='line'>        let async = NSAsynchronousFetchRequest(fetchRequest: request){
+</span><span class='line'>            (id result) in
+</span><span class='line'>            if result.finalResult {
+</span><span class='line'>                //TODO..
+</span><span class='line'>            }
+</span><span class='line'>        }</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Swift代码很简洁，并用了尾随闭包语法，看不懂的朋友也不用着急，知道<code>NSAsynchronousFetchRequest</code>大概的用法就行。</p>
+
+<p>之前提到过<code>NSAsynchronousFetchRequest</code>能在抓取数据的过程中跟踪进度，于是乎<code>NSProgress</code>登场了！一行代码顶十句话：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>let request = NSFetchRequest(entityName: "MyEntity")
+</span><span class='line'>var asyncResult:NSPersistentStoreResult!
+</span><span class='line'>let async = NSAsynchronousFetchRequest(fetchRequest: request){
+</span><span class='line'>            (id result) in
+</span><span class='line'>            if result.finalResult {
+</span><span class='line'>                //TODO..
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>let progress = NSProgress(totalUnitCount: 1)
+</span><span class='line'>progress.becomeCurrentWithPendingUnitCount(1)
+</span><span class='line'>managedObjectContext?.performBlock{
+</span><span class='line'>            [unowned self] in
+</span><span class='line'>            let error = NSErrorPointer()
+</span><span class='line'>            asyncResult = self.managedObjectContext?.executeRequest(async, error: error)
+</span><span class='line'>        }
+</span><span class='line'>progress.resignCurrent()</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
-<code>tcolor1</code>为文章数量比较多的分类颜色<br/>
-<code>tcolor2</code>为普通分类颜色<br/>
-<code>hicolor</code>为鼠标高亮颜色<br/>
-诸如添加Google Analyse和百度统计，添加分享和评论系统，还有版权信息，网上的教程也很多，参考<a href="http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html">oec2003</a>和<a href="http://beyondvincent.com/blog/2013/07/27/107-hello-page-of-github/">破船</a>的文章，本文主要是介绍MacOSX上面的部署工作。</p>
+而取消获取数据只需要取消<code>NSProgress</code>就可以了！取消行为会沿着数的根节点蔓延到叶子。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>progress.cancel()</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+可以在<code>cancellationHandler</code>属性设置取消后执行的block，这里不再多说。</p>
 </div>
 
 </article>
@@ -354,8 +315,8 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/';
-        var disqus_url = 'http://yulingtianxia.com/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/';
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju/';
         var disqus_script = 'embed.js';
       
     (function () {
