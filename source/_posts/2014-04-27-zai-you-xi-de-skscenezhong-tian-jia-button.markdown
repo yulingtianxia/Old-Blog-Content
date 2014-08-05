@@ -4,7 +4,7 @@ title: "在游戏的SKScene中添加Button"
 date: 2014-04-27 13:18:04 +0800
 comments: true
 categories: 
-- SKSprite
+- SpriteKit
 - iOS
 
 ---

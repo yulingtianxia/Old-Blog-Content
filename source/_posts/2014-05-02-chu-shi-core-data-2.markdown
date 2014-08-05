@@ -18,6 +18,9 @@ categories:
 推荐先阅读上一篇文章：[初识Core Data(1)](http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/)  
 
 **文章所使用的项目代码可以到[这里](https://github.com/yulingtianxia/MyCDDemo)下载**  
+
+在[下一篇文章](http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3/)里，我将会通过教程的方式，讲述如何用Swift结合CoreData的NSFetchedResultsController写一个小Demo-[HardChoice](https://github.com/yulingtianxia/HardChoice)  
+
 <!--more-->
 
 ##自定义NSManagedObject

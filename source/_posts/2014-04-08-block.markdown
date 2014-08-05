@@ -12,6 +12,8 @@ categories:
 
 本文是小弟从**<span style="color: #339966;">破船</span>**大哥那转载来的，感觉比较经典，所以就收藏了，原文[出处](http://beyondvincent.com/blog/2013/07/08/98/)  
 
+这里推荐一个block语法速查网站：[http://f******blocksyntax.com](http://fuckingblocksyntax.com)（保护单纯少年，和谐了网址，但是链接是好使的）  
+
 <img class="alignnone size-full wp-image-1563" alt="blocks_2x" src="http://beyondvincent.com/wp-content/uploads/2013/07/blocks_2x.png" width="1140" height="420" />  
 
 ---

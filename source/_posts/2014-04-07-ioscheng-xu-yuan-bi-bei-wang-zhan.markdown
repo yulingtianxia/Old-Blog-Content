@@ -35,6 +35,10 @@ categories:
 + [Github](https://github.com/) 代码托管版本控制，不解释
 + [Stackoverflow](http://stackoverflow.com/) 最令我佩服的就是80%的疑难杂症最后都在这里找到解决方案，这里有好多耐心的老外！
 
+###优质博客集合
+
++ [iOSBlogCN](https://github.com/tangqiaoboy/iOSBlogCN)  
+
 其实还有很多优秀的网站没有收录，本文只是收录了本人能看懂的网址（英文伤不起），其实大量优秀的教程都是英文的啊！碰到问题现用现查还是最快，没事儿的时候可以看看本文提到的网站充充电。
 
 
