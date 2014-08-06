@@ -402,7 +402,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>便利构造器是类中比较次要的、辅助型的构造器。你可以定义便利构造器来调用同一个类中的指定构造器，并为其参数提供默认值。你也可以定义便利构造器来创建一个特殊用途或特定输入的实例。</p>
 
-<p>类的指定构造器的写法跟值类型简单构造器一样，便利构造器也采用相同样式的写法，但需要在init关键字之前放置convenience关键字：</p>
+<p>类的指定构造器的写法跟值类型简单构造器一样，便利构造器也采用相同样式的写法，但需要在<code>init</code>关键字之前放置<code>convenience</code>关键字：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -512,7 +512,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>即使你在子类中添加了更多的便利构造器，这两条规则仍然适用。子类可以通过定义便利构造器来实现父类中的指定构造器，来部分满足规则2</p>
 
-<p>如果你需要重写一个跟父类一样的构造器，无论是指定构造器还是便利构造器，不同于重载方法、属性和下标，在重载构造器时你没有必要使用关键字<code>override</code></p>
+<p>如果你需要在子类中重写一个父类的指定构造器（包括自动生成的默认构造器），无论子类中的构造器是指定构造器还是便利构造器，都需要在子类定义重载的构造器前加上<code>override</code>修饰；如果你需要在子类中重写一个父类的便利构造器，根据构造器链，父类的便利构造器不会被子类直接调用，所以不必在子类重写构造器的定义前用<code>override</code>修饰。这是Xcode6beta5新修订的规则，在以前的版本中重载构造器不用<code>override</code>修饰。</p>
 
 <p>还记得之前指定的<code>Food</code>类吧，现在它多了一个子类<code>RecipeIngredient</code>:</p>
 
@@ -532,7 +532,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">quantity</span> <span class="o">=</span> <span class="nx">quantity</span>
 </span><span class='line'>        <span class="kr">super</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nx">name</span><span class="p">)</span>
 </span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="nx">convenience</span> <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">override</span> <span class="nx">convenience</span> <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">quantity</span><span class="o">:</span> <span class="mi">1</span><span class="p">)</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
@@ -601,6 +601,63 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </span><span class='line'><span class="c1">// 1 x orange juice ✔</span>
 </span><span class='line'><span class="c1">// 1 x bacon ✘</span>
 </span><span class='line'><span class="c1">// 6 x eggs ✘</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>必需构造器</h3>
+
+<p>当你想让一个类的某个构造器被所有子类都实现，你可以在定义这个构造器时在前面用<code>required</code>修饰：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">SomeClass</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">required</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// initializer implementation goes here</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>你也必须在它的子类定义必需构造器前用<code>required</code>修饰，但不必用<code>override</code>修饰：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">SomeSubClass</span><span class="o">:</span> <span class="nx">SomeClass</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">required</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// subclass implementation of the required initializer goes here</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>这样的语法可以将这种“必需”信号传递给未来更多的子类，表明这个构造器一定要实现，千秋万代~</p>
+
+<p>当然你可以满足构造器的继承规则来继承必需构造器，这样就不用“必须”重写“必需”构造器了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">SomeSubSubClass</span><span class="o">:</span><span class="nx">SomeSubClass</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">convenience</span> <span class="nx">init</span><span class="p">(</span><span class="nx">a</span><span class="o">:</span><span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">init</span><span class="p">()</span>
+</span><span class='line'>        <span class="c1">//subsubclass implementation of a convenience initializer goes here</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
