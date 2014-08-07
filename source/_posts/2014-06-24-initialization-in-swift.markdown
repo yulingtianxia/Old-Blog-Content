@@ -154,7 +154,7 @@ Swift 提供了两种类型的类构造器来确保所有类实例中存储型�
 
 便利构造器是类中比较次要的、辅助型的构造器。你可以定义便利构造器来调用同一个类中的指定构造器，并为其参数提供默认值。你也可以定义便利构造器来创建一个特殊用途或特定输入的实例。  
 
-类的指定构造器的写法跟值类型简单构造器一样，便利构造器也采用相同样式的写法，但需要在init关键字之前放置convenience关键字：  
+类的指定构造器的写法跟值类型简单构造器一样，便利构造器也采用相同样式的写法，但需要在`init`关键字之前放置`convenience`关键字：  
 
 ``` 
 convenience init(parameters) {
@@ -228,7 +228,7 @@ Swift 中类的构造过程包含两个阶段。第一个阶段，每个存储�
 
 即使你在子类中添加了更多的便利构造器，这两条规则仍然适用。子类可以通过定义便利构造器来实现父类中的指定构造器，来部分满足规则2    
 
-如果你需要重写一个跟父类一样的构造器，无论是指定构造器还是便利构造器，不同于重载方法、属性和下标，在重载构造器时你没有必要使用关键字`override`  
+如果你需要在子类中重写一个父类的指定构造器（包括自动生成的默认构造器），无论子类中的构造器是指定构造器还是便利构造器，都需要在子类定义重载的构造器前加上`override`修饰；如果你需要在子类中重写一个父类的便利构造器，根据构造器链，父类的便利构造器不会被子类直接调用，所以不必在子类重写构造器的定义前用`override`修饰。这是Xcode6beta5新修订的规则，在以前的版本中重载构造器不用`override`修饰。  
 
 还记得之前指定的`Food`类吧，现在它多了一个子类`RecipeIngredient`:  
 
@@ -239,7 +239,7 @@ class RecipeIngredient: Food {
         self.quantity = quantity
         super.init(name: name)
     }
-    convenience init(name: String) {
+    override convenience init(name: String) {
         self.init(name: name, quantity: 1)
     }
 }
@@ -284,6 +284,42 @@ for item in breakfastList {
 // 1 x bacon ✘
 // 6 x eggs ✘
 ``` 
+
+###必需构造器
+
+当你想让一个类的某个构造器被所有子类都实现，你可以在定义这个构造器时在前面用`required`修饰：  
+
+``` 
+class SomeClass {
+    required init() {
+        // initializer implementation goes here
+    }
+}
+``` 
+
+你也必须在它的子类定义必需构造器前用`required`修饰，但不必用`override`修饰：  
+
+``` 
+class SomeSubClass: SomeClass {
+    required init() {
+        // subclass implementation of the required initializer goes here
+    }
+}
+``` 
+
+这样的语法可以将这种“必需”信号传递给未来更多的子类，表明这个构造器一定要实现，千秋万代~  
+
+当然你可以满足构造器的继承规则来继承必需构造器，这样就不用“必须”重写“必需”构造器了：  
+
+``` 
+class SomeSubSubClass:SomeSubClass {
+    convenience init(a:String) {
+        self.init()
+        //subsubclass implementation of a convenience initializer goes here
+    }
+}
+``` 
+
 ##通过闭包和函数来设置属性的默认值
 
 如果某个存储型属性的默认值需要特别的定制或准备，你就可以使用闭包或全局函数来为其属性提供定制的默认值。每当某个属性所属的新类型实例创建时，对应的闭包或函数会被调用，而它们的返回值会当做默认值赋值给这个属性。

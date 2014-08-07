@@ -23,4 +23,5 @@ Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(摘自[raywende
 
 Swift Cheat Sheet and Quick Reference:(摘自[raywenderlich](http://www.raywenderlich.com/73967/swift-cheat-sheet-and-quick-reference))  
 
-![](http://byetz.img41.wal8.com/img41/425047_20140623222918/140353410275.png)  
+![](http://byetz.img41.wal8.com/img41/425047_20140623222918/140731497003.jpg)  
+
