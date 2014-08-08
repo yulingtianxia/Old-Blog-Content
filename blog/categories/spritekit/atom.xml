@@ -4,7 +4,7 @@
   <title><![CDATA[Category: SpriteKit | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/spritekit/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-08T19:12:38+08:00</updated>
+  <updated>2014-08-08T19:18:44+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -237,7 +237,7 @@
 
 <p>其实说白了SpriteKit编辑器就像IB一样可以可视化编辑属性，并课即时预览效果，整个过程不需一行代码。</p>
 
-<p>Xcode甚至能编辑fsh</p>
+<p>Xcode能编辑fsh文件，与SpriteKit场景编辑器对照编辑，并做语法检查和编译。</p>
 
 <h2>Improvements</h2>
 
