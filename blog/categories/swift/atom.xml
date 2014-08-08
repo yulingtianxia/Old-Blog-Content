@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-08T23:21:55+08:00</updated>
+  <updated>2014-08-08T23:30:47+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -1108,6 +1108,8 @@ override func motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!) {</
 <li>通过闭包和函数来设置属性的默认值</li>
 </ul>
 
+
+<p>(2014-8-8更新至beta5语法)</p>
 
 <!--more-->
 
