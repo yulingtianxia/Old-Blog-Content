@@ -4,7 +4,7 @@
   <title><![CDATA[Category: SpriteKit | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/spritekit/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-07T22:36:42+08:00</updated>
+  <updated>2014-08-08T19:12:38+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,283 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[SpriteKit在iOS8和OSX10.10中的新特性]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/"/>
+    <updated>2014-08-08T19:11:14+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing</id>
+    <content type="html"><![CDATA[<p>在iOS8和OSX10.10中SpriteKit迎来了重大升级。在物理表现方面增加了着色器，光照和阴影；在物理模拟方面增加了像素物理体、力场和宇宙动力学和约束等；在Xcode中集成了场景编辑器，你不需要写代码就能完成一些复杂的工作；此外它还集成了SceneKit以及其他的改进。</p>
+
+<!--more-->
+
+
+<h2>Shader</h2>
+
+<p>有时候为了表现一些形变和模糊效果，比如透过热气和火焰看一些物体，或者是飞船被攻击而产生弯曲。SpriteKit新加入了<code>SKShader</code>类来帮助我们更简单的实现这个效果。它通过使用自定义的OpenGL ES碎片着色来完成绘制一些<code>SKNode</code>的自定义行为。现在支持以下几种类型的绘制：</p>
+
+<ul>
+<li><code>SKSpriteNode</code></li>
+<li><code>SKShapeNode</code></li>
+<li><code>SKEmitterNode</code></li>
+<li><code>SKEffectNode</code></li>
+<li><code>SKScene</code></li>
+</ul>
+
+
+<p>放一张官方演示的效果图：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140738700571.png" alt="" /></p>
+
+<p><code>SKShader</code>内建了一些<code>uniforms</code>，用<code>SKUniform</code>来描述，当你创建一个<code>SKShader</code>时，需要通过一个<code>fsh</code>文件或者一个字符串代码来创建，也可选择性的传入<code>uniforms</code>来定义游戏中一些额外的参数。下面是创建Shader方法的集合：</p>
+
+<p>（下面的只是伪代码，不是OC也不是Swift语法，只是为了更简洁的标记方法名，后面类似情形都会标记为“伪代码”）</p>
+
+<p><code>
++ shaderWithFileNamed:
++ shaderWithSource:uniforms:
++ shaderWithSource:
++ shader
+- initWithSource:uniforms:
+- initWithSource:
+</code></p>
+
+<p>这些方法很相似，都是传入<code>source</code>或<code>source</code>与<code>uniforms</code>来创建shader。官方建议我们用<code>fsh</code>文件作为<code>source</code>而不是字符串代码；并且避免更改<code>source</code>或添加删除<code>uniforms</code>（修改<code>uniforms</code>是可以的），因为这样会导致后台花时间重新编译shader；尽量在加载时初始化shader。这些注意事项都可以总结为尽量使用内建的<code>uniforms</code>和共享shader对象。</p>
+
+<p>我们可以将创建好的<code>SKShader</code>对象赋值给支持Shader渲染对象的<code>shader</code>属性。</p>
+
+<p>下面列举一下Shader中的预定义符号：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140738949518.png" alt="" /></p>
+
+<h2>Lighting and Shadows</h2>
+
+<p>灯光和阴影效果可以给游戏增加真实感，SpriteKit这次增加了<code>SKLightNode</code>来作为光源节点。我们可以定义光源的颜色，阴影和衰弱程度。</p>
+
+<p><code>SKLightNode</code>继承于<code>SKNode</code>，也就是说你可以把它加在其他<code>SKNode</code>上，并能够动起来，它是一个会发光的<code>SKNode</code>，cool！NOTE：它的光照以及阴影效果只对<code>SKSpriteNode</code>起作用。</p>
+
+<p>下面我们看看<code>SKLightNode</code>的一些属性：</p>
+
+<ul>
+<li><strong><code>enabled</code></strong> 光源的开关</li>
+<li><strong><code>ambientColor</code></strong> 环境色，默认是黑色，也就是没有环境色。它无视自身的alpha以及<code>SKLightNode</code>的<code>falloff</code>属性和<code>SKSpriteNode</code>的<code>normalTexture</code>属性，分分钟照亮全场。</li>
+<li><strong><code>lightColor</code></strong> 顾名思义就是光的颜色，默认是白色。</li>
+<li><strong><code>shadowColor</code></strong> 被精灵物体遮挡产生的阴影颜色。</li>
+<li><strong><code>falloff</code></strong> 光源强度的衰减比率</li>
+<li><strong><code>categoryBitMask</code></strong> 光的种类，32位整型数。<code>SKSpriteNode</code>的<code>lightingBitMask</code>、<code>shadowedBitMask</code>和<code>shadowCastBitMask</code>存储着光的种类，分别意味着：被何种光照亮、被何种光产生的阴影覆盖和遮挡何种光线并产生阴影。</li>
+</ul>
+
+
+<p>为了在<code>SKSpriteNode</code>上实现更加逼真的光照效果（如阴影和反射光），<code>SKSpriteNode</code>新增了<code>normalTexture</code>属性来储存原帖图的法线贴图（Normal Map）：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140739494085.png" alt="" /></p>
+
+<p>上图中左侧的是原贴图，加上中间的法线贴图就合成出最右侧带有质感的光照纹理。当然提供这样一张发现纹理图片会增加开发者的工作量，苹果还提供了另一种更加简单的方案-“automatic normal map”：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140739540301.png" alt="" /></p>
+
+<p>SpriteKit能够根据给出的纹理图片，用一系列算法分析原贴图，然后生成一个最佳的法线贴图，又是苹果的黑魔法！</p>
+
+<p>毕竟众口难调，所以SpriteKit让你也可以在生成法线贴图的时候给出平滑度(smoothness)和对比度(contrast)来调节你想要的效果：（伪代码）</p>
+
+<p><code>
+- textureByGeneratingNormalMapWithSmoothness:contrast:
+</code></p>
+
+<p>PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，贴在低端模型的法线贴图通道上，使之拥有法线贴图的渲染效果。可以大大降低渲染时需要的面数和计算内容，从而达到优化动画渲染和游戏渲染的效果。</p>
+
+<p>在一个场景中可以添加多个光源，程序会运行的很快；但是如果用两个或以上的光源照亮同一个精灵，在某些iOS设备上可能保证不了60帧的刷新频率。</p>
+
+<h2>New Physics</h2>
+
+<h3>Per-Pixel Physics</h3>
+
+<p>在定义一些复杂轮廓的物理体时，我们经常用简单图形代替，否则就用<code>CGPath</code>一点点描绘多边形或者把多个物理体组合在一起（这也是新加入的API，后面会提到），比如下面这把斧头，大多数程序员直接用矩形当做它的物理体：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140740041011.png" alt="" /></p>
+
+<p>而Per-Pixel Physics根据纹理图片的alpha通道遮罩来生成一个粗略的形状，然后再用粗略的形状生成精确的形状，它让以前复杂的<code>CGPath</code>创建工作转变成一行代码：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140740040721.png" alt="" /></p>
+
+<p>毕竟众口难调，所以SpriteKit给出了一个可以自由调节alpha阈值的物理体生成方法，所有alpha值大于<code>alphaThreshold</code>的像素点都将被认为是不透明的，并纳入物理体范围内：（伪代码）</p>
+
+<p><code>
++ bodyWithTexture:alphaThreshold:size:
+</code></p>
+
+<p>因为SpriteKit是逐个像素计算才得出精确的物理体轮廓，所以我们应该尽量给出合适大小的图片，不要将分辨率过高的图片用在很小的<code>SKSpriteNode</code>上。</p>
+
+<h3>Constrains</h3>
+
+<p>试想如果你要做一款塔防游戏，你需要让你的大炮一直瞄准某个怪物，大炮会随着怪物的行走来转动炮台。我们需要不停地根据怪物和大炮的位置来计算需要旋转的角度，甚至当怪物跑的快的时候还要考虑怪物的速度来调整大炮旋转的速度，这是一个很麻烦的事情。现在SpriteKit帮你把这些都做好了，你只需要建立一个<code>SKConstrains</code>对象，并约束大炮的角度跟怪物一致就行。</p>
+
+<p>约束的计算工作发生在模拟物理之后，SpriteKit提供了一个回调函数<code>didApplyConstraints</code>，我们可以在约束完成后在里面做一些善后工作：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140740456021.png" alt="" /></p>
+
+<p>在SpriteKit中我们可以向SKNode添加三种约束：（工厂方法的伪代码）</p>
+
+<ul>
+<li>位置约束：</li>
+</ul>
+
+
+<p><code>
+//约束节点的X坐标范围
++ positionX:
+//约束节点的Y坐标范围
++ positionY:
+//约束节点的X和Y坐标范围
++ positionX:Y:
+</code></p>
+
+<ul>
+<li>方向约束：</li>
+</ul>
+
+
+<p><code>
+//约束节点基于另一个SKNode旋转
++ orientToNode:offset:
+//约束节点基于一个固定点旋转
++ orientToPoint:offset:
+//约束节点基于另一个SKNode坐标系中的一个固定点旋转
++ orientToPoint:inNode:offset:
+//约束节点的方向范围
++ zRotation:
+</code></p>
+
+<ul>
+<li>距离约束：</li>
+</ul>
+
+
+<p><code>
+//约束节点与另一节点保持一定距离
++ distance:toNode:
+//约束节点与一个固定点保持一定距离
++ distance:toPoint:
+//约束节点与另一个SKNode坐标系中的一个固定点保持一定距离
++ distance:toPoint:inNode:
+</code></p>
+
+<p>向<code>SKNode</code>添加约束很简单，只需要将一个<code>SKConstrains</code>数组赋值给<code>SKNode.constraints</code>属性即可。约束执行的顺序取决于它们在数组中的顺序。</p>
+
+<h3>Inverse Kinematics</h3>
+
+<p>反向运动学，没有机械工程学位或没写过动画引擎的人干脆不知道这是个啥。它其实是解决连接体运动的，比如现在有一个机器人的手臂，我们想让它动起来去用手抓某个东西。我们会想到每个关节转多少度才能准确让机器手抓到物体，计算的时候还应该考虑连接体的层级关系：肩膀连接上臂，上臂连接小臂，小臂连接手。哦天啊这真蛋疼，不过SpriteKit的反向动力学解决了这一点，我们只需要指定每个<code>SKNode</code>的活动约束还有需要抓取物体的位置，那么这一切只需要几行代码就能搞定。</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140741648388.gif" alt="" /></p>
+
+<p>机器人手臂转动约束是靠<code>SKReachConstraints</code>类来定义的，它只有一个初始化方法：（伪代码）</p>
+
+<p><code>
+- initWithLowerAngleLimit:upperAngleLimit:
+</code></p>
+
+<p>这个方法给<code>lowerAngleLimit</code>和<code>upperAngleLimit</code>属性赋值，约束了reach事件使其发生旋转角度的下限和上限。</p>
+
+<p>当一个<code>SKReachConstraints</code>创建好后，将其赋值给<code>SKNode</code>的<code>reachConstraints</code>属性，然后用<code>SKPhysicsJoint</code>将这些<code>SKNode</code>连接起来。使用<code>SKAction</code>的一套工厂方法创建来让连接体reach到活动目标或固定点的动作：（伪代码）</p>
+
+<p><code>
++ reachTo:rootNode:duration:
++ reachTo:rootNode:velocity:
++ reachToNode:rootNode:duration:
++ reachToNode:rootNode:velocity:
+</code></p>
+
+<p>让机器人的手部节点运行创建好的<code>SKAction</code>对象即可达到最初描述的动画效果。如果机器人的手触碰不到指定的位置或节点（gif中就是这样），<code>SKAction</code>会执行动画让其尽可能接近目的地。</p>
+
+<p>PS：IK（Inverse Kinematics）也能在SceneKit上运行。</p>
+
+<h3>Physics Fields</h3>
+
+<p>在一个模拟宇宙空间的游戏中，星球对其他物体的引力是不可忽视的，这就涉及到物理场。SpriteKit为我们提供了一个专门描述物理场的类<code>SKFieldNode</code>，它继承于<code>SKNode</code>，也就是说它可以被添加到其他节点中。它能够描述多种场：电场、磁场、矢量重力场、辐射重力场、噪声场等十余种场。<code>SKFieldNode</code>的<code>strength</code>和<code>falloff</code>属性决定了场的强度和衰减比率。</p>
+
+<p><code>SKFieldNode</code>还有一些属性决定了游戏中哪些物理体会被场影响：</p>
+
+<ul>
+<li><strong><code>region</code></strong> 描述了场的影响区域，类型是<code>SKRegion</code>。<code>SKRegion</code>可以是无限区域，矩形、圆形、<code>CGPath</code>多边形区域，还可以用两个<code>SKRegion</code>做逻辑运算得出新的<code>SKRegion</code>，比如交集，并集，差集，还可对一个<code>SKRegion</code>取反得到剩下的区域。</li>
+<li><strong><code>minimumRadius</code></strong> 一些场对物体的影响程度跟距离有关，当物体与场的距离小于<code>minimumRadius</code>属性的值时，仍被当做<code>minimumRadius</code>的值进行处理计算。<code>minimumRadius</code>的默认值很小很小，但不是0</li>
+<li><strong><code>categoryBitMask</code></strong> 场的类别。当一个节点进入了场的影响区域，会根据节点的物理体属性的<code>fieldBitMask</code>属性来判断此节点是否收到场的影响。此外<code>SKPhysicsBody</code>的<code>charge</code>属性还会标记物理体所带的电荷量，这在跟电磁有关的场中会影响到物理体的运动。默认为 0xFFFFFFFF</li>
+<li><strong><code>enabled</code></strong> 场的“开关”</li>
+<li><strong><code>exclusive</code></strong> 唯我独尊，这个场的地盘内，别的场的影响被无视。别让两个唯我独尊的场影响区域重叠，那样会出乱子的。默认为<code>NO</code>。</li>
+</ul>
+
+
+<p>我用SpriteKit的力场中的噪声场和辐射重力场做了一个小游戏<a href="https://github.com/yulingtianxia/ColorAtom">ColorAtom</a>，有兴趣的可以去看看。应用了很多粒子系统和碰撞检测知识，把SpriteKit之前的内容能加的都加进去了，欢迎指正。</p>
+
+<h2>Integration with SceneKit</h2>
+
+<p>在SpriteKit这样的2D游戏引擎中也可以引入3D的内容，可以将SceneKit中的3D物体当做SpriteKit中的<code>SKNode</code>来操作，为了达到这一目的SpriteKit这次增加了<code>SK3DNode</code>类作为3D物体到SpriteKit中的桥接。</p>
+
+<p>通过<code>SK3DNode</code>的<code>scnScene</code>属性可以获取到<code>SCNScene</code>，因为<code>SK3DNode</code>把3D场景渲染成2D贴图，所以创建<code>SK3DNode</code>对象的时候需要传入一个渲染后贴图的尺寸<code>viewportSize</code>。<code>pointOfView</code>属性存储了游戏视角的位置，你可以尝试实现个上帝视角。</p>
+
+<p>由于我也不太了解新出的SceneKit，所以这部分不过多介绍了。</p>
+
+<h2>Tools</h2>
+
+<p>Xcode6增加了SpriteKit编辑器，一行代码都不用写就能创建出个游戏场景。这样你就将游戏内容从游戏逻辑冲分离出来。我们只需要将控件拖拽到游戏场景你想要的位置上，而不必每次调整一个飞船的位置，编译运行看看结果，然后再改代码微调位置再次编译运行。。。</p>
+
+<p>SpriteKit编辑器不仅有编辑功能，也可用来debug。你可以再运行过程中将当前状态存储在一个sks文件中。</p>
+
+<p>SpriteKit编辑器强大到你可以直接拖拽出一个SKSpriteNode并定义它的物理体，甚至使用Per-Pixel Physics。还可以编辑光照和阴影，编辑Shader并调整Uniforms，建立一个Inverse Kinematics并预览其效果，强大极了。</p>
+
+<p>其实说白了SpriteKit编辑器就像IB一样可以可视化编辑属性，并课即时预览效果，整个过程不需一行代码。</p>
+
+<p>Xcode甚至能编辑fsh</p>
+
+<h2>Improvements</h2>
+
+<h3>SKScene</h3>
+
+<p>SpriteKit每一帧场景的执行过程：</p>
+
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/GraphicsAnimation/Conceptual/SpriteKit_PG/Art/update_loop_2x.png" alt="" /></p>
+
+<p>除了之前提到新加的Constrains，SpriteKit这次还加入了一个回调函数<code>didFinishUpdate</code>。这绝对是SpriteKit将每帧所有东西打包好交给GPU渲染之前调用的最后一个函数。</p>
+
+<h3>SKTexture</h3>
+
+<ul>
+<li><code>SKMutableTexture</code>是<code>SKTexture</code>新加的子类，它的内容可以通过<code>
+modifyPixelDataWithBlock:</code>方法动态地修改。</li>
+<li><code>SKTexture</code>现在可以生成“noise textures”，参见<code>textureVectorNoiseWithSmoothness:size:</code>和<code>
+textureNoiseWithSmoothness:size:grayscale:</code><br/>
+<img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/14074923846.png" alt="" /></li>
+</ul>
+
+
+<h3>SKShapeNode</h3>
+
+<ul>
+<li>增加了一些常见图形便捷的构造方法，比如矩形，圆形，椭圆和曲线。</li>
+<li>可以用贴图和Shader来美化形状的描边和填充</li>
+</ul>
+
+
+<h3>Physics Updates</h3>
+
+<ul>
+<li><code>SKPhysicsBody</code>新加了<code>pinned</code>属性来标志此物理体对应的节点是否被钉在它的父节点上。如果父节点也有物理体，那么这两个物理体被认为被一个pin连接。如果将<code>allowsRotation</code>设为NO并且<code>pinned</code>设为YES，那么它相当于被焊在父节点上了，因为它不能转动了。</li>
+<li><code>SKPhysicsBody</code>允许用<code>bodyWithBodies:</code>把多个物理体组合在一起来创建一个新的物理体，还记得前面提到过的斧头么：<br/>
+  <img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140749497219.png" alt="" /></li>
+</ul>
+
+
+<h3>SKTexture Atlas</h3>
+
+<ul>
+<li>同时支持SpriteKit和SceneKit</li>
+<li>同时支持Retina和非Retina</li>
+<li>同时支持16位和32位格式</li>
+<li>支持4k x 4k 分辨率</li>
+<li>支持运行时纹理图集的生成。比如从网上下载资源，SpriteKit会自动将透明的像素裁剪下去</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[用Swift和SpriteKit开发iOS游戏]]></title>
@@ -998,58 +1275,6 @@ if([SLComposeViewController isAvailableForServiceType:SLServiceTypeSinaWeibo])
 
 <p>```
 这种方法我没试过，代码是照抄自前面提到的<a href="https://github.com/yulingtianxia/ios6ShareDemo.git">Demo</a>里</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[用DFS算法计算SpriteKit中复合体的构成]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/"/>
-    <updated>2014-04-21T21:06:55+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng</id>
-    <content type="html"><![CDATA[<p>在使用Sprite Kit开发iOS游戏的时候，有时我们需要把一些<code>SKNode</code>(或者其子类)的物理体(<code>SKPhysicsBody</code>)通过某种方式连在一起组合成一个<code>SKPhysicsJoint</code>，这样就可以让这个连接体在物理世界一起被模拟。例如我们可以将两个<code>SKNode</code>用绳子(<code>SKPhysicsJointLimit</code>)，弹簧(<code>SKPhysicsJointSpring</code>)，胶水(<code>SKPhysicsJointFixed</code>)，钉子(<code>SKPhysicsJointPin</code>)，滑轨(<code>SKPhysicsJointSliding</code>)组合在一起。</p>
-
-<p>想象一些复杂的情况，比如玩家需要将游戏中多个相同的<code>SKNode</code>按照某种规则组合到一起，每个组合体包含<code>SKNode</code>的多少甚至形状(树或是环)都是游戏衡量玩家得分的标准。举个简单的例子：游戏里有好多彩色的球，玩家操作小球把它们粘在一起，将5个球粘在一起那么就能获得一份奖励</p>
-
-<p>但是每个<code>SKPhysicsJoint</code>只负责将两个<code>SKPhysicsBody</code>连在一起</p>
-
-<!--more-->
-
-
-<p>其实这个问题可以简单归结为求图论中的联通图<br/>
-我写了个<code>Graph</code>类，只需在初始化的时候传入想要参加计算的<code>SKNode</code>数组即可，主要是用递归实现<code>DFS(深度优先搜索)</code>，维护N个集合(<code>NSSet</code>)，N的个数就是游戏中子图的个数，最小的子图就是一个<code>SKNode</code>。</p>
-
-<p>代码：</p>
-
-<script src="https://gist.github.com/yulingtianxia/11142742.js"></script>
-
-
-<p>可以在任意你需要的时候获取联通图信息：</p>
-
-<p>``` objc</p>
-
-<p>NSMutableArray <em>nodes = [NSMutableArray array];
-[thisAtom.scene enumerateChildNodesWithName:AtomName usingBlock:^(SKNode </em>node, BOOL *stop) {</p>
-
-<pre><code>    [nodes addObject:node];
-}];
-</code></pre>
-
-<p>Graph *graph = [[Graph alloc] initWithNodes:nodes];
-for (int i=0; i&lt;[graph.sets count]; i++) {</p>
-
-<pre><code>NSLog(@"%@",graph.sets[i]);
-</code></pre>
-
-<p>}
-```</p>
-
-<p>完整代码在<a href="https://github.com/yulingtianxia/MyFirstGame.git">这里</a>的<code>ColorAtom</code>工程<br/>
-在向<code>SKSpriteNode.userdata</code>写键值对的时候，发现写进去后再读取依然是nil，这是因为<code>userdata</code>属性完全归用户随意使用，苹果甚至在SKSpriteNode初始化的时候干脆默认<code>userdata</code>是<code>nil</code>，所以需要初始化下：</p>
-
-<p><code>
-((SKSpriteNode *)nodes[i]).userData = [NSMutableDictionary dictionary];
-</code>
-感谢StackOverFlow网友的回答：<a href="http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values">http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values</a></p>
 ]]></content>
   </entry>
   
