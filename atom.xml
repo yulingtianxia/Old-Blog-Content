@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-08T22:17:35+08:00</updated>
+  <updated>2014-08-08T23:21:55+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -4164,7 +4164,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Vector2D</span> <span class="p">{</span>
 </span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="mf">0.0</span>
 </span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="err">@</span><span class="nx">infix</span> <span class="nx">func</span> <span class="o">+</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</span><span class='line'><span class="nx">func</span> <span class="o">+</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">left</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">right</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">left</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">right</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -4194,12 +4194,10 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">infix</span> <span class="nx">func</span> <span class="o">==</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Bool</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">func</span> <span class="o">==</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Bool</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">left</span><span class="p">.</span><span class="nx">x</span> <span class="o">==</span> <span class="nx">right</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">left</span><span class="p">.</span><span class="nx">y</span> <span class="o">==</span> <span class="nx">right</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
 </span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">@</span><span class="nx">infix</span> <span class="nx">func</span> <span class="o">!=</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Bool</span> <span class="p">{</span>
+</span><span class='line'><span class="nx">func</span> <span class="o">!=</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Bool</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="o">!</span><span class="p">(</span><span class="nx">left</span> <span class="o">==</span> <span class="nx">right</span><span class="p">)</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -4228,12 +4226,12 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <h3>前缀和后缀运算符的重载</h3>
 
-<p>前缀和后缀运算符重载跟中缀运算符重载类似，只是将<code>func</code>关键字前的属性替换成<code>@prefix</code>和<code>@postfix</code>，比如：</p>
+<p>前缀和后缀一元运算符重载需要在将<code>func</code>关键字前用<code>prefix</code>和<code>postfix</code>修饰，比如：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">prefix</span> <span class="nx">func</span> <span class="o">-</span> <span class="p">(</span><span class="nx">vector</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">prefix</span> <span class="nx">func</span> <span class="o">-</span> <span class="p">(</span><span class="nx">vector</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="o">-</span><span class="nx">vector</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="o">-</span><span class="nx">vector</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -4260,12 +4258,12 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <h3>组合赋值运算符的重载</h3>
 
-<p>组合赋值是其他运算符和赋值运算符一起执行的运算。如<code>+=</code>把加运算和赋值运算组合成一个操作。实现一个组合赋值符号需要使用<code>@assignment</code>属性，还需要把运算符的左参数设置成<code>inout</code>，因为这个参数会在运算符函数内直接修改它的值。</p>
+<p>组合赋值是其他运算符和赋值运算符一起执行的运算。如<code>+=</code>把加运算和赋值运算组合成一个操作。实现一个组合赋值符号需要把运算符的左参数设置成<code>inout</code>，因为这个参数会在运算符函数内直接修改它的值。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">assignment</span> <span class="nx">func</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">inout</span> <span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">func</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">inout</span> <span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">left</span> <span class="o">=</span> <span class="nx">left</span> <span class="o">+</span> <span class="nx">right</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -4287,13 +4285,13 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 
 <p>
-你可以将<code>@assignment</code>属性和 <code>@prefix</code> 或 <code>@postfix</code> 属性起来组合，实现一个<code>Vector2D</code>的前缀运算符。</p>
+你可以将赋值运算结合<code>prefix</code> 或 <code>postfix</code>修饰，例如实现一个<code>Vector2D</code>的前缀自增运算符（++a）。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">prefix</span> <span class="err">@</span><span class="nx">assignment</span> <span class="nx">func</span> <span class="o">++</span> <span class="p">(</span><span class="nx">inout</span> <span class="nx">vector</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">prefix</span> <span class="nx">func</span> <span class="o">++</span> <span class="p">(</span><span class="nx">inout</span> <span class="nx">vector</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">vector</span> <span class="o">+=</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">)</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">vector</span>
 </span><span class='line'><span class="p">}</span>
@@ -4318,11 +4316,11 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <h2>自定义运算符</h2>
 
-<p>标准的运算符不够玩，那你可以声明一些个性的运算符，但个性的运算符只能使用这些字符 <code>/ = - + * % &lt; &gt;！&amp; | ^。~</code>  <br/>
-新的运算符声明需在全局域使用<code>operator</code>关键字声明，可以声明为前缀，中缀或后缀的。</p>
+<p>标准的运算符不够玩，那你可以声明一些个性的运算符，但个性的运算符只能使用这些字符 <code>/ = - + * % &lt; &gt; ! &amp; | ^ . ~</code>  <br/>
+新的运算符声明需在全局域使用<code>operator</code>关键字声明，可以声明为前缀，中缀或后缀的，分别用<code>prefix</code>、<code>infix</code>和<code>postfix</code>修饰。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">operator</span> <span class="nx">prefix</span> <span class="o">+++</span> <span class="p">{}</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">prefix</span> <span class="nx">operator</span> <span class="o">+++</span> <span class="p">{}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -4333,7 +4331,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">prefix</span> <span class="err">@</span><span class="nx">assignment</span> <span class="nx">func</span> <span class="o">+++</span> <span class="p">(</span><span class="nx">inout</span> <span class="nx">vector</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">prefix</span> <span class="nx">func</span> <span class="o">+++</span> <span class="p">(</span><span class="nx">inout</span> <span class="nx">vector</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">vector</span> <span class="o">+=</span> <span class="nx">vector</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">vector</span>
 </span><span class='line'><span class="p">}</span>
@@ -4367,7 +4365,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">operator</span> <span class="nx">infix</span> <span class="o">+-</span> <span class="p">{</span> <span class="nx">associativity</span> <span class="nx">left</span> <span class="nx">precedence</span> <span class="mi">140</span> <span class="p">}</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">infix</span> <span class="nx">operator</span> <span class="o">+-</span> <span class="p">{</span> <span class="nx">associativity</span> <span class="nx">left</span> <span class="nx">precedence</span> <span class="mi">140</span> <span class="p">}</span>
 </span><span class='line'><span class="nx">func</span> <span class="o">+-</span> <span class="p">(</span><span class="nx">left</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">,</span> <span class="nx">right</span><span class="o">:</span> <span class="nx">Vector2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Vector2D</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">Vector2D</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span> <span class="nx">left</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">right</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="nx">left</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="nx">right</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
 </span><span class='line'><span class="p">}</span>
@@ -7709,7 +7707,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#x73;&#117;&#112;&#112;&#x6f;&#x72;&#x74;&#x40;&#x67;&#105;&#116;&#104;&#117;&#98;&#46;&#x63;&#111;&#x6d;&#x2e;">&#x73;&#117;&#x70;&#x70;&#x6f;&#x72;&#116;&#64;&#103;&#x69;&#x74;&#x68;&#117;&#98;&#46;&#x63;&#x6f;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#x73;&#117;&#x70;&#x70;&#111;&#x72;&#x74;&#x40;&#103;&#x69;&#116;&#104;&#117;&#x62;&#x2e;&#x63;&#111;&#109;&#46;">&#x73;&#x75;&#x70;&#x70;&#111;&#114;&#116;&#x40;&#x67;&#x69;&#116;&#104;&#117;&#x62;&#x2e;&#99;&#x6f;&#109;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
