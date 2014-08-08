@@ -133,9 +133,9 @@ class Customer {
     deinit { println("\(name) is being deinitialized") }
 }
 class CreditCard {
-    let number: Int
+    let number: Int64
     unowned let customer: Customer
-    init(number: Int, customer: Customer) {
+    init(number: Int64, customer: Customer) {
         self.number = number
         self.customer = customer
     }
@@ -209,7 +209,7 @@ class HTMLElement {
     let name: String
     let text: String?
 
-    @lazy var asHTML: () -> String = {
+    lazy var asHTML: () -> String = {
         if let text = self.text {
             return "<\(self.name)>\(text)</\(self.name)>"
         } else {
@@ -252,7 +252,7 @@ Swift 提供了一种优雅的方法来解决这个问题，称之为闭包捕�
 捕获列表放置在闭包参数列表和返回类型之前，列表中每项都是由weak或unowned关键字和实例的引用（如self或someInstance）成对组成。每项都通过逗号分开写在方括号中。  
 
 ``` 
-@lazy var someClosure: (Int, String) -> String = {
+lazy var someClosure: (Int, String) -> String = {
     [unowned self] (index: Int, stringToProcess: String) -> String in
     // closure body goes here
 }
@@ -260,7 +260,7 @@ Swift 提供了一种优雅的方法来解决这个问题，称之为闭包捕�
 如果闭包没有指定参数列表或者返回类型，则可以通过上下文推断，那么可以捕获列表放在闭包开始的地方，跟着是关键字`in`：  
 
 ``` 
-@lazy var someClosure: () -> String = {
+lazy var someClosure: () -> String = {
     [unowned self] in
     // closure body goes here
 }
@@ -278,7 +278,7 @@ class HTMLElement {
     let name: String
     let text: String?
 
-    @lazy var asHTML: () -> String = {
+    lazy var asHTML: () -> String = {
         [unowned self] in
         if let text = self.text {
             return "<\(self.name)>\(text)</\(self.name)>"
