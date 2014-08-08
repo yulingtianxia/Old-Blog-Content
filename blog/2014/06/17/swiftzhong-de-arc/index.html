@@ -341,9 +341,9 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </span><span class='line'>    <span class="nx">deinit</span> <span class="p">{</span> <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;\(name) is being deinitialized&quot;</span><span class="p">)</span> <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="kr">class</span> <span class="nx">CreditCard</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">let</span> <span class="nx">number</span><span class="o">:</span> <span class="nx">Int</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">number</span><span class="o">:</span> <span class="nx">Int64</span>
 </span><span class='line'>    <span class="nx">unowned</span> <span class="kd">let</span> <span class="nx">customer</span><span class="o">:</span> <span class="nx">Customer</span>
-</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">number</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">customer</span><span class="o">:</span> <span class="nx">Customer</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">number</span><span class="o">:</span> <span class="nx">Int64</span><span class="p">,</span> <span class="nx">customer</span><span class="o">:</span> <span class="nx">Customer</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">number</span> <span class="o">=</span> <span class="nx">number</span>
 </span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">customer</span> <span class="o">=</span> <span class="nx">customer</span>
 </span><span class='line'>    <span class="p">}</span>
@@ -468,7 +468,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </span><span class='line'>    <span class="kd">let</span> <span class="nx">name</span><span class="o">:</span> <span class="nb">String</span>
 </span><span class='line'>    <span class="kd">let</span> <span class="nx">text</span><span class="o">:</span> <span class="nb">String</span><span class="o">?</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="err">@</span><span class="nx">lazy</span> <span class="kd">var</span> <span class="nx">asHTML</span><span class="o">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">String</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">lazy</span> <span class="kd">var</span> <span class="nx">asHTML</span><span class="o">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">String</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>        <span class="k">if</span> <span class="kd">let</span> <span class="nx">text</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">text</span> <span class="p">{</span>
 </span><span class='line'>            <span class="k">return</span> <span class="s2">&quot;&lt;\(self.name)&gt;\(text)&lt;/\(self.name)&gt;&quot;</span>
 </span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
@@ -526,7 +526,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">lazy</span> <span class="kd">var</span> <span class="nx">someClosure</span><span class="o">:</span> <span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nb">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">String</span> <span class="o">=</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">lazy</span> <span class="kd">var</span> <span class="nx">someClosure</span><span class="o">:</span> <span class="p">(</span><span class="nx">Int</span><span class="p">,</span> <span class="nb">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">String</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>    <span class="p">[</span><span class="nx">unowned</span> <span class="nx">self</span><span class="p">]</span> <span class="p">(</span><span class="nx">index</span><span class="o">:</span> <span class="nx">Int</span><span class="p">,</span> <span class="nx">stringToProcess</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">String</span> <span class="k">in</span>
 </span><span class='line'>    <span class="c1">// closure body goes here</span>
 </span><span class='line'><span class="p">}</span>
@@ -540,7 +540,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">@</span><span class="nx">lazy</span> <span class="kd">var</span> <span class="nx">someClosure</span><span class="o">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">String</span> <span class="o">=</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">lazy</span> <span class="kd">var</span> <span class="nx">someClosure</span><span class="o">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">String</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>    <span class="p">[</span><span class="nx">unowned</span> <span class="nx">self</span><span class="p">]</span> <span class="k">in</span>
 </span><span class='line'>    <span class="c1">// closure body goes here</span>
 </span><span class='line'><span class="p">}</span>
@@ -586,7 +586,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </span><span class='line'>    <span class="kd">let</span> <span class="nx">name</span><span class="o">:</span> <span class="nb">String</span>
 </span><span class='line'>    <span class="kd">let</span> <span class="nx">text</span><span class="o">:</span> <span class="nb">String</span><span class="o">?</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="err">@</span><span class="nx">lazy</span> <span class="kd">var</span> <span class="nx">asHTML</span><span class="o">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">String</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">lazy</span> <span class="kd">var</span> <span class="nx">asHTML</span><span class="o">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">String</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>        <span class="p">[</span><span class="nx">unowned</span> <span class="nx">self</span><span class="p">]</span> <span class="k">in</span>
 </span><span class='line'>        <span class="k">if</span> <span class="kd">let</span> <span class="nx">text</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">text</span> <span class="p">{</span>
 </span><span class='line'>            <span class="k">return</span> <span class="s2">&quot;&lt;\(self.name)&gt;\(text)&lt;/\(self.name)&gt;&quot;</span>
