@@ -9,7 +9,7 @@ categories:
 ---
 
 最近一直边忙毕设边学Swift，终于看完了官方的教程（语言参考暂不打算看），在iBooks上做了一些笔记（看英文伤不起），感觉Swift是一门大杂烩类型的语言，我会记录一些我自认为以前遇到较少或者需要重点记忆的语法特性，在此作为分享，这次是运算符的重载，几乎每门语言都有，只是语法不一样罢了。  
-
+(2014-8-8更新至beta5语法)
 <!--more-->
 
 ##运算符重载
@@ -21,7 +21,7 @@ categories:
 struct Vector2D {
     var x = 0.0, y = 0.0
 }
-@infix func + (left: Vector2D, right: Vector2D) -> Vector2D {
+func + (left: Vector2D, right: Vector2D) -> Vector2D {
     return Vector2D(x: left.x + right.x, y: left.y + right.y)
 }
 ``` 
@@ -37,11 +37,10 @@ let combinedVector = vector + anotherVector
 除了对双目运算符的重载，还有对比较运算符的重载  
 
 ``` 
-@infix func == (left: Vector2D, right: Vector2D) -> Bool {
+func == (left: Vector2D, right: Vector2D) -> Bool {
     return (left.x == right.x) && (left.y == right.y)
 }
-
-@infix func != (left: Vector2D, right: Vector2D) -> Bool {
+func != (left: Vector2D, right: Vector2D) -> Bool {
     return !(left == right)
 }
 ``` 
@@ -59,10 +58,10 @@ if twoThree == anotherTwoThree {
 
 
 ###前缀和后缀运算符的重载
-前缀和后缀运算符重载跟中缀运算符重载类似，只是将`func`关键字前的属性替换成`@prefix`和`@postfix`，比如：
+前缀和后缀一元运算符重载需要在将`func`关键字前用`prefix`和`postfix`修饰，比如：
 
 ``` 
-@prefix func - (vector: Vector2D) -> Vector2D {
+prefix func - (vector: Vector2D) -> Vector2D {
     return Vector2D(x: -vector.x, y: -vector.y)
 }
 ``` 
@@ -77,10 +76,10 @@ let alsoPositive = -negative
 // alsoPositive 为 (3.0, 4.0)
 ``` 
 ###组合赋值运算符的重载
-组合赋值是其他运算符和赋值运算符一起执行的运算。如`+=`把加运算和赋值运算组合成一个操作。实现一个组合赋值符号需要使用`@assignment`属性，还需要把运算符的左参数设置成`inout`，因为这个参数会在运算符函数内直接修改它的值。  
+组合赋值是其他运算符和赋值运算符一起执行的运算。如`+=`把加运算和赋值运算组合成一个操作。实现一个组合赋值符号需要把运算符的左参数设置成`inout`，因为这个参数会在运算符函数内直接修改它的值。  
 
 ``` 
-@assignment func += (inout left: Vector2D, right: Vector2D) {
+func += (inout left: Vector2D, right: Vector2D) {
     left = left + right
 }
 ``` 
@@ -93,10 +92,10 @@ let vectorToAdd = Vector2D(x: 3.0, y: 4.0)
 original += vectorToAdd
 // original 现在为 (4.0, 6.0)
 ``` 
-你可以将` @assignment `属性和 `@prefix` 或 `@postfix` 属性起来组合，实现一个`Vector2D`的前缀运算符。  
+你可以将赋值运算结合`prefix` 或 `postfix`修饰，例如实现一个`Vector2D`的前缀自增运算符（++a）。  
 
 ``` 
-@prefix @assignment func ++ (inout vector: Vector2D) -> Vector2D {
+@prefix func ++ (inout vector: Vector2D) -> Vector2D {
     vector += Vector2D(x: 1.0, y: 1.0)
     return vector
 }
@@ -110,16 +109,16 @@ let afterIncrement = ++toIncrement
 // afterIncrement 现在也是 (4.0, 5.0)
 ``` 
 ##自定义运算符
-标准的运算符不够玩，那你可以声明一些个性的运算符，但个性的运算符只能使用这些字符 `/ = - + * % < >！& | ^。~`    
-新的运算符声明需在全局域使用`operator`关键字声明，可以声明为前缀，中缀或后缀的。  
+标准的运算符不够玩，那你可以声明一些个性的运算符，但个性的运算符只能使用这些字符 `/ = - + * % < > ! & | ^ . ~`    
+新的运算符声明需在全局域使用`operator`关键字声明，可以声明为前缀，中缀或后缀的，分别用`prefix`、`infix`和`postfix`修饰。  
 
 ``` 
-operator prefix +++ {}
+prefix operator +++ {}
 ``` 
 这段代码定义了一个新的前缀运算符叫`+++`，此前Swift并不存在这个运算符。此处为了演示，我们让`+++`对`Vector2D`对象的操作定义为“双自增”（prefix doubling incrementer） 这样一个独有的操作，这个操作使用了之前定义的加赋运算（`+=`）实现了自已加上自己然后返回的运算。  
 
 ``` 
-@prefix @assignment func +++ (inout vector: Vector2D) -> Vector2D {
+prefix func +++ (inout vector: Vector2D) -> Vector2D {
     vector += vector
     return vector
 }
@@ -137,7 +136,7 @@ let afterDoubling = +++toBeDoubled
 结合性(associativity)的值默认为none，优先级(precedence)默认为100。  
 
 ``` 
-operator infix +- { associativity left precedence 140 }
+infix operator +- { associativity left precedence 140 }
 func +- (left: Vector2D, right: Vector2D) -> Vector2D {
     return Vector2D(x: left.x + right.x, y: left.y - right.y)
 }

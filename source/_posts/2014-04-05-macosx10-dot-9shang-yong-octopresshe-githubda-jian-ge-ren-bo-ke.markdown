@@ -48,7 +48,9 @@ Octopress搭建
     
     sudo gem install bundler
 提示输入密码的时候，输入你自己的MacOSX开机密码后回车，注意输入密码的过程中终端无任何显示，这跟Linux一样  
-如果半天都没有反应，这是因为rubygems.org 的文件资源被墙了，可以在[这里](http://ruby.taobao.org)查看解决方法，或者干脆翻墙，推荐一款Mac上比较傻瓜式的翻墙软件－－[鱼摆摆](http://macappbox.com/yubaibai/),我个人比较推荐翻墙。
+如果半天都没有反应，这是因为rubygems.org 的文件资源被墙了，可以在[这里](http://ruby.taobao.org)查看解决方法，或者干脆翻墙，推荐[云梯VPN](http://tizipro.com/?r=ee0508bc191f5651)科学上网，我个人比较推荐翻墙。  
+
+PS：云梯VPN优惠链接：[http://tizipro.com/?r=ee0508bc191f5651](http://tizipro.com/?r=ee0508bc191f5651)
 
 接下来运行：    
     

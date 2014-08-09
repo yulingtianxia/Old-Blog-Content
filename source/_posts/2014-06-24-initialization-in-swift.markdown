@@ -14,7 +14,9 @@ categories:
 - 默认构造器
 - 值类型的构造器代理
 - 类的继承和构造过程
-- 通过闭包和函数来设置属性的默认值
+- 通过闭包和函数来设置属性的默认值  
+
+(2014-8-8更新至beta5语法)
 <!--more-->
 
 ##简介
@@ -58,7 +60,7 @@ let boilingPointOfWater = Celsius(fromFahrenheit: 212.0)
 let freezingPointOfWater = Celsius(fromKelvin: 273.15)
 // freezingPointOfWater.temperatureInCelsius 是 0.0”
 ``` 
-如果不写外部参数名那么外部参数名就等于内部参数名。如果你不希望为构造器的某个参数提供外部名字，你还可以使用下划线`_`来显示描述它的外部名：  
+如果不写外部参数名那么外部参数名就等于内部参数名：  
 
 ``` 
 struct Color {
@@ -71,6 +73,26 @@ struct Color {
 }
 let magenta = Color(red: 1.0, green: 0.0, blue: 1.0)
 ``` 
+
+如果你不希望为构造器的某个参数提供外部名字，你还可以使用下划线`_`来显示描述它的外部名：  
+
+``` 
+struct Celsius {
+    var temperatureInCelsius: Double
+    init(fromFahrenheit fahrenheit: Double) {
+        temperatureInCelsius = (fahrenheit - 32.0) / 1.8
+    }
+    init(fromKelvin kelvin: Double) {
+        temperatureInCelsius = kelvin - 273.15
+    }
+    init(_ celsius: Double) {
+        temperatureInCelsius = celsius
+    }
+}
+let bodyTemperature = Celsius(37.0)
+// bodyTemperature.temperatureInCelsius is 37.0
+``` 
+
 你会发现构造器的第一个内部参数名也会默认作为其外部参数名供调用，这一点与方法不同（方法不会默认将第一个内部参数名作为外部参数名使用），因为方法名可以在结尾加上介词来烘托出第一个参数的名字，这样就不需要为第一个参数弄一个外部参数名了，但是构造器只能用`init`关键字来定义。  
 
 如果你定制的类型包含一个逻辑上允许取值为空的存储型属性--不管是因为它无法在初始化时赋值，还是因为它可以在之后某个时间点可以赋值为空--你都需要将它定义为可选类型`optional type`。可选类型的属性将自动初始化为空`nil`，表示这个属性是故意在初始化时设置为空的。  
