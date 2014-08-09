@@ -8,6 +8,9 @@ footer: true
 
 ---
 ##如不能加载请自备梯子
+
+云梯VPN优惠链接：[http://tizipro.com/?r=ee0508bc191f5651](http://tizipro.com/?r=ee0508bc191f5651)  
+
 <script>
   (function() {
     var cx = '007120364111268919138:tex1pcfht90';

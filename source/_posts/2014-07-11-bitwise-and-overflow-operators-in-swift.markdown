@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Swift中的位运算符合溢出运算符"
+title: "Swift中的位运算符和溢出运算符"
 date: 2014-07-11 15:15:59 +0800
 comments: true
 categories: 
