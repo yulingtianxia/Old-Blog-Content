@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MacOSX | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/macosx/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-08T23:30:47+08:00</updated>
+  <updated>2014-08-09T15:10:04+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -70,7 +70,9 @@ gem install bundler
 </code></pre>
 
 <p>提示输入密码的时候，输入你自己的MacOSX开机密码后回车，注意输入密码的过程中终端无任何显示，这跟Linux一样<br/>
-如果半天都没有反应，这是因为rubygems.org 的文件资源被墙了，可以在<a href="http://ruby.taobao.org">这里</a>查看解决方法，或者干脆翻墙，推荐一款Mac上比较傻瓜式的翻墙软件－－<a href="http://macappbox.com/yubaibai/">鱼摆摆</a>,我个人比较推荐翻墙。</p>
+如果半天都没有反应，这是因为rubygems.org 的文件资源被墙了，可以在<a href="http://ruby.taobao.org">这里</a>查看解决方法，或者干脆翻墙，推荐<a href="http://tizipro.com/?r=ee0508bc191f5651">云梯VPN</a>科学上网，我个人比较推荐翻墙。</p>
+
+<p>PS：云梯VPN优惠链接：<a href="http://tizipro.com/?r=ee0508bc191f5651">http://tizipro.com/?r=ee0508bc191f5651</a></p>
 
 <p>接下来运行：</p>
 

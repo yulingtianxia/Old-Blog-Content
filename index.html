@@ -533,7 +533,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 	</div>
 	<h1 class="title" itemprop="name"><a href="/blog/2014/06/17/optionals-and-optional-chaining-in-swift/" itemprop="url">Optionals and Optional Chaining in Swift</a></h1>
 	<div class="entry-content" itemprop="articleBody">
-		<p>可选类型（<code>Optionals</code>）在Swift中用于处理值可能缺失的情况，也就是说可能存在没有值的情况。C 和 Objective-C 中并没有可选类型这个概念。但在Objective-C中，一个方法的返回值可以是一个对象或<code>nil</code>值（<code>nil</code>表示缺少一个合法对象），而对象只是针对类而言，结构体、基本C类型和枚举并不适用<code>nil</code>来表示值的缺失，对于这些类型，Objective-C 方法一般会返回一个特殊值（比如<code>NSNotFound</code>）来暗示值缺失。这种表示“值缺失”方法不统一的局面使得调用方法的程序员蛋疼了-需要针对不同情况进行处理-但随着可选类型的诞生，这种情形在Swift中得到解决，<code>Optionals</code>可以表示任意类型值的缺失。</p>
+		<p>可选类型（<code>Optionals</code>）在Swift中用于处理值可能缺失的情况，也就是说可能存在没有值的情况。C 和 Objective-C 中并没有可选类型这个概念。但在Objective-C中，一个方法的返回值可以是一个对象或<code>nil</code>值（<code>nil</code>表示缺少一个合法对象），而对象只是针对类而言，结构体、基本C类型和枚举并不适用<code>nil</code>来表示值的缺失，对于这些类型，Objective-C 方法一般会返回一个特殊值（比如<code>NSNotFound</code>）来暗示值缺失。这种表示“值缺失”方法不统一的局面使得调用方法的程序员蛋疼了-需要针对不同情况进行处理-但随着可选类型的诞生，这种情形在Swift中得到解决，<code>Optionals</code>可以表示任意类型值的缺失。(2014-8-8更新至beta5语法)</p>
 
 
 		

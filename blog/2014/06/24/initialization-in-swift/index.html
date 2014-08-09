@@ -225,7 +225,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 
 <p>
-如果不写外部参数名那么外部参数名就等于内部参数名。如果你不希望为构造器的某个参数提供外部名字，你还可以使用下划线<code>_</code>来显示描述它的外部名：</p>
+如果不写外部参数名那么外部参数名就等于内部参数名：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -248,8 +248,44 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>
-你会发现构造器的第一个内部参数名也会默认作为其外部参数名供调用，这一点与方法不同（方法不会默认将第一个内部参数名作为外部参数名使用），因为方法名可以在结尾加上介词来烘托出第一个参数的名字，这样就不需要为第一个参数弄一个外部参数名了，但是构造器只能用<code>init</code>关键字来定义。</p>
+<p></p>
+
+<p>如果你不希望为构造器的某个参数提供外部名字，你还可以使用下划线<code>_</code>来显示描述它的外部名：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Celsius</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">temperatureInCelsius</span><span class="o">:</span> <span class="nx">Double</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">fromFahrenheit</span> <span class="nx">fahrenheit</span><span class="o">:</span> <span class="nx">Double</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">temperatureInCelsius</span> <span class="o">=</span> <span class="p">(</span><span class="nx">fahrenheit</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.8</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">fromKelvin</span> <span class="nx">kelvin</span><span class="o">:</span> <span class="nx">Double</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">temperatureInCelsius</span> <span class="o">=</span> <span class="nx">kelvin</span> <span class="o">-</span> <span class="mf">273.15</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">(</span><span class="nx">_</span> <span class="nx">celsius</span><span class="o">:</span> <span class="nx">Double</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">temperatureInCelsius</span> <span class="o">=</span> <span class="nx">celsius</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">bodyTemperature</span> <span class="o">=</span> <span class="nx">Celsius</span><span class="p">(</span><span class="mf">37.0</span><span class="p">)</span>
+</span><span class='line'><span class="c1">// bodyTemperature.temperatureInCelsius is 37.0</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>你会发现构造器的第一个内部参数名也会默认作为其外部参数名供调用，这一点与方法不同（方法不会默认将第一个内部参数名作为外部参数名使用），因为方法名可以在结尾加上介词来烘托出第一个参数的名字，这样就不需要为第一个参数弄一个外部参数名了，但是构造器只能用<code>init</code>关键字来定义。</p>
 
 <p>如果你定制的类型包含一个逻辑上允许取值为空的存储型属性&mdash;不管是因为它无法在初始化时赋值，还是因为它可以在之后某个时间点可以赋值为空&mdash;你都需要将它定义为可选类型<code>optional type</code>。可选类型的属性将自动初始化为空<code>nil</code>，表示这个属性是故意在初始化时设置为空的。</p>
 
