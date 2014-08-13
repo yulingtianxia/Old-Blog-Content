@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-13T10:41:14+08:00</updated>
+  <updated>2014-08-13T20:33:37+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -788,7 +788,8 @@ textureNoiseWithSmoothness:size:grayscale:</code><br/>
 
 <p><code>filter:</code> 对RACStream中的事件内容进行过滤，返回一个过滤事件内容后的instancetype<br/>
 <code>map:</code> 会将事件中的数据转换成你想要的数据，返回一个转换事件内容后的instancetype<br/>
-<code>flattenMap:</code> 在map的基础上使其flatten，也就是当Signal嵌套（一个Signal的事件是另一个Signal）的时候，会将内部Signal的事件传递给外部Signal</p>
+<code>flattenMap:</code> 在map的基础上使其flatten，也就是当Signal嵌套（一个Signal的事件是另一个Signal）的时候，会将内部Signal的事件传递给外部Signal<br/>
+<code>distinctUntilChanged</code> 比较数值流中当前值和上一个值，如果不同，就返回当前值，简单理解为“流”的值有变化时反馈变化的值，求异存同。</p>
 
 <p>PS：instancetype是程序运行时对象的类型，有可能为RACStream，也可以为其子类RACSignal。正是因为这些操作事件的方法都会返回事件源对象相同的类型，事件可以被一连串的被这些方法修改，过滤等，这就形成了管道，管道中传递着事件，包含着value。<br/>
 建议管道的语法格式是每个操作新起一行，并在垂直方向上对齐：<br/>
@@ -809,6 +810,8 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 <p><code>subscribeOn:</code> 功能跟<code>deliverOn:</code>相同，但是它也会将副作用也切换到制定线程中。</p>
 
 <p><code>throttle:</code>  它接收一个时间间隔interval作为参数，如果Signal发出的next事件之后interval时间内不再发出next事件，那么它返回的Signal会将这个next事件发出。也就是说，这个方法会将发送比较频繁的next事件舍弃，只保留一段“静默”时间之前的那个next事件，这个方法常用于处理输入框等信号（用户打字很快），因为它只保留用户最后输入的文字并返回一个新的Signal，将最后的文字作为next事件参数发出。</p>
+
+<p><code>and</code>、<code>or</code>、<code>not</code> NSNumber中Bool的与、或、非操作，将Signal发出的事件内容转化。</p>
 
 <h4>RACSubscriber</h4>
 
@@ -870,6 +873,10 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 <p></p>
 
 <p>当管道（好吧比较短）的订阅者全部被移除后，管道中的代码不会执行，包括三种事件参数block中的代码和诸如<code>doNext:</code>等副作用的block。可以简单理解为，当管道中的Signal没人订阅，它的事件就不会发出了。</p>
+
+<h4>RACCommand</h4>
+
+<p><code>RACCommand</code> 通常用来表示某个Action的执行，比如点击Button。</p>
 
 <h4>RACScheduler</h4>
 
@@ -7798,7 +7805,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#97;&#x69;&#108;&#116;&#x6f;&#58;&#x73;&#117;&#112;&#112;&#111;&#114;&#x74;&#64;&#x67;&#x69;&#116;&#x68;&#117;&#98;&#x2e;&#x63;&#111;&#109;&#46;">&#x73;&#117;&#x70;&#x70;&#x6f;&#114;&#x74;&#64;&#103;&#x69;&#x74;&#104;&#117;&#98;&#46;&#x63;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#x73;&#117;&#112;&#x70;&#111;&#x72;&#x74;&#64;&#x67;&#x69;&#x74;&#104;&#117;&#98;&#46;&#x63;&#111;&#x6d;&#46;">&#115;&#117;&#x70;&#x70;&#x6f;&#114;&#116;&#64;&#x67;&#x69;&#116;&#104;&#117;&#98;&#46;&#x63;&#111;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
