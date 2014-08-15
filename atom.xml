@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-13T20:33:37+08:00</updated>
+  <updated>2014-08-15T12:57:27+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -813,6 +813,8 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 
 <p><code>and</code>、<code>or</code>、<code>not</code> NSNumber中Bool的与、或、非操作，将Signal发出的事件内容转化。</p>
 
+<p>还可以根据方法（SEL类型）来创建Signal，每当该方法被调用时，Signal都会将此方法被传入的参数打包成<code>RACTuple</code>元组类型来发送next事件给它的接受者。<code>rac_signalForSelector:</code>和<code>rac_signalForSelector:fromProtocol:</code>这两个方法都能通过指定的方法来创建Signal。</p>
+
 <h4>RACSubscriber</h4>
 
 <p>RACSubscriber是一个协议，包含了向订阅者发送事件的方法。</p>
@@ -1458,7 +1460,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p></p>
 
-<p>Swift废弃了<code>performSelector</code>方法，所以这里刷了个小聪明来将消息传给具体的访问者。有关Swift中替代<code>performSelector</code>的方案，参见<a href="http://www.cnblogs.com/yangzhou1030/p/3830592.html">这里</a></p>
+<p>Swift废弃了<code>performSelector</code>方法，所以这里耍了个小聪明来将消息传给具体的访问者。有关Swift中替代<code>performSelector</code>的方案，参见<a href="http://www.cnblogs.com/yangzhou1030/p/3830592.html">这里</a></p>
 
 <p>下面让<code>GameScene</code>实现<code>SKPhysicsContactDelegate</code>协议：</p>
 
@@ -7805,7 +7807,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#x73;&#117;&#112;&#x70;&#111;&#x72;&#x74;&#64;&#x67;&#x69;&#x74;&#104;&#117;&#98;&#46;&#x63;&#111;&#x6d;&#46;">&#115;&#117;&#x70;&#x70;&#x6f;&#114;&#116;&#64;&#x67;&#x69;&#116;&#104;&#117;&#98;&#46;&#x63;&#111;&#x6d;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#x73;&#117;&#x70;&#x70;&#x6f;&#x72;&#x74;&#x40;&#103;&#x69;&#x74;&#104;&#x75;&#98;&#46;&#99;&#111;&#109;&#46;">&#115;&#x75;&#112;&#112;&#111;&#x72;&#116;&#x40;&#103;&#x69;&#x74;&#x68;&#117;&#98;&#46;&#99;&#x6f;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 

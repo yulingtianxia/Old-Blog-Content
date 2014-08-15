@@ -497,6 +497,8 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 
 <p><code>and</code>、<code>or</code>、<code>not</code> NSNumber中Bool的与、或、非操作，将Signal发出的事件内容转化。</p>
 
+<p>还可以根据方法（SEL类型）来创建Signal，每当该方法被调用时，Signal都会将此方法被传入的参数打包成<code>RACTuple</code>元组类型来发送next事件给它的接受者。<code>rac_signalForSelector:</code>和<code>rac_signalForSelector:fromProtocol:</code>这两个方法都能通过指定的方法来创建Signal。</p>
+
 <h4>RACSubscriber</h4>
 
 <p>RACSubscriber是一个协议，包含了向订阅者发送事件的方法。</p>

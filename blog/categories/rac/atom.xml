@@ -4,7 +4,7 @@
   <title><![CDATA[Category: RAC | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/rac/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-13T20:33:37+08:00</updated>
+  <updated>2014-08-15T12:57:27+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -283,6 +283,8 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 <p><code>throttle:</code>  它接收一个时间间隔interval作为参数，如果Signal发出的next事件之后interval时间内不再发出next事件，那么它返回的Signal会将这个next事件发出。也就是说，这个方法会将发送比较频繁的next事件舍弃，只保留一段“静默”时间之前的那个next事件，这个方法常用于处理输入框等信号（用户打字很快），因为它只保留用户最后输入的文字并返回一个新的Signal，将最后的文字作为next事件参数发出。</p>
 
 <p><code>and</code>、<code>or</code>、<code>not</code> NSNumber中Bool的与、或、非操作，将Signal发出的事件内容转化。</p>
+
+<p>还可以根据方法（SEL类型）来创建Signal，每当该方法被调用时，Signal都会将此方法被传入的参数打包成<code>RACTuple</code>元组类型来发送next事件给它的接受者。<code>rac_signalForSelector:</code>和<code>rac_signalForSelector:fromProtocol:</code>这两个方法都能通过指定的方法来创建Signal。</p>
 
 <h4>RACSubscriber</h4>
 
