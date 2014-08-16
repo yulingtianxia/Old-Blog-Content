@@ -305,7 +305,7 @@ func visitBody(body:SKPhysicsBody){
     }
 ``` 
 
-Swift废弃了`performSelector`方法，所以这里刷了个小聪明来将消息传给具体的访问者。有关Swift中替代`performSelector`的方案，参见[这里](http://www.cnblogs.com/yangzhou1030/p/3830592.html)  
+Swift废弃了`performSelector`方法，所以这里耍了个小聪明来将消息传给具体的访问者。有关Swift中替代`performSelector`的方案，参见[这里](http://www.cnblogs.com/yangzhou1030/p/3830592.html)  
 
 下面让`GameScene`实现`SKPhysicsContactDelegate`协议：  
 

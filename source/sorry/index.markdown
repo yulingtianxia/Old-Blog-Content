@@ -11,6 +11,8 @@ footer: true
 ![](http://hdn.xnimg.cn/photos/hdn421/20121202/1300/h_large_OT5S_365c00001d271375.jpg)  
 
 清华&MIT男  
+竟然有女朋友了！  
+
 大家自由发表意见  
 
  

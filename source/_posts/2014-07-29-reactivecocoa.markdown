@@ -216,6 +216,7 @@ RACSignal是RACStream的子类，RACStream是一个抽象类，描述了值的�
 `filter:` 对RACStream中的事件内容进行过滤，返回一个过滤事件内容后的instancetype  
 `map:` 会将事件中的数据转换成你想要的数据，返回一个转换事件内容后的instancetype  
 `flattenMap:` 在map的基础上使其flatten，也就是当Signal嵌套（一个Signal的事件是另一个Signal）的时候，会将内部Signal的事件传递给外部Signal  
+`distinctUntilChanged` 比较数值流中当前值和上一个值，如果不同，就返回当前值，简单理解为“流”的值有变化时反馈变化的值，求异存同。  
 
 PS：instancetype是程序运行时对象的类型，有可能为RACStream，也可以为其子类RACSignal。正是因为这些操作事件的方法都会返回事件源对象相同的类型，事件可以被一连串的被这些方法修改，过滤等，这就形成了管道，管道中传递着事件，包含着value。  
 建议管道的语法格式是每个操作新起一行，并在垂直方向上对齐：  
@@ -236,6 +237,10 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 `subscribeOn:` 功能跟`deliverOn:`相同，但是它也会将副作用也切换到制定线程中。  
 
 `throttle:`  它接收一个时间间隔interval作为参数，如果Signal发出的next事件之后interval时间内不再发出next事件，那么它返回的Signal会将这个next事件发出。也就是说，这个方法会将发送比较频繁的next事件舍弃，只保留一段“静默”时间之前的那个next事件，这个方法常用于处理输入框等信号（用户打字很快），因为它只保留用户最后输入的文字并返回一个新的Signal，将最后的文字作为next事件参数发出。  
+
+`and`、`or`、`not` NSNumber中Bool的与、或、非操作，将Signal发出的事件内容转化。  
+
+还可以根据方法（SEL类型）来创建Signal，每当该方法被调用时，Signal都会将此方法被传入的参数打包成`RACTuple`元组类型来发送next事件给它的接受者。`rac_signalForSelector:`和`rac_signalForSelector:fromProtocol:`这两个方法都能通过指定的方法来创建Signal。  
 
 ####RACSubscriber
 
@@ -274,6 +279,10 @@ RACDisposable *subscription =
 ``` 
 
 当管道（好吧比较短）的订阅者全部被移除后，管道中的代码不会执行，包括三种事件参数block中的代码和诸如`doNext:`等副作用的block。可以简单理解为，当管道中的Signal没人订阅，它的事件就不会发出了。  
+
+####RACCommand
+
+`RACCommand` 通常用来表示某个Action的执行，比如点击Button。  
 
 ####RACScheduler
 

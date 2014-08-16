@@ -7,10 +7,9 @@ sharing: true
 footer: true
 ---
 
->哈尔滨工业大学 软件学院  
->还未毕业，保送贵院MSE。。。  
->屌丝程序员一枚，喜欢接触新鲜事物  
->长期扎根于JavaEE和移动开发  
+>哈尔滨工业大学 软件学院，毕业后保送贵院MSE。。。  
+>屌丝程序员一枚，喜欢接触新鲜事物，研究一点Unity3D  
+>曾痴迷于Web&Android，正努力修炼成为一只合格的iOS程序猿，处女座嗜睡学生党  
 
 - [这里](http://about.me/yulingtianxia/)有我的名片  
 
