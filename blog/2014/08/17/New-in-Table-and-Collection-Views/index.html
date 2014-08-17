@@ -9,7 +9,7 @@
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="iOS8自动调整UITableView和UICollectionView布局 背景 iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。 &hellip;">
+	<meta name="description" content="iOS8自动调整UITableView和UICollectionView布局 本文讲述了UITableView、UICollectionView实现self-sizing cell布局的知识，以及如何用InvalidationContext优化UICollectionView布局的更新。 背景 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -134,7 +134,9 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 	<h1 class="title" itemprop="name">iOS8自动调整UITableView和UICollectionView布局</h1>
-	<div class="entry-content" itemprop="articleBody"><!--more-->
+	<div class="entry-content" itemprop="articleBody"><p>本文讲述了<code>UITableView</code>、<code>UICollectionView</code>实现self-sizing cell布局的知识，以及如何用InvalidationContext优化<code>UICollectionView</code>布局的更新。</p>
+
+<!--more-->
 
 
 <h2>背景</h2>
@@ -321,7 +323,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>其次。。。没有其次，在<code>UICollectionView</code>中实现self-sizing，只需给<code>estimatedItemSize</code>属性赋值（不能是<code>CGSizeZero</code>），一行代码足矣。</p>
 
-<h3>UICollectionViewLayoutInvalidationContext</h3>
+<h3>InvalidationContext</h3>
 
 <p>假如设备屏幕旋转，或者需要展示一些其妙的效果（比如CoverFlow），我们需要将当前的布局失效，并重新计算布局。当然每次计算都有一定的开销，所以我们应该谨慎的仅在我们需要的时候调用<code>invalidateLayout</code>方法来让布局失效。</p>
 

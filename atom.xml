@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-18T01:18:18+08:00</updated>
+  <updated>2014-08-18T01:25:22+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -18,7 +18,9 @@
     <link href="http://yulingtianxia.com/blog/2014/08/17/New-in-Table-and-Collection-Views/"/>
     <updated>2014-08-17T16:57:42+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/08/17/New-in-Table-and-Collection-Views</id>
-    <content type="html"><![CDATA[<!--more-->
+    <content type="html"><![CDATA[<p>本文讲述了<code>UITableView</code>、<code>UICollectionView</code>实现self-sizing cell布局的知识，以及如何用InvalidationContext优化<code>UICollectionView</code>布局的更新。</p>
+
+<!--more-->
 
 
 <h2>背景</h2>
@@ -205,7 +207,7 @@
 
 <p>其次。。。没有其次，在<code>UICollectionView</code>中实现self-sizing，只需给<code>estimatedItemSize</code>属性赋值（不能是<code>CGSizeZero</code>），一行代码足矣。</p>
 
-<h3>UICollectionViewLayoutInvalidationContext</h3>
+<h3>InvalidationContext</h3>
 
 <p>假如设备屏幕旋转，或者需要展示一些其妙的效果（比如CoverFlow），我们需要将当前的布局失效，并重新计算布局。当然每次计算都有一定的开销，所以我们应该谨慎的仅在我们需要的时候调用<code>invalidateLayout</code>方法来让布局失效。</p>
 
