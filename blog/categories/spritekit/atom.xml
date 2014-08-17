@@ -4,7 +4,7 @@
   <title><![CDATA[Category: SpriteKit | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/spritekit/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-16T20:50:06+08:00</updated>
+  <updated>2014-08-18T01:13:13+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -225,7 +225,7 @@
 
 <p>通过<code>SK3DNode</code>的<code>scnScene</code>属性可以获取到<code>SCNScene</code>，因为<code>SK3DNode</code>把3D场景渲染成2D贴图，所以创建<code>SK3DNode</code>对象的时候需要传入一个渲染后贴图的尺寸<code>viewportSize</code>。<code>pointOfView</code>属性存储了游戏视角的位置，你可以尝试实现个上帝视角。</p>
 
-<p>由于我也不太了解新出的SceneKit，所以这部分不过多介绍了。</p>
+<p>由于我也不太了解“新”出的SceneKit，所以这部分不过多介绍了。</p>
 
 <h2>Tools</h2>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-16T20:50:06+08:00</updated>
+  <updated>2014-08-18T01:13:13+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,278 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS8自动调整UITableView和UICollectionView布局]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/08/17/New-in+Table-and-Collection-Views/"/>
+    <updated>2014-08-17T16:57:42+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/08/17/New-in Table-and-Collection-Views</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<h2>背景</h2>
+
+<p>iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。在iOS7之后我们可以用<code>UIFont</code>的<code>preferredFontForTextStyle:</code>类方法来指定一个样式，并让字体大小符合用户设定的字体大小。目前可供选择的有六种样式：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>UIFontTextStyleHeadline
+</span><span class='line'>UIFontTextStyleBody
+</span><span class='line'>UIFontTextStyleSubheadline
+</span><span class='line'>UIFontTextStyleFootnote
+</span><span class='line'>UIFontTextStyleCaption1
+</span><span class='line'>UIFontTextStyleCaption2</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>iOS会根据样式的用途来合理调整字体。</p>
+
+<p>问题来了，诸如字体大小这种“动态类型”，我们需要对其进行动态的UI调整，否则总是觉得我们的界面怪怪的：</p>
+
+<p><a href="http://t.williamgates.net/share-DCBF_53F0DDDB.html"><img src="http://t.williamgates.net/image-DCBF_53F0DDDB.jpg" border="0"></a></p>
+
+<p>我们想要让Cell的高度随着字体大小而作出调整：</p>
+
+<p><a href="http://t.williamgates.net/share-0D8C_53F0DDDB.html"><img src="http://t.williamgates.net/image-0D8C_53F0DDDB.jpg" border="0"></a></p>
+
+<p>总之，还会有其他动态因素导致我们需要修改布局。</p>
+
+<h2>解决方案</h2>
+
+<h3>UITableView</h3>
+
+<p>有三种策略可以调节Cell（或者是Header和Footer）的高度：</p>
+
+<ul>
+<li>调节Height属性</li>
+<li>通过委托方法<code>tableView: heightForRowAtIndexPath:</code></li>
+<li>Cell的“自排列”（self-sizing）</li>
+</ul>
+
+
+<p>前两种策略都是我们所熟悉的，后面将介绍第三种策略。<code>UITableViewCell</code>和<code>UICollectionViewCell</code>都支持self-sizing</p>
+
+<p>在iOS7中，<code>UITableViewDelegate</code>新增了三个方法来满足用户设定Cell、Header和Footer预计高度的方法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- tableView:estimatedHeightForRowAtIndexPath:
+</span><span class='line'>- tableView:estimatedHeightForHeaderInSection:
+</span><span class='line'>- tableView:estimatedHeightForFooterInSection:</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+当然对应这三个方法<code>UITableView</code>也<code>estimatedRowHeight</code>、<code>estimatedSectionHeaderHeight</code>和<code>estimatedSectionFooterHeight</code>三个属性，局限性在于只能统一定义所有行和节的高度。</p>
+
+<p>以Cell为例，iOS会根据给出的预计高度来创建一个Cell，但等到真正要显示它的时候，iOS8会在self-sizing计算得出新的Size并调整table的<code>contentSize</code>后，将Cell绘制显示出来。关键在于如何得出Cell新的Size，iOS提供了两种方法：</p>
+
+<ul>
+<li>自动布局
+  这个两年前推出的神器虽然在一开始表现不佳，但随着Xcode的越来越给力，在iOS7中自动布局俨然成了默认勾选的选项，通过设定一系列约束来使得我们的UI能够适应各种尺寸的屏幕。如果你有使用约束的经验，想必已经有了解决思路：向Cell的<code>contentView</code>添加约束。iOS会先调用<code>UIView</code>的<code>systemLayoutSizeFittingSize:</code>方法来根据约束计算新的Size，如果你没实现约束，<code>systemLayoutSizeFittingSize:</code>会接着调用<code>sizeThatFits:</code>方法。</li>
+<li>人工代码
+  我们可以重写<code>sizeThatFits:</code>方法来自己定义新的Size，这样我们就不必学习约束相关的知识了。</li>
+</ul>
+
+
+<p>下面我给出了一个用Swift语言写的Demo-<a href="https://github.com/yulingtianxia/HardChoice">HardChoice</a>，使用自动布局来调整<code>UITableViewCell</code>的高度。我通过实现一个<code>UITableViewCell</code>的子类<code>DynamicCell</code>来实现自动布局，你可以再GitHub上下载<a href="https://github.com/yulingtianxia/HardChoice">源码</a>：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import UIKit
+</span><span class='line'>
+</span><span class='line'>class DynamicCell: UITableViewCell {
+</span><span class='line'>
+</span><span class='line'>    required init(coder: NSCoder) {
+</span><span class='line'>        super.init(coder: coder)
+</span><span class='line'>        if textLabel != nil {
+</span><span class='line'>            textLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+</span><span class='line'>            textLabel.numberOfLines = 0
+</span><span class='line'>        }
+</span><span class='line'>        if detailTextLabel != nil {
+</span><span class='line'>            detailTextLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+</span><span class='line'>            detailTextLabel.numberOfLines = 0
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>    override func constraints() -&gt; [AnyObject] {
+</span><span class='line'>        var constraints = [AnyObject]()
+</span><span class='line'>        if textLabel != nil {
+</span><span class='line'>            constraints.extend(constraintsForView(textLabel))
+</span><span class='line'>        }
+</span><span class='line'>        if detailTextLabel != nil {
+</span><span class='line'>            constraints.extend(constraintsForView(detailTextLabel))
+</span><span class='line'>        }
+</span><span class='line'>        constraints.append(NSLayoutConstraint(item: contentView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.GreaterThanOrEqual, toItem: contentView, attribute: NSLayoutAttribute.Height, multiplier: 0, constant: 44))
+</span><span class='line'>        contentView.addConstraints(constraints)
+</span><span class='line'>        return constraints
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>    func constraintsForView(view:UIView) -&gt; [AnyObject]{
+</span><span class='line'>        var constraints = [NSLayoutConstraint]()
+</span><span class='line'>        constraints.append(NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.FirstBaseline, relatedBy: NSLayoutRelation.Equal, toItem: contentView, attribute: NSLayoutAttribute.Top, multiplier: 1.8, constant: 30.0))
+</span><span class='line'>        constraints.append(NSLayoutConstraint(item: contentView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.GreaterThanOrEqual, toItem: view, attribute: NSLayoutAttribute.Baseline, multiplier: 1.3, constant: 8))
+</span><span class='line'>        return constraints
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>上面的代码需要注意的是，Objective-C中的类在Swift中都可以被当做<code>AnyObject</code>，这在类型兼容问题上很管用。</p>
+
+<p>别忘了在相应的UITableViewController中的viewDidLoad方法中加上：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>self.tableView.estimatedRowHeight = 44</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>UICollectionView</h3>
+
+<p><code>UITableView</code> 和 <code>UICollectionView</code> 都是 data-source 和 delegate 驱动的。<code>UICollectionView</code>在此之上进行了进一步抽象。它将其子视图的位置，大小和外观的控制权委托给一个单独的布局对象。通过提供一个自定义布局对象，你几乎可以实现任何你能想象到的布局。布局继承自 <code>UICollectionViewLayout</code> 抽象基类。iOS6 中以 <code>UICollectionViewFlowLayout</code> 类的形式提出了一个具体的布局实现。在<code>UICollectionViewFlowLayout</code>中，self-sizing同样适用：</p>
+
+<p><a href="http://t.williamgates.net/share-05D4_53F0E00F.html"><img src="http://t.williamgates.net/image-05D4_53F0E00F.jpg" border="0"></a></p>
+
+<p>采用self-sizing后：</p>
+
+<p><a href="http://t.williamgates.net/share-B1E8_53F0DDDB.html"><img src="http://t.williamgates.net/image-B1E8_53F0DDDB.jpg" border="0"></a></p>
+
+<p><code>UICollectionView</code>实现self-sizing不仅可以通过在Cell的<code>contentView</code>上加约束和重写<code>sizeThatFits:</code>方法，也能在Cell层面（以前都是在<code>contentSize</code>上进行self-sizing）上做文章：重写<code>UICollectionReusableView</code>的<code>preferredLayoutAttributesFittingAttributes:</code>方法来在self-sizing计算出Size之后再修改，这样就达到了对Cell布局属性（<code>UICollectionViewLayoutAttributes</code>）的全面控制。</p>
+
+<p>PS：<code>preferredLayoutAttributesFittingAttributes:</code>方法默认调整Size属性来适应self-sizing Cell，所以重写的时候需要先调用父类方法，再在返回的<code>UICollectionViewLayoutAttributes</code>对象上做你想要做的修改。</p>
+
+<p>由此我们从最经典的<code>UICollectionViewLayout</code>强制计算属性（还记得<code>UICollectionViewLayoutAttributes</code>的一系列工厂方法么？）到使用self-sizing来根据我们需求调整属性中的Size，再到重写<code>UICollectionReusableView</code>（<code>UICollectionViewCell</code>也是继承于它）的<code>preferredLayoutAttributesFittingAttributes:</code>方法来从Cell层面对所有属性进行修改：</p>
+
+<p><a href="http://t.williamgates.net/share-95BA_53F0DDDB.html"><img src="http://t.williamgates.net/image-95BA_53F0DDDB.jpg" border="0"></a></p>
+
+<p>下面来说说如何在<code>UICollectionViewFlowLayout</code>实现self-sizing：</p>
+
+<p>首先，<code>UICollectionViewFlowLayout</code>增加了<code>estimatedItemSize</code>属性，这与<code>UITableView</code>中的&#8221;<code>estimated...Height</code>&ldquo;很像（注意我用省略号囊括那三种属性），但毕竟<code>UICollectionView</code>中的Item都需要约束Height和Width的，所以它是个<code>CGSIze</code>，除了这点它与<code>UITableView</code>中的&rdquo;<code>estimated...Height</code>&ldquo;用法没区别。</p>
+
+<p>其次。。。没有其次，在<code>UICollectionView</code>中实现self-sizing，只需给<code>estimatedItemSize</code>属性赋值（不能是<code>CGSizeZero</code>），一行代码足矣。</p>
+
+<h3>UICollectionViewLayoutInvalidationContext</h3>
+
+<p>假如设备屏幕旋转，或者需要展示一些其妙的效果（比如CoverFlow），我们需要将当前的布局失效，并重新计算布局。当然每次计算都有一定的开销，所以我们应该谨慎的仅在我们需要的时候调用<code>invalidateLayout</code>方法来让布局失效。</p>
+
+<p>在iOS6时代，有的人会“聪明地”这样做：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds
+</span><span class='line'>{
+</span><span class='line'>    CGRect oldBounds = self.collectionView.bounds;
+</span><span class='line'>    if (CGRectGetWidth(newBounds) != CGRectGetWidth(oldBounds)) {
+</span><span class='line'>        return YES;
+</span><span class='line'>    }
+</span><span class='line'>        return NO;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>而iOS7新加入的<code>UICollectionViewLayoutInvalidationContext</code>类声明了在布局失效时布局的哪些部分需要被更新。当数据源变更时，<code>invalidateEverything</code>和<code>invalidateDataSourceCounts</code>这两个只读Bool属性标记了<code>UICollectionView</code>数据源“全部过期失效”和“Section和Item数量失效”，<code>UICollectionView</code>会将它们自动设定并提供给你。</p>
+
+<p>你可以调用<code>invalidateLayoutWithContext:</code>方法并传入一个<code>UICollectionViewLayoutInvalidationContext</code>对象，这能优化布局的更新效率。</p>
+
+<p>当你自定义一个<code>UICollectionViewLayout</code>子类时，你可以调用<code>invalidationContextClass</code>方法来返回一个你定义的<code>UICollectionViewLayoutInvalidationContext</code>的子类，这样你的Layout子类在失效时会使用你自定义的InvalidationContext子类来优化更新布局。</p>
+
+<p>你还可以重写<code>invalidationContextForBoundsChange:</code>方法，在实现自定义Layout时通过重写这个方法返回一个InvalidationContext对象。</p>
+
+<p>综上所述都是iOS7中新加入的内容，并且还可以应用在<code>UICollectionViewFlowLayout</code>中。在iOS8中，<code>UICollectionViewLayoutInvalidationContext</code>也被用在self-sizing cell上。</p>
+
+<p>iOS8中<code>UICollectionViewLayoutInvalidationContext</code>新加入了三个方法使得我们可以更加细致精密地使某一行某一节Item（Cell）、Supplementary View或Decoration View失效：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>invalidateItemsAtIndexPaths:
+</span><span class='line'>invalidateSupplementaryElementsOfKind:atIndexPaths:
+</span><span class='line'>invalidateDecorationElementsOfKind:atIndexPaths:</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>对应着添加了三个只读数组属性来标记上面那三种组件：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>invalidatedItemIndexPaths
+</span><span class='line'>invalidatedSupplementaryIndexPaths
+</span><span class='line'>invalidatedDecorationIndexPaths</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>iOS自带的照片应用会将每一节照片的信息（时间、地点）停留显示在最顶部，实现这种将Header粘在顶端的功能其实就是将那个Index的Supplementary View失效，就这么简单。</p>
+
+<p><code>UICollectionViewLayoutInvalidationContext</code>新加入的<code>contentOffsetAdjustment</code>和<code>contentSizeAdjustment</code>属性可以让我们更新CollectionView的content的位移和尺寸。</p>
+
+<p>此外<code>UICollectionViewLayout</code>还加入了一对儿方法来帮助我们使用self-sizing：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>shouldInvalidateLayoutForPreferredLayoutAttributes:withOriginalAttributes:
+</span><span class='line'>invalidationContextForPreferredLayoutAttributes:withOriginalAttributes:</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>当一个self-sizing Cell发生属性发生变化时，第一个方法会被调用，它询问是否应该更新布局（即原布局失效），默认为NO；而第二个方法更细化的指明了哪些属性应该更新，需要调用父类的方法获得一个InvalidationContext对象，然后对其做一些你想要的修改，最后返回。</p>
+
+<p>试想，如果在你自定义的布局中，一个Cell的Size因为某种原因发生了变化（比如由于字体大小变化），其他的Cell会由于self-sizing而位置发生变化，你需要实现上面两个方法来让指定的Cell更新布局中的部分属性；别忘了整个CollectionView的<code>contentSize</code>和<code>contentOffset</code>因此也会发生变化，你需要给<code>contentOffsetAdjustment</code>和<code>contentSizeAdjustment</code>属性赋值。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SpriteKit在iOS8和OSX10.10中的新特性]]></title>
@@ -266,7 +538,7 @@
 
 <p>通过<code>SK3DNode</code>的<code>scnScene</code>属性可以获取到<code>SCNScene</code>，因为<code>SK3DNode</code>把3D场景渲染成2D贴图，所以创建<code>SK3DNode</code>对象的时候需要传入一个渲染后贴图的尺寸<code>viewportSize</code>。<code>pointOfView</code>属性存储了游戏视角的位置，你可以尝试实现个上帝视角。</p>
 
-<p>由于我也不太了解新出的SceneKit，所以这部分不过多介绍了。</p>
+<p>由于我也不太了解“新”出的SceneKit，所以这部分不过多介绍了。</p>
 
 <h2>Tools</h2>
 
@@ -7790,68 +8062,6 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 <p>这次一目了然了：</p>
 
 <p>ZPERSON表存储了子类所有字段数据，其Z_ENT字段标志着这条数据的类型，Z_ENT与类型名Z_NAME的映射关系储存在Z_PRIMARYKEY表中，而Z_3TEACHERS存储的则是ZPERSON表中数据项之间的关系，也就是之前我们建立的学生和老师的对应关系，其原理是将ZPERSON表中的Z_PK字段内容两个一组对应起来，这样就相当于把ZPERSON表中两条数据项关联起来了。之前我们在代码中只将LiLei同学添加到了MissGao老师的学生列表中，但是Core Data已经自动维护起了关系，让MissGao也存在于LiLei的老师列表中。Core Data把底层的数据库封装起来，通过简单的操作让程序员更高校的管理数据，所以SQLite这部分我们只是了解下就可以了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[GitHub Page build warning]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/05/02/github-page-build-warning/"/>
-    <updated>2014-05-02T13:57:53+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/05/02/github-page-build-warning</id>
-    <content type="html"><![CDATA[<p>几天前博主的GitHub Page闹了些小情绪：</p>
-
-<!--more-->
-
-
-<p></p>
-
-<blockquote><p>The page build completed successfully, but returned the following warning:</p>
-
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#x73;&#117;&#x70;&#112;&#111;&#114;&#x74;&#x40;&#x67;&#x69;&#x74;&#x68;&#x75;&#x62;&#x2e;&#99;&#111;&#109;&#x2e;">&#115;&#117;&#x70;&#112;&#111;&#x72;&#x74;&#64;&#x67;&#x69;&#116;&#104;&#117;&#98;&#46;&#x63;&#111;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
-
-<p>For information on troubleshooting Jekyll see:</p>
-
-<p><a href="https://help.github.com/articles/using-jekyll-with-pages#troubleshooting">https://help.github.com/articles/using-jekyll-with-pages#troubleshooting</a></p>
-
-<p>If you have any questions please contact us at <a href="https://github.com/contact.">https://github.com/contact.</a></p></blockquote>
-
-<p>也就是说只是warning而已，程序员根本不理睬的，加载速度慢点就慢点儿呗，可是。。。每次pushGitHub都发一次邮件啊，博主强迫症犯了，决心搞定它。<br/>
-GitHub很贴心的给出了整改意见啊，也就是第一个URL：<a href="https://github.com/blog/1715-faster-more-awesome-github-pages  ">https://github.com/blog/1715-faster-more-awesome-github-pages  </a>
-简单的说，就是因为我的自定义一级域名需要指向一个可以让GitHub Page加载更快的IP，或者是让我的子域名指向<code>username.github.io</code>(username为GitHub用户名，我的是yulingtianxia)，如果你没有自己的域名，那么根本不会出现warning邮件，因为<code>username.github.io</code>本身已经做了加速优化。<br/>
-我在terminal中运行了dig命令：<br/>
-<code>dig yulingtianxia.github.io +nostats +nocomments +nocmd</code><br/>
-结果如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>; &lt;&lt;&gt;&gt; DiG 9.8.3-P1 &lt;&lt;&gt;&gt; yulingtianxia.github.io +nostats +nocomments +nocmd
-</span><span class='line'>;; global options: +cmd
-</span><span class='line'>;yulingtianxia.github.io. IN  A
-</span><span class='line'>yulingtianxia.github.io. 2684 IN  CNAME   github.map.fastly.net.
-</span><span class='line'>github.map.fastly.net.    7   IN  A   103.245.222.133
-</span><span class='line'>fastly.net.       12821   IN  NS  ns3.p04.dynect.net.
-</span><span class='line'>fastly.net.       12821   IN  NS  ns1.p04.dynect.net.
-</span><span class='line'>fastly.net.       12821   IN  NS  ns2.p04.dynect.net.
-</span><span class='line'>fastly.net.       12821   IN  NS  ns4.p04.dynect.net.
-</span><span class='line'>ns1.p04.dynect.net.   21893   IN  A   208.78.70.4
-</span><span class='line'>ns2.p04.dynect.net.   20599   IN  A   204.13.250.4
-</span><span class='line'>ns3.p04.dynect.net.   21929   IN  A   208.78.71.4
-</span><span class='line'>ns4.p04.dynect.net.   26356   IN  A   204.13.251.4</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-于是我在我的域名管理后台将我的一级域名<code>yulingtianxia.com</code>指向<code>103.245.222.133</code>，问题解决。</p>
 ]]></content>
   </entry>
   

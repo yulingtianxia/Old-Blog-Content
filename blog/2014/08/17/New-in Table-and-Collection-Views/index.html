@@ -1,0 +1,494 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>iOS8自动调整UITableView和UICollectionView布局 - 玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="iOS8自动调整UITableView和UICollectionView布局 背景 iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/08/17/New-in+Table-and-Collection-Views/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I'm not a hacker.</p>
+<nav id="main-nav"><ul class="main">
+    <li><a href="/search">博客搜索</a></li>
+    <li><a href="/blog/archives">所有文章</a></li>
+    <li><a href="/about">关于我</a></li>
+
+</ul>
+
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Farc%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EARC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcocoapods%27+style%3D%27font-size%3A+12.857142857142858%25%27%3ECocoaPods%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcode-snippets%27+style%3D%27font-size%3A+12.857142857142858%25%27%3ECode+Snippets%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+21.42857142857143%25%27%3ECore+Data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdfssuan-fa%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EDFS%E7%AE%97%E6%B3%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+15.714285714285715%25%27%3EGCD%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+21.42857142857143%25%27%3EGitHub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3EiOS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EMacOSX%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+32.85714285714286%25%27%3EObjective-C%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Frac%27+style%3D%27font-size%3A+12.857142857142858%25%27%3ERAC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+12.857142857142858%25%27%3ESocial+Framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+27.142857142857142%25%27%3ESpriteKit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fswift%27+style%3D%27font-size%3A+32.85714285714286%25%27%3ESwift%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fvpn%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EVPN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+18.57142857142857%25%27%3EXcode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+12.857142857142858%25%27%3EXCode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjie-ping%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E6%88%AA%E5%B1%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
+<br>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">iOS8自动调整UITableView和UICollectionView布局</h1>
+	<div class="entry-content" itemprop="articleBody"><!--more-->
+
+
+<h2>背景</h2>
+
+<p>iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。在iOS7之后我们可以用<code>UIFont</code>的<code>preferredFontForTextStyle:</code>类方法来指定一个样式，并让字体大小符合用户设定的字体大小。目前可供选择的有六种样式：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>UIFontTextStyleHeadline
+</span><span class='line'>UIFontTextStyleBody
+</span><span class='line'>UIFontTextStyleSubheadline
+</span><span class='line'>UIFontTextStyleFootnote
+</span><span class='line'>UIFontTextStyleCaption1
+</span><span class='line'>UIFontTextStyleCaption2</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>iOS会根据样式的用途来合理调整字体。</p>
+
+<p>问题来了，诸如字体大小这种“动态类型”，我们需要对其进行动态的UI调整，否则总是觉得我们的界面怪怪的：</p>
+
+<p><a href="http://t.williamgates.net/share-DCBF_53F0DDDB.html"><img src="http://t.williamgates.net/image-DCBF_53F0DDDB.jpg" border="0"></a></p>
+
+<p>我们想要让Cell的高度随着字体大小而作出调整：</p>
+
+<p><a href="http://t.williamgates.net/share-0D8C_53F0DDDB.html"><img src="http://t.williamgates.net/image-0D8C_53F0DDDB.jpg" border="0"></a></p>
+
+<p>总之，还会有其他动态因素导致我们需要修改布局。</p>
+
+<h2>解决方案</h2>
+
+<h3>UITableView</h3>
+
+<p>有三种策略可以调节Cell（或者是Header和Footer）的高度：</p>
+
+<ul>
+<li>调节Height属性</li>
+<li>通过委托方法<code>tableView: heightForRowAtIndexPath:</code></li>
+<li>Cell的“自排列”（self-sizing）</li>
+</ul>
+
+
+<p>前两种策略都是我们所熟悉的，后面将介绍第三种策略。<code>UITableViewCell</code>和<code>UICollectionViewCell</code>都支持self-sizing</p>
+
+<p>在iOS7中，<code>UITableViewDelegate</code>新增了三个方法来满足用户设定Cell、Header和Footer预计高度的方法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- tableView:estimatedHeightForRowAtIndexPath:
+</span><span class='line'>- tableView:estimatedHeightForHeaderInSection:
+</span><span class='line'>- tableView:estimatedHeightForFooterInSection:</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+当然对应这三个方法<code>UITableView</code>也<code>estimatedRowHeight</code>、<code>estimatedSectionHeaderHeight</code>和<code>estimatedSectionFooterHeight</code>三个属性，局限性在于只能统一定义所有行和节的高度。</p>
+
+<p>以Cell为例，iOS会根据给出的预计高度来创建一个Cell，但等到真正要显示它的时候，iOS8会在self-sizing计算得出新的Size并调整table的<code>contentSize</code>后，将Cell绘制显示出来。关键在于如何得出Cell新的Size，iOS提供了两种方法：</p>
+
+<ul>
+<li>自动布局
+  这个两年前推出的神器虽然在一开始表现不佳，但随着Xcode的越来越给力，在iOS7中自动布局俨然成了默认勾选的选项，通过设定一系列约束来使得我们的UI能够适应各种尺寸的屏幕。如果你有使用约束的经验，想必已经有了解决思路：向Cell的<code>contentView</code>添加约束。iOS会先调用<code>UIView</code>的<code>systemLayoutSizeFittingSize:</code>方法来根据约束计算新的Size，如果你没实现约束，<code>systemLayoutSizeFittingSize:</code>会接着调用<code>sizeThatFits:</code>方法。</li>
+<li>人工代码
+  我们可以重写<code>sizeThatFits:</code>方法来自己定义新的Size，这样我们就不必学习约束相关的知识了。</li>
+</ul>
+
+
+<p>下面我给出了一个用Swift语言写的Demo-<a href="https://github.com/yulingtianxia/HardChoice">HardChoice</a>，使用自动布局来调整<code>UITableViewCell</code>的高度。我通过实现一个<code>UITableViewCell</code>的子类<code>DynamicCell</code>来实现自动布局，你可以再GitHub上下载<a href="https://github.com/yulingtianxia/HardChoice">源码</a>：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import UIKit
+</span><span class='line'>
+</span><span class='line'>class DynamicCell: UITableViewCell {
+</span><span class='line'>
+</span><span class='line'>    required init(coder: NSCoder) {
+</span><span class='line'>        super.init(coder: coder)
+</span><span class='line'>        if textLabel != nil {
+</span><span class='line'>            textLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+</span><span class='line'>            textLabel.numberOfLines = 0
+</span><span class='line'>        }
+</span><span class='line'>        if detailTextLabel != nil {
+</span><span class='line'>            detailTextLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+</span><span class='line'>            detailTextLabel.numberOfLines = 0
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>    override func constraints() -&gt; [AnyObject] {
+</span><span class='line'>        var constraints = [AnyObject]()
+</span><span class='line'>        if textLabel != nil {
+</span><span class='line'>            constraints.extend(constraintsForView(textLabel))
+</span><span class='line'>        }
+</span><span class='line'>        if detailTextLabel != nil {
+</span><span class='line'>            constraints.extend(constraintsForView(detailTextLabel))
+</span><span class='line'>        }
+</span><span class='line'>        constraints.append(NSLayoutConstraint(item: contentView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.GreaterThanOrEqual, toItem: contentView, attribute: NSLayoutAttribute.Height, multiplier: 0, constant: 44))
+</span><span class='line'>        contentView.addConstraints(constraints)
+</span><span class='line'>        return constraints
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>    func constraintsForView(view:UIView) -&gt; [AnyObject]{
+</span><span class='line'>        var constraints = [NSLayoutConstraint]()
+</span><span class='line'>        constraints.append(NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.FirstBaseline, relatedBy: NSLayoutRelation.Equal, toItem: contentView, attribute: NSLayoutAttribute.Top, multiplier: 1.8, constant: 30.0))
+</span><span class='line'>        constraints.append(NSLayoutConstraint(item: contentView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.GreaterThanOrEqual, toItem: view, attribute: NSLayoutAttribute.Baseline, multiplier: 1.3, constant: 8))
+</span><span class='line'>        return constraints
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>上面的代码需要注意的是，Objective-C中的类在Swift中都可以被当做<code>AnyObject</code>，这在类型兼容问题上很管用。</p>
+
+<p>别忘了在相应的UITableViewController中的viewDidLoad方法中加上：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>self.tableView.estimatedRowHeight = 44</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>UICollectionView</h3>
+
+<p><code>UITableView</code> 和 <code>UICollectionView</code> 都是 data-source 和 delegate 驱动的。<code>UICollectionView</code>在此之上进行了进一步抽象。它将其子视图的位置，大小和外观的控制权委托给一个单独的布局对象。通过提供一个自定义布局对象，你几乎可以实现任何你能想象到的布局。布局继承自 <code>UICollectionViewLayout</code> 抽象基类。iOS6 中以 <code>UICollectionViewFlowLayout</code> 类的形式提出了一个具体的布局实现。在<code>UICollectionViewFlowLayout</code>中，self-sizing同样适用：</p>
+
+<p><a href="http://t.williamgates.net/share-05D4_53F0E00F.html"><img src="http://t.williamgates.net/image-05D4_53F0E00F.jpg" border="0"></a></p>
+
+<p>采用self-sizing后：</p>
+
+<p><a href="http://t.williamgates.net/share-B1E8_53F0DDDB.html"><img src="http://t.williamgates.net/image-B1E8_53F0DDDB.jpg" border="0"></a></p>
+
+<p><code>UICollectionView</code>实现self-sizing不仅可以通过在Cell的<code>contentView</code>上加约束和重写<code>sizeThatFits:</code>方法，也能在Cell层面（以前都是在<code>contentSize</code>上进行self-sizing）上做文章：重写<code>UICollectionReusableView</code>的<code>preferredLayoutAttributesFittingAttributes:</code>方法来在self-sizing计算出Size之后再修改，这样就达到了对Cell布局属性（<code>UICollectionViewLayoutAttributes</code>）的全面控制。</p>
+
+<p>PS：<code>preferredLayoutAttributesFittingAttributes:</code>方法默认调整Size属性来适应self-sizing Cell，所以重写的时候需要先调用父类方法，再在返回的<code>UICollectionViewLayoutAttributes</code>对象上做你想要做的修改。</p>
+
+<p>由此我们从最经典的<code>UICollectionViewLayout</code>强制计算属性（还记得<code>UICollectionViewLayoutAttributes</code>的一系列工厂方法么？）到使用self-sizing来根据我们需求调整属性中的Size，再到重写<code>UICollectionReusableView</code>（<code>UICollectionViewCell</code>也是继承于它）的<code>preferredLayoutAttributesFittingAttributes:</code>方法来从Cell层面对所有属性进行修改：</p>
+
+<p><a href="http://t.williamgates.net/share-95BA_53F0DDDB.html"><img src="http://t.williamgates.net/image-95BA_53F0DDDB.jpg" border="0"></a></p>
+
+<p>下面来说说如何在<code>UICollectionViewFlowLayout</code>实现self-sizing：</p>
+
+<p>首先，<code>UICollectionViewFlowLayout</code>增加了<code>estimatedItemSize</code>属性，这与<code>UITableView</code>中的&#8221;<code>estimated...Height</code>&ldquo;很像（注意我用省略号囊括那三种属性），但毕竟<code>UICollectionView</code>中的Item都需要约束Height和Width的，所以它是个<code>CGSIze</code>，除了这点它与<code>UITableView</code>中的&rdquo;<code>estimated...Height</code>&ldquo;用法没区别。</p>
+
+<p>其次。。。没有其次，在<code>UICollectionView</code>中实现self-sizing，只需给<code>estimatedItemSize</code>属性赋值（不能是<code>CGSizeZero</code>），一行代码足矣。</p>
+
+<h3>UICollectionViewLayoutInvalidationContext</h3>
+
+<p>假如设备屏幕旋转，或者需要展示一些其妙的效果（比如CoverFlow），我们需要将当前的布局失效，并重新计算布局。当然每次计算都有一定的开销，所以我们应该谨慎的仅在我们需要的时候调用<code>invalidateLayout</code>方法来让布局失效。</p>
+
+<p>在iOS6时代，有的人会“聪明地”这样做：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds
+</span><span class='line'>{
+</span><span class='line'>    CGRect oldBounds = self.collectionView.bounds;
+</span><span class='line'>    if (CGRectGetWidth(newBounds) != CGRectGetWidth(oldBounds)) {
+</span><span class='line'>        return YES;
+</span><span class='line'>    }
+</span><span class='line'>        return NO;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>而iOS7新加入的<code>UICollectionViewLayoutInvalidationContext</code>类声明了在布局失效时布局的哪些部分需要被更新。当数据源变更时，<code>invalidateEverything</code>和<code>invalidateDataSourceCounts</code>这两个只读Bool属性标记了<code>UICollectionView</code>数据源“全部过期失效”和“Section和Item数量失效”，<code>UICollectionView</code>会将它们自动设定并提供给你。</p>
+
+<p>你可以调用<code>invalidateLayoutWithContext:</code>方法并传入一个<code>UICollectionViewLayoutInvalidationContext</code>对象，这能优化布局的更新效率。</p>
+
+<p>当你自定义一个<code>UICollectionViewLayout</code>子类时，你可以调用<code>invalidationContextClass</code>方法来返回一个你定义的<code>UICollectionViewLayoutInvalidationContext</code>的子类，这样你的Layout子类在失效时会使用你自定义的InvalidationContext子类来优化更新布局。</p>
+
+<p>你还可以重写<code>invalidationContextForBoundsChange:</code>方法，在实现自定义Layout时通过重写这个方法返回一个InvalidationContext对象。</p>
+
+<p>综上所述都是iOS7中新加入的内容，并且还可以应用在<code>UICollectionViewFlowLayout</code>中。在iOS8中，<code>UICollectionViewLayoutInvalidationContext</code>也被用在self-sizing cell上。</p>
+
+<p>iOS8中<code>UICollectionViewLayoutInvalidationContext</code>新加入了三个方法使得我们可以更加细致精密地使某一行某一节Item（Cell）、Supplementary View或Decoration View失效：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>invalidateItemsAtIndexPaths:
+</span><span class='line'>invalidateSupplementaryElementsOfKind:atIndexPaths:
+</span><span class='line'>invalidateDecorationElementsOfKind:atIndexPaths:</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>对应着添加了三个只读数组属性来标记上面那三种组件：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>invalidatedItemIndexPaths
+</span><span class='line'>invalidatedSupplementaryIndexPaths
+</span><span class='line'>invalidatedDecorationIndexPaths</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>iOS自带的照片应用会将每一节照片的信息（时间、地点）停留显示在最顶部，实现这种将Header粘在顶端的功能其实就是将那个Index的Supplementary View失效，就这么简单。</p>
+
+<p><code>UICollectionViewLayoutInvalidationContext</code>新加入的<code>contentOffsetAdjustment</code>和<code>contentSizeAdjustment</code>属性可以让我们更新CollectionView的content的位移和尺寸。</p>
+
+<p>此外<code>UICollectionViewLayout</code>还加入了一对儿方法来帮助我们使用self-sizing：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>shouldInvalidateLayoutForPreferredLayoutAttributes:withOriginalAttributes:
+</span><span class='line'>invalidationContextForPreferredLayoutAttributes:withOriginalAttributes:</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>当一个self-sizing Cell发生属性发生变化时，第一个方法会被调用，它询问是否应该更新布局（即原布局失效），默认为NO；而第二个方法更细化的指明了哪些属性应该更新，需要调用父类的方法获得一个InvalidationContext对象，然后对其做一些你想要的修改，最后返回。</p>
+
+<p>试想，如果在你自定义的布局中，一个Cell的Size因为某种原因发生了变化（比如由于字体大小变化），其他的Cell会由于self-sizing而位置发生变化，你需要实现上面两个方法来让指定的Cell更新布局中的部分属性；别忘了整个CollectionView的<code>contentSize</code>和<code>contentOffset</code>因此也会发生变化，你需要给<code>contentOffsetAdjustment</code>和<code>contentSizeAdjustment</code>属性赋值。</p>
+</div>
+
+</article>
+
+<DIV style="font-size:12px;BORDER-BOTTOM: #bbbbbb 1px solid; BORDER-LEFT: #bbbbbb 1px solid; BACKGROUND: #f6f6f6; HEIGHT: 90px; BORDER-TOP: #bbbbbb 1px solid; BORDER-RIGHT: #bbbbbb 1px solid" class=yulingtianxiaright>
+<DIV style="LINE-HEIGHT: 200%; MARGIN-TOP: 10px; COLOR: #000000">
+如本文图片不能正常显示，请科学上网。云梯VPN优惠链接：<A href="http://tizipro.com/?r=ee0508bc191f5651">http://tizipro.com/?r=ee0508bc191f5651</A>
+<BR>如未特殊说明，文章均为原创，转载请注明出处： <A href="http://yulingtianxia.com">http://yulingtianxia.com</A>
+<BR>本文基于<a target="_blank" title="Creative Commons Attribution 2.5 China Mainland License" href="http://creativecommons.org/licenses/by/2.5/cn/">
+署名 2.5 中国大陆</a>许可协议发布，欢迎转载，演绎或用于商业目的，但是必须保留本文的署名
+<a href="http://yulingtianxia.com">杨萧玉</a>（包含链接）。
+</DIV>
+</DIV>
+
+
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+  	
+     <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_xiaoyou"></a>
+	<a href="http://www.jiathis.com/share?uid=1912336" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1912336" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1912336"></script>
+<!-- UY END -->
+<script>document.write(unescape('%3Cdiv id="hm_t_33672"%3E%3C/div%3E%3Cscript charset="utf-8" src="http://crs.baidu.com/t.js?siteId=b5cb508df15ee6247a8c32c64eadb075&planId=33672&async=0&referer=') + encodeURIComponent(document.referrer) + '&title=' + encodeURIComponent(document.title) + '&rnd=' + (+new Date) + unescape('"%3E%3C/script%3E'));</script>
+
+ 	
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    玉令天下
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'yulingtianxia';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/08/17/New-in+Table-and-Collection-Views/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/08/17/New-in+Table-and-Collection-Views/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+		</div>
+	</div>
+</body>
+</html>
