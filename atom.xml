@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-18T01:25:22+08:00</updated>
+  <updated>2014-08-18T10:53:54+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -182,6 +182,10 @@
 
 
 <p></p>
+
+<p>自适应效果如下：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140833033058.gif" alt="" /></p>
 
 <h3>UICollectionView</h3>
 
