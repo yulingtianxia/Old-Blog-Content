@@ -4,7 +4,7 @@
   <title><![CDATA[Category: SpriteKit | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/spritekit/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-08-18T10:53:54+08:00</updated>
+  <updated>2014-08-19T22:25:36+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,197 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[创建SpriteKit游戏的最佳范例]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/08/19/best-practices-for-building-spritekit-games/"/>
+    <updated>2014-08-19T22:16:13+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/08/19/best-practices-for-building-spritekit-games</id>
+    <content type="html"><![CDATA[<p>本文会从拓展性、游戏构造和性能三个方面分别讲述建立SpriteKit游戏时的一些实践经验和范例。建议先阅读<a href="http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a>有助于理解本文内容。</p>
+
+<!--more-->
+
+
+<h2>拓展性最佳范例</h2>
+
+<h3>硬编码问题</h3>
+
+<p>在以前，程序员在场景中做了所有的事情，在代码中引用美工，游戏第一关采用硬编码，第二关第三关就是一顿复制粘贴修修补补。修改美工图片也意味着要改代码，每次预览修改后的效果都要Build和Run，而设计游戏的人甚至要会编程，因为修改设计（比如一些游戏参数）也要改代码。如果项目接着编写下去，这导致重复性的构建代码，将数据硬编码到代码中也是种低效率做法，编码与美工和设计人员之间合作困难。</p>
+
+<p>解决方案：</p>
+
+<ul>
+<li>将游戏内容与游戏逻辑分离</li>
+<li>将场景构造与素材分离</li>
+<li>将数据与代码分离</li>
+<li>在Xcode中所见即所得</li>
+</ul>
+
+
+<p>具体实现：</p>
+
+<ul>
+<li>游戏逻辑写在MyScene.m文件中（使用SpriteKit的模板）</li>
+<li>游戏场景结构创建在MyScene.sks文件中</li>
+<li>场景用到的素材使用单独的sks文件分开管理</li>
+<li>数据要存储在plist文件中（XML格式）</li>
+</ul>
+
+
+<p>Xcode6为我们提供的工具：</p>
+
+<ul>
+<li>SpriteKit模版，支持OC和Swift</li>
+<li>SpriteKit编辑器：可视化编辑sks文件，即时预览效果，实时物理模拟</li>
+<li>plist数据编辑器：XML语言被可视化成字典来编辑，简单高效</li>
+</ul>
+
+
+<p>在MyScene.m文件中使用下面的模板来加载MyScene.sks中设计好的场景结构，然后你就可以接着写游戏的逻辑了：</p>
+
+<p><code>
+let path = NSBundle.mainBundle().pathForResource(file, ofType: "sks")       
+var sceneData = NSData.dataWithContentsOfFile(path, options: .DataReadingMappedIfSafe, error: nil)
+var archiver = NSKeyedUnarchiver(forReadingWithData: sceneData)
+archiver.setClass(self.classForKeyedUnarchiver(), forClassName: "SKScene")
+let scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as GameScene
+archiver.finishDecoding()
+</code></p>
+
+<h2>游戏构造最佳范例</h2>
+
+<p>程序员总是想让游戏尽可能早地跑起来。为了完成这个目标，我们要懂得与美工和设计合作，毕竟程序员不能独自完成所有事情，下面列举下快速达成目标的步骤：</p>
+
+<ol>
+<li>先把一般性的工作做完，这只是逻辑布局上的编程，不必等美工提供素材。标记好英雄、敌人等人物出现的位置，设计好背景、平台等。</li>
+<li>用只有颜色没有贴图的<code>SKSpriteNode</code>来充当英雄和敌人，只要能区分开就好。现在可以设定父子层级关系，比如设定粒子发射位置，连接组件和关节（胳膊腿儿啥的）</li>
+<li>设定物理层面的相互作用，比如各种物理体的类别，碰撞掩码，是否受物理世界的影响等。在Xcode中模拟物理场景，保证你做的这些从一开始就万无一失。</li>
+<li>初始化场景逻辑和游戏逻辑，把之前在场景上布置好的物体与代码中的游戏中的物体用之前设定好的名字（英雄or敌人）联系起来。使用SpriteKit模板加载好游戏场景后，<code>SKScene</code>的<code>initWithCoder</code>会被调用，我们可以在这里加载声音和AI数据等不会变化的数据。当<code>SKView.presentScene:</code>被调用时，<code>SKScene</code>的<code>didMoveToView:</code>会被调用，在这里你要缓存可见的元素，比如敌人，你可以通过名字将它们从场景的子节点中遍历出来。</li>
+<li>完成游戏：将美工给你的素材替代以前的纯色，增加关卡和效果（Shader，滤镜等），迭代测试。</li>
+</ol>
+
+
+<p>PS：两种搜索节点元素的方法：
+<code>
+– childNodeWithName:
+– enumerateChildNodesWithName:usingBlock:
+</code></p>
+
+<blockquote><p>关于搜索文本的语法补充：<br/>
+通过name查找：</p>
+
+<ul>
+<li>“hero”是查找叫做“hero”的子节点，不迭代</li>
+<li>“//hero”是查找场景图中所有叫做“hero”的子节点，迭代</li>
+</ul>
+
+
+<p>通过class查找：</p>
+
+<ul>
+<li>“//SKEmitterNode”会在场景图中迭代查找所有粒子节点</li>
+</ul>
+
+
+<p>通过通配符查找：</p>
+
+<ul>
+<li>“//he*”查找所有以“he”开头的子节点</li>
+</ul>
+</blockquote>
+
+<h2>性能最佳范例</h2>
+
+<p>我们要尽可能维持游戏每秒60帧频率的刷新，就需要从性能上优化。</p>
+
+<h3>Drawing performance</h3>
+
+<p>影响绘图性能的两个主要因素：</p>
+
+<ul>
+<li>绘制顺序：默认的绘制顺序是按照代码中构造节点树的顺序绘制的，先绘制父节点，然后依次绘制子节点，并向下迭代。你可以将<code>SKView</code>的<code>ignoresSiblingOrder</code>属性设为YES，然后利用Z轴的层级深浅关系来定制绘制次序。</li>
+<li>共享：使用纹理图集（texture atlases），共享法线贴图，从文件加载Shader而不是字符串，将混合模式放在Z轴同一层级。</li>
+</ul>
+
+
+<p>下面的工具能帮你评估图形性能：</p>
+
+<p><code>SKView</code>上的HUD flags：</p>
+
+<p><code>
+showsFPS
+showsDrawCount
+showsNodeCount
+showsQuadCount
+</code></p>
+
+<p>profile：检测硬件使用情况。</p>
+
+<h3>Actions and constraints</h3>
+
+<p>使用<code>SKAction</code>类实现SpriteKit中的动画是很高效的。用一行代码就能实现诸如平移、旋转、缩放、渐入渐出等动画效果。你可以将多个动画组成一个序列（sequence）来依次执行，也可组成一个group来同时执行，sequence和group之间也可以互相嵌套。<code>SKAction</code>有很多方法，可以查看它的API文档。</p>
+
+<p>如果你给Action使用Key命名的话，你还可以通过Key来动态删除和重写这个Action。</p>
+
+<p><code>SKConstraints</code>类能在节点与节点或固定点之间建立约束。详见我的另一篇文章<a href="http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a>中New Physics->Constraints小节。</p>
+
+<h3>Physics</h3>
+
+<p>模拟物理世界需要很多的硬件计算，当务之急就是减少能耗。</p>
+
+<p>静态物体耗能较小，即使他们外形复杂。所以尽可能的将物理体的<code>dynamic</code>属性设为NO</p>
+
+<p>物理体的外形复杂程度也决定着能耗。圆形是最简单的，耗能最少，再往上依次是矩形、多边形、复合图形、alpha像素图形：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140844930564.png" alt="" /></p>
+
+<p>所以你需要权衡利弊来设计你游戏中物理体的外形。上图的后两种外形是iOS8新加入的，你可以在<a href="http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a>中的New Physics->Per-Pixel Physics和Improvements->Physics Updates这两个小节中学到有关它们的更多知识。</p>
+
+<p>在设置碰撞掩码（mask）时，尽量将相同类别的物体归为一类，用尽可能少得类别来划分你游戏中的物体。这样能减少很多能耗。</p>
+
+<p>尽可能使用iOS8新加入的<code>SKFieldNode</code>来模拟一些物理场景，而不是通过传统代码方式（自己向各种物体施加各种力）。有关<code>SKFieldNode</code>的知识可以查看<a href="http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a>中New Physics->Physics Fields那节。</p>
+
+<p>将<code>SKView</code>的<code>showsFields</code>属性设为YES可以将<code>SKFieldNode</code>的debug信息显示出来：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140845151467.png" alt="" />
+<img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140845150994.png" alt="" /></p>
+
+<p>上面两个场景是我的一个SpriteKit游戏<a href="https://github.com/yulingtianxia/ColorAtom">ColorAtom</a>中的秘密模式和黑洞模式截图，欢迎Star和Follow。</p>
+
+<h3>Shapes</h3>
+
+<p><code>SKShapeNode</code>的耗能层级图如下：</p>
+
+<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/14084531435.png" alt="" /></p>
+
+<p>上图中的分界线区分了低功耗和高功耗的Shape。绘制分段的linear strok所需的功耗也很少。</p>
+
+<h3>Effects</h3>
+
+<p><code>SKEffectNode</code>可以将它的子节点渲染的更加出彩，比如用CoreImage滤镜等合成出复杂的特效。但这也会对性能有很大影响，请谨慎使用。</p>
+
+<p>Shader是一个不错的选择，它不需要离屏渲染，想用就用，节能环保。有关<code>SKShader</code>的知识可以查看<a href="http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a>中Shader那节。</p>
+
+<p><code>shouldRasterize</code>属性暗示是否缓存以备将来之需。如果你的画面会停留一段时间，可以考虑设置为YES。</p>
+
+<p>我们还可以从<code>SKNode</code>中获取纹理（这不费吹灰之力），还可以对纹理进行滤镜加工：</p>
+
+<p><code>
+SKTexture *texture = [myView textureFromNode:node size:size];
+SKTexture *texture = [myTexture textureByApplyingCIFiler:filer];
+</code></p>
+
+<h3>Lighting</h3>
+
+<p>光照的功耗是跟像素数量成比例的，每个<code>SKSpriteNode</code>最多能被八个光源照射，你可以利用光照掩码来优化性能。</p>
+
+<p>环境光照（ambient light）所需功耗是免费的，而法线贴图（Normal Maps）功耗很低。</p>
+
+<p>阴影的功耗跟光源数量成正比，所以尽可能减少光源数量。</p>
+
+<p>有关Lighting的更多知识可以查看<a href="http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a>中Lighting and Shadows那节。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SpriteKit在iOS8和OSX10.10中的新特性]]></title>
@@ -1089,192 +1280,6 @@ mainScene.position = CGPointMake(self.size.width/2, self.size.height/2);
 [self addChild:mainScene];
 </code>
 感觉这样做是不是很像以前继承一个UIView然后封装自己的Custom View呢？给SKScene瘦身的方法还有很多，参照给UIViewController瘦身的方法，我们还可以把其他SKNode也从SKScene中剥离出去，一些用于设置SKNode的方法也会随之剥离到自定义的类中，便于以后维护代码</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[SpriteKit截屏并分享至社交网络]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/"/>
-    <updated>2014-04-22T17:36:25+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo</id>
-    <content type="html"><![CDATA[<p>本文讲述在用<code>SpriteKit</code>制作iOS游戏的时候，如何让在用户在达到某种成就后分享自己的成就或分数，并附上一张游戏截屏，然后发到社交网络上</p>
-
-<!--more-->
-
-
-<h2>SpriteKit截屏</h2>
-
-<p>传统的截屏方法是用UIView的layer来读取渲染上下文，生成图片</p>
-
-<p>``` objc</p>
-
-<p>UIGraphicsBeginImageContext(self.view.frame.size); //currentView 当前的view
-[self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
-UIGraphicsEndImageContext();
-```</p>
-
-<p>viewImage就是获取的截图，如果要将图片存入相册，只需在后面调用</p>
-
-<p><code>
-UIImageWriteToSavedPhotosAlbum(viewImage,nil,nil,nil);
-</code>
-而这一切都是基于<code>UIKit</code>的，在<code>SpriteKit</code>中，上面的方法是实效的，截屏的效果就是一张白色图片
-但在苹果的官方文档中，明确提到了<code>SKTexture</code>的作用，最后一条是说可以将节点树渲染成纹理，可以应用于对游戏截屏。苹果还告诉了我们<code>SKView</code>的一个方法：<code>textureFromNode:</code>，该方法将以node包含的内容渲染成一个纹理，但是如何将<code>SKTexture</code>转换为<code>UIView</code>呢？我在workoverflow的一个<a href="http://stackoverflow.com/questions/21061248/uiimage-from-sktexture">提问</a>中找到了答案：</p>
-
-<h3>方法一：</h3>
-
-<p>```
-&ndash; (UIImage<em>) imageWithView:(UIView </em>)view
-{</p>
-
-<pre><code>UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0);
-
-[view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
-
-UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
-UIGraphicsEndImageContext();
-
-return img;
-</code></pre>
-
-<p>}</p>
-
-<ul>
-<li><p>(UIImage<em>) imageFromNode:(SKNode</em>)node
-{
-  SKTexture<em>      tex     = [self.scene.view textureFromNode:node];
-  SKView</em>         view    = [[SKView alloc]initWithFrame:CGRectMake(0, 0, tex.size.width, tex.size.height)];
-  SKScene<em>        scene   = [SKScene sceneWithSize:tex.size];
-  SKSpriteNode</em>   sprite  = [SKSpriteNode spriteNodeWithTexture:tex];
-  sprite.position = CGPointMake( CGRectGetMidX(view.frame), CGRectGetMidY(view.frame) );
-  [scene addChild:sprite];
-  [view presentScene:scene];</p>
-
-<p>  return [self imageWithView:view];
-}
-```</p></li>
-<li>get the SKTexture for your node using the current SKView</li>
-<li>make another SKView that is just big enough for your texture</li>
-<li>add a SKSpriteNode with the texture into your new scene, placing it in the middle</li>
-<li>render the view into a graphics context</li>
-</ul>
-
-
-<h3>方法二:</h3>
-
-<p>```
-&ndash;(UIImage <em>)imageFromNode:(SKNode </em>)node {</p>
-
-<pre><code>SKView *view = node.scene.view;
-CGFloat scale = [UIScreen mainScreen].scale;
-CGRect nodeFrame = [node calculateAccumulatedFrame];
-
-// render SKView into UIImage
-UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0.0);
-[view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
-UIImage *sceneSnapshot = UIGraphicsGetImageFromCurrentImageContext();
-UIGraphicsEndImageContext();
-
-// crop to the requested node (making sure to flip the y-coordinate)
-CGFloat originY = sceneSnapshot.size.height*scale - nodeFrame.origin.y*scale - nodeFrame.size.height*scale;
-CGRect cropRect = CGRectMake(nodeFrame.origin.x * scale, originY, nodeFrame.size.width*scale, nodeFrame.size.height*scale);
-CGImageRef croppedSnapshot = CGImageCreateWithImageInRect(sceneSnapshot.CGImage, cropRect);
-UIImage *nodeSnapshot = [UIImage imageWithCGImage:croppedSnapshot];
-CGImageRelease(croppedSnapshot);
-
-return nodeSnapshot;
-</code></pre>
-
-<p>}
-```
-<strong>以上两个方法亲测好使！</strong></p>
-
-<h2>使用Social.Framework分享游戏战绩</h2>
-
-<p>因为比较懒不想在各种第三方社交网站申请APP注册然后使用SDK等，有点复杂，所以暂时用了苹果自带的Social.Framework</p>
-
-<p>首先推荐一个比较好的<a href="https://github.com/yulingtianxia/ios6ShareDemo.git">Demo</a>，代码很容易读，容易上手</p>
-
-<p>首先到target，Build Phases->link binary with libraries，添加social.framework，然后在要使用这个framework的文件头添加<code>@import Social;</code></p>
-
-<p>记得要到iphone或者simulator里设置好对应社交网络的账号，填上用户名密码登录上，不然找不到account，不能post。如果找不到新浪微博，把系统语言调到中文。如果没有预先设置好账号，social.framework在真机和simulator上表现会不同。</p>
-
-<h3>使用UIActivityViewController</h3>
-
-<p>```
-//某个SKScene中添加的代码</p>
-
-<pre><code>    sharingImage = [self imageFromNode:self];//获取截屏图片
-    NSArray *activityItems;
-    if (sharingImage != nil) {
-        activityItems = @[sharingText, sharingImage];
-    } else {
-        activityItems = @[sharingText];
-    }
-
-    UIActivityViewController *activityController =
-    [[UIActivityViewController alloc] initWithActivityItems:activityItems
-                                      applicationActivities:nil];
-
-    [(UIViewController *)[self.view nextResponder] presentViewController:activityController
-                       animated:YES completion:nil];
-</code></pre>
-
-<p>```</p>
-
-<p><code>[self.view nextResponder]</code>的作用是获取当前<code>SKScene</code>的<code>UIViewController</code></p>
-
-<p>如果想系统的学一下<code>UIActivityViewController</code>，建立看看这篇翻译自<a href="http://nshipster.com/uiactivityviewcontroller/">Mattt Thompson</a>的<a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-22-ui-activity-viewcontroller.md">博文</a></p>
-
-<h3>使用SLComposeViewController</h3>
-
-<p>这个就相当于上面里介绍的单个分享service
-目前支持的平台有以下这些：</p>
-
-<p><code>
-SOCIAL_EXTERN NSString *const SLServiceTypeTwitter NS_AVAILABLE(10_8, 6_0);
-SOCIAL_EXTERN NSString *const SLServiceTypeFacebook NS_AVAILABLE(10_8, 6_0);
-SOCIAL_EXTERN NSString *const SLServiceTypeSinaWeibo NS_AVAILABLE(10_8, 6_0);
-SOCIAL_EXTERN NSString *const SLServiceTypeTencentWeibo NS_AVAILABLE(10_9, 7_0);
-SOCIAL_EXTERN NSString *const SLServiceTypeLinkedIn NS_AVAILABLE(10_9, NA);
-</code>
-先声明一个<code>SLComposeViewController *slComposerSheet;</code>，然后在需要添加分享逻辑的地方加入下面代码：(依然以微博为例子)</p>
-
-<p>```</p>
-
-<pre><code>[slComposerSheet setCompletionHandler:^(SLComposeViewControllerResult result) {
-    NSLog(@"start completion block");
-    NSString *output;
-    switch (result) {
-        case SLComposeViewControllerResultCancelled:
-            output = @"Action Cancelled";
-            break;
-        case SLComposeViewControllerResultDone:
-            output = @"Post Successfull";
-            break;
-        default:
-            break;
-    }
-    if (result != SLComposeViewControllerResultCancelled)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Weibo Message" message:output delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
-    }
-}];
-
-if([SLComposeViewController isAvailableForServiceType:SLServiceTypeSinaWeibo])
-{
-    slComposerSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
-    [slComposerSheet setInitialText:self.sharingText];
-    [slComposerSheet addImage:self.sharingImage];
-    [slComposerSheet addURL:[NSURL URLWithString:@"http://www.weibo.com/"]];
-    [self presentViewController:slComposerSheet animated:YES completion:nil];
-}
-</code></pre>
-
-<p>```
-这种方法我没试过，代码是照抄自前面提到的<a href="https://github.com/yulingtianxia/ios6ShareDemo.git">Demo</a>里</p>
 ]]></content>
   </entry>
   
