@@ -194,7 +194,7 @@ PS：IK（Inverse Kinematics）也能在SceneKit上运行。
 
 通过`SK3DNode`的`scnScene`属性可以获取到`SCNScene`，因为`SK3DNode`把3D场景渲染成2D贴图，所以创建`SK3DNode`对象的时候需要传入一个渲染后贴图的尺寸`viewportSize`。`pointOfView`属性存储了游戏视角的位置，你可以尝试实现个上帝视角。  
 
-由于我也不太了解新出的SceneKit，所以这部分不过多介绍了。  
+由于我也不太了解“新”出的SceneKit，所以这部分不过多介绍了。  
 
 ##Tools
 
