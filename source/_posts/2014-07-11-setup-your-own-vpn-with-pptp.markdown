@@ -10,6 +10,8 @@ categories:
 
 博主买的DigitalOcean的VPS服务，在配置好SSH远程访问后，准备继续配置pptp来搭建VPN科学上网。DO官网有详细的[配置教程](https://www.digitalocean.com/community/tutorials/how-to-setup-your-own-vpn-with-pptp)  
 
+PS:这里附上我的优惠链接，你用这个链接注册可以获得10美元：[https://www.digitalocean.com/?refcode=2c163841a4f4](https://www.digitalocean.com/?refcode=2c163841a4f4)  
+
 但是一步一步配置效率较低，多亏了脚本[http://yansu.org](http://yansu.org/2013/12/11/deploy-pptp-vpn-in-ubuntu.html)  
 <!--more-->
 
