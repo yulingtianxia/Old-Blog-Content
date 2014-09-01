@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-01T18:58:02+08:00</updated>
+  <updated>2014-09-01T20:55:57+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -60,18 +60,19 @@
 
 <p>在MyScene.m文件中使用下面的模板来加载MyScene.sks中设计好的场景结构，然后你就可以接着写游戏的逻辑了：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>let path = NSBundle.mainBundle().pathForResource(file, ofType: "sks")       
-</span><span class='line'>var sceneData = NSData.dataWithContentsOfFile(path, options: .DataReadingMappedIfSafe, error: nil)
-</span><span class='line'>var archiver = NSKeyedUnarchiver(forReadingWithData: sceneData)
-</span><span class='line'>archiver.setClass(self.classForKeyedUnarchiver(), forClassName: "SKScene")
-</span><span class='line'>let scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as GameScene
-</span><span class='line'>archiver.finishDecoding()</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">NSBundle</span><span class="p">.</span><span class="nx">mainBundle</span><span class="p">().</span><span class="nx">pathForResource</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">ofType</span><span class="o">:</span> <span class="s2">&quot;sks&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">sceneData</span> <span class="o">=</span> <span class="nx">NSData</span><span class="p">.</span><span class="nx">dataWithContentsOfFile</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">options</span><span class="o">:</span> <span class="p">.</span><span class="nx">DataReadingMappedIfSafe</span><span class="p">,</span> <span class="nx">error</span><span class="o">:</span> <span class="nx">nil</span><span class="p">)</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">archiver</span> <span class="o">=</span> <span class="nx">NSKeyedUnarchiver</span><span class="p">(</span><span class="nx">forReadingWithData</span><span class="o">:</span> <span class="nx">sceneData</span><span class="p">)</span>
+</span><span class='line'><span class="nx">archiver</span><span class="p">.</span><span class="nx">setClass</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">classForKeyedUnarchiver</span><span class="p">(),</span> <span class="nx">forClassName</span><span class="o">:</span> <span class="s2">&quot;SKScene&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">scene</span> <span class="o">=</span> <span class="nx">archiver</span><span class="p">.</span><span class="nx">decodeObjectForKey</span><span class="p">(</span><span class="nx">NSKeyedArchiveRootObjectKey</span><span class="p">)</span> <span class="nx">as</span> <span class="nx">GameScene</span>
+</span><span class='line'><span class="nx">archiver</span><span class="p">.</span><span class="nx">finishDecoding</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -91,10 +92,11 @@
 
 <p>PS：两种搜索节点元素的方法：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>– childNodeWithName:
-</span><span class='line'>– enumerateChildNodesWithName:usingBlock:</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">–</span> <span class="nx">childNodeWithName</span><span class="o">:</span>
+</span><span class='line'><span class="err">–</span> <span class="nx">enumerateChildNodesWithName</span><span class="o">:</span><span class="nx">usingBlock</span><span class="o">:</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -140,14 +142,15 @@
 
 <p><code>SKView</code>上的HUD flags：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>showsFPS
-</span><span class='line'>showsDrawCount
-</span><span class='line'>showsNodeCount
-</span><span class='line'>showsQuadCount</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">showsFPS</span>
+</span><span class='line'><span class="nx">showsDrawCount</span>
+</span><span class='line'><span class="nx">showsNodeCount</span>
+</span><span class='line'><span class="nx">showsQuadCount</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -203,10 +206,11 @@
 
 <p>我们还可以从<code>SKNode</code>中获取纹理（这不费吹灰之力），还可以对纹理进行滤镜加工：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>SKTexture *texture = [myView textureFromNode:node size:size];
-</span><span class='line'>SKTexture *texture = [myTexture textureByApplyingCIFiler:filer];</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">SKTexture</span> <span class="o">*</span><span class="nx">texture</span> <span class="o">=</span> <span class="p">[</span><span class="nx">myView</span> <span class="nx">textureFromNode</span><span class="o">:</span><span class="nx">node</span> <span class="nx">size</span><span class="o">:</span><span class="nx">size</span><span class="p">];</span>
+</span><span class='line'><span class="nx">SKTexture</span> <span class="o">*</span><span class="nx">texture</span> <span class="o">=</span> <span class="p">[</span><span class="nx">myTexture</span> <span class="nx">textureByApplyingCIFiler</span><span class="o">:</span><span class="nx">filer</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -237,18 +241,19 @@
 
 <p>iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。在iOS7之后我们可以用<code>UIFont</code>的<code>preferredFontForTextStyle:</code>类方法来指定一个样式，并让字体大小符合用户设定的字体大小。目前可供选择的有六种样式：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>UIFontTextStyleHeadline
-</span><span class='line'>UIFontTextStyleBody
-</span><span class='line'>UIFontTextStyleSubheadline
-</span><span class='line'>UIFontTextStyleFootnote
-</span><span class='line'>UIFontTextStyleCaption1
-</span><span class='line'>UIFontTextStyleCaption2</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">UIFontTextStyleHeadline</span>
+</span><span class='line'><span class="nx">UIFontTextStyleBody</span>
+</span><span class='line'><span class="nx">UIFontTextStyleSubheadline</span>
+</span><span class='line'><span class="nx">UIFontTextStyleFootnote</span>
+</span><span class='line'><span class="nx">UIFontTextStyleCaption1</span>
+</span><span class='line'><span class="nx">UIFontTextStyleCaption2</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -282,12 +287,13 @@
 
 <p>在iOS7中，<code>UITableViewDelegate</code>新增了三个方法来满足用户设定Cell、Header和Footer预计高度的方法：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- tableView:estimatedHeightForRowAtIndexPath:
-</span><span class='line'>- tableView:estimatedHeightForHeaderInSection:
-</span><span class='line'>- tableView:estimatedHeightForFooterInSection:</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="o">-</span> <span class="nx">tableView</span><span class="o">:</span><span class="nx">estimatedHeightForRowAtIndexPath</span><span class="o">:</span>
+</span><span class='line'><span class="o">-</span> <span class="nx">tableView</span><span class="o">:</span><span class="nx">estimatedHeightForHeaderInSection</span><span class="o">:</span>
+</span><span class='line'><span class="o">-</span> <span class="nx">tableView</span><span class="o">:</span><span class="nx">estimatedHeightForFooterInSection</span><span class="o">:</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -305,7 +311,7 @@
 
 <p>下面我给出了一个用Swift语言写的Demo-<a href="https://github.com/yulingtianxia/HardChoice">HardChoice</a>，使用自动布局来调整<code>UITableViewCell</code>的高度。我通过实现一个<code>UITableViewCell</code>的子类<code>DynamicCell</code>来实现自动布局，你可以再GitHub上下载<a href="https://github.com/yulingtianxia/HardChoice">源码</a>：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -342,43 +348,44 @@
 <span class='line-number'>35</span>
 <span class='line-number'>36</span>
 <span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>import UIKit
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">import</span> <span class="nx">UIKit</span>
 </span><span class='line'>
-</span><span class='line'>class DynamicCell: UITableViewCell {
+</span><span class='line'><span class="kr">class</span> <span class="nx">DynamicCell</span><span class="o">:</span> <span class="nx">UITableViewCell</span> <span class="p">{</span>
 </span><span class='line'>
-</span><span class='line'>    required init(coder: NSCoder) {
-</span><span class='line'>        super.init(coder: coder)
-</span><span class='line'>        if textLabel != nil {
-</span><span class='line'>            textLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
-</span><span class='line'>            textLabel.numberOfLines = 0
-</span><span class='line'>        }
-</span><span class='line'>        if detailTextLabel != nil {
-</span><span class='line'>            detailTextLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-</span><span class='line'>            detailTextLabel.numberOfLines = 0
-</span><span class='line'>        }
-</span><span class='line'>    }
-</span><span class='line'>    
-</span><span class='line'>    override func constraints() -&gt; [AnyObject] {
-</span><span class='line'>        var constraints = [AnyObject]()
-</span><span class='line'>        if textLabel != nil {
-</span><span class='line'>            constraints.extend(constraintsForView(textLabel))
-</span><span class='line'>        }
-</span><span class='line'>        if detailTextLabel != nil {
-</span><span class='line'>            constraints.extend(constraintsForView(detailTextLabel))
-</span><span class='line'>        }
-</span><span class='line'>        constraints.append(NSLayoutConstraint(item: contentView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.GreaterThanOrEqual, toItem: contentView, attribute: NSLayoutAttribute.Height, multiplier: 0, constant: 44))
-</span><span class='line'>        contentView.addConstraints(constraints)
-</span><span class='line'>        return constraints
-</span><span class='line'>    }
-</span><span class='line'>    
-</span><span class='line'>    func constraintsForView(view:UIView) -&gt; [AnyObject]{
-</span><span class='line'>        var constraints = [NSLayoutConstraint]()
-</span><span class='line'>        constraints.append(NSLayoutConstraint(item: view, attribute: NSLayoutAttribute.FirstBaseline, relatedBy: NSLayoutRelation.Equal, toItem: contentView, attribute: NSLayoutAttribute.Top, multiplier: 1.8, constant: 30.0))
-</span><span class='line'>        constraints.append(NSLayoutConstraint(item: contentView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.GreaterThanOrEqual, toItem: view, attribute: NSLayoutAttribute.Baseline, multiplier: 1.3, constant: 8))
-</span><span class='line'>        return constraints
-</span><span class='line'>    }
-</span><span class='line'>    
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    <span class="nx">required</span> <span class="nx">init</span><span class="p">(</span><span class="nx">coder</span><span class="o">:</span> <span class="nx">NSCoder</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kr">super</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">coder</span><span class="o">:</span> <span class="nx">coder</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">textLabel</span> <span class="o">!=</span> <span class="nx">nil</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">textLabel</span><span class="p">.</span><span class="nx">font</span> <span class="o">=</span> <span class="nx">UIFont</span><span class="p">.</span><span class="nx">preferredFontForTextStyle</span><span class="p">(</span><span class="nx">UIFontTextStyleHeadline</span><span class="p">)</span>
+</span><span class='line'>            <span class="nx">textLabel</span><span class="p">.</span><span class="nx">numberOfLines</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">detailTextLabel</span> <span class="o">!=</span> <span class="nx">nil</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">detailTextLabel</span><span class="p">.</span><span class="nx">font</span> <span class="o">=</span> <span class="nx">UIFont</span><span class="p">.</span><span class="nx">preferredFontForTextStyle</span><span class="p">(</span><span class="nx">UIFontTextStyleBody</span><span class="p">)</span>
+</span><span class='line'>            <span class="nx">detailTextLabel</span><span class="p">.</span><span class="nx">numberOfLines</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">override</span> <span class="nx">func</span> <span class="nx">constraints</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="nx">AnyObject</span><span class="p">]</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="nx">AnyObject</span><span class="p">]()</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">textLabel</span> <span class="o">!=</span> <span class="nx">nil</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">constraints</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">constraintsForView</span><span class="p">(</span><span class="nx">textLabel</span><span class="p">))</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">detailTextLabel</span> <span class="o">!=</span> <span class="nx">nil</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">constraints</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">constraintsForView</span><span class="p">(</span><span class="nx">detailTextLabel</span><span class="p">))</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="nx">constraints</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">NSLayoutConstraint</span><span class="p">(</span><span class="nx">item</span><span class="o">:</span> <span class="nx">contentView</span><span class="p">,</span> <span class="nx">attribute</span><span class="o">:</span> <span class="nx">NSLayoutAttribute</span><span class="p">.</span><span class="nx">Height</span><span class="p">,</span> <span class="nx">relatedBy</span><span class="o">:</span> <span class="nx">NSLayoutRelation</span><span class="p">.</span><span class="nx">GreaterThanOrEqual</span><span class="p">,</span> <span class="nx">toItem</span><span class="o">:</span> <span class="nx">contentView</span><span class="p">,</span> <span class="nx">attribute</span><span class="o">:</span> <span class="nx">NSLayoutAttribute</span><span class="p">.</span><span class="nx">Height</span><span class="p">,</span> <span class="nx">multiplier</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">constant</span><span class="o">:</span> <span class="mi">44</span><span class="p">))</span>
+</span><span class='line'>        <span class="nx">contentView</span><span class="p">.</span><span class="nx">addConstraints</span><span class="p">(</span><span class="nx">constraints</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">constraints</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">func</span> <span class="nx">constraintsForView</span><span class="p">(</span><span class="nx">view</span><span class="o">:</span><span class="nx">UIView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="nx">AnyObject</span><span class="p">]{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="nx">NSLayoutConstraint</span><span class="p">]()</span>
+</span><span class='line'>        <span class="nx">constraints</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">NSLayoutConstraint</span><span class="p">(</span><span class="nx">item</span><span class="o">:</span> <span class="nx">view</span><span class="p">,</span> <span class="nx">attribute</span><span class="o">:</span> <span class="nx">NSLayoutAttribute</span><span class="p">.</span><span class="nx">FirstBaseline</span><span class="p">,</span> <span class="nx">relatedBy</span><span class="o">:</span> <span class="nx">NSLayoutRelation</span><span class="p">.</span><span class="nx">Equal</span><span class="p">,</span> <span class="nx">toItem</span><span class="o">:</span> <span class="nx">contentView</span><span class="p">,</span> <span class="nx">attribute</span><span class="o">:</span> <span class="nx">NSLayoutAttribute</span><span class="p">.</span><span class="nx">Top</span><span class="p">,</span> <span class="nx">multiplier</span><span class="o">:</span> <span class="mf">1.8</span><span class="p">,</span> <span class="nx">constant</span><span class="o">:</span> <span class="mf">30.0</span><span class="p">))</span>
+</span><span class='line'>        <span class="nx">constraints</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">NSLayoutConstraint</span><span class="p">(</span><span class="nx">item</span><span class="o">:</span> <span class="nx">contentView</span><span class="p">,</span> <span class="nx">attribute</span><span class="o">:</span> <span class="nx">NSLayoutAttribute</span><span class="p">.</span><span class="nx">Bottom</span><span class="p">,</span> <span class="nx">relatedBy</span><span class="o">:</span> <span class="nx">NSLayoutRelation</span><span class="p">.</span><span class="nx">GreaterThanOrEqual</span><span class="p">,</span> <span class="nx">toItem</span><span class="o">:</span> <span class="nx">view</span><span class="p">,</span> <span class="nx">attribute</span><span class="o">:</span> <span class="nx">NSLayoutAttribute</span><span class="p">.</span><span class="nx">Baseline</span><span class="p">,</span> <span class="nx">multiplier</span><span class="o">:</span> <span class="mf">1.3</span><span class="p">,</span> <span class="nx">constant</span><span class="o">:</span> <span class="mi">8</span><span class="p">))</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">constraints</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -387,8 +394,9 @@
 
 <p>别忘了在相应的UITableViewController中的viewDidLoad方法中加上：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>self.tableView.estimatedRowHeight = 44</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">self</span><span class="p">.</span><span class="nx">tableView</span><span class="p">.</span><span class="nx">estimatedRowHeight</span> <span class="o">=</span> <span class="mi">44</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -427,7 +435,7 @@
 
 <p>在iOS6时代，有的人会“聪明地”这样做：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -435,14 +443,15 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds
-</span><span class='line'>{
-</span><span class='line'>    CGRect oldBounds = self.collectionView.bounds;
-</span><span class='line'>    if (CGRectGetWidth(newBounds) != CGRectGetWidth(oldBounds)) {
-</span><span class='line'>        return YES;
-</span><span class='line'>    }
-</span><span class='line'>        return NO;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="o">-</span> <span class="p">(</span><span class="nx">BOOL</span><span class="p">)</span><span class="nx">shouldInvalidateLayoutForBoundsChange</span><span class="o">:</span><span class="p">(</span><span class="nx">CGRect</span><span class="p">)</span><span class="nx">newBounds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nx">CGRect</span> <span class="nx">oldBounds</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">collectionView</span><span class="p">.</span><span class="nx">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">CGRectGetWidth</span><span class="p">(</span><span class="nx">newBounds</span><span class="p">)</span> <span class="o">!=</span> <span class="nx">CGRectGetWidth</span><span class="p">(</span><span class="nx">oldBounds</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">NO</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -459,24 +468,26 @@
 
 <p>iOS8中<code>UICollectionViewLayoutInvalidationContext</code>新加入了三个方法使得我们可以更加细致精密地使某一行某一节Item（Cell）、Supplementary View或Decoration View失效：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>invalidateItemsAtIndexPaths:
-</span><span class='line'>invalidateSupplementaryElementsOfKind:atIndexPaths:
-</span><span class='line'>invalidateDecorationElementsOfKind:atIndexPaths:</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">invalidateItemsAtIndexPaths</span><span class="o">:</span>
+</span><span class='line'><span class="nx">invalidateSupplementaryElementsOfKind</span><span class="o">:</span><span class="nx">atIndexPaths</span><span class="o">:</span>
+</span><span class='line'><span class="nx">invalidateDecorationElementsOfKind</span><span class="o">:</span><span class="nx">atIndexPaths</span><span class="o">:</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
 <p>对应着添加了三个只读数组属性来标记上面那三种组件：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>invalidatedItemIndexPaths
-</span><span class='line'>invalidatedSupplementaryIndexPaths
-</span><span class='line'>invalidatedDecorationIndexPaths</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">invalidatedItemIndexPaths</span>
+</span><span class='line'><span class="nx">invalidatedSupplementaryIndexPaths</span>
+</span><span class='line'><span class="nx">invalidatedDecorationIndexPaths</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -487,10 +498,11 @@
 
 <p>此外<code>UICollectionViewLayout</code>还加入了一对儿方法来帮助我们使用self-sizing：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>shouldInvalidateLayoutForPreferredLayoutAttributes:withOriginalAttributes:
-</span><span class='line'>invalidationContextForPreferredLayoutAttributes:withOriginalAttributes:</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">shouldInvalidateLayoutForPreferredLayoutAttributes</span><span class="o">:</span><span class="nx">withOriginalAttributes</span><span class="o">:</span>
+</span><span class='line'><span class="nx">invalidationContextForPreferredLayoutAttributes</span><span class="o">:</span><span class="nx">withOriginalAttributes</span><span class="o">:</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>

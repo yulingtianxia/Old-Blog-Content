@@ -176,18 +176,19 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>在MyScene.m文件中使用下面的模板来加载MyScene.sks中设计好的场景结构，然后你就可以接着写游戏的逻辑了：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>let path = NSBundle.mainBundle().pathForResource(file, ofType: "sks")       
-</span><span class='line'>var sceneData = NSData.dataWithContentsOfFile(path, options: .DataReadingMappedIfSafe, error: nil)
-</span><span class='line'>var archiver = NSKeyedUnarchiver(forReadingWithData: sceneData)
-</span><span class='line'>archiver.setClass(self.classForKeyedUnarchiver(), forClassName: "SKScene")
-</span><span class='line'>let scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as GameScene
-</span><span class='line'>archiver.finishDecoding()</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">NSBundle</span><span class="p">.</span><span class="nx">mainBundle</span><span class="p">().</span><span class="nx">pathForResource</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">ofType</span><span class="o">:</span> <span class="s2">&quot;sks&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">sceneData</span> <span class="o">=</span> <span class="nx">NSData</span><span class="p">.</span><span class="nx">dataWithContentsOfFile</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">options</span><span class="o">:</span> <span class="p">.</span><span class="nx">DataReadingMappedIfSafe</span><span class="p">,</span> <span class="nx">error</span><span class="o">:</span> <span class="nx">nil</span><span class="p">)</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">archiver</span> <span class="o">=</span> <span class="nx">NSKeyedUnarchiver</span><span class="p">(</span><span class="nx">forReadingWithData</span><span class="o">:</span> <span class="nx">sceneData</span><span class="p">)</span>
+</span><span class='line'><span class="nx">archiver</span><span class="p">.</span><span class="nx">setClass</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">classForKeyedUnarchiver</span><span class="p">(),</span> <span class="nx">forClassName</span><span class="o">:</span> <span class="s2">&quot;SKScene&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">scene</span> <span class="o">=</span> <span class="nx">archiver</span><span class="p">.</span><span class="nx">decodeObjectForKey</span><span class="p">(</span><span class="nx">NSKeyedArchiveRootObjectKey</span><span class="p">)</span> <span class="nx">as</span> <span class="nx">GameScene</span>
+</span><span class='line'><span class="nx">archiver</span><span class="p">.</span><span class="nx">finishDecoding</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -207,10 +208,11 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>PS：两种搜索节点元素的方法：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>– childNodeWithName:
-</span><span class='line'>– enumerateChildNodesWithName:usingBlock:</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">–</span> <span class="nx">childNodeWithName</span><span class="o">:</span>
+</span><span class='line'><span class="err">–</span> <span class="nx">enumerateChildNodesWithName</span><span class="o">:</span><span class="nx">usingBlock</span><span class="o">:</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -256,14 +258,15 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p><code>SKView</code>上的HUD flags：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>showsFPS
-</span><span class='line'>showsDrawCount
-</span><span class='line'>showsNodeCount
-</span><span class='line'>showsQuadCount</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">showsFPS</span>
+</span><span class='line'><span class="nx">showsDrawCount</span>
+</span><span class='line'><span class="nx">showsNodeCount</span>
+</span><span class='line'><span class="nx">showsQuadCount</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -319,10 +322,11 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>我们还可以从<code>SKNode</code>中获取纹理（这不费吹灰之力），还可以对纹理进行滤镜加工：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>SKTexture *texture = [myView textureFromNode:node size:size];
-</span><span class='line'>SKTexture *texture = [myTexture textureByApplyingCIFiler:filer];</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">SKTexture</span> <span class="o">*</span><span class="nx">texture</span> <span class="o">=</span> <span class="p">[</span><span class="nx">myView</span> <span class="nx">textureFromNode</span><span class="o">:</span><span class="nx">node</span> <span class="nx">size</span><span class="o">:</span><span class="nx">size</span><span class="p">];</span>
+</span><span class='line'><span class="nx">SKTexture</span> <span class="o">*</span><span class="nx">texture</span> <span class="o">=</span> <span class="p">[</span><span class="nx">myTexture</span> <span class="nx">textureByApplyingCIFiler</span><span class="o">:</span><span class="nx">filer</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-01T18:58:02+08:00</updated>
+  <updated>2014-09-01T20:55:57+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -27,7 +27,7 @@
 
 <p>iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。在iOS7之后我们可以用<code>UIFont</code>的<code>preferredFontForTextStyle:</code>类方法来指定一个样式，并让字体大小符合用户设定的字体大小。目前可供选择的有六种样式：</p>
 
-<p><code>
+<p><code>js
 UIFontTextStyleHeadline
 UIFontTextStyleBody
 UIFontTextStyleSubheadline
