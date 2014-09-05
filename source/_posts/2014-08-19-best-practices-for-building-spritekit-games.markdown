@@ -38,7 +38,7 @@ Xcode6为我们提供的工具：
 
 在MyScene.m文件中使用下面的模板来加载MyScene.sks中设计好的场景结构，然后你就可以接着写游戏的逻辑了：  
 
-``` 
+``` js
 let path = NSBundle.mainBundle().pathForResource(file, ofType: "sks")       
 var sceneData = NSData.dataWithContentsOfFile(path, options: .DataReadingMappedIfSafe, error: nil)
 var archiver = NSKeyedUnarchiver(forReadingWithData: sceneData)

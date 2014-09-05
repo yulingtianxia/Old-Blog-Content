@@ -6,7 +6,7 @@ comments: true
 categories: 
 - iOS
 - SpriteKit
-- DFS算法
+- Algorithm
 
 ---
 

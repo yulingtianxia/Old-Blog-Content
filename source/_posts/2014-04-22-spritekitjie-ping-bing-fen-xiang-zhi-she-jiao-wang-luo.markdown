@@ -7,7 +7,6 @@ categories:
 - SpriteKit
 - iOS
 - Social Framework
-- 截屏
 
 ---
 本文讲述在用`SpriteKit`制作iOS游戏的时候，如何让在用户在达到某种成就后分享自己的成就或分数，并附上一张游戏截屏，然后发到社交网络上  

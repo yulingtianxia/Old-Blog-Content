@@ -16,7 +16,7 @@ categories:
 
 iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。在iOS7之后我们可以用`UIFont`的`preferredFontForTextStyle:`类方法来指定一个样式，并让字体大小符合用户设定的字体大小。目前可供选择的有六种样式：  
 
-``` 
+``` js
 UIFontTextStyleHeadline
 UIFontTextStyleBody
 UIFontTextStyleSubheadline
