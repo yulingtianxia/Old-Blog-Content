@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MacOSX | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/macosx/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-07T19:21:13+08:00</updated>
+  <updated>2014-09-07T19:25:03+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -18,12 +18,12 @@
     <link href="http://yulingtianxia.com/blog/2014/09/07/zai-macshang-yong-wifigong-xiang-xiao-yuan-wang/"/>
     <updated>2014-09-07T18:00:14+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/09/07/zai-macshang-yong-wifigong-xiang-xiao-yuan-wang</id>
-    <content type="html"><![CDATA[<p>开学了，好多稚嫩的学弟学妹踏入了憧憬许久的校园，住上了宽敞明亮的寝室（某工除外），用上了速度超快的校园网。然而这里却有一个严峻的问题摆在了Mac用户前：蛋疼的锐捷！</p>
+    <content type="html"><![CDATA[<p>开学了，好多稚嫩的学弟学妹踏入了憧憬许久的校园，住上了宽敞明亮的寝室（某工除外），用上了速度超快的校园网。然而这里却有一个严峻的问题摆在了Mac用户面前：蛋疼的锐捷！这篇文章将会详细的教学弟学妹们如何科学地通过WiFi共享校园网。</p>
 
 <!--more-->
 
 
-<p>在我刚上大学那年，锐捷的Mac客户端简直是不忍直视，非程序员无法hold住，即使现在Mac版本的锐捷客户端也是经常连接不上，界面不够友好，检测网卡速度慢等一系列反人类问题。网上也有一些第三方的校园网客户端，我认为最好的就是<a href="https://code.google.com/p/mentohust/downloads/detail?name=CocoaMento.dmg&amp;">CocoaMento</a>。下载后最好在程序图标处右击，选择显示包内容，用Windows版锐捷客户端的内容替换<code>/Contents/Resources/data/</code>目录下的对应文件:</p>
+<p>记得在我刚上大学那年，锐捷的Mac客户端简直是不忍直视，非程序员无法hold住，即使现在Mac版本的锐捷客户端也是经常连接不上，界面不够友好，检测网卡速度慢等一系列反人类问题。网上也有一些第三方的校园网客户端，我认为最好的就是<a href="https://code.google.com/p/mentohust/downloads/detail?name=CocoaMento.dmg&amp;">CocoaMento</a>。下载后最好在程序图标处右击，选择显示包内容，用Windows版锐捷客户端的内容替换<code>/Contents/Resources/data/</code>目录下的对应文件:</p>
 
 <p><img src="http://yulingtianxia.qiniudn.com/QQ20140907-1%402x.png" alt="" /></p>
 
