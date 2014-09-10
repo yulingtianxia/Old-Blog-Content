@@ -88,8 +88,12 @@ XCTAssertNoThrowSpecificNamed(expression, specificException, exception_name, for
 关于测试函数执行的顺序：以函数名中test后面的字符大小有关，比如-（void）test001XXX会先于-（void）test002XXX执行；
 
 这里只是Mark下单元测试的基本知识，具体应用的话这里推荐几篇不错的教程：  
+
 [测试 View Controllers](http://objccn.io/issue-1-3/)  
 [Xcode 5 单元测试（一）使用XCTest进行单元测试](http://blog.csdn.net/jymn_chen/article/details/21552941)  
 [Xcode 5 单元测试（二）OCMock和GHUnit](http://blog.csdn.net/jymn_chen/article/details/21562869)  
+[XCTest 测试实战](http://objccn.io/issue-15-2/)  
+
 可能有的测试工具会用到CocoaPods来管理，给出一篇入门文章：  
+
 [iOS中使用cocoaPods管理第三方类库](http://blog.csdn.net/mysevenmi/article/details/17878421)

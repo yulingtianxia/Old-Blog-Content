@@ -20,8 +20,10 @@ footer: true
 	[Spiral](https://github.com/yulingtianxia/Spiral)  
 
 - 在手机上查看我的博客：
-	- [Android](/download/blog_android.apk)    
+	- [Android](/download/blog_android.apk)  
+	![](http://yulingtianxia.qiniudn.com/qrcode-android.png)  
 	- [iOS(需越狱)](/download/玉令天下的Blog_0.3_iosbrk.ipa)  
+	![](http://yulingtianxia.qiniudn.com/qrcode-ios.png)
 
 ###Donate to me
 ![向我付款](/images/about/zhifubao.png)  
