@@ -520,7 +520,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <h3>定义捕获列表</h3>
 
-<p>捕获列表放置在闭包参数列表和返回类型之前，列表中每项都是由weak或unowned关键字和实例的引用（如self或someInstance）成对组成。每项都通过逗号分开写在方括号中。</p>
+<p>捕获列表放置在闭包参数列表和返回类型之前，列表中每项都是由<code>weak</code>或<code>unowned</code>关键字和实例的引用（如self或someInstance）成对组成。每项都通过逗号分开写在方括号中。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -551,9 +551,9 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <h3>捕获列表中的弱引用和无主引用</h3>
 
-<p>当捕获引用有时可能会是nil时，将闭包内的捕获定义为弱引用。<br/>
+<p>当捕获引用有时可能会是<code>nil</code>时，将闭包内的捕获定义为弱引用。<br/>
 当闭包和捕获的实例总是互相引用时并且总是同时销毁时，将闭包内的捕获定义为无主引用。<br/>
-如果捕获的引用绝对不会置为nil，应该用无主引用，而不是弱引用。</p>
+如果捕获的引用绝对不会置为<code>nil</code>，应该用无主引用，而不是弱引用。</p>
 
 <p>前面的<code>HTMLElement</code>例子中，无主引用是正确的解决循环强引用的方法。这样编写<code>HTMLElement</code>类来避免循环强引用：</p>
 
