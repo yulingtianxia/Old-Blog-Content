@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-22T22:50:17+08:00</updated>
+  <updated>2014-09-23T20:38:24+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -221,7 +221,7 @@
 
 <p>物理体的外形复杂程度也决定着能耗。圆形是最简单的，耗能最少，再往上依次是矩形、多边形、复合图形、alpha像素图形：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140844930564.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140844930564.png" alt="" /></p>
 
 <p>所以你需要权衡利弊来设计你游戏中物理体的外形。上图的后两种外形是iOS8新加入的，你可以在<a href="http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a>中的New Physics->Per-Pixel Physics和Improvements->Physics Updates这两个小节中学到有关它们的更多知识。</p>
 
@@ -231,8 +231,8 @@
 
 <p>将<code>SKView</code>的<code>showsFields</code>属性设为YES可以将<code>SKFieldNode</code>的debug信息显示出来：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140845151467.png" alt="" />
-<img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140845150994.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140845151467.png" alt="" />
+<img src="http://yulingtianxia.qiniudn.com/140845150994.png" alt="" /></p>
 
 <p>上面两个场景是我的一个SpriteKit游戏<a href="https://github.com/yulingtianxia/ColorAtom">ColorAtom</a>中的秘密模式和黑洞模式截图，欢迎Star和Follow。</p>
 
@@ -240,7 +240,7 @@
 
 <p><code>SKShapeNode</code>的耗能层级图如下：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/14084531435.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/14084531435.png" alt="" /></p>
 
 <p>上图中的分界线区分了低功耗和高功耗的Shape。绘制分段的linear strok所需的功耗也很少。</p>
 
@@ -310,11 +310,11 @@
 
 <p>问题来了，诸如字体大小这种“动态类型”，我们需要对其进行动态的UI调整，否则总是觉得我们的界面怪怪的：</p>
 
-<p><a href="http://t.williamgates.net/share-DCBF_53F0DDDB.html"><img src="http://t.williamgates.net/image-DCBF_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-DCBF_53F0DDDB.jpg" alt="" /></p>
 
 <p>我们想要让Cell的高度随着字体大小而作出调整：</p>
 
-<p><a href="http://t.williamgates.net/share-0D8C_53F0DDDB.html"><img src="http://t.williamgates.net/image-0D8C_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-0D8C_53F0DDDB.jpg" alt="" /></p>
 
 <p>总之，还会有其他动态因素导致我们需要修改布局。</p>
 
@@ -451,17 +451,17 @@
 
 <p>自适应效果如下：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140833033058.gif" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140833033058.gif" alt="" /></p>
 
 <h3>UICollectionView</h3>
 
 <p><code>UITableView</code> 和 <code>UICollectionView</code> 都是 data-source 和 delegate 驱动的。<code>UICollectionView</code>在此之上进行了进一步抽象。它将其子视图的位置，大小和外观的控制权委托给一个单独的布局对象。通过提供一个自定义布局对象，你几乎可以实现任何你能想象到的布局。布局继承自 <code>UICollectionViewLayout</code> 抽象基类。iOS6 中以 <code>UICollectionViewFlowLayout</code> 类的形式提出了一个具体的布局实现。在<code>UICollectionViewFlowLayout</code>中，self-sizing同样适用：</p>
 
-<p><a href="http://t.williamgates.net/share-05D4_53F0E00F.html"><img src="http://t.williamgates.net/image-05D4_53F0E00F.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-05D4_53F0E00F.jpg" alt="" /></p>
 
 <p>采用self-sizing后：</p>
 
-<p><a href="http://t.williamgates.net/share-B1E8_53F0DDDB.html"><img src="http://t.williamgates.net/image-B1E8_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-B1E8_53F0DDDB.jpg" alt="" /></p>
 
 <p><code>UICollectionView</code>实现self-sizing不仅可以通过在Cell的<code>contentView</code>上加约束和重写<code>sizeThatFits:</code>方法，也能在Cell层面（以前都是在<code>contentSize</code>上进行self-sizing）上做文章：重写<code>UICollectionReusableView</code>的<code>preferredLayoutAttributesFittingAttributes:</code>方法来在self-sizing计算出Size之后再修改，这样就达到了对Cell布局属性（<code>UICollectionViewLayoutAttributes</code>）的全面控制。</p>
 
@@ -469,7 +469,7 @@
 
 <p>由此我们从最经典的<code>UICollectionViewLayout</code>强制计算属性（还记得<code>UICollectionViewLayoutAttributes</code>的一系列工厂方法么？）到使用self-sizing来根据我们需求调整属性中的Size，再到重写<code>UICollectionReusableView</code>（<code>UICollectionViewCell</code>也是继承于它）的<code>preferredLayoutAttributesFittingAttributes:</code>方法来从Cell层面对所有属性进行修改：</p>
 
-<p><a href="http://t.williamgates.net/share-95BA_53F0DDDB.html"><img src="http://t.williamgates.net/image-95BA_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-95BA_53F0DDDB.jpg" alt="" /></p>
 
 <p>下面来说说如何在<code>UICollectionViewFlowLayout</code>实现self-sizing：</p>
 
@@ -586,7 +586,7 @@
 
 <p>放一张官方演示的效果图：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140738700571.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140738700571.png" alt="" /></p>
 
 <p><code>SKShader</code>内建了一些<code>uniforms</code>，用<code>SKUniform</code>来描述，当你创建一个<code>SKShader</code>时，需要通过一个<code>fsh</code>文件或者一个字符串代码来创建，也可选择性的传入<code>uniforms</code>来定义游戏中一些额外的参数。下面是创建Shader方法的集合：</p>
 
@@ -614,7 +614,7 @@
 
 <p>下面列举一下Shader中的预定义符号：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140738949518.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140738949518.png" alt="" /></p>
 
 <h2>Lighting and Shadows</h2>
 
@@ -636,11 +636,11 @@
 
 <p>为了在<code>SKSpriteNode</code>上实现更加逼真的光照效果（如阴影和反射光），<code>SKSpriteNode</code>新增了<code>normalTexture</code>属性来储存原帖图的法线贴图（Normal Map）：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140739494085.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140739494085.png" alt="" /></p>
 
 <p>上图中左侧的是原贴图，加上中间的法线贴图就合成出最右侧带有质感的光照纹理。当然提供这样一张发现纹理图片会增加开发者的工作量，苹果还提供了另一种更加简单的方案-“automatic normal map”：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140739540301.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140739540301.png" alt="" /></p>
 
 <p>SpriteKit能够根据给出的纹理图片，用一系列算法分析原贴图，然后生成一个最佳的法线贴图，又是苹果的黑魔法！</p>
 
@@ -662,11 +662,11 @@
 
 <p>在定义一些复杂轮廓的物理体时，我们经常用简单图形代替，否则就用<code>CGPath</code>一点点描绘多边形或者把多个物理体组合在一起（这也是新加入的API，后面会提到），比如下面这把斧头，大多数程序员直接用矩形当做它的物理体：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140740041011.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140740041011.png" alt="" /></p>
 
 <p>而Per-Pixel Physics根据纹理图片的alpha通道遮罩来生成一个粗略的形状，然后再用粗略的形状生成精确的形状，它让以前复杂的<code>CGPath</code>创建工作转变成一行代码：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140740040721.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140740040721.png" alt="" /></p>
 
 <p>毕竟众口难调，所以SpriteKit给出了一个可以自由调节alpha阈值的物理体生成方法，所有alpha值大于<code>alphaThreshold</code>的像素点都将被认为是不透明的，并纳入物理体范围内：（伪代码）</p>
 
@@ -684,7 +684,7 @@
 
 <p>约束的计算工作发生在模拟物理之后，SpriteKit提供了一个回调函数<code>didApplyConstraints</code>，我们可以在约束完成后在里面做一些善后工作：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140740456021.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140740456021.png" alt="" /></p>
 
 <p>在SpriteKit中我们可以向SKNode添加三种约束：（工厂方法的伪代码）</p>
 
@@ -761,7 +761,7 @@
 
 <p>反向运动学，没有机械工程学位或没写过动画引擎的人干脆不知道这是个啥。它其实是解决连接体运动的，比如现在有一个机器人的手臂，我们想让它动起来去用手抓某个东西。我们会想到每个关节转多少度才能准确让机器手抓到物体，计算的时候还应该考虑连接体的层级关系：肩膀连接上臂，上臂连接小臂，小臂连接手。哦天啊这真蛋疼，不过SpriteKit的反向动力学解决了这一点，我们只需要指定每个<code>SKNode</code>的活动约束还有需要抓取物体的位置，那么这一切只需要几行代码就能搞定。</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140741648388.gif" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140741648388.gif" alt="" /></p>
 
 <p>机器人手臂转动约束是靠<code>SKReachConstraints</code>类来定义的，它只有一个初始化方法：（伪代码）</p>
 
@@ -834,7 +834,7 @@
 
 <p>SpriteKit每一帧场景的执行过程：</p>
 
-<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/GraphicsAnimation/Conceptual/SpriteKit_PG/Art/update_loop_2x.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/update_loop_2x.png" alt="" /></p>
 
 <p>除了之前提到新加的Constrains，SpriteKit这次还加入了一个回调函数<code>didFinishUpdate</code>。这绝对是SpriteKit将每帧所有东西打包好交给GPU渲染之前调用的最后一个函数。</p>
 
@@ -845,7 +845,7 @@
 modifyPixelDataWithBlock:</code>方法动态地修改。</li>
 <li><code>SKTexture</code>现在可以生成“noise textures”，参见<code>textureVectorNoiseWithSmoothness:size:</code>和<code>
 textureNoiseWithSmoothness:size:grayscale:</code><br/>
-<img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/14074923846.png" alt="" /></li>
+<img src="http://yulingtianxia.qiniudn.com/14074923846.png" alt="" /></li>
 </ul>
 
 
@@ -862,7 +862,7 @@ textureNoiseWithSmoothness:size:grayscale:</code><br/>
 <ul>
 <li><code>SKPhysicsBody</code>新加了<code>pinned</code>属性来标志此物理体对应的节点是否被钉在它的父节点上。如果父节点也有物理体，那么这两个物理体被认为被一个pin连接。如果将<code>allowsRotation</code>设为NO并且<code>pinned</code>设为YES，那么它相当于被焊在父节点上了，因为它不能转动了。</li>
 <li><code>SKPhysicsBody</code>允许用<code>bodyWithBodies:</code>把多个物理体组合在一起来创建一个新的物理体，还记得前面提到过的斧头么：<br/>
-  <img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140749497219.png" alt="" /></li>
+  <img src="http://yulingtianxia.qiniudn.com/140749497219.png" alt="" /></li>
 </ul>
 
 
@@ -1503,7 +1503,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p>附上Spiral的动图：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140557437844.gif" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140557437844.gif" alt="" /></p>
 
 <p>游戏规则是：玩家是五角星小球，小球自动沿着陀螺线向外运动，当玩家点击屏幕时五角星小球会跳跃到内层螺旋，当五角星小球碰到红色旋风或滚动到螺旋线终点时游戏结束。玩家吃掉绿色旋风来得2分，吃到紫色三角得一分并获得保护罩，保护罩用来抵挡一次红色旋风。随着分数的增加游戏会升级，速度加快。游戏结束后可以截屏分享到社交网络，也可以选择重玩。</p>
 
@@ -2535,8 +2535,8 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 <p>如果你不懂Swift也没关系，只要了解OC和Core Data，总是能看懂的</p>
 
 <p>在写代码前先了解下我们要做什么：<br/>
-<img src="http://wal8.com/64224622" alt="" />
-<img src="http://wal8.com/64224623" alt="" /></p>
+<img src="http://yulingtianxia.qiniudn.com/140435701469.png" alt="" />
+<img src="http://yulingtianxia.qiniudn.com/1404357012.png" alt="" /></p>
 
 <p>先在第一个页面添加问题（吃啥？），然后点击问题进入到第二个添加选项（鸭子，蛋，猪）的页面。每个选项左边是选项名，右边是该选项的权值。摇动手机就能随机从所有选项中选出答案（就像第二张图那样）。</p>
 
@@ -2544,7 +2544,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p>还是像以前那样新建一个Master-Detail Application，勾选Use Core Data选项，语言选择Swift，然后Xcode会自动生成一个具有<code>UITableView</code>的Demo，这些内容之前说过。下面我们需要打开xcdatamodeld文件来建立我们的数据模型：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140436356516.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140436356516.png" alt="" /></p>
 
 <p><code>Question</code>这个实体只具有一个属性，那就是问题内容<code>content</code>，类型为<code>String</code>；<code>Choice</code>实体有一个类型为<code>String</code>的<code>name</code>属性和一个类型为<code>Integer32</code>的<code>weight</code>属性，分别代表问题选项的名字和权重。</p>
 
@@ -2552,13 +2552,13 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p>假设每个问题都对应多个选项，也可以没有选项：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/14043675716.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/14043675716.png" alt="" /></p>
 
 <p><code>Optional</code>被打钩是因为问题可以没有任何选项，在Tpye那里我们选择<code>To Many</code></p>
 
 <p>相反，每个选项一定会对应一个问题，并且是唯一的问题：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140436793089.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140436793089.png" alt="" /></p>
 
 <p><code>Optional</code>那里不打钩是为了避免关系的目标为空，在<code>Tpye</code>那里我们选择了<code>To One</code></p>
 
@@ -2866,7 +2866,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p>修改<code>Question</code>的过程其实就是先通过<code>objectAtIndexPath(indexPath: NSIndexPath!) -&gt; AnyObject!</code>方法取出数据请求结果当中的某一项并转换成<code>Question</code>对象，对其进行修改后再保存。在界面中通过点击cell右侧带有字母i的蓝色圆圈来修改<code>Question</code>内容：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140438530596.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140438530596.png" alt="" /></p>
 
 <p>上图的中的蓝色圆圈是<code>AccessoryButton</code>，需要在IB中设置<code>TableViewCell</code>的<code>Identifier</code>为<code>QuestionCell</code>，<code>Accessory</code>为<code>Detail Disclosure</code>，这样我们就能在<code>UITableViewDelegate</code>的<code>tableView(tableView: UITableView!, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath!)</code>方法中响应<code>AccessoryButton</code>了：</p>
 
@@ -5041,7 +5041,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p>更改后的提交架构是这样的：(来自官方图片)</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353388207.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353388207.png" alt="" /></p>
 
 <!--more-->
 
@@ -6486,20 +6486,20 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 <p>设置一个属性的观察者需要三步，理解这些步骤可以更清楚的知道KVO的工作框图<br/>
 1. 首先看看你当前的场景如果使用KVO是否更妥当，比如，当一个实例的某个具体属性有任何变更的时候，另一个实例需要被通知。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389577.jpg" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353389577.jpg" alt="" /></p>
 
 <p>比如，BankObject中的accountBalance属性有任何变更时，某个PersonObject对象都要觉察到。<br/>
 2. 这个PersonObject对象必须注册成为BankObject的accountBalance属性的观察者，可以通过发送<code>addObserver:forKeyPath:options:context:</code>消息来实现。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389319.jpg" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353389319.jpg" alt="" /></p>
 
 <p>注意：<code>addObserver:forKeyPath:options:context:</code>方法在你指定的两个实例间建立联系，而不是在两个类之间。<br/>
 3. 为了回应变更通知，观察者必须实现<code>observeValueForKeyPath:ofObject:change:context:</code>方法。这个方法的实现决定了观察者如何回应变更通知。你可以在这个方法里自定义如何回应被观察属性的变更。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353388989.jpg" alt="" />  <br/>
+<p><img src="http://yulingtianxia.qiniudn.com/140353388989.jpg" alt="" />  <br/>
 4. 当一个被观察属性的值以符合KVO方式变更或者当它依赖的键变更时，<code>observeValueForKeyPath:ofObject:change:context:</code>方法会被自动执行。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389524.jpg" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353389524.jpg" alt="" /></p>
 
 <h3>Registering for Key-Value Observing</h3>
 
@@ -6981,7 +6981,7 @@ NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
     <id>http://yulingtianxia.com/blog/2014/05/10/zhuang-shi-zhe-mo-shi</id>
     <content type="html"><![CDATA[<p>装饰者模式动态地将责任附加到对象上。若要扩展功能，装饰者提供了比继承更有弹性的替代方案。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353405846.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353405846.png" alt="" /></p>
 
 <!--more-->
 
@@ -7003,13 +7003,13 @@ NSString *const NSKeyValueChangeNotificationIsPriorKey;</p>
 <p>比如，现在有一个饮料类（Beverage），向饮料中添加不同的配料（蒸奶（Steamed Milk）、豆浆（Soy）、
 摩卡（Mocha，也就是巧克力风味）或覆盖奶泡），就会配制出很多种不同的种类的饮料，其价格也随着添加的配料而变化，饮料店需要计算价格，如果用具体子类继承饮料类并考虑到所有组合的话，将是一个“类爆炸”：</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353406269.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353406269.png" alt="" /></p>
 
 <p>更恶心的是，如果某种配料的价格有变化，就必须含有此配料相应的更改一些饮料子类的实现，记住：<strong>类应该对扩展开放，对修改关闭。</strong></p>
 
 <p>应用装饰者模式，就像给对象穿衣服一样一层一层将拓展动态的添加上去，灵活多变有弹性</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353407109.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353407109.png" alt="" /></p>
 
 <p>下面用Java实现这个例子</p>
 
@@ -7170,17 +7170,17 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 <p>
 果然是一层套一层吧：</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353407345.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353407345.png" alt="" /></p>
 
 <h2>Java中的装饰者</h2>
 
 <p>java.io包内的类太多了，简直是……“排山倒海”。你第一次（还有第二次和第三次）看到这些API发出“哇”的惊叹时，放心，你不是唯一受到惊吓的人。现在，你已经知道装饰者模式，这些I/O的相关类对你来说应该更有意义了，因为其中许多类都是装饰者。下面是一个典型的对象集合，用装饰者来将功能结合起来，以读取文件数据：</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353408228.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353408228.png" alt="" /></p>
 
 <p><code>BufferedInputStream</code>及<code>LineNumberInputStream</code>都扩展自<code>FilterInputStream</code>，而<code>FilterInputStream</code>是一个抽象的装饰类。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353408237.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353408237.png" alt="" /></p>
 
 <p>你会发现“输出”流的设计方式也是一样的。你可能还会发现Reader/Writer流（作为基于字符数据的输入输出）和输入流/输出流的类相当类似（虽然有一些小差异和不一致之处，但是相当雷同，所以你应该可以了解这些类）。</p>
 
@@ -7198,7 +7198,7 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 
 <p>这次我们来装饰一张照片，装饰的方法有很多，比如旋转位移变换，阴影。。。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353408757.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353408757.png" alt="" /></p>
 
 <p>工程代码可以在<a href="https://github.com/yulingtianxia/Decorator">这里</a>下载</p>
 
@@ -7447,7 +7447,8 @@ Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就
 1. <code>id objc_getAssociatedObject(id object, void *key)</code><br/>
 2. <code>void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)</code></p>
 
-<p>该函数中第一个参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy,它有以下几个选项：<code>OBJC_ASSOCIATION_ASSIGN</code>，<code>OBJC_ASSOCIATION_RETAIN</code>，<code>OBJC_ASSOCIATION_COPY</code>，分别对应我们在声明属性时的<code>assign</code>,<code>retain</code>,<code>copy</code>。<br/>
+<p>该函数中第一个参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy,它有以下几个选项：<br/>
+<a href="http://yulingtianxia.qiniudn.com/">http://yulingtianxia.qiniudn.com/</a><code>OBJC_ASSOCIATION_ASSIGN</code>，<code>OBJC_ASSOCIATION_RETAIN</code>，<code>OBJC_ASSOCIATION_COPY</code>，分别对应我们在声明属性时的<code>assign</code>,<code>retain</code>,<code>copy</code>。<br/>
 关于第二个参数，key。因为一个对象可以关联多个新的对像，我们需要一个标志来区分他们。所以这个key就起这样的作用。这里的需要的key的地址，不关心它指向谁。</p>
 
 <p>当我们第二次以新的value调用objc_setAssociatedObject时，如果policy是OBJC_ASSOCIATION_ASSIGN，新的value被关联，对原来旧的value没有任何影响。如果policy是OBJC_ASSOCIATION_RETAIN和OBJC_ASSOCIATION_COPY，新的value被关联，旧的value被release。如果想release原来的value又不关联新的value，，可以用objc_setAssociatedObject直接传一个nil做为value的值。</p>

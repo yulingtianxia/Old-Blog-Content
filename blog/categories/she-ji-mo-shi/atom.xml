@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 设计模式 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/she-ji-mo-shi/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-22T22:50:17+08:00</updated>
+  <updated>2014-09-23T20:38:24+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -75,20 +75,20 @@ NSString *n = [object valueForKey:@"name"];
 <p>设置一个属性的观察者需要三步，理解这些步骤可以更清楚的知道KVO的工作框图<br/>
 1. 首先看看你当前的场景如果使用KVO是否更妥当，比如，当一个实例的某个具体属性有任何变更的时候，另一个实例需要被通知。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389577.jpg" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353389577.jpg" alt="" /></p>
 
 <p>比如，BankObject中的accountBalance属性有任何变更时，某个PersonObject对象都要觉察到。<br/>
 2. 这个PersonObject对象必须注册成为BankObject的accountBalance属性的观察者，可以通过发送<code>addObserver:forKeyPath:options:context:</code>消息来实现。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389319.jpg" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353389319.jpg" alt="" /></p>
 
 <p>注意：<code>addObserver:forKeyPath:options:context:</code>方法在你指定的两个实例间建立联系，而不是在两个类之间。<br/>
 3. 为了回应变更通知，观察者必须实现<code>observeValueForKeyPath:ofObject:change:context:</code>方法。这个方法的实现决定了观察者如何回应变更通知。你可以在这个方法里自定义如何回应被观察属性的变更。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353388989.jpg" alt="" />  <br/>
+<p><img src="http://yulingtianxia.qiniudn.com/140353388989.jpg" alt="" />  <br/>
 4. 当一个被观察属性的值以符合KVO方式变更或者当它依赖的键变更时，<code>observeValueForKeyPath:ofObject:change:context:</code>方法会被自动执行。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389524.jpg" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353389524.jpg" alt="" /></p>
 
 <h3>Registering for Key-Value Observing</h3>
 
@@ -393,7 +393,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#101;&#109;&#112;&#108;&#x6f;&#121;&#x65;&#x65;&#x73;&#46;&#x40;&#x73;&#117;&#x6d;&#x2e;&#x73;&#x61;&#108;&#x61;&#x72;&#x79;">&#101;&#x6d;&#112;&#x6c;&#x6f;&#121;&#x65;&#101;&#115;&#46;&#64;&#x73;&#117;&#109;&#46;&#115;&#x61;&#x6c;&#x61;&#114;&#121;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#111;&#x3a;&#101;&#x6d;&#112;&#x6c;&#x6f;&#121;&#101;&#101;&#115;&#46;&#x40;&#115;&#x75;&#109;&#46;&#x73;&#97;&#108;&#97;&#x72;&#x79;">&#x65;&#x6d;&#112;&#108;&#x6f;&#x79;&#101;&#101;&#x73;&#x2e;&#x40;&#x73;&#117;&#109;&#46;&#115;&#97;&#108;&#97;&#114;&#121;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 
@@ -434,7 +434,7 @@ else
     <id>http://yulingtianxia.com/blog/2014/05/10/zhuang-shi-zhe-mo-shi</id>
     <content type="html"><![CDATA[<p>装饰者模式动态地将责任附加到对象上。若要扩展功能，装饰者提供了比继承更有弹性的替代方案。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353405846.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353405846.png" alt="" /></p>
 
 <!--more-->
 
@@ -456,13 +456,13 @@ else
 <p>比如，现在有一个饮料类（Beverage），向饮料中添加不同的配料（蒸奶（Steamed Milk）、豆浆（Soy）、
 摩卡（Mocha，也就是巧克力风味）或覆盖奶泡），就会配制出很多种不同的种类的饮料，其价格也随着添加的配料而变化，饮料店需要计算价格，如果用具体子类继承饮料类并考虑到所有组合的话，将是一个“类爆炸”：</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353406269.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353406269.png" alt="" /></p>
 
 <p>更恶心的是，如果某种配料的价格有变化，就必须含有此配料相应的更改一些饮料子类的实现，记住：<strong>类应该对扩展开放，对修改关闭。</strong></p>
 
 <p>应用装饰者模式，就像给对象穿衣服一样一层一层将拓展动态的添加上去，灵活多变有弹性</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353407109.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353407109.png" alt="" /></p>
 
 <p>下面用Java实现这个例子</p>
 
@@ -558,17 +558,17 @@ House Blend Coffee, Soy, Mocha, Whip $1.34<br/>
 <p>```
 果然是一层套一层吧：</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353407345.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353407345.png" alt="" /></p>
 
 <h2>Java中的装饰者</h2>
 
 <p>java.io包内的类太多了，简直是……“排山倒海”。你第一次（还有第二次和第三次）看到这些API发出“哇”的惊叹时，放心，你不是唯一受到惊吓的人。现在，你已经知道装饰者模式，这些I/O的相关类对你来说应该更有意义了，因为其中许多类都是装饰者。下面是一个典型的对象集合，用装饰者来将功能结合起来，以读取文件数据：</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353408228.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353408228.png" alt="" /></p>
 
 <p><code>BufferedInputStream</code>及<code>LineNumberInputStream</code>都扩展自<code>FilterInputStream</code>，而<code>FilterInputStream</code>是一个抽象的装饰类。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353408237.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353408237.png" alt="" /></p>
 
 <p>你会发现“输出”流的设计方式也是一样的。你可能还会发现Reader/Writer流（作为基于字符数据的输入输出）和输入流/输出流的类相当类似（虽然有一些小差异和不一致之处，但是相当雷同，所以你应该可以了解这些类）。</p>
 
@@ -586,7 +586,7 @@ House Blend Coffee, Soy, Mocha, Whip $1.34<br/>
 
 <p>这次我们来装饰一张照片，装饰的方法有很多，比如旋转位移变换，阴影。。。</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353408757.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353408757.png" alt="" /></p>
 
 <p>工程代码可以在<a href="https://github.com/yulingtianxia/Decorator">这里</a>下载</p>
 
@@ -752,7 +752,8 @@ UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropSh
 </ul>
 
 
-<p>该函数中第一个参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy,它有以下几个选项：<code>OBJC_ASSOCIATION_ASSIGN</code>，<code>OBJC_ASSOCIATION_RETAIN</code>，<code>OBJC_ASSOCIATION_COPY</code>，分别对应我们在声明属性时的<code>assign</code>,<code>retain</code>,<code>copy</code>。<br/>
+<p>该函数中第一个参数表示目标对象，第三个参数表示要添加的属性，第四个参数设置objc_AssociationPolicy,它有以下几个选项：<br/>
+<a href="http://yulingtianxia.qiniudn.com/">http://yulingtianxia.qiniudn.com/</a><code>OBJC_ASSOCIATION_ASSIGN</code>，<code>OBJC_ASSOCIATION_RETAIN</code>，<code>OBJC_ASSOCIATION_COPY</code>，分别对应我们在声明属性时的<code>assign</code>,<code>retain</code>,<code>copy</code>。<br/>
 关于第二个参数，key。因为一个对象可以关联多个新的对像，我们需要一个标志来区分他们。所以这个key就起这样的作用。这里的需要的key的地址，不关心它指向谁。</p>
 
 <p>当我们第二次以新的value调用objc_setAssociatedObject时，如果policy是OBJC_ASSOCIATION_ASSIGN，新的value被关联，对原来旧的value没有任何影响。如果policy是OBJC_ASSOCIATION_RETAIN和OBJC_ASSOCIATION_COPY，新的value被关联，旧的value被release。如果想release原来的value又不关联新的value，，可以用objc_setAssociatedObject直接传一个nil做为value的值。</p>
@@ -773,8 +774,8 @@ UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropSh
     <id>http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan</id>
     <content type="html"><![CDATA[<h2>引子</h2>
 
-<p>在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了<code>4*3/2+4</code>种情形（一枚导弹撞上另一枚导弹）。这种排列组合计算出的结果会随着物体种类N的增多爆炸性增长，如果这个时候还用一堆if－else来检测碰撞，那真是<code>Naive</code>了。这时我们可以利用面向对象语言的多态性质来在程序运行时动态绑定，因为碰撞检测是一种“双向选择”，所以我们需要<code>double dispatch</code>（双分派），<code>Visitor</code>模式就是<code>double dispatch</code>的一种应用。<br/>
-<img src="http://img41.wal8.com/img41/425047_20140623222918/14035338896.jpg" alt="Visitor模式" /></p>
+<p>在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了<code>4*3/2+4</code>种<a href="http://yulingtianxia.qiniudn.com/%E6%83%85%E5%BD%A2%EF%BC%88%E4%B8%80%E6%9E%9A%E5%AF%BC%E5%BC%B9%E6%92%9E%E4%B8%8A%E5%8F%A6%E4%B8%80%E6%9E%9A%E5%AF%BC%E5%BC%B9%EF%BC%89%E3%80%82%E8%BF%99%E7%A7%8D%E6%8E%92%E5%88%97%E7%BB%84%E5%90%88%E8%AE%A1%E7%AE%97%E5%87%BA%E7%9A%84%E7%BB%93%E6%9E%9C%E4%BC%9A%E9%9A%8F%E7%9D%80%E7%89%A9%E4%BD%93%E7%A7%8D%E7%B1%BBN%E7%9A%84%E5%A2%9E%E5%A4%9A%E7%88%86%E7%82%B8%E6%80%A7%E5%A2%9E%E9%95%BF%EF%BC%8C%E5%A6%82%E6%9E%9C%E8%BF%99%E4%B8%AA%E6%97%B6%E5%80%99%E8%BF%98%E7%94%A8%E4%B8%80%E5%A0%86if%EF%BC%8Delse%E6%9D%A5%E6%A3%80%E6%B5%8B%E7%A2%B0%E6%92%9E%EF%BC%8C%E9%82%A3%E7%9C%9F%E6%98%AF">http://yulingtianxia.qiniudn.com/%E6%83%85%E5%BD%A2%EF%BC%88%E4%B8%80%E6%9E%9A%E5%AF%BC%E5%BC%B9%E6%92%9E%E4%B8%8A%E5%8F%A6%E4%B8%80%E6%9E%9A%E5%AF%BC%E5%BC%B9%EF%BC%89%E3%80%82%E8%BF%99%E7%A7%8D%E6%8E%92%E5%88%97%E7%BB%84%E5%90%88%E8%AE%A1%E7%AE%97%E5%87%BA%E7%9A%84%E7%BB%93%E6%9E%9C%E4%BC%9A%E9%9A%8F%E7%9D%80%E7%89%A9%E4%BD%93%E7%A7%8D%E7%B1%BBN%E7%9A%84%E5%A2%9E%E5%A4%9A%E7%88%86%E7%82%B8%E6%80%A7%E5%A2%9E%E9%95%BF%EF%BC%8C%E5%A6%82%E6%9E%9C%E8%BF%99%E4%B8%AA%E6%97%B6%E5%80%99%E8%BF%98%E7%94%A8%E4%B8%80%E5%A0%86if%EF%BC%8Delse%E6%9D%A5%E6%A3%80%E6%B5%8B%E7%A2%B0%E6%92%9E%EF%BC%8C%E9%82%A3%E7%9C%9F%E6%98%AF</a><code>Naive</code>了。这时我们可以利用面向对象语言的多态性质来在程序运行时动态绑定，因为碰撞检测是一种“双向选择”，所以我们需要<code>double dispatch</code>（双分派），<code>Visitor</code>模式就是<code>double dispatch</code>的一种应用。<br/>
+<img src="http://yulingtianxia.qiniudn.com/14035338896.jpg" alt="Visitor模式" /></p>
 
 <p>DD模式适合于处理多个对象之间的相互作用。假如不用DD模式的话，那么每个对象跟别的对象发生关系时，就必须辛辛苦苦的进行if&hellip;else&hellip;枚举，因为它并不知道对方是何神圣。DD模式的引入解决了这个问题，其实说白了就是利用语言内置的虚函数机制来替你干活，把工作移交给编译器去做了。</p>
 
@@ -1000,7 +1001,7 @@ evt.injectHandler(new EventHandler());
 
 <p>虽然OC不支持函数重载，但是我们可以老老实实的用方法名来区分类似<code>visitXXX</code>的访问方法，并利用OC其独有的SEL类型可以很好的在运行时判断该调用哪个方法</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353389425.jpg" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353389425.jpg" alt="" /></p>
 
 <p>感谢kouky提供的iOS上碰撞检测的<a href="https://github.com/kouky/iOS-SpriteKit-Pong">Demo</a>，这里他用到了Visitor模式<br/>
 由于判断物体类型是用一个32位掩码来标记，所以这里不可避免的要用到if语句，这不代表它不是动态绑定，因为if语句是在初始化方法<code>+ (id)contactVisitorWithBody:(SKPhysicsBody *)body forContact:(SKPhysicsContact *)contact</code>中其作用的，只是为了判断物体类型，而不是判断碰撞两者的组合类型<br/>

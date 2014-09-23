@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-22T22:50:17+08:00</updated>
+  <updated>2014-09-23T20:38:24+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -40,11 +40,11 @@ UIFontTextStyleCaption2
 
 <p>问题来了，诸如字体大小这种“动态类型”，我们需要对其进行动态的UI调整，否则总是觉得我们的界面怪怪的：</p>
 
-<p><a href="http://t.williamgates.net/share-DCBF_53F0DDDB.html"><img src="http://t.williamgates.net/image-DCBF_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-DCBF_53F0DDDB.jpg" alt="" /></p>
 
 <p>我们想要让Cell的高度随着字体大小而作出调整：</p>
 
-<p><a href="http://t.williamgates.net/share-0D8C_53F0DDDB.html"><img src="http://t.williamgates.net/image-0D8C_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-0D8C_53F0DDDB.jpg" alt="" /></p>
 
 <p>总之，还会有其他动态因素导致我们需要修改布局。</p>
 
@@ -135,17 +135,17 @@ self.tableView.estimatedRowHeight = 44
 
 <p>自适应效果如下：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140833033058.gif" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140833033058.gif" alt="" /></p>
 
 <h3>UICollectionView</h3>
 
 <p><code>UITableView</code> 和 <code>UICollectionView</code> 都是 data-source 和 delegate 驱动的。<code>UICollectionView</code>在此之上进行了进一步抽象。它将其子视图的位置，大小和外观的控制权委托给一个单独的布局对象。通过提供一个自定义布局对象，你几乎可以实现任何你能想象到的布局。布局继承自 <code>UICollectionViewLayout</code> 抽象基类。iOS6 中以 <code>UICollectionViewFlowLayout</code> 类的形式提出了一个具体的布局实现。在<code>UICollectionViewFlowLayout</code>中，self-sizing同样适用：</p>
 
-<p><a href="http://t.williamgates.net/share-05D4_53F0E00F.html"><img src="http://t.williamgates.net/image-05D4_53F0E00F.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-05D4_53F0E00F.jpg" alt="" /></p>
 
 <p>采用self-sizing后：</p>
 
-<p><a href="http://t.williamgates.net/share-B1E8_53F0DDDB.html"><img src="http://t.williamgates.net/image-B1E8_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-B1E8_53F0DDDB.jpg" alt="" /></p>
 
 <p><code>UICollectionView</code>实现self-sizing不仅可以通过在Cell的<code>contentView</code>上加约束和重写<code>sizeThatFits:</code>方法，也能在Cell层面（以前都是在<code>contentSize</code>上进行self-sizing）上做文章：重写<code>UICollectionReusableView</code>的<code>preferredLayoutAttributesFittingAttributes:</code>方法来在self-sizing计算出Size之后再修改，这样就达到了对Cell布局属性（<code>UICollectionViewLayoutAttributes</code>）的全面控制。</p>
 
@@ -153,7 +153,7 @@ self.tableView.estimatedRowHeight = 44
 
 <p>由此我们从最经典的<code>UICollectionViewLayout</code>强制计算属性（还记得<code>UICollectionViewLayoutAttributes</code>的一系列工厂方法么？）到使用self-sizing来根据我们需求调整属性中的Size，再到重写<code>UICollectionReusableView</code>（<code>UICollectionViewCell</code>也是继承于它）的<code>preferredLayoutAttributesFittingAttributes:</code>方法来从Cell层面对所有属性进行修改：</p>
 
-<p><a href="http://t.williamgates.net/share-95BA_53F0DDDB.html"><img src="http://t.williamgates.net/image-95BA_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-95BA_53F0DDDB.jpg" alt="" /></p>
 
 <p>下面来说说如何在<code>UICollectionViewFlowLayout</code>实现self-sizing：</p>
 
@@ -236,7 +236,7 @@ invalidationContextForPreferredLayoutAttributes:withOriginalAttributes:
 
 <p>附上Spiral的动图：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140557437844.gif" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140557437844.gif" alt="" /></p>
 
 <p>游戏规则是：玩家是五角星小球，小球自动沿着陀螺线向外运动，当玩家点击屏幕时五角星小球会跳跃到内层螺旋，当五角星小球碰到红色旋风或滚动到螺旋线终点时游戏结束。玩家吃掉绿色旋风来得2分，吃到紫色三角得一分并获得保护罩，保护罩用来抵挡一次红色旋风。随着分数的增加游戏会升级，速度加快。游戏结束后可以截屏分享到社交网络，也可以选择重玩。</p>
 
@@ -835,7 +835,7 @@ let scene = self.scene as GameScene</p>
 我构建了一个App，分别将被测试的Node放置在场景中央，并用一个黑色的小圆圈代表Node的坐标系的原点<br/>
 因为SKNode比较抽象，没填充内容，所以只显示了一个原点：</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353411185.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353411185.png" alt="" /></p>
 
 <p>如果想填充些东西来证明SKNode的坐标系原点的确在其中央，将下面代码注释部分取消注释即可：</p>
 
@@ -868,7 +868,7 @@ return self;
 
 <p>粒子系统比较有趣，它从原点发射大量粒子，不同的粒子系统也会构筑不同的效果，因为它没有边界，还可调节发射粒子的数量方向速度等，这也使得原点在整个粒子系统中的位置有了错觉，但其本质还是(0.5,0.5)，也就是在中心</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353410978.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353410978.png" alt="" /></p>
 
 <p>这个火苗看起来中心在哪呢？当然在圆圈处！因为粒子是从圆圈处的区域产生的，然后向上发射</p>
 
@@ -878,7 +878,7 @@ return self;
 
 <p>知道其原点精确位置对于编程来说意义不大，以后有时间会深究下</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353410886.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353410886.png" alt="" /></p>
 
 <h2>SKShapeNode</h2>
 
@@ -903,13 +903,13 @@ return self;
 
 <p>下图是我故意画了个正方形使其居中：</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353411872.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353411872.png" alt="" /></p>
 
 <h2>SKSpriteNode</h2>
 
 <p>坐标原点在其frame中心，也就是(0.5,0.5)</p>
 
-<p><img src="http://img41.wal8.com/img41/425047_20140623222918/140353412174.png" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140353412174.png" alt="" /></p>
 
 <h2>总结</h2>
 

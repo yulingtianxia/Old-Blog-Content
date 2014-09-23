@@ -164,11 +164,11 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>问题来了，诸如字体大小这种“动态类型”，我们需要对其进行动态的UI调整，否则总是觉得我们的界面怪怪的：</p>
 
-<p><a href="http://t.williamgates.net/share-DCBF_53F0DDDB.html"><img src="http://t.williamgates.net/image-DCBF_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-DCBF_53F0DDDB.jpg" alt="" /></p>
 
 <p>我们想要让Cell的高度随着字体大小而作出调整：</p>
 
-<p><a href="http://t.williamgates.net/share-0D8C_53F0DDDB.html"><img src="http://t.williamgates.net/image-0D8C_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-0D8C_53F0DDDB.jpg" alt="" /></p>
 
 <p>总之，还会有其他动态因素导致我们需要修改布局。</p>
 
@@ -305,17 +305,17 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>自适应效果如下：</p>
 
-<p><img src="http://byetz.img41.wal8.com/img41/425047_20140623222918/140833033058.gif" alt="" /></p>
+<p><img src="http://yulingtianxia.qiniudn.com/140833033058.gif" alt="" /></p>
 
 <h3>UICollectionView</h3>
 
 <p><code>UITableView</code> 和 <code>UICollectionView</code> 都是 data-source 和 delegate 驱动的。<code>UICollectionView</code>在此之上进行了进一步抽象。它将其子视图的位置，大小和外观的控制权委托给一个单独的布局对象。通过提供一个自定义布局对象，你几乎可以实现任何你能想象到的布局。布局继承自 <code>UICollectionViewLayout</code> 抽象基类。iOS6 中以 <code>UICollectionViewFlowLayout</code> 类的形式提出了一个具体的布局实现。在<code>UICollectionViewFlowLayout</code>中，self-sizing同样适用：</p>
 
-<p><a href="http://t.williamgates.net/share-05D4_53F0E00F.html"><img src="http://t.williamgates.net/image-05D4_53F0E00F.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-05D4_53F0E00F.jpg" alt="" /></p>
 
 <p>采用self-sizing后：</p>
 
-<p><a href="http://t.williamgates.net/share-B1E8_53F0DDDB.html"><img src="http://t.williamgates.net/image-B1E8_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-B1E8_53F0DDDB.jpg" alt="" /></p>
 
 <p><code>UICollectionView</code>实现self-sizing不仅可以通过在Cell的<code>contentView</code>上加约束和重写<code>sizeThatFits:</code>方法，也能在Cell层面（以前都是在<code>contentSize</code>上进行self-sizing）上做文章：重写<code>UICollectionReusableView</code>的<code>preferredLayoutAttributesFittingAttributes:</code>方法来在self-sizing计算出Size之后再修改，这样就达到了对Cell布局属性（<code>UICollectionViewLayoutAttributes</code>）的全面控制。</p>
 
@@ -323,7 +323,7 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <p>由此我们从最经典的<code>UICollectionViewLayout</code>强制计算属性（还记得<code>UICollectionViewLayoutAttributes</code>的一系列工厂方法么？）到使用self-sizing来根据我们需求调整属性中的Size，再到重写<code>UICollectionReusableView</code>（<code>UICollectionViewCell</code>也是继承于它）的<code>preferredLayoutAttributesFittingAttributes:</code>方法来从Cell层面对所有属性进行修改：</p>
 
-<p><a href="http://t.williamgates.net/share-95BA_53F0DDDB.html"><img src="http://t.williamgates.net/image-95BA_53F0DDDB.jpg" border="0"></a></p>
+<p><img src="http://yulingtianxia.qiniudn.com/image-95BA_53F0DDDB.jpg" alt="" /></p>
 
 <p>下面来说说如何在<code>UICollectionViewFlowLayout</code>实现self-sizing：</p>
 
