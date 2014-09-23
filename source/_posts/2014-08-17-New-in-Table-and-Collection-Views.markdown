@@ -28,12 +28,12 @@ UIFontTextStyleCaption2
 iOS会根据样式的用途来合理调整字体。  
 
 问题来了，诸如字体大小这种“动态类型”，我们需要对其进行动态的UI调整，否则总是觉得我们的界面怪怪的：  
- 
-<a href="http://t.williamgates.net/share-DCBF_53F0DDDB.html"><img src="http://t.williamgates.net/image-DCBF_53F0DDDB.jpg" border="0"></a>  
+
+![](http://yulingtianxia.qiniudn.com/image-DCBF_53F0DDDB.jpg)  
 
 我们想要让Cell的高度随着字体大小而作出调整：  
-
-<a href="http://t.williamgates.net/share-0D8C_53F0DDDB.html"><img src="http://t.williamgates.net/image-0D8C_53F0DDDB.jpg" border="0"></a>    
+ 
+![](http://yulingtianxia.qiniudn.com/image-0D8C_53F0DDDB.jpg)  
 
 总之，还会有其他动态因素导致我们需要修改布局。  
 
@@ -117,17 +117,17 @@ self.tableView.estimatedRowHeight = 44
 
 自适应效果如下：  
 
-![](http://byetz.img41.wal8.com/img41/425047_20140623222918/140833033058.gif)  
+![](http://yulingtianxia.qiniudn.com/140833033058.gif)  
 
 ###UICollectionView
 
 `UITableView` 和 `UICollectionView` 都是 data-source 和 delegate 驱动的。`UICollectionView`在此之上进行了进一步抽象。它将其子视图的位置，大小和外观的控制权委托给一个单独的布局对象。通过提供一个自定义布局对象，你几乎可以实现任何你能想象到的布局。布局继承自 `UICollectionViewLayout` 抽象基类。iOS6 中以 `UICollectionViewFlowLayout` 类的形式提出了一个具体的布局实现。在`UICollectionViewFlowLayout`中，self-sizing同样适用：  
 
-<a href="http://t.williamgates.net/share-05D4_53F0E00F.html"><img src="http://t.williamgates.net/image-05D4_53F0E00F.jpg" border="0"></a>    
+![](http://yulingtianxia.qiniudn.com/image-05D4_53F0E00F.jpg)  
 
 采用self-sizing后：  
 
-<a href="http://t.williamgates.net/share-B1E8_53F0DDDB.html"><img src="http://t.williamgates.net/image-B1E8_53F0DDDB.jpg" border="0"></a>    
+![](http://yulingtianxia.qiniudn.com/image-B1E8_53F0DDDB.jpg)    
 
 
 `UICollectionView`实现self-sizing不仅可以通过在Cell的`contentView`上加约束和重写`sizeThatFits:`方法，也能在Cell层面（以前都是在`contentSize`上进行self-sizing）上做文章：重写`UICollectionReusableView`的`preferredLayoutAttributesFittingAttributes:`方法来在self-sizing计算出Size之后再修改，这样就达到了对Cell布局属性（`UICollectionViewLayoutAttributes`）的全面控制。  
@@ -136,7 +136,7 @@ PS：`preferredLayoutAttributesFittingAttributes:`方法默认调整Size属性�
 
 由此我们从最经典的`UICollectionViewLayout`强制计算属性（还记得`UICollectionViewLayoutAttributes`的一系列工厂方法么？）到使用self-sizing来根据我们需求调整属性中的Size，再到重写`UICollectionReusableView`（`UICollectionViewCell`也是继承于它）的`preferredLayoutAttributesFittingAttributes:`方法来从Cell层面对所有属性进行修改：  
 
-<a href="http://t.williamgates.net/share-95BA_53F0DDDB.html"><img src="http://t.williamgates.net/image-95BA_53F0DDDB.jpg" border="0"></a>    
+![](http://yulingtianxia.qiniudn.com/image-95BA_53F0DDDB.jpg)      
 
 下面来说说如何在`UICollectionViewFlowLayout`实现self-sizing：  
 
