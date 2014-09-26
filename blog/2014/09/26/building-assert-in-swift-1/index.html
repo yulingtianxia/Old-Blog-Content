@@ -5,11 +5,11 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>用DFS算法计算SpriteKit中复合体的构成 - 玉令天下的Blog</title>
+	<title>在Swift中构建assert(), 第一部分: Lazy Evaluation - 玉令天下的Blog</title>
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="用DFS算法计算SpriteKit中复合体的构成 在使用Sprite Kit开发iOS游戏的时候，有时我们需要把一些SKNode(或者其子类)的物理体(SKPhysicsBody)通过某种方式连在一起组合成一个SKPhysicsJoint，这样就可以让这个连接体在物理世界一起被模拟。 &hellip;">
+	<meta name="description" content="在Swift中构建assert(), 第一部分: Lazy Evaluation 本文翻译自Building assert() in Swift, Part 1: Lazy Evaluation 我们在设计Swift的时候觉得废除C预处理，排除bug并让我们的代码更加通俗易懂。这是开发者的大捷， &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@
 
 	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
 	
-	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/">
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/09/26/building-assert-in-swift-1/">
 	<link href="/favicon.png" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -133,25 +133,15 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 			
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">用DFS算法计算SpriteKit中复合体的构成</h1>
-	<div class="entry-content" itemprop="articleBody"><p>在使用Sprite Kit开发iOS游戏的时候，有时我们需要把一些<code>SKNode</code>(或者其子类)的物理体(<code>SKPhysicsBody</code>)通过某种方式连在一起组合成一个<code>SKPhysicsJoint</code>，这样就可以让这个连接体在物理世界一起被模拟。例如我们可以将两个<code>SKNode</code>用绳子(<code>SKPhysicsJointLimit</code>)，弹簧(<code>SKPhysicsJointSpring</code>)，胶水(<code>SKPhysicsJointFixed</code>)，钉子(<code>SKPhysicsJointPin</code>)，滑轨(<code>SKPhysicsJointSliding</code>)组合在一起。</p>
-
-<p>想象一些复杂的情况，比如玩家需要将游戏中多个相同的<code>SKNode</code>按照某种规则组合到一起，每个组合体包含<code>SKNode</code>的多少甚至形状(树或是环)都是游戏衡量玩家得分的标准。举个简单的例子：游戏里有好多彩色的球，玩家操作小球把它们粘在一起，将5个球粘在一起那么就能获得一份奖励</p>
-
-<p>但是每个<code>SKPhysicsJoint</code>只负责将两个<code>SKPhysicsBody</code>连在一起</p>
+	<h1 class="title" itemprop="name">在Swift中构建assert(), 第一部分: Lazy Evaluation</h1>
+	<div class="entry-content" itemprop="articleBody"><p>本文翻译自<a href="https://developer.apple.com/swift/blog/?id=4">Building assert() in Swift, Part 1: Lazy Evaluation</a></p>
 
 <!--more-->
 
 
-<p>其实这个问题可以简单归结为求图论中的联通图<br/>
-我写了个<code>Graph</code>类，只需在初始化的时候传入想要参加计算的<code>SKNode</code>数组即可，主要是用递归实现<code>DFS(深度优先搜索)</code>，维护N个集合(<code>NSSet</code>)，N的个数就是游戏中子图的个数，最小的子图就是一个<code>SKNode</code>。</p>
+<p>我们在设计Swift的时候觉得废除C预处理，排除bug并让我们的代码更加通俗易懂。这是开发者的大捷，也意味着Swift需要用新的方式实现旧的特性。大多数的特性（模块引入，条件编译）都了无新意，但或许最有趣的就是如何让Swift支持像<code>assert()</code>这样的宏。</p>
 
-<p>代码：</p>
-
-<script src="https://gist.github.com/yulingtianxia/11142742.js"></script>
-
-
-<p>可以在任意你需要的时候获取联通图信息：</p>
+<p>当构建C语言的release版本时，<code>assert()</code>宏指令并没有运行时特性，因为它不对任何参数做计算。C语言中最流行的实现方法如下：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -161,29 +151,123 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">thisAtom</span><span class="p">.</span><span class="n">scene</span> <span class="nl">enumerateChildNodesWithName:</span><span class="n">AtomName</span> <span class="nl">usingBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">SKNode</span> <span class="o">*</span><span class="n">node</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">nodes</span> <span class="nl">addObject:</span><span class="n">node</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}];</span>
-</span><span class='line'><span class="n">Graph</span> <span class="o">*</span><span class="n">graph</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Graph</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithNodes:</span><span class="n">nodes</span><span class="p">];</span>
-</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="p">[</span><span class="n">graph</span><span class="p">.</span><span class="n">sets</span> <span class="n">count</span><span class="p">];</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span><span class="n">graph</span><span class="p">.</span><span class="n">sets</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>完整代码在<a href="https://github.com/yulingtianxia/MyFirstGame.git">这里</a>的<code>ColorAtom</code>工程<br/>
-在向<code>SKSpriteNode.userdata</code>写键值对的时候，发现写进去后再读取依然是nil，这是因为<code>userdata</code>属性完全归用户随意使用，苹果甚至在SKSpriteNode初始化的时候干脆默认<code>userdata</code>是<code>nil</code>，所以需要初始化下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">((</span><span class="n">SKSpriteNode</span> <span class="o">*</span><span class="p">)</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]).</span><span class="n">userData</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="n">dictionary</span><span class="p">];</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#ifdef NDEBUG</span>
+</span><span class='line'><span class="cp">#define assert(e)  ((void)0)</span>
+</span><span class='line'><span class="cp">#else</span>
+</span><span class='line'><span class="cp">#define assert(e)  \</span>
+</span><span class='line'><span class="cp"> ((void) ((e) ? ((void)0) : __assert (#e, __FILE__, __LINE__)))</span>
+</span><span class='line'><span class="cp">#define __assert(e, file, line) \</span>
+</span><span class='line'><span class="cp"> ((void)printf (&quot;%s:%u: failed assertion `%s&#39;\n&quot;, file, line, e), abort())</span>
+</span><span class='line'><span class="cp">#endif</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>
-感谢StackOverFlow网友的回答：<a href="http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values">http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values</a></p>
+Swift模拟的断言(assert)提供C语言中断言几乎所有功能，不使用预处理，以更干净的方式实现。让我们深入学习Swift一些有趣的特性吧。</p>
+
+<h2>参数的惰性计算（Lazy Evaluation）</h2>
+
+<p>当实现Swift的<code>assert()</code>时，我们遇到的第一个挑战是没有明确的方式让一个函数接收一个表达式而不评判它。比如，我们想使用：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">func</span> <span class="nf">assert</span><span class="p">(</span><span class="n">x</span> <span class="o">:</span> <span class="n">Bool</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="err">#</span><span class="k">if</span> <span class="o">!</span><span class="n">NDEBUG</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="cm">/*noop*/</span>
+</span><span class='line'>  <span class="err">#</span><span class="n">endif</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+甚至当断言失效，应用程序将会在计算表达式时损失性能：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">assert</span><span class="p">(</span><span class="n">someExpensiveComputation</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">42</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+修复这种情况的一种方法是在定义断言的时候让它接收一个闭包(closure)：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">func</span> <span class="nf">assert</span><span class="p">(</span><span class="n">predicate</span> <span class="o">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Bool</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="err">#</span><span class="k">if</span> <span class="o">!</span><span class="n">NDEBUG</span>
+</span><span class='line'>      <span class="k">if</span> <span class="o">!</span><span class="n">predicate</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">abort</span><span class="p">()</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="err">#</span><span class="n">endif</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+正如我们想要的，只有在断言有效时才计算表达式，但它也给我们留下了一个不幸的调用语法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">assert</span><span class="p">({</span> <span class="n">someExpensiveComputation</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">42</span> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+我们可以用Swift的<code>@autoclosure</code>属性来修复它。这个自动闭包属性可以用在函数的参数上来表明一个未经花括号修饰的表达式可以被隐式的打包成闭包并作为参数传递给函数。比如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">func</span> <span class="nf">assert</span><span class="p">(</span><span class="n">predicate</span> <span class="o">:</span> <span class="err">@</span><span class="n">autoclosure</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Bool</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="err">#</span><span class="k">if</span> <span class="o">!</span><span class="n">NDEBUG</span>
+</span><span class='line'>      <span class="k">if</span> <span class="o">!</span><span class="n">predicate</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">abort</span><span class="p">()</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="err">#</span><span class="n">endif</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+这让你更自然的调用断言：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">assert</span><span class="p">(</span><span class="n">someExpensiveComputation</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">42</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+自动闭包是一个强大的特性，因为你可以有条件地计算表达式，多次计算并像使用闭包那样来使用打包的表达式。自动闭包也可以在Swift的其他地方使用。比如，实现简化逻辑运算符：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">func</span> <span class="o">&amp;&amp;</span><span class="p">(</span><span class="nl">lhs:</span> <span class="n">BooleanType</span><span class="p">,</span> <span class="nl">rhs:</span> <span class="err">@</span><span class="n">autoclosure</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="n">BooleanType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bool</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">lhs</span><span class="p">.</span><span class="n">boolValue</span> <span class="o">?</span> <span class="n">rhs</span><span class="p">().</span><span class="n">boolValue</span> <span class="o">:</span> <span class="n">false</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+通过将右边表达式以闭包形式接收，Swift提供合适的子表达式的惰性计算。</p>
+
+<h2>自动闭包</h2>
+
+<p>作为C语言的宏，自动闭包要谨慎使用。因为从调用函数的一方看不出来参数的计算受到了影响。自动闭包有意地限制我们不传递参数，所以你不能在类似条件控制流的情形中使用它。在符合人们期望的实用语义情况（可能是“features”API）下使用它，而不是单单为了省略闭包的花括号。</p>
+
+<p>本文涵盖了实现Swift断言的一个特别的部分，但接下来还会有更多带给大家。</p>
 </div>
 
 </article>
@@ -271,8 +355,8 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/';
-        var disqus_url = 'http://yulingtianxia.com/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/';
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/09/26/building-assert-in-swift-1/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/09/26/building-assert-in-swift-1/';
         var disqus_script = 'embed.js';
       
     (function () {
