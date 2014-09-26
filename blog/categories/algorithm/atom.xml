@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: algorithm | 玉令天下的Blog]]></title>
+  <title><![CDATA[Category: Algorithm | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/algorithm/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-26T18:38:38+08:00</updated>
+  <updated>2014-09-26T18:54:38+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -37,7 +37,7 @@
 
 <p>可以在任意你需要的时候获取联通图信息：</p>
 
-<p>&#8220;` objc</p>
+<p>``` objc</p>
 
 <p>NSMutableArray <em>nodes = [NSMutableArray array];
 [thisAtom.scene enumerateChildNodesWithName:AtomName usingBlock:^(SKNode </em>node, BOOL *stop) {</p>
@@ -53,7 +53,7 @@ for (int i=0; i&lt;[graph.sets count]; i++) {</p>
 </code></pre>
 
 <p>}
-&#8220;`</p>
+```</p>
 
 <p>完整代码在<a href="https://github.com/yulingtianxia/MyFirstGame.git">这里</a>的<code>ColorAtom</code>工程<br/>
 在向<code>SKSpriteNode.userdata</code>写键值对的时候，发现写进去后再读取依然是nil，这是因为<code>userdata</code>属性完全归用户随意使用，苹果甚至在SKSpriteNode初始化的时候干脆默认<code>userdata</code>是<code>nil</code>，所以需要初始化下：</p>

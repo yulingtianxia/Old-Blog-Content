@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: xcode | 玉令天下的Blog]]></title>
+  <title><![CDATA[Category: Xcode | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/xcode/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-26T18:38:38+08:00</updated>
+  <updated>2014-09-26T18:54:38+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -37,7 +37,7 @@
 会自动被<code>XCTest</code>架构识别为测试用例，每个<code>XCTestCase</code>的子类中的<code>defaultTestSuite</code>都是一个<code>XCTestSuite</code>，它包含了这些测试用例。<br/>
 测试方法的实现经常包含断言，必须通过验证才能通过测试，举个例子：</p>
 
-<p>&#8220;`
+<p>```
  @interface MathTest : XCTestCase {
  @private</p>
 
@@ -67,7 +67,7 @@ float f2;
  XCTAssertTrue (f1 + f2 == 5.0, @&ldquo;%f + %f should equal 5.0&rdquo;, f1, f2);
 }
 @end
-&#8220;`
+```
 感觉这根JUnit很像的，下面列出所有的断言：<br/>
 XCTFail(format…) 生成一个失败的测试；</p></li>
 </ul>
@@ -554,32 +554,6 @@ Completion Scopes: All
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[XCode,Swift和Objective-C Cheat Sheet]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
-    <updated>2014-04-06T18:38:24+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
-    <content type="html"><![CDATA[<p>关于XCode,Swift和OC的速查，方便记忆，以后会更新</p>
-
-<!-- more-->
-
-
-<p>XCode5 Cheat Sheet:(<a href="http://www.git-tower.com/blog/xcode-cheat-sheet/">作者</a>)</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353412989.jpg" alt="" /></p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353414151.jpg" alt="" /></p>
-
-<p>Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(摘自<a href="http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5">raywenderlich</a>)</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353409554.jpg" alt="" /></p>
-
-<p>Swift Cheat Sheet and Quick Reference:(摘自<a href="http://www.raywenderlich.com/73967/swift-cheat-sheet-and-quick-reference">raywenderlich</a>)</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140731497003.jpg" alt="" /></p>
 ]]></content>
   </entry>
   

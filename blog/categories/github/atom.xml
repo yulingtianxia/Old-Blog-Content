@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: github | 玉令天下的Blog]]></title>
+  <title><![CDATA[Category: GitHub | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-26T18:38:38+08:00</updated>
+  <updated>2014-09-26T18:54:38+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -39,11 +39,11 @@
 
 <p>trunk需要CocoaPods 0.33版本以上，用<code>pod --version</code>命令查看版本，如果版本低，需要升级：</p>
 
-<p>&#8220;`
+<p>```
 sudo gem install cocoapods
 pod setup</p>
 
-<p>&#8220;`</p>
+<p>```</p>
 
 <p>然后会一直卡在<code>Setting up CocoaPods master repo</code>这里，这条命令用于跟新本地电脑上的保存的Pods依赖库tree。由于每天有很多人会创建或者更新Pods依赖库，这条命令执行的时候会相当慢，还请耐心等待。我们需要经常执行这条命令，否则有新的Pods依赖库的时候执行pod search命令是搜不出来的。再开启一个终端，通过<code>cd  ~/.cocoapods</code>命令进入cocoapods根目录，然后通过<code>du -sh *</code>命令查看总的文件大小，如果隔一阵子会增加，那么说明一切正常，下载速度取决于你的网络。</p>
 
@@ -56,10 +56,10 @@ pod trunk register yulingtianxia@gmail.com 'Yang Xiaoyu' --description='macbook 
 
 <p>注册后CocoaPods会给你的邮箱发送验证链接，点击后就注册成功了，可以用<code>pod trunk me</code>命令查看自己的注册信息：</p>
 
-<p>&#8220;`
+<p>```
 bogon:YXYNumberAnimationLabel yangxiaoyu$ pod trunk me
   &ndash; Name:     Yang Xiaoyu
-  &ndash; Email:    <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#121;&#x75;&#108;&#x69;&#x6e;&#x67;&#116;&#x69;&#x61;&#x6e;&#x78;&#x69;&#x61;&#x40;&#103;&#x6d;&#97;&#105;&#x6c;&#46;&#99;&#111;&#x6d;">&#x79;&#x75;&#108;&#105;&#x6e;&#x67;&#x74;&#x69;&#x61;&#x6e;&#x78;&#105;&#97;&#64;&#103;&#x6d;&#x61;&#105;&#108;&#46;&#x63;&#x6f;&#109;</a>
+  &ndash; Email:    <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#121;&#117;&#x6c;&#105;&#x6e;&#x67;&#x74;&#105;&#x61;&#110;&#120;&#105;&#97;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#109;">&#x79;&#x75;&#x6c;&#x69;&#x6e;&#x67;&#x74;&#x69;&#x61;&#110;&#x78;&#105;&#x61;&#64;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#109;</a>
   &ndash; Since:    May 25th, 20:27
   &ndash; Sessions:</p>
 
@@ -67,72 +67,41 @@ bogon:YXYNumberAnimationLabel yangxiaoyu$ pod trunk me
 </code></pre>
 
 <p>  Description: macbook pro
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>上面是我的注册信息，CocoaPods不通过密码来验证用户，而是通过一个session token。&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h2&gt;部署你的Pod&lt;/h2&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;首先你需要建立一个podspec文件，这是我的podspec文件：&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;```
-</span><span class='line'>Pod::Spec.new do |s|
-</span><span class='line'>  s.name         = &ldquo;YXYNumberAnimationLabel&rdquo;
-</span><span class='line'>  s.version      = &ldquo;1.0.1&rdquo;
-</span><span class='line'>  s.summary      = &ldquo;一个可以动起来的数字Label&rdquo;
-</span><span class='line'>  s.description  = &lt;&lt;-DESC&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;pre&gt;&lt;code&gt;                通过设置数字变化的插值来展现动画效果
-</span><span class='line'>               DESC
-</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  s.homepage     = &ldquo;&lt;a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel"&gt;https://github.com/yulingtianxia/YXYNumberAnimationLabel&lt;/a&gt;&rdquo;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  s.license      = &lsquo;MIT&rsquo;
-</span><span class='line'>  s.author       = { &ldquo;YangXiaoyu&rdquo; =&gt; &ldquo;&lt;a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x79;&#117;&#108;&#x69;&#110;&#x67;&#116;&#105;&#97;&#x6e;&#x78;&#x69;&#x61;&#x40;&#x67;&#109;&#97;&#x69;&#108;&#46;&#x63;&#x6f;&#109;"&gt;&#121;&#117;&#x6c;&#105;&#x6e;&#x67;&#x74;&#105;&#97;&#110;&#120;&#x69;&#97;&#64;&#103;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;&lt;/a&gt;&rdquo; }
-</span><span class='line'>  s.social_media_url = &ldquo;&lt;a href="http://twitter.com/yulingtianxia"&gt;http://twitter.com/yulingtianxia&lt;/a&gt;&rdquo;
-</span><span class='line'>  s.source       = { :git =&gt; &ldquo;&lt;a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel.git"&gt;https://github.com/yulingtianxia/YXYNumberAnimationLabel.git&lt;/a&gt;&rdquo;, :tag =&gt; s.version.to_s }&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  s.platform     = :ios, &lsquo;6.0&rsquo;
-</span><span class='line'>  s.requires_arc = true&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  s.source_files = &lsquo;YXYNumberAnimationLabel/&lt;em&gt;&rsquo;
-</span><span class='line'>  s.frameworks = &lsquo;Foundation&rsquo;, &lsquo;UIKit&rsquo;
-</span><span class='line'>  #s.private_header_files = &lsquo;Classes/ios/private/&lt;/em&gt;.h&rsquo;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  #s.dependency &lsquo;FLKAutoLayout&rsquo;, &lsquo;~&gt; 0.1&rsquo;
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+```
+上面是我的注册信息，CocoaPods不通过密码来验证用户，而是通过一个session token。</p>
+
+<h2>部署你的Pod</h2>
+
+<p>首先你需要建立一个podspec文件，这是我的podspec文件：</p>
+
+<p>```
+Pod::Spec.new do |s|
+  s.name         = &ldquo;YXYNumberAnimationLabel&rdquo;
+  s.version      = &ldquo;1.0.1&rdquo;
+  s.summary      = &ldquo;一个可以动起来的数字Label&rdquo;
+  s.description  = &lt;&lt;-DESC</p>
+
+<pre><code>                通过设置数字变化的插值来展现动画效果
+               DESC
+</code></pre>
+
+<p>  s.homepage     = &ldquo;<a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel">https://github.com/yulingtianxia/YXYNumberAnimationLabel</a>&rdquo;</p>
+
+<p>  s.license      = &lsquo;MIT&rsquo;
+  s.author       = { &ldquo;YangXiaoyu&rdquo; => &ldquo;<a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#121;&#x75;&#x6c;&#x69;&#110;&#103;&#116;&#105;&#97;&#110;&#120;&#x69;&#97;&#x40;&#x67;&#x6d;&#97;&#105;&#x6c;&#x2e;&#99;&#111;&#x6d;">&#x79;&#117;&#108;&#x69;&#x6e;&#103;&#x74;&#x69;&#97;&#x6e;&#120;&#x69;&#x61;&#x40;&#103;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#x6d;</a>&rdquo; }
+  s.social_media_url = &ldquo;<a href="http://twitter.com/yulingtianxia">http://twitter.com/yulingtianxia</a>&rdquo;
+  s.source       = { :git => &ldquo;<a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel.git">https://github.com/yulingtianxia/YXYNumberAnimationLabel.git</a>&rdquo;, :tag => s.version.to_s }</p>
+
+<p>  s.platform     = :ios, &lsquo;6.0&rsquo;
+  s.requires_arc = true</p>
+
+<p>  s.source_files = &lsquo;YXYNumberAnimationLabel/<em>&rsquo;
+  s.frameworks = &lsquo;Foundation&rsquo;, &lsquo;UIKit&rsquo;
+  #s.private_header_files = &lsquo;Classes/ios/private/</em>.h&rsquo;</p>
+
+<p>  #s.dependency &lsquo;FLKAutoLayout&rsquo;, &lsquo;~> 0.1&rsquo;
+end
+```
 <strong>具体配置什么的大家走很熟悉，这里只是讲述使用trunk后需要注意的地方和新的操作</strong></p>
 
 <p>在验证和上传你的podspec文件到trunk之前，需要将你的源码push到Github上，tag一个版本号并发布一个release版本，这样podspec文件中的<code>s.source</code>的值才能是准确的：</p>
@@ -201,7 +170,7 @@ pod trunk add-owner ARAnalytics kyle@cocoapods.org
 
 <blockquote><p>The page build completed successfully, but returned the following warning:</p>
 
-<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#111;&#58;&#x73;&#117;&#x70;&#112;&#111;&#114;&#x74;&#64;&#103;&#x69;&#116;&#104;&#x75;&#98;&#46;&#x63;&#x6f;&#x6d;&#46;">&#115;&#x75;&#x70;&#x70;&#111;&#114;&#x74;&#x40;&#x67;&#105;&#x74;&#104;&#x75;&#x62;&#x2e;&#99;&#x6f;&#x6d;&#x2e;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
+<p>GitHub Pages recently underwent some improvements (<a href="https://github.com/blog/1715-faster-more-awesome-github-pages">https://github.com/blog/1715-faster-more-awesome-github-pages</a>) to make your site faster and more awesome, but we&rsquo;ve noticed that <code>yulingtianxia.com</code> isn&rsquo;t properly configured to take advantage of these new features. While your site will continue to work just fine, updating your domain&rsquo;s configuration offers some additional speed and performance benefits. Instructions on updating your site&rsquo;s IP address can be found at <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages#step-2-configure-dns-records,</a> and of course, you can always get in touch with a human at <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#x73;&#x75;&#x70;&#x70;&#111;&#114;&#116;&#x40;&#x67;&#105;&#116;&#x68;&#117;&#98;&#46;&#99;&#x6f;&#x6d;&#46;">&#x73;&#x75;&#112;&#x70;&#111;&#x72;&#116;&#64;&#103;&#x69;&#116;&#x68;&#117;&#x62;&#46;&#99;&#x6f;&#109;&#46;</a> For the more technical minded folks who want to skip the help docs: your site&rsquo;s DNS records are pointed to a deprecated IP address.</p>
 
 <p>For information on troubleshooting Jekyll see:</p>
 
@@ -246,7 +215,7 @@ ns4.p04.dynect.net. 26356   IN  A   204.13.251.4
 
 <p>出处：<a href="https://github.com/github/gitignore/blob/master/Objective-C.gitignore">https://github.com/github/gitignore/blob/master/Objective-C.gitignore</a></p>
 
-<p>&#8220;`</p>
+<p>```</p>
 
 <h1>Xcode</h1>
 
@@ -282,7 +251,7 @@ DerivedData
 
 <h1>Pods/</h1>
 
-<p>&#8220;`</p>
+<p>```</p>
 
 <p>还有需要记住一点的是，使用IB进行界面设计，无论是xib文件还是storyboard，同一时间只能右一个人更改一个Window或VC，虽然XCode5之后xib和storyboard可读性大大增强，但是仍不像Android开发界面的xml格式那么普及，还是小心谨慎为好</p>
 ]]></content>
@@ -415,7 +384,7 @@ git push origin source
 3. 在你的 <code>octopress/_config.yml</code> 文件中的<code>default_asides</code>项中加入第二步添加的路径：<code>custom/asides/category_cloud.html</code><br/>
 4. 拷贝<a href="https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/source/javascripts/tagcloud.swf">tagcloud.swf</a>到<code>source/javascripts/</code>文件夹<br/>
 如果想修改标签云的颜色可以在<code>category_cloud.rb</code>文件中改变：<br/>
-&#8220;`</p>
+```</p>
 
 <pre><code>    @opts['bgcolor'] = '#3D4349'
   @opts['tcolor1'] = '#8B85C3'

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: rac | 玉令天下的Blog]]></title>
+  <title><![CDATA[Category: RAC | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/rac/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-26T18:38:38+08:00</updated>
+  <updated>2014-09-26T18:54:38+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -37,7 +37,7 @@
 
 <p>这有一个简单的例子：</p>
 
-<p>&#8220;`objc
+<p>```objc
 // When self.username changes, logs the new name to the console.
 //
 // RACObserve(self, username) creates a new RACSignal that sends the current
@@ -49,129 +49,72 @@
 </code></pre>
 
 <p>}];
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">但是不同于</span><span class="n">KVO</span><span class="err">通知，</span><span class="n">signals</span><span class="err">可以链接在一起操作：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="n">objc</span>
-</span><span class='line'><span class="c1">// Only logs names that starts with &amp;ldquo;j&amp;rdquo;.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// -filter returns a new RACSignal that only sends a new value when its block</span>
-</span><span class='line'><span class="c1">// returns YES.</span>
-</span><span class='line'><span class="p">[[</span><span class="n">RACObserve</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">username</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">filter</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="n">newName</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">newName</span> <span class="nl">hasPrefix</span><span class="p">:</span><span class="s">@&quot;j&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">}]</span>
-</span><span class='line'><span class="nl">subscribeNext</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="n">newName</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">newName</span><span class="p">);</span>
-</span><span class='line'><span class="p">}];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">Signals</span><span class="err">也可以被用于导出状态。不必观察属性然后设置其他属性来响应这个属性新的值，</span><span class="n">RAC</span><span class="err">可以依照</span><span class="n">signals</span><span class="err">和操作来表达属性：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="n">objc</span>
-</span><span class='line'><span class="c1">// Creates a one-way binding so that self.createEnabled will be</span>
-</span><span class='line'><span class="c1">// true whenever self.password and self.passwordConfirmation</span>
-</span><span class='line'><span class="c1">// are equal.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// RAC() is a macro that makes the binding look nicer.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// +combineLatest:reduce: takes an array of signals, executes the block with the</span>
-</span><span class='line'><span class="c1">// latest value from each signal whenever any of them changes, and returns a new</span>
-</span><span class='line'><span class="c1">// RACSignal that sends the return value of that block as values.</span>
-</span><span class='line'><span class="n">RAC</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">createEnabled</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="n">RACSignal</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">combineLatest</span><span class="p">:</span><span class="l">@[</span> <span class="n">RACObserve</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">password</span><span class="p">),</span> <span class="n">RACObserve</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">passwordConfirmation</span><span class="p">)</span> <span class="l">]</span>
-</span><span class='line'><span class="nl">reduce</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="n">password</span><span class="p">,</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">passwordConfirm</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="l">@(</span><span class="p">[</span><span class="n">passwordConfirm</span> <span class="nl">isEqualToString</span><span class="p">:</span><span class="n">password</span><span class="p">]</span><span class="l">)</span><span class="p">;</span>
-</span><span class='line'><span class="p">}];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">Signals</span><span class="err">可以建立在任意值随时间的流动上，不仅仅是</span><span class="n">KVO</span><span class="err">。比如，它们也能表示按钮被按下：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="n">objc</span>
-</span><span class='line'><span class="c1">// Logs a message whenever the button is pressed.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// RACCommand creates signals to represent UI actions. Each signal can</span>
-</span><span class='line'><span class="c1">// represent a button press, for example, and have additional work associated</span>
-</span><span class='line'><span class="c1">// with it.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// -rac_command is an addition to NSButton. The button will send itself on that</span>
-</span><span class='line'><span class="c1">// command whenever it&amp;rsquo;s pressed.</span>
-</span><span class='line'><span class="nb">self</span><span class="p">.</span><span class="n">button</span><span class="p">.</span><span class="n">rac_command</span> <span class="o">=</span> <span class="p">[[</span><span class="n">RACCommand</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithSignalBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">_</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;button was pressed!&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="k">return</span> <span class="p">[</span><span class="n">RACSignal</span> <span class="n">empty</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}];</span>
-</span></code></pre></td></tr></table></div></figure></p>
+```</p>
+
+<p>但是不同于KVO通知，signals可以链接在一起操作：</p>
+
+<p>```objc
+// Only logs names that starts with &ldquo;j&rdquo;.
+//
+// -filter returns a new RACSignal that only sends a new value when its block
+// returns YES.
+[[RACObserve(self, username)</p>
+
+<pre><code>filter:^(NSString *newName) {
+    return [newName hasPrefix:@"j"];
+}]
+subscribeNext:^(NSString *newName) {
+    NSLog(@"%@", newName);
+}];
+</code></pre>
+
+<p>```</p>
+
+<p>Signals也可以被用于导出状态。不必观察属性然后设置其他属性来响应这个属性新的值，RAC可以依照signals和操作来表达属性：</p>
+
+<p>```objc
+// Creates a one-way binding so that self.createEnabled will be
+// true whenever self.password and self.passwordConfirmation
+// are equal.
+//
+// RAC() is a macro that makes the binding look nicer.
+//
+// +combineLatest:reduce: takes an array of signals, executes the block with the
+// latest value from each signal whenever any of them changes, and returns a new
+// RACSignal that sends the return value of that block as values.
+RAC(self, createEnabled) = [RACSignal</p>
+
+<pre><code>combineLatest:@[ RACObserve(self, password), RACObserve(self, passwordConfirmation) ] 
+reduce:^(NSString *password, NSString *passwordConfirm) {
+    return @([passwordConfirm isEqualToString:password]);
+}];
+</code></pre>
+
+<p>```</p>
+
+<p>Signals可以建立在任意值随时间的流动上，不仅仅是KVO。比如，它们也能表示按钮被按下：</p>
+
+<p>```objc
+// Logs a message whenever the button is pressed.
+//
+// RACCommand creates signals to represent UI actions. Each signal can
+// represent a button press, for example, and have additional work associated
+// with it.
+//
+// -rac_command is an addition to NSButton. The button will send itself on that
+// command whenever it&rsquo;s pressed.
+self.button.rac_command = [[RACCommand alloc] initWithSignalBlock:^(id _) {</p>
+
+<pre><code>NSLog(@"button was pressed!");
+return [RACSignal empty];
+</code></pre>
+
+<p>}];
+```</p>
 
 <p>或者异步网络操作：</p>
 
-<p>&#8220;`objc
+<p>```objc
 // Hooks up a &ldquo;Log in&rdquo; button to log in over the network.
 //
 // This block will be run whenever the login command is executed, starting
@@ -199,373 +142,192 @@ return [client logIn];
 
 <p>// Executes the login command when the button is pressed.
 self.loginButton.rac_command = self.loginCommand;
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-<span class='line-number'>159</span>
-<span class='line-number'>160</span>
-<span class='line-number'>161</span>
-<span class='line-number'>162</span>
-<span class='line-number'>163</span>
-<span class='line-number'>164</span>
-<span class='line-number'>165</span>
-<span class='line-number'>166</span>
-<span class='line-number'>167</span>
-<span class='line-number'>168</span>
-<span class='line-number'>169</span>
-<span class='line-number'>170</span>
-<span class='line-number'>171</span>
-<span class='line-number'>172</span>
-<span class='line-number'>173</span>
-<span class='line-number'>174</span>
-<span class='line-number'>175</span>
-<span class='line-number'>176</span>
-<span class='line-number'>177</span>
-<span class='line-number'>178</span>
-<span class='line-number'>179</span>
-<span class='line-number'>180</span>
-<span class='line-number'>181</span>
-<span class='line-number'>182</span>
-<span class='line-number'>183</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">Signals</span><span class="err">也能表示定时器，其他</span><span class="n">UI</span><span class="err">事件，或者任何其他随时间而改变的东西。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">通过链接和转换这些</span><span class="n">Signals</span><span class="err">，可以为异步操作建立更加复杂的行为。在一组操作完成后，后续工作能容易地被触发：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="n">objc</span>
-</span><span class='line'><span class="c1">// Performs 2 network operations and logs a message to the console when they are</span>
-</span><span class='line'><span class="c1">// both completed.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// +merge: takes an array of signals and returns a new RACSignal that passes</span>
-</span><span class='line'><span class="c1">// through the values of all of the signals and completes when all of the</span>
-</span><span class='line'><span class="c1">// signals complete.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// -subscribeCompleted: will execute the block when the signal completes.</span>
-</span><span class='line'><span class="p">[[</span><span class="n">RACSignal</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">merge</span><span class="p">:</span><span class="l">@[</span> <span class="p">[</span><span class="n">client</span> <span class="n">fetchUserRepos</span><span class="p">],</span> <span class="p">[</span><span class="n">client</span> <span class="n">fetchOrgRepos</span><span class="p">]</span> <span class="l">]</span><span class="p">]</span>
-</span><span class='line'><span class="nl">subscribeCompleted</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;They&#39;re both done!&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">Signals</span><span class="err">可以被链接起来按顺序地执行异步操作，而不用嵌套回调</span><span class="n">blocks</span><span class="err">。这类似</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://en.wikipedia.org/wiki/Futures_and_promises&quot;</span><span class="o">&gt;</span><span class="n">futures</span> <span class="n">and</span> <span class="n">promises</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="err">是如何经常使用的：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="n">objc</span>
-</span><span class='line'><span class="c1">// Logs in the user, then loads any cached messages, then fetches the remaining</span>
-</span><span class='line'><span class="c1">// messages from the server. After that&amp;rsquo;s all done, logs a message to the</span>
-</span><span class='line'><span class="c1">// console.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// The hypothetical -logInUser methods returns a signal that completes after</span>
-</span><span class='line'><span class="c1">// logging in.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// -flattenMap: will execute its block whenever the signal sends a value, and</span>
-</span><span class='line'><span class="c1">// returns a new RACSignal that merges all of the signals returned from the block</span>
-</span><span class='line'><span class="c1">// into a single signal.</span>
-</span><span class='line'><span class="p">[[[[</span><span class="n">client</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">logInUser</span><span class="p">]</span>
-</span><span class='line'><span class="nl">flattenMap</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">User</span> <span class="o">*</span><span class="n">user</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// Return a signal that loads cached messages for the user.</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">client</span> <span class="nl">loadCachedMessagesForUser</span><span class="p">:</span><span class="n">user</span><span class="p">];</span>
-</span><span class='line'><span class="p">}]</span>
-</span><span class='line'><span class="nl">flattenMap</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSArray</span> <span class="o">*</span><span class="n">messages</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// Return a signal that fetches any remaining messages.</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">client</span> <span class="nl">fetchMessagesAfterMessage</span><span class="p">:</span><span class="n">messages</span><span class="p">.</span><span class="n">lastObject</span><span class="p">];</span>
-</span><span class='line'><span class="p">}]</span>
-</span><span class='line'><span class="nl">subscribeNext</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSArray</span> <span class="o">*</span><span class="n">newMessages</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;New messages: %@&quot;</span><span class="p">,</span> <span class="n">newMessages</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span> <span class="nl">completed</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Fetched all messages.&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">RAC</span><span class="err">甚至使绑定到异步操作结果更加容易：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="n">objc</span>
-</span><span class='line'><span class="c1">// Creates a one-way binding so that self.imageView.image will be set the user&amp;rsquo;s</span>
-</span><span class='line'><span class="c1">// avatar as soon as it&amp;rsquo;s downloaded.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// The hypothetical -fetchUserWithUsername: method returns a signal which sends</span>
-</span><span class='line'><span class="c1">// the user.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// -deliverOn: creates new signals that will do their work on other queues. In</span>
-</span><span class='line'><span class="c1">// this example, it&amp;rsquo;s used to move work to a background queue and then back to the main thread.</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">// -map: calls its block with each user that&amp;rsquo;s fetched and returns a new</span>
-</span><span class='line'><span class="c1">// RACSignal that sends values returned from the block.</span>
-</span><span class='line'><span class="n">RAC</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">imageView</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span> <span class="o">=</span> <span class="p">[[[[</span><span class="n">client</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">fetchUserWithUsername</span><span class="p">:</span><span class="s">@&quot;joshaber&quot;</span><span class="p">]</span>
-</span><span class='line'><span class="nl">deliverOn</span><span class="p">:[</span><span class="n">RACScheduler</span> <span class="n">scheduler</span><span class="p">]]</span>
-</span><span class='line'><span class="nl">map</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">User</span> <span class="o">*</span><span class="n">user</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// Download the avatar (this is done on a background queue).</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[[</span><span class="n">NSImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfURL</span><span class="p">:</span><span class="n">user</span><span class="p">.</span><span class="n">avatarURL</span><span class="p">];</span>
-</span><span class='line'><span class="p">}]</span>
-</span><span class='line'><span class="c1">// Now the assignment will be done on the main thread.</span>
-</span><span class='line'><span class="nl">deliverOn</span><span class="p">:</span><span class="n">RACScheduler</span><span class="p">.</span><span class="n">mainThreadScheduler</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">上面示范了</span><span class="n">RAC</span><span class="err">能做什么，但它没示范</span><span class="n">RAC</span><span class="err">为何这么强大。用</span><span class="n">README</span><span class="err">的篇幅的例子很难赞美</span><span class="n">RAC</span><span class="err">，但是它让编程有更加简化的状态，更少的饮用，更好的代码位置和更好的表达意图。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">更多的例子，参见</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;https://github.com/AshFurrow/C-41&quot;</span><span class="o">&gt;</span><span class="n">C</span><span class="o">-</span><span class="mi">41</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="err">或</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;https://github.com/jspahrsummers/GroceryList&quot;</span><span class="o">&gt;</span><span class="n">GroceryList</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="p">,</span> <span class="err">都是用</span><span class="n">ReactiveCocoa</span><span class="err">写的真实的</span><span class="n">iOS</span><span class="err">应用</span>
-</span><span class='line'><span class="p">.</span> <span class="err">关于</span> <span class="n">RAC</span> <span class="err">更多的详细信息可以在</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;https://github.com/ReactiveCocoa/ReactiveCocoa/tree/master/Documentation&quot;</span><span class="o">&gt;</span><span class="n">Documentation</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="err">文件夹中找到</span><span class="p">.</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="err">我的学习笔记（不断更新）</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="err">函数式编程</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">参考维基百科上的</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://zh.wikipedia.org/wiki/%E5%87%BD%E6%95%B8%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80&quot;</span><span class="o">&gt;</span><span class="err">概念</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="err">，简单理解为可以将函数作为其他函数的参数，具有</span><span class="n">block</span><span class="err">或λ表达式。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="err">响应式编程</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">参考维基百科上的</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://zh.wikipedia.org/wiki/%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B&quot;</span><span class="o">&gt;</span><span class="err">概念</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="err">，简单地理解为专注于数据流和变化的传播。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">RAC</span><span class="err">中的类和方法</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h4</span><span class="o">&gt;</span><span class="n">RACSignal</span><span class="err">和</span><span class="n">RACStream</span><span class="o">&lt;/</span><span class="n">h4</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">RAC</span><span class="err">的核心是</span><span class="n">Signal</span><span class="err">，对应的类为</span><span class="n">RACSignal</span><span class="err">，它其实是一个事件源，</span><span class="n">Signal</span><span class="err">会给它的订阅者（</span><span class="n">subscribers</span><span class="err">）发送一连串的事件。有三种事件：</span><span class="n">next</span><span class="err">，</span><span class="n">error</span><span class="err">和</span><span class="n">completed</span><span class="err">。</span><span class="n">Signal</span><span class="err">可以在</span><span class="n">error</span><span class="err">或</span><span class="n">completed</span><span class="err">事件发出前发出任意多的</span><span class="n">next</span><span class="err">事件。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">RACSignal</span><span class="err">有很多方法用于订阅事件，查看</span><span class="n">RACSignal</span> <span class="p">(</span><span class="n">Subscription</span><span class="p">)</span><span class="err">类别可以看到所有的订阅事件的方法，每个方法都会将类型为</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="kt">id</span> <span class="n">x</span><span class="p">))</span><span class="err">的</span><span class="n">block</span><span class="err">作为参数，当事件发生时</span><span class="n">block</span><span class="err">中的代码会执行，例如</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">subscribeNext</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法会传入一个</span><span class="n">block</span><span class="err">作为参数，当</span><span class="n">Signal</span><span class="err">的</span><span class="n">next</span><span class="err">事件发出后，</span><span class="n">block</span><span class="err">会接收到事件并执行。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">RAC</span><span class="err">为</span><span class="n">UIKit</span><span class="err">添加了很多类别来让我们可以订阅</span><span class="n">UI</span><span class="err">组件的事件，比如</span><span class="bp">UITextField</span> <span class="p">(</span><span class="n">RACSignalSupport</span><span class="p">)</span><span class="err">中的</span><span class="n">rac_textSignal</span><span class="err">会在文本域内容变化时发出</span><span class="n">next</span><span class="err">事件。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">事件包含的内容可以是类型，只要是对象就行，如果是一些数字，布尔值等字面量，可以用</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="l">@()</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">语法装箱成</span><span class="bp">NSNumber</span><span class="err">。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">RACSignal</span><span class="err">是</span><span class="n">RACStream</span><span class="err">的子类，</span><span class="n">RACStream</span><span class="err">是一个抽象类，描述了值的流动，列举一下它比较常用的操作（</span><span class="n">Operations</span><span class="err">类别）：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">filter</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="err">对</span><span class="n">RACStream</span><span class="err">中的事件内容进行过滤，返回一个过滤事件内容后的</span><span class="kt">instancetype</span><span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">map</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="err">会将事件中的数据转换成你想要的数据，返回一个转换事件内容后的</span><span class="kt">instancetype</span><span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">flattenMap</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="err">在</span><span class="n">map</span><span class="err">的基础上使其</span><span class="n">flatten</span><span class="err">，也就是当</span><span class="n">Signal</span><span class="err">嵌套（一个</span><span class="n">Signal</span><span class="err">的事件是另一个</span><span class="n">Signal</span><span class="err">）的时候，会将内部</span><span class="n">Signal</span><span class="err">的事件传递给外部</span><span class="n">Signal</span><span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">distinctUntilChanged</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="err">比较数值流中当前值和上一个值，如果不同，就返回当前值，简单理解为“流”的值有变化时反馈变化的值，求异存同。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">PS</span><span class="err">：</span><span class="kt">instancetype</span><span class="err">是程序运行时对象的类型，有可能为</span><span class="n">RACStream</span><span class="err">，也可以为其子类</span><span class="n">RACSignal</span><span class="err">。正是因为这些操作事件的方法都会返回事件源对象相同的类型，事件可以被一连串的被这些方法修改，过滤等，这就形成了管道，管道中传递着事件，包含着</span><span class="n">value</span><span class="err">。</span><span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="err">建议管道的语法格式是每个操作新起一行，并在垂直方向上对齐：</span><span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">&quot;http://cdn4.raywenderlich.com/wp-content/uploads/2014/01/PipelineFormatting.png&quot;</span> <span class="n">alt</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="o">/&gt;&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="err">可惜</span><span class="n">Xcode</span><span class="err">的自动缩进并不会按照这样的格式对齐，是时候与它斗智斗勇啦！</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">RACSignal</span><span class="err">还有一些方法是对</span><span class="n">Signal</span><span class="err">做操作的，在</span><span class="n">RACSignal</span> <span class="p">(</span><span class="n">Operations</span><span class="p">)</span><span class="err">类别中有详细的描述，比较常用的如下：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">combineLatest</span><span class="p">:</span><span class="nl">reduce</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="err">将一组</span><span class="n">Signal</span><span class="err">发出的最新的事件合并成一个</span><span class="n">Signal</span><span class="err">，每当这组</span><span class="n">Signal</span><span class="err">发出新事件时，</span><span class="n">reduce</span><span class="err">的</span><span class="n">block</span><span class="err">会执行，将所有新事件的值合并成一个值，并当做合并后</span><span class="n">Signal</span><span class="err">的事件发出去。这个方法会返回合并后的</span><span class="n">Signal</span><span class="err">。</span><span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="n">PS</span><span class="err">：关于</span><span class="n">reduce</span><span class="err">的</span><span class="n">block</span><span class="err">中参数，其实是与</span><span class="n">combineLatest</span><span class="err">中数组元素一一对应的，这里</span><span class="n">RAC</span><span class="err">用了一个黑魔法，参看</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/master/ReactiveCocoaFramework/ReactiveCocoa/RACBlockTrampoline.m?source=c&quot;</span><span class="o">&gt;</span><span class="n">RACBlockTrampoline</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">doNext</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="err">这个向</span><span class="n">Signal</span><span class="err">管道上添加添加副作用。它并不会改变事件，参数</span><span class="n">block</span><span class="err">也没有返回值，它返回一个执行了</span><span class="n">block</span><span class="err">的</span><span class="n">Signal</span><span class="err">，这样</span><span class="n">block</span><span class="err">中的副作用就被注入到了以前的</span><span class="n">Signal</span><span class="err">。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">then</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="err">当一个订阅者被发送了</span><span class="n">completed</span><span class="err">事件后，</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">then</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法才会执行，订阅者会订阅</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">then</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法返回的</span><span class="n">Signal</span><span class="err">，这个</span><span class="n">Signal</span><span class="err">是在</span><span class="n">block</span><span class="err">中返回的。这样优雅的实现了从一个</span><span class="n">Signal</span><span class="err">到另一个</span><span class="n">Signal</span><span class="err">的订阅。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">deliverOn</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="err">参数为</span><span class="n">RACScheduler</span><span class="err">类的对象</span><span class="n">scheduler</span><span class="err">，这个方法会返回一个</span><span class="n">Signal</span><span class="err">，它的所有事件都会传递给</span><span class="n">scheduler</span><span class="err">参数所表示的线程，而以前管道上的副作用还会在以前的线程上。这个方法主要是切换线程。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">subscribeOn</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="err">功能跟</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">deliverOn</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">相同，但是它也会将副作用也切换到制定线程中。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">throttle</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span>  <span class="err">它接收一个时间间隔</span><span class="n">interval</span><span class="err">作为参数，如果</span><span class="n">Signal</span><span class="err">发出的</span><span class="n">next</span><span class="err">事件之后</span><span class="n">interval</span><span class="err">时间内不再发出</span><span class="n">next</span><span class="err">事件，那么它返回的</span><span class="n">Signal</span><span class="err">会将这个</span><span class="n">next</span><span class="err">事件发出。也就是说，这个方法会将发送比较频繁的</span><span class="n">next</span><span class="err">事件舍弃，只保留一段“静默”时间之前的那个</span><span class="n">next</span><span class="err">事件，这个方法常用于处理输入框等信号（用户打字很快），因为它只保留用户最后输入的文字并返回一个新的</span><span class="n">Signal</span><span class="err">，将最后的文字作为</span><span class="n">next</span><span class="err">事件参数发出。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">and</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">、</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">or</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">、</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">not</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="bp">NSNumber</span><span class="err">中</span><span class="n">Bool</span><span class="err">的与、或、非操作，将</span><span class="n">Signal</span><span class="err">发出的事件内容转化。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">还可以根据方法（</span><span class="kt">SEL</span><span class="err">类型）来创建</span><span class="n">Signal</span><span class="err">，每当该方法被调用时，</span><span class="n">Signal</span><span class="err">都会将此方法被传入的参数打包成</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">RACTuple</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">元组类型来发送</span><span class="n">next</span><span class="err">事件给它的接受者。</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">rac_signalForSelector</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">和</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">rac_signalForSelector</span><span class="p">:</span><span class="nl">fromProtocol</span><span class="p">:</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">这两个方法都能通过指定的方法来创建</span><span class="n">Signal</span><span class="err">。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h4</span><span class="o">&gt;</span><span class="n">RACSubscriber</span><span class="o">&lt;/</span><span class="n">h4</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">RACSubscriber</span><span class="err">是一个协议，包含了向订阅者发送事件的方法。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
-</span><span class='line'><span class="p">[</span><span class="n">RACSignal</span> <span class="nl">createSignal</span><span class="p">:</span><span class="o">^</span><span class="n">RACDisposable</span> <span class="o">*</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">RACSubscriber</span><span class="o">&gt;</span> <span class="n">subscriber</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>         <span class="p">[</span><span class="n">subscriber</span> <span class="nl">sendNext</span><span class="p">:</span><span class="l">@(</span><span class="nb">YES</span><span class="l">)</span><span class="p">];</span>
-</span><span class='line'>         <span class="p">[</span><span class="n">subscriber</span> <span class="n">sendCompleted</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'><span class="p">}];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">``</span>
-</span><span class='line'><span class="err">上面工厂方法用于创建一个</span><span class="n">Signal</span><span class="err">，当</span><span class="n">Signal</span><span class="err">被订阅时，</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">createSignal</span><span class="p">:</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">的参数</span><span class="n">block</span><span class="err">中的内容被执行。</span><span class="n">block</span><span class="err">的参数是一个实现</span><span class="n">RACSubscriber</span><span class="err">协议的对象，然后向这个订阅者发送了</span><span class="n">next</span><span class="err">事件（内容为</span><span class="bp">NSNumber</span><span class="err">类型的</span><span class="m">@YES</span><span class="err">值）和</span><span class="n">completed</span><span class="err">事件。</span>
-</span><span class='line'><span class="n">PS</span><span class="err">：除此之外</span><span class="n">RACSubscriber</span><span class="err">还有</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">sendError</span><span class="p">:</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">和</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">didSubscribeWithDisposable</span><span class="p">:</span><span class="err">`两个方法。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h4</span><span class="o">&gt;</span><span class="n">RACDisposable</span><span class="o">&lt;/</span><span class="n">h4</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">你会发现</span><span class="n">RACSignal</span> <span class="p">(</span><span class="n">Subscription</span><span class="p">)</span><span class="err">类别中所有方法的返回值类型都是</span><span class="n">RACDisposable</span><span class="err">，它的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">dispose</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法可以让我们手动移除订阅者。举个栗子：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
-</span><span class='line'><span class="n">RACSignal</span> <span class="o">*</span><span class="n">backgroundColorSignal</span> <span class="o">=</span>
-</span><span class='line'>  <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">searchText</span><span class="p">.</span><span class="n">rac_textSignal</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">map</span><span class="p">:</span><span class="o">^</span><span class="kt">id</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="n">text</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">isValidSearchText</span><span class="p">:</span><span class="n">text</span><span class="p">]</span> <span class="o">?</span>
-</span><span class='line'>    <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span> <span class="o">:</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">yellowColor</span><span class="p">];</span>
-</span><span class='line'><span class="p">}];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">RACDisposable</span> <span class="o">*</span><span class="n">subscription</span> <span class="o">=</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">backgroundColorSignal</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">subscribeNext</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nb">self</span><span class="p">.</span><span class="n">searchText</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="n">color</span><span class="p">;</span>
-</span><span class='line'><span class="p">}];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// at some point in the future &amp;hellip;</span>
-</span><span class='line'><span class="p">[</span><span class="n">subscription</span> <span class="n">dispose</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure></p>
+```</p>
+
+<p>Signals也能表示定时器，其他UI事件，或者任何其他随时间而改变的东西。</p>
+
+<p>通过链接和转换这些Signals，可以为异步操作建立更加复杂的行为。在一组操作完成后，后续工作能容易地被触发：</p>
+
+<p>```objc
+// Performs 2 network operations and logs a message to the console when they are
+// both completed.
+//
+// +merge: takes an array of signals and returns a new RACSignal that passes
+// through the values of all of the signals and completes when all of the
+// signals complete.
+//
+// -subscribeCompleted: will execute the block when the signal completes.
+[[RACSignal</p>
+
+<pre><code>merge:@[ [client fetchUserRepos], [client fetchOrgRepos] ]] 
+subscribeCompleted:^{
+    NSLog(@"They're both done!");
+}];
+</code></pre>
+
+<p>```</p>
+
+<p>Signals可以被链接起来按顺序地执行异步操作，而不用嵌套回调blocks。这类似<a href="http://en.wikipedia.org/wiki/Futures_and_promises">futures and promises</a>是如何经常使用的：</p>
+
+<p>```objc
+// Logs in the user, then loads any cached messages, then fetches the remaining
+// messages from the server. After that&rsquo;s all done, logs a message to the
+// console.
+//
+// The hypothetical -logInUser methods returns a signal that completes after
+// logging in.
+//
+// -flattenMap: will execute its block whenever the signal sends a value, and
+// returns a new RACSignal that merges all of the signals returned from the block
+// into a single signal.
+[[[[client</p>
+
+<pre><code>logInUser] 
+flattenMap:^(User *user) {
+    // Return a signal that loads cached messages for the user.
+    return [client loadCachedMessagesForUser:user];
+}]
+flattenMap:^(NSArray *messages) {
+    // Return a signal that fetches any remaining messages.
+    return [client fetchMessagesAfterMessage:messages.lastObject];
+}]
+subscribeNext:^(NSArray *newMessages) {
+    NSLog(@"New messages: %@", newMessages);
+} completed:^{
+    NSLog(@"Fetched all messages.");
+}];
+</code></pre>
+
+<p>```</p>
+
+<p>RAC甚至使绑定到异步操作结果更加容易：</p>
+
+<p>```objc
+// Creates a one-way binding so that self.imageView.image will be set the user&rsquo;s
+// avatar as soon as it&rsquo;s downloaded.
+//
+// The hypothetical -fetchUserWithUsername: method returns a signal which sends
+// the user.
+//
+// -deliverOn: creates new signals that will do their work on other queues. In
+// this example, it&rsquo;s used to move work to a background queue and then back to the main thread.
+//
+// -map: calls its block with each user that&rsquo;s fetched and returns a new
+// RACSignal that sends values returned from the block.
+RAC(self.imageView, image) = [[[[client</p>
+
+<pre><code>fetchUserWithUsername:@"joshaber"]
+deliverOn:[RACScheduler scheduler]]
+map:^(User *user) {
+    // Download the avatar (this is done on a background queue).
+    return [[NSImage alloc] initWithContentsOfURL:user.avatarURL];
+}]
+// Now the assignment will be done on the main thread.
+deliverOn:RACScheduler.mainThreadScheduler];
+</code></pre>
+
+<p>```</p>
+
+<p>上面示范了RAC能做什么，但它没示范RAC为何这么强大。用README的篇幅的例子很难赞美RAC，但是它让编程有更加简化的状态，更少的饮用，更好的代码位置和更好的表达意图。</p>
+
+<p>更多的例子，参见 <a href="https://github.com/AshFurrow/C-41">C-41</a> 或 <a href="https://github.com/jspahrsummers/GroceryList">GroceryList</a>, 都是用ReactiveCocoa写的真实的iOS应用
+. 关于 RAC 更多的详细信息可以在<a href="https://github.com/ReactiveCocoa/ReactiveCocoa/tree/master/Documentation">Documentation</a> 文件夹中找到.</p>
+
+<h2>我的学习笔记（不断更新）</h2>
+
+<h3>函数式编程</h3>
+
+<p>参考维基百科上的<a href="http://zh.wikipedia.org/wiki/%E5%87%BD%E6%95%B8%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80">概念</a>，简单理解为可以将函数作为其他函数的参数，具有block或λ表达式。</p>
+
+<h3>响应式编程</h3>
+
+<p>参考维基百科上的<a href="http://zh.wikipedia.org/wiki/%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B">概念</a>，简单地理解为专注于数据流和变化的传播。</p>
+
+<h3>RAC中的类和方法</h3>
+
+<h4>RACSignal和RACStream</h4>
+
+<p>RAC的核心是Signal，对应的类为RACSignal，它其实是一个事件源，Signal会给它的订阅者（subscribers）发送一连串的事件。有三种事件：next，error和completed。Signal可以在error或completed事件发出前发出任意多的next事件。</p>
+
+<p>RACSignal有很多方法用于订阅事件，查看RACSignal (Subscription)类别可以看到所有的订阅事件的方法，每个方法都会将类型为(void (^)(id x))的block作为参数，当事件发生时block中的代码会执行，例如<code>subscribeNext:</code>方法会传入一个block作为参数，当Signal的next事件发出后，block会接收到事件并执行。</p>
+
+<p>RAC为UIKit添加了很多类别来让我们可以订阅UI组件的事件，比如UITextField (RACSignalSupport)中的rac_textSignal会在文本域内容变化时发出next事件。</p>
+
+<p>事件包含的内容可以是类型，只要是对象就行，如果是一些数字，布尔值等字面量，可以用<code>@()</code>语法装箱成NSNumber。</p>
+
+<p>RACSignal是RACStream的子类，RACStream是一个抽象类，描述了值的流动，列举一下它比较常用的操作（Operations类别）：</p>
+
+<p><code>filter:</code> 对RACStream中的事件内容进行过滤，返回一个过滤事件内容后的instancetype<br/>
+<code>map:</code> 会将事件中的数据转换成你想要的数据，返回一个转换事件内容后的instancetype<br/>
+<code>flattenMap:</code> 在map的基础上使其flatten，也就是当Signal嵌套（一个Signal的事件是另一个Signal）的时候，会将内部Signal的事件传递给外部Signal<br/>
+<code>distinctUntilChanged</code> 比较数值流中当前值和上一个值，如果不同，就返回当前值，简单理解为“流”的值有变化时反馈变化的值，求异存同。</p>
+
+<p>PS：instancetype是程序运行时对象的类型，有可能为RACStream，也可以为其子类RACSignal。正是因为这些操作事件的方法都会返回事件源对象相同的类型，事件可以被一连串的被这些方法修改，过滤等，这就形成了管道，管道中传递着事件，包含着value。<br/>
+建议管道的语法格式是每个操作新起一行，并在垂直方向上对齐：<br/>
+<img src="http://cdn4.raywenderlich.com/wp-content/uploads/2014/01/PipelineFormatting.png" alt="" /><br/>
+可惜Xcode的自动缩进并不会按照这样的格式对齐，是时候与它斗智斗勇啦！</p>
+
+<p>RACSignal还有一些方法是对Signal做操作的，在RACSignal (Operations)类别中有详细的描述，比较常用的如下：</p>
+
+<p><code>combineLatest:reduce:</code> 将一组Signal发出的最新的事件合并成一个Signal，每当这组Signal发出新事件时，reduce的block会执行，将所有新事件的值合并成一个值，并当做合并后Signal的事件发出去。这个方法会返回合并后的Signal。<br/>
+PS：关于reduce的block中参数，其实是与combineLatest中数组元素一一对应的，这里RAC用了一个黑魔法，参看<a href="https://github.com/ReactiveCocoa/ReactiveCocoa/blob/master/ReactiveCocoaFramework/ReactiveCocoa/RACBlockTrampoline.m?source=c">RACBlockTrampoline</a></p>
+
+<p><code>doNext:</code> 这个向Signal管道上添加添加副作用。它并不会改变事件，参数block也没有返回值，它返回一个执行了block的Signal，这样block中的副作用就被注入到了以前的Signal。</p>
+
+<p><code>then:</code> 当一个订阅者被发送了completed事件后，<code>then:</code>方法才会执行，订阅者会订阅<code>then:</code>方法返回的Signal，这个Signal是在block中返回的。这样优雅的实现了从一个Signal到另一个Signal的订阅。</p>
+
+<p><code>deliverOn:</code> 参数为RACScheduler类的对象scheduler，这个方法会返回一个Signal，它的所有事件都会传递给scheduler参数所表示的线程，而以前管道上的副作用还会在以前的线程上。这个方法主要是切换线程。</p>
+
+<p><code>subscribeOn:</code> 功能跟<code>deliverOn:</code>相同，但是它也会将副作用也切换到制定线程中。</p>
+
+<p><code>throttle:</code>  它接收一个时间间隔interval作为参数，如果Signal发出的next事件之后interval时间内不再发出next事件，那么它返回的Signal会将这个next事件发出。也就是说，这个方法会将发送比较频繁的next事件舍弃，只保留一段“静默”时间之前的那个next事件，这个方法常用于处理输入框等信号（用户打字很快），因为它只保留用户最后输入的文字并返回一个新的Signal，将最后的文字作为next事件参数发出。</p>
+
+<p><code>and</code>、<code>or</code>、<code>not</code> NSNumber中Bool的与、或、非操作，将Signal发出的事件内容转化。</p>
+
+<p>还可以根据方法（SEL类型）来创建Signal，每当该方法被调用时，Signal都会将此方法被传入的参数打包成<code>RACTuple</code>元组类型来发送next事件给它的接受者。<code>rac_signalForSelector:</code>和<code>rac_signalForSelector:fromProtocol:</code>这两个方法都能通过指定的方法来创建Signal。</p>
+
+<h4>RACSubscriber</h4>
+
+<p>RACSubscriber是一个协议，包含了向订阅者发送事件的方法。</p>
+
+<p>```
+[RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {</p>
+
+<pre><code>         [subscriber sendNext:@(YES)];
+         [subscriber sendCompleted];
+    return nil;
+}];
+</code></pre>
+
+<p><code>``
+上面工厂方法用于创建一个Signal，当Signal被订阅时，</code>createSignal:<code>的参数block中的内容被执行。block的参数是一个实现RACSubscriber协议的对象，然后向这个订阅者发送了next事件（内容为NSNumber类型的@YES值）和completed事件。  
+PS：除此之外RACSubscriber还有</code>sendError:<code>和</code>didSubscribeWithDisposable:`两个方法。</p>
+
+<h4>RACDisposable</h4>
+
+<p>你会发现RACSignal (Subscription)类别中所有方法的返回值类型都是RACDisposable，它的<code>dispose</code>方法可以让我们手动移除订阅者。举个栗子：</p>
+
+<p>```
+RACSignal *backgroundColorSignal =
+  [self.searchText.rac_textSignal</p>
+
+<pre><code>map:^id(NSString *text) {
+  return [self isValidSearchText:text] ?
+    [UIColor whiteColor] : [UIColor yellowColor];
+}];
+</code></pre>
+
+<p>RACDisposable *subscription =
+  [backgroundColorSignal</p>
+
+<pre><code>subscribeNext:^(UIColor *color) {
+  self.searchText.backgroundColor = color;
+}];
+</code></pre>
+
+<p>// at some point in the future &hellip;
+[subscription dispose];
+```</p>
 
 <p>当管道（好吧比较短）的订阅者全部被移除后，管道中的代码不会执行，包括三种事件参数block中的代码和诸如<code>doNext:</code>等副作用的block。可以简单理解为，当管道中的Signal没人订阅，它的事件就不会发出了。</p>
 
@@ -585,7 +347,7 @@ self.loginButton.rac_command = self.loginCommand;
 
 <p>于是上一节的代码可以改成下面这样：</p>
 
-<p>&#8220;`
+<p>```
 @weakify(self)
 [[self.searchText.rac_textSignal
   map:^id(NSString *text) {</p>
@@ -602,7 +364,7 @@ self.searchText.backgroundColor = color;
 </code></pre>
 
 <p>  }];
-&#8220;`</p>
+```</p>
 
 <h3>常用宏定义</h3>
 
