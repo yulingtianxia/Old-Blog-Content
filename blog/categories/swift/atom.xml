@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Swift | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/swift/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-26T21:52:47+08:00</updated>
+  <updated>2014-09-27T07:16:57+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -123,7 +123,7 @@ func &amp;&amp;(lhs: BooleanType, rhs: @autoclosure () &ndash;> BooleanType) &nd
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[在Swift中构建assert(), 第二部分: __FILE__ and __LINE__]]></title>
+    <title type="html"><![CDATA[在Swift中构建assert(), 第二部分: __FILE__ 和 __LINE__]]></title>
     <link href="http://yulingtianxia.com/blog/2014/09/26/building-assert-in-swift-2/"/>
     <updated>2014-09-26T16:23:21+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/09/26/building-assert-in-swift-2</id>
