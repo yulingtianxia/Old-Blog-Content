@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cocoapods | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/cocoapods/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-26T18:30:58+08:00</updated>
+  <updated>2014-09-26T18:38:38+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -59,7 +59,7 @@ pod trunk register yulingtianxia@gmail.com 'Yang Xiaoyu' --description='macbook 
 <p>&#8220;`
 bogon:YXYNumberAnimationLabel yangxiaoyu$ pod trunk me
   &ndash; Name:     Yang Xiaoyu
-  &ndash; Email:    <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#121;&#x75;&#x6c;&#105;&#x6e;&#x67;&#116;&#x69;&#x61;&#110;&#120;&#x69;&#x61;&#64;&#103;&#109;&#97;&#105;&#108;&#x2e;&#x63;&#x6f;&#x6d;">&#x79;&#117;&#108;&#105;&#x6e;&#x67;&#x74;&#x69;&#x61;&#110;&#120;&#105;&#97;&#x40;&#103;&#x6d;&#97;&#105;&#x6c;&#46;&#x63;&#111;&#109;</a>
+  &ndash; Email:    <a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#58;&#x79;&#117;&#x6c;&#105;&#110;&#x67;&#x74;&#105;&#x61;&#110;&#x78;&#x69;&#x61;&#64;&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#111;&#x6d;">&#121;&#x75;&#108;&#105;&#x6e;&#103;&#116;&#x69;&#97;&#110;&#120;&#105;&#97;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#x6d;</a>
   &ndash; Since:    May 25th, 20:27
   &ndash; Sessions:</p>
 
@@ -120,7 +120,7 @@ bogon:YXYNumberAnimationLabel yangxiaoyu$ pod trunk me
 </span><span class='line'>&lt;p&gt;  s.homepage     = &ldquo;&lt;a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel"&gt;https://github.com/yulingtianxia/YXYNumberAnimationLabel&lt;/a&gt;&rdquo;&lt;/p&gt;
 </span><span class='line'>
 </span><span class='line'>&lt;p&gt;  s.license      = &lsquo;MIT&rsquo;
-</span><span class='line'>  s.author       = { &ldquo;YangXiaoyu&rdquo; =&gt; &ldquo;&lt;a href="&#109;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#x79;&#x75;&#x6c;&#x69;&#x6e;&#103;&#116;&#105;&#x61;&#110;&#x78;&#x69;&#97;&#x40;&#103;&#109;&#97;&#x69;&#108;&#46;&#x63;&#x6f;&#109;"&gt;&#x79;&#x75;&#108;&#x69;&#110;&#103;&#116;&#x69;&#x61;&#x6e;&#x78;&#105;&#97;&#x40;&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;&lt;/a&gt;&rdquo; }
+</span><span class='line'>  s.author       = { &ldquo;YangXiaoyu&rdquo; =&gt; &ldquo;&lt;a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#58;&#x79;&#117;&#x6c;&#105;&#110;&#103;&#116;&#105;&#97;&#110;&#120;&#105;&#97;&#x40;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;"&gt;&#x79;&#x75;&#108;&#x69;&#x6e;&#103;&#x74;&#x69;&#97;&#x6e;&#x78;&#105;&#x61;&#x40;&#103;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#109;&lt;/a&gt;&rdquo; }
 </span><span class='line'>  s.social_media_url = &ldquo;&lt;a href="http://twitter.com/yulingtianxia"&gt;http://twitter.com/yulingtianxia&lt;/a&gt;&rdquo;
 </span><span class='line'>  s.source       = { :git =&gt; &ldquo;&lt;a href="https://github.com/yulingtianxia/YXYNumberAnimationLabel.git"&gt;https://github.com/yulingtianxia/YXYNumberAnimationLabel.git&lt;/a&gt;&rdquo;, :tag =&gt; s.version.to_s }&lt;/p&gt;
 </span><span class='line'>

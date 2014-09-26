@@ -1,797 +1,1084 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>Blog Archive - 玉令天下的Blog</title>
-  <meta name="author" content="玉令天下">
+<!DOCTYPE HTML>
 
-  
-  <meta name="description" content="Blog Archive 2014 在Mac上用WiFi共享校园网
-Sep 07 2014 posted in macosx 创建SpriteKit游戏的最佳范例
-Aug 19 2014 posted in spritekit &hellip;">
-  
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Blog Archives - 玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="2014 Sep 7 macosx Comments 在Mac上用WiFi共享校园网 Aug 19 spritekit Comments 创建SpriteKit游戏的最佳范例 Aug 17 ios Comments iOS8自动调整UITableView和UICollectionView布局 &hellip;">
+	
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/blog/archives/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
   
-  <link rel="canonical" href="http://yulingtianxia.com/blog/archives">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-49704553-1']);
-    _gaq.push(['_trackPageview']);
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
 
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 
 
 </head>
 
-<body   >
-  <header role="banner">
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="https://www.google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:yulingtianxia.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main">
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I&#8217;m not a hacker.</p>
+<nav id="main-nav"><ul class="main">
     <li><a href="/search">博客搜索</a></li>
     <li><a href="/blog/archives">所有文章</a></li>
     <li><a href="/about">关于我</a></li>
 
 </ul>
 
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
 </nav>
-  <div id="main">
-    <div id="content">
-      <div>
-<article role="article">
-  
-  <header>
-    <h1 class="entry-title">Blog Archive</h1>
-    
-  </header>
-  
-  <div id="blog-archives">
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Falgorithm%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ealgorithm%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Farc%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Earc%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ec%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcocoapods%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ecocoapods%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Ecore+data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Egcd%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Egithub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3Eios%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Emacosx%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+32.85714285714286%25%27%3Eobjective-c%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Eoctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Frac%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Erac%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Esocial+framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+30.0%25%27%3Espritekit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fswift%27+style%3D%27font-size%3A+32.85714285714286%25%27%3Eswift%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fvpn%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Evpn%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Excode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
+<br>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><div itemscope itemtype="http://schema.org/Blog">
+
+	
 
 
+	
+	
+	<section class="archives"><h1 class="year">2014</h1>
 
-  
-  <h2>2014</h2>
-
-<article>
-  
-<h1><a href="/blog/2014/09/07/zai-macshang-yong-wifigong-xiang-xiao-yuan-wang/">在Mac上用WiFi共享校园网</a></h1>
-<time datetime="2014-09-07T18:00:14+08:00" pubdate><span class='month'>Sep</span> <span class='day'>07</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/macosx/'>macosx</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-09-07T18:00:14+08:00" itemprop="datePublished">Sep  7</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/macosx/'>macosx</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/09/07/zai-macshang-yong-wifigong-xiang-xiao-yuan-wang/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/09/07/zai-macshang-yong-wifigong-xiang-xiao-yuan-wang/">在Mac上用WiFi共享校园网</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/08/19/best-practices-for-building-spritekit-games/">创建SpriteKit游戏的最佳范例</a></h1>
-<time datetime="2014-08-19T22:16:13+08:00" pubdate><span class='month'>Aug</span> <span class='day'>19</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/spritekit/'>spritekit</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-08-19T22:16:13+08:00" itemprop="datePublished">Aug 19</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/spritekit/'>spritekit</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/08/19/best-practices-for-building-spritekit-games/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/08/19/best-practices-for-building-spritekit-games/">创建SpriteKit游戏的最佳范例</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/08/17/New-in-Table-and-Collection-Views/">iOS8自动调整UITableView和UICollectionView布局</a></h1>
-<time datetime="2014-08-17T16:57:42+08:00" pubdate><span class='month'>Aug</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-08-17T16:57:42+08:00" itemprop="datePublished">Aug 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/08/17/New-in-Table-and-Collection-Views/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/08/17/New-in-Table-and-Collection-Views/">iOS8自动调整UITableView和UICollectionView布局</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a></h1>
-<time datetime="2014-08-08T19:11:14+08:00" pubdate><span class='month'>Aug</span> <span class='day'>08</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/spritekit/'>spritekit</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-08-08T19:11:14+08:00" itemprop="datePublished">Aug  8</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/spritekit/'>spritekit</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju/">CoreData处理海量数据</a></h1>
-<time datetime="2014-08-05T18:15:03+08:00" pubdate><span class='month'>Aug</span> <span class='day'>05</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/core-data/'>core data</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-08-05T18:15:03+08:00" itemprop="datePublished">Aug  5</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/core-data/'>core data</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju/">CoreData处理海量数据</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/07/29/reactivecocoa/">ReactiveCocoa</a></h1>
-<time datetime="2014-07-29T14:15:57+08:00" pubdate><span class='month'>Jul</span> <span class='day'>29</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rac/'>rac</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-07-29T14:15:57+08:00" itemprop="datePublished">Jul 29</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/rac/'>rac</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/07/29/reactivecocoa/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/29/reactivecocoa/">ReactiveCocoa</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit/">用Swift和SpriteKit开发iOS游戏</a></h1>
-<time datetime="2014-07-17T12:54:13+08:00" pubdate><span class='month'>Jul</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a>, <a class='category' href='/blog/categories/swift/'>swift</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-07-17T12:54:13+08:00" itemprop="datePublished">Jul 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a>, <a class='category' href='/blog/categories/swift/'>swift</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/17/a-ios-game-developed-by-swift-and-spritekit/">用Swift和SpriteKit开发iOS游戏</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/07/11/bitwise-and-overflow-operators-in-swift/">Swift中的位运算符和溢出运算符</a></h1>
-<time datetime="2014-07-11T15:15:59+08:00" pubdate><span class='month'>Jul</span> <span class='day'>11</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/swift/'>swift</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-07-11T15:15:59+08:00" itemprop="datePublished">Jul 11</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/swift/'>swift</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/07/11/bitwise-and-overflow-operators-in-swift/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/11/bitwise-and-overflow-operators-in-swift/">Swift中的位运算符和溢出运算符</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/07/11/setup-your-own-vpn-with-pptp/">Setup Your Own VPN With PPTP</a></h1>
-<time datetime="2014-07-11T13:22:16+08:00" pubdate><span class='month'>Jul</span> <span class='day'>11</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/vpn/'>vpn</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-07-11T13:22:16+08:00" itemprop="datePublished">Jul 11</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/vpn/'>vpn</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/07/11/setup-your-own-vpn-with-pptp/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/11/setup-your-own-vpn-with-pptp/">Setup Your Own VPN With PPTP</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/07/03/chu-shi-core-data-3/">初识Core Data(3)</a></h1>
-<time datetime="2014-07-03T10:28:28+08:00" pubdate><span class='month'>Jul</span> <span class='day'>03</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/core-data/'>core data</a>, <a class='category' href='/blog/categories/swift/'>swift</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-07-03T10:28:28+08:00" itemprop="datePublished">Jul  3</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/core-data/'>core data</a>, <a class='category' href='/blog/categories/swift/'>swift</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/07/03/chu-shi-core-data-3/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/03/chu-shi-core-data-3/">初识Core Data(3)</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/06/24/initialization-in-swift/">Initialization in Swift</a></h1>
-<time datetime="2014-06-24T09:50:23+08:00" pubdate><span class='month'>Jun</span> <span class='day'>24</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/swift/'>swift</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-06-24T09:50:23+08:00" itemprop="datePublished">Jun 24</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/swift/'>swift</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/06/24/initialization-in-swift/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/24/initialization-in-swift/">Initialization in Swift</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/06/19/rang-ruan-jian-zhi-chi-retina/">让软件支持Retina</a></h1>
-<time datetime="2014-06-19T16:07:28+08:00" pubdate><span class='month'>Jun</span> <span class='day'>19</span> <span class='year'>2014</span></time>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-06-19T16:07:28+08:00" itemprop="datePublished">Jun 19</time></span>
+		<br>
+		<span class="tags">
 
-
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/06/19/rang-ruan-jian-zhi-chi-retina/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/19/rang-ruan-jian-zhi-chi-retina/">让软件支持Retina</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/06/17/optionals-and-optional-chaining-in-swift/">Optionals and Optional Chaining in Swift</a></h1>
-<time datetime="2014-06-17T20:42:17+08:00" pubdate><span class='month'>Jun</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/swift/'>swift</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-06-17T20:42:17+08:00" itemprop="datePublished">Jun 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/swift/'>swift</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/06/17/optionals-and-optional-chaining-in-swift/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/17/optionals-and-optional-chaining-in-swift/">Optionals and Optional Chaining in Swift</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/06/17/swiftzhong-de-arc/">Swift中的ARC</a></h1>
-<time datetime="2014-06-17T10:32:38+08:00" pubdate><span class='month'>Jun</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/arc/'>arc</a>, <a class='category' href='/blog/categories/swift/'>swift</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-06-17T10:32:38+08:00" itemprop="datePublished">Jun 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/arc/'>arc</a>, <a class='category' href='/blog/categories/swift/'>swift</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/06/17/swiftzhong-de-arc/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/17/swiftzhong-de-arc/">Swift中的ARC</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/06/16/swiftzhong-zai-yun-suan-fu/">Swift重载和自定义运算符</a></h1>
-<time datetime="2014-06-16T20:45:20+08:00" pubdate><span class='month'>Jun</span> <span class='day'>16</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/swift/'>swift</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-06-16T20:45:20+08:00" itemprop="datePublished">Jun 16</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/swift/'>swift</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/06/16/swiftzhong-zai-yun-suan-fu/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/06/16/swiftzhong-zai-yun-suan-fu/">Swift重载和自定义运算符</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/26/publish-your-pods-on-cocoapods-with-trunk/">Publish Your Pods on CocoaPods With Trunk</a></h1>
-<time datetime="2014-05-26T12:03:08+08:00" pubdate><span class='month'>May</span> <span class='day'>26</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/cocoapods/'>cocoapods</a>, <a class='category' href='/blog/categories/github/'>github</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-26T12:03:08+08:00" itemprop="datePublished">May 26</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/cocoapods/'>cocoapods</a>, <a class='category' href='/blog/categories/github/'>github</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/05/26/publish-your-pods-on-cocoapods-with-trunk/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/26/publish-your-pods-on-cocoapods-with-trunk/">Publish Your Pods on CocoaPods with Trunk</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/17/nspredicate/">NSPredicate</a></h1>
-<time datetime="2014-05-17T20:42:11+08:00" pubdate><span class='month'>May</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-17T20:42:11+08:00" itemprop="datePublished">May 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/05/17/nspredicate/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/17/nspredicate/">NSPredicate</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/14/grand-central-dispatch-in-depth-part-2/">GCD 深入理解：第二部分</a></h1>
-<time datetime="2014-05-14T19:11:18+08:00" pubdate><span class='month'>May</span> <span class='day'>14</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/gcd/'>gcd</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-14T19:11:18+08:00" itemprop="datePublished">May 14</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/gcd/'>gcd</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/05/14/grand-central-dispatch-in-depth-part-2/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/14/grand-central-dispatch-in-depth-part-2/">GCD 深入理解：第二部分</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/12/objective-czhong-de-kvche-kvo/">Objective-C中的KVC和KVO</a></h1>
-<time datetime="2014-05-12T12:02:32+08:00" pubdate><span class='month'>May</span> <span class='day'>12</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/she-ji-mo-shi/'>设计模式</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-12T12:02:32+08:00" itemprop="datePublished">May 12</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/she-ji-mo-shi/'>设计模式</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/05/12/objective-czhong-de-kvche-kvo/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/12/objective-czhong-de-kvche-kvo/">Objective-C中的KVC和KVO</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/10/zhuang-shi-zhe-mo-shi/">装饰者模式</a></h1>
-<time datetime="2014-05-10T09:47:05+08:00" pubdate><span class='month'>May</span> <span class='day'>10</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/she-ji-mo-shi/'>设计模式</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-10T09:47:05+08:00" itemprop="datePublished">May 10</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/java/'>java</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/she-ji-mo-shi/'>设计模式</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/05/10/zhuang-shi-zhe-mo-shi/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/10/zhuang-shi-zhe-mo-shi/">装饰者模式</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/04/spritekitzuo-biao-xi/">SpriteKit坐标系</a></h1>
-<time datetime="2014-05-04T19:36:26+08:00" pubdate><span class='month'>May</span> <span class='day'>04</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-04T19:36:26+08:00" itemprop="datePublished">May  4</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a>
+
+
+</span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/04/spritekitzuo-biao-xi/">SpriteKit坐标系</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/02/chu-shi-core-data-2/">初识Core Data(2)</a></h1>
-<time datetime="2014-05-02T20:17:04+08:00" pubdate><span class='month'>May</span> <span class='day'>02</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/core-data/'>core data</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-02T20:17:04+08:00" itemprop="datePublished">May  2</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/core-data/'>core data</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/05/02/chu-shi-core-data-2/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/02/chu-shi-core-data-2/">初识Core Data(2)</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/02/github-page-build-warning/">GitHub Page Build Warning</a></h1>
-<time datetime="2014-05-02T13:57:53+08:00" pubdate><span class='month'>May</span> <span class='day'>02</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/github/'>github</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-02T13:57:53+08:00" itemprop="datePublished">May  2</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/github/'>github</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/05/02/github-page-build-warning/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/02/github-page-build-warning/">GitHub Page build warning</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/05/01/chu-shi-core-data-1/">初识Core Data(1)</a></h1>
-<time datetime="2014-05-01T19:58:00+08:00" pubdate><span class='month'>May</span> <span class='day'>01</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/core-data/'>core data</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-05-01T19:58:00+08:00" itemprop="datePublished">May  1</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/core-data/'>core data</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/05/01/chu-shi-core-data-1/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/05/01/chu-shi-core-data-1/">初识Core Data(1)</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/28/iosdan-yuan-ce-shi-xctest/">Xcode单元测试-XCTest</a></h1>
-<time datetime="2014-04-28T13:25:12+08:00" pubdate><span class='month'>Apr</span> <span class='day'>28</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/xcode/'>xcode</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-28T13:25:12+08:00" itemprop="datePublished">Apr 28</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/28/iosdan-yuan-ce-shi-xctest/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/28/iosdan-yuan-ce-shi-xctest/">Xcode单元测试-XCTest</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/">在游戏的SKScene中添加Button</a></h1>
-<time datetime="2014-04-27T13:18:04+08:00" pubdate><span class='month'>Apr</span> <span class='day'>27</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-27T13:18:04+08:00" itemprop="datePublished">Apr 27</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/">在游戏的SKScene中添加Button</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/24/objective-cjiao-cha-yin-yong-jie-jue-fang-fa/">Objective-C交叉引用解决方法</a></h1>
-<time datetime="2014-04-24T20:25:00+08:00" pubdate><span class='month'>Apr</span> <span class='day'>24</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/objective-c/'>objective-c</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-24T20:25:00+08:00" itemprop="datePublished">Apr 24</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/24/objective-cjiao-cha-yin-yong-jie-jue-fang-fa/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/24/objective-cjiao-cha-yin-yong-jie-jue-fang-fa/">Objective-C交叉引用解决方法</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/24/ios7zi-ti-hui-zong/">iOS7字体汇总</a></h1>
-<time datetime="2014-04-24T18:12:43+08:00" pubdate><span class='month'>Apr</span> <span class='day'>24</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/zi-ti/'>字体</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-24T18:12:43+08:00" itemprop="datePublished">Apr 24</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/zi-ti/'>字体</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/24/ios7zi-ti-hui-zong/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/24/ios7zi-ti-hui-zong/">iOS7字体汇总</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/">SpriteKit截屏并分享至社交网络</a></h1>
-<time datetime="2014-04-22T17:36:25+08:00" pubdate><span class='month'>Apr</span> <span class='day'>22</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/social-framework/'>social framework</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-22T17:36:25+08:00" itemprop="datePublished">Apr 22</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/social-framework/'>social framework</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/">SpriteKit截屏并分享至社交网络</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/">用DFS算法计算SpriteKit中复合体的构成</a></h1>
-<time datetime="2014-04-21T21:06:55+08:00" pubdate><span class='month'>Apr</span> <span class='day'>21</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/algorithm/'>algorithm</a>, <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-21T21:06:55+08:00" itemprop="datePublished">Apr 21</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/algorithm/'>algorithm</a>, <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/spritekit/'>spritekit</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/21/yong-dfssuan-fa-ji-suan-spritekitzhong-fu-he-ti-de-gou-cheng/">用DFS算法计算SpriteKit中复合体的构成</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/">GCD 深入理解：第一部分</a></h1>
-<time datetime="2014-04-19T19:11:18+08:00" pubdate><span class='month'>Apr</span> <span class='day'>19</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/gcd/'>gcd</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-19T19:11:18+08:00" itemprop="datePublished">Apr 19</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/gcd/'>gcd</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/">GCD 深入理解：第一部分</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/">函数指针与指针函数</a></h1>
-<time datetime="2014-04-17T19:24:39+08:00" pubdate><span class='month'>Apr</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-17T19:24:39+08:00" itemprop="datePublished">Apr 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/">函数指针与指针函数</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/17/shen-ru-li-jie-typedef/">深入理解typedef</a></h1>
-<time datetime="2014-04-17T18:38:37+08:00" pubdate><span class='month'>Apr</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c/'>c</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-17T18:38:37+08:00" itemprop="datePublished">Apr 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/c/'>c</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/17/shen-ru-li-jie-typedef/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/shen-ru-li-jie-typedef/">深入理解typedef</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/">Xcode中断点的威力</a></h1>
-<time datetime="2014-04-17T13:34:26+08:00" pubdate><span class='month'>Apr</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/xcode/'>xcode</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-17T13:34:26+08:00" itemprop="datePublished">Apr 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/xcode/'>xcode</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/">Xcode中断点的威力</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/">iOS调试 — 基本技巧</a></h1>
-<time datetime="2014-04-17T13:32:00+08:00" pubdate><span class='month'>Apr</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/diao-shi/'>调试</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-17T13:32:00+08:00" itemprop="datePublished">Apr 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/diao-shi/'>调试</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/">iOS调试 — 基本技巧</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/17/xcode-code-snippets/">Xcode Code Snippets</a></h1>
-<time datetime="2014-04-17T13:18:02+08:00" pubdate><span class='month'>Apr</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/xcode/'>xcode</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-17T13:18:02+08:00" itemprop="datePublished">Apr 17</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/xcode/'>xcode</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/17/xcode-code-snippets/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/xcode-code-snippets/">Xcode Code Snippets</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/">Double Dispatch模式及其在iOS开发中实践</a></h1>
-<time datetime="2014-04-13T15:51:03+08:00" pubdate><span class='month'>Apr</span> <span class='day'>13</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/peng-zhuang-jian-ce/'>碰撞检测</a>, <a class='category' href='/blog/categories/she-ji-mo-shi/'>设计模式</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-13T15:51:03+08:00" itemprop="datePublished">Apr 13</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/peng-zhuang-jian-ce/'>碰撞检测</a>, <a class='category' href='/blog/categories/she-ji-mo-shi/'>设计模式</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/">Double Dispatch模式及其在iOS开发中实践</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/09/iosde-dot-gitignore/">iOS的.gitignore</a></h1>
-<time datetime="2014-04-09T16:59:19+08:00" pubdate><span class='month'>Apr</span> <span class='day'>09</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/github/'>github</a>, <a class='category' href='/blog/categories/ios/'>ios</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-09T16:59:19+08:00" itemprop="datePublished">Apr  9</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/github/'>github</a>, <a class='category' href='/blog/categories/ios/'>ios</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/09/iosde-dot-gitignore/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/09/iosde-dot-gitignore/">iOS的.gitignore</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/">iOS刮刮卡的实现</a></h1>
-<time datetime="2014-04-09T15:38:52+08:00" pubdate><span class='month'>Apr</span> <span class='day'>09</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-09T15:38:52+08:00" itemprop="datePublished">Apr  9</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/">iOS刮刮卡的实现</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/08/block/">初识block</a></h1>
-<time datetime="2014-04-08T16:41:39+08:00" pubdate><span class='month'>Apr</span> <span class='day'>08</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-08T16:41:39+08:00" itemprop="datePublished">Apr  8</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/08/block/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/08/block/">初识block</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults/">iOS单例模式 or NSUserDefaults</a></h1>
-<time datetime="2014-04-07T15:07:08+08:00" pubdate><span class='month'>Apr</span> <span class='day'>07</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/she-ji-mo-shi/'>设计模式</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-07T15:07:08+08:00" itemprop="datePublished">Apr  7</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/she-ji-mo-shi/'>设计模式</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/07/iosdan-li-mo-shi-ornsuserdefaults/">iOS单例模式 or NSUserDefaults</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan/">iOS程序员必备网站</a></h1>
-<time datetime="2014-04-07T13:50:00+08:00" pubdate><span class='month'>Apr</span> <span class='day'>07</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ios/'>ios</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-07T13:50:00+08:00" itemprop="datePublished">Apr  7</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/07/ioscheng-xu-yuan-bi-bei-wang-zhan/">iOS程序员必备网站</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/">XCode,Swift和Objective-C Cheat Sheet</a></h1>
-<time datetime="2014-04-06T18:38:24+08:00" pubdate><span class='month'>Apr</span> <span class='day'>06</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/swift/'>swift</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-06T18:38:24+08:00" itemprop="datePublished">Apr  6</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/swift/'>swift</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/">XCode,Swift和Objective-C Cheat Sheet</a></h1>
 </article>
 
+	
 
 
-<article>
-  
-<h1><a href="/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/">MacOSX10.9上用Octopress和GitHub搭建个人博客</a></h1>
-<time datetime="2014-04-05T14:28:54+08:00" pubdate><span class='month'>Apr</span> <span class='day'>05</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/github/'>github</a>, <a class='category' href='/blog/categories/macosx/'>macosx</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a></span>
-</footer>
+<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<span class="date"><time datetime="2014-04-05T14:28:54+08:00" itemprop="datePublished">Apr  5</time></span>
+		<br>
+		<span class="tags">
 
 
+	<a class='category' href='/blog/categories/github/'>github</a>, <a class='category' href='/blog/categories/macosx/'>macosx</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a>
+
+
+</span>
+	    
+	    <span class="comments"><a href="/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/#disqus_thread">Comments</a></span>
+	    
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/05/macosx10-dot-9shang-yong-octopresshe-githubda-jian-ge-ren-bo-ke/">MacOSX10.9上用Octopress和GitHub搭建个人博客</a></h1>
 </article>
 
-</div>
-
-  
-</article>
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2014/09/07/zai-macshang-yong-wifigong-xiang-xiao-yuan-wang/">在Mac上用WiFi共享校园网</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/19/best-practices-for-building-spritekit-games/">创建SpriteKit游戏的最佳范例</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/17/New-in-Table-and-Collection-Views/">iOS8自动调整UITableView和UICollectionView布局</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju/">CoreData处理海量数据</a>
-      </li>
-    
-  </ul>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  
-  <a href="https://github.com/yulingtianxia">@yulingtianxia</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'yulingtianxia',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
-
-
-<section class="googleplus">
-  <h1>
-    <a href="https://plus.google.com/106642427004837273341/?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
-
-
-
-<section>
-  <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Falgorithm%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ealgorithm%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Farc%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Earc%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ec%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcocoapods%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ecocoapods%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Ecore+data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Egcd%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Egithub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3Eios%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Emacosx%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+32.85714285714286%25%27%3Eobjective-c%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Eoctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Frac%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Erac%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Esocial+framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+30.0%25%27%3Espritekit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fswift%27+style%3D%27font-size%3A+32.85714285714286%25%27%3Eswift%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fvpn%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Evpn%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Excode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
-</section>
-
-
-  
-</aside>
-
-
-    </div>
-  </div>
-  <footer role="contentinfo">Copyright &copy; 2014
+  </section>
+</div></div>
+			</div>
+			<footer id="footer" class="inner"><!-- AdSense BEGIN -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- myAd -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-4671213864485232"
+     data-ad-slot="3844861505"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- AdSense END -->
+<br>
+Copyright &copy; 2014
 
     玉令天下
 
 
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
 </footer>
-  
+			
 
 <script type="text/javascript">
       var disqus_shortname = 'yulingtianxia';
@@ -801,28 +1088,13 @@ Aug 19 2014 posted in spritekit &hellip;">
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
 
 
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
-      script.src = 'https://apis.google.com/js/plusone.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
-    })();
-  </script>
-
-
-
-
-
-
-
+		</div>
+	</div>
 </body>
 </html>

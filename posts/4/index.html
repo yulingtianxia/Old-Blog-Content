@@ -1,101 +1,170 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>玉令天下的Blog</title>
-  <meta name="author" content="玉令天下">
+<!DOCTYPE HTML>
 
-  
-  <meta name="description" content="本文转载自NIX 本文翻译至 http://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1 原作者：Derek Selander 译者：@nixzhu ">
-  
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="玉令天下的个人博客">
+	<meta name="keywords" content="iOS,Android,JavaEE">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/posts/4/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
   
-  <link rel="canonical" href="http://yulingtianxia.com/posts/4">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-49704553-1']);
-    _gaq.push(['_trackPageview']);
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
 
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 
 
 </head>
 
-<body   >
-  <header role="banner">
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="https://www.google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:yulingtianxia.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main">
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I&#8217;m not a hacker.</p>
+<nav id="main-nav"><ul class="main">
     <li><a href="/search">博客搜索</a></li>
     <li><a href="/blog/archives">所有文章</a></li>
     <li><a href="/about">关于我</a></li>
 
 </ul>
 
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
 </nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Falgorithm%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ealgorithm%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Farc%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Earc%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ec%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcocoapods%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ecocoapods%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Ecore+data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Egcd%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Egithub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3Eios%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Emacosx%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+32.85714285714286%25%27%3Eobjective-c%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Eoctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Frac%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Erac%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Esocial+framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+30.0%25%27%3Espritekit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fswift%27+style%3D%27font-size%3A+32.85714285714286%25%27%3Eswift%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fvpn%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Evpn%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Excode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
+<br>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
   
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/">GCD 深入理解：第一部分</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
+<time datetime="2014-04-19T19:11:18+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
 
 
-<time class='entry-date' datetime='2014-04-19T19:11:18+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:11 pm</span></time>
-        
-           | <a href="/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/">Comments</a>
-        
-      </p>
-    
-  </header>
+	<a class='category' href='/blog/categories/gcd/'>gcd</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
 
 
-  <div class="entry-content"><p><strong>本文转载自<a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md">NIX</a></strong></p>
+</div>
+		
+			<span class="comments"><a href="/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/" itemprop="url">GCD 深入理解：第一部分</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><strong>本文转载自<a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md">NIX</a></strong></p>
 
 <hr />
 
@@ -105,114 +174,117 @@
 
 <p>译者：<a href="https://twitter.com/nixzhu">@nixzhu</a></p>
 
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/">阅读全文&rarr;</a>
-    </footer>
-  
+
+		
+		<a href="/blog/2014/04/19/grand-central-dispatch-in-depth-part-1/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/">函数指针与指针函数</a></h1>
-    
-    
-      <p class="meta">
-        
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
 
 
 
 
-<time class='entry-date' datetime='2014-04-17T19:24:39+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:24 pm</span></time>
-        
-           | <a href="/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/">Comments</a>
-        
-      </p>
-    
-  </header>
 
 
-  <div class="entry-content"></div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/">阅读全文&rarr;</a>
-    </footer>
+
+
   
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/17/shen-ru-li-jie-typedef/">深入理解typedef</a></h1>
-    
-    
-      <p class="meta">
-        
+<time datetime="2014-04-17T19:24:39+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
 
 
+	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
 
-
-<time class='entry-date' datetime='2014-04-17T18:38:37+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:38 pm</span></time>
-        
-           | <a href="/blog/2014/04/17/shen-ru-li-jie-typedef/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/17/shen-ru-li-jie-typedef/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>第一次对typedef语法产生疑惑是在大一使用struct的时候，而在使用Objective－C对Block进行操作的时候，再一次困惑</p>
 
 </div>
+		
+			<span class="comments"><a href="/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/" itemprop="url">函数指针与指针函数</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		
+		
+		<a href="/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
   
+
+
+<time datetime="2014-04-17T18:38:37+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/c/'>c</a>
+
+
+</div>
+		
+			<span class="comments"><a href="/blog/2014/04/17/shen-ru-li-jie-typedef/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/shen-ru-li-jie-typedef/" itemprop="url">深入理解typedef</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>第一次对typedef语法产生疑惑是在大一使用struct的时候，而在使用Objective－C对Block进行操作的时候，再一次困惑</p>
+
+
+		
+		<a href="/blog/2014/04/17/shen-ru-li-jie-typedef/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
   
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/17/shen-ru-li-jie-typedef/">阅读全文&rarr;</a>
-    </footer>
-  
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/">Xcode中断点的威力</a></h1>
-    
-    
-      <p class="meta">
-        
+<time datetime="2014-04-17T13:34:26+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
 
 
+	<a class='category' href='/blog/categories/xcode/'>xcode</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
 
 
-<time class='entry-date' datetime='2014-04-17T13:34:26+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:34 pm</span></time>
-        
-           | <a href="/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
+</div>
+		
+			<span class="comments"><a href="/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/" itemprop="url">Xcode中断点的威力</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
 
 <hr />
 
@@ -238,124 +310,127 @@
 
 <p>&nbsp;</p>
 
+
+		
+		<a href="/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-17T13:32:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/diao-shi/'>调试</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/17/xcodezhong-duan-dian-de-wei-li/">阅读全文&rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/">iOS调试 — 基本技巧</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-17T13:32:00+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:32 pm</span></time>
-        
-           | <a href="/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
+		
+			<span class="comments"><a href="/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/" itemprop="url">iOS调试 — 基本技巧</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
 
 <hr />
 
 <p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/ios_debug.png"><img class="alignnone size-full wp-image-628" alt="ios_debug" src="http://beyondvincent.com/wp-content/uploads/2013/05/ios_debug.png" width="976" height="313" /></a></p>
 
+
+		
+		<a href="/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-17T13:18:02+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/xcode/'>xcode</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/17/iosdiao-shi-ji-ben-ji-qiao/">阅读全文&rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/17/xcode-code-snippets/">Xcode Code Snippets</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-17T13:18:02+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:18 pm</span></time>
-        
-           | <a href="/blog/2014/04/17/xcode-code-snippets/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/17/xcode-code-snippets/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
+		
+			<span class="comments"><a href="/blog/2014/04/17/xcode-code-snippets/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/17/xcode-code-snippets/" itemprop="url">Xcode Code Snippets</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p><strong>本文转载自<a href="http://beyondvincent.com">破船</a></strong></p>
 
 <hr />
 
 <p><a href="http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg"><img class="alignnone size-full wp-image-734" alt="fend_off_rsi" src="http://beyondvincent.com/wp-content/uploads/2013/05/fend_off_rsi.jpg" width="1200" height="620" /></a></p>
 
+
+		
+		<a href="/blog/2014/04/17/xcode-code-snippets/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-13T15:51:03+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/peng-zhuang-jian-ce/'>碰撞检测</a>, <a class='category' href='/blog/categories/she-ji-mo-shi/'>设计模式</a>
+
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/17/xcode-code-snippets/">阅读全文&rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/">Double Dispatch模式及其在iOS开发中实践</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-13T15:51:03+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:51 pm</span></time>
-        
-           | <a href="/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>引子</h2>
+		
+			<span class="comments"><a href="/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/" itemprop="url">Double Dispatch模式及其在iOS开发中实践</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>引子</h2>
 
 <p>在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了<code>4*3/2+4</code>种<a href="http://yulingtianxia.qiniudn.com/%E6%83%85%E5%BD%A2%EF%BC%88%E4%B8%80%E6%9E%9A%E5%AF%BC%E5%BC%B9%E6%92%9E%E4%B8%8A%E5%8F%A6%E4%B8%80%E6%9E%9A%E5%AF%BC%E5%BC%B9%EF%BC%89%E3%80%82%E8%BF%99%E7%A7%8D%E6%8E%92%E5%88%97%E7%BB%84%E5%90%88%E8%AE%A1%E7%AE%97%E5%87%BA%E7%9A%84%E7%BB%93%E6%9E%9C%E4%BC%9A%E9%9A%8F%E7%9D%80%E7%89%A9%E4%BD%93%E7%A7%8D%E7%B1%BBN%E7%9A%84%E5%A2%9E%E5%A4%9A%E7%88%86%E7%82%B8%E6%80%A7%E5%A2%9E%E9%95%BF%EF%BC%8C%E5%A6%82%E6%9E%9C%E8%BF%99%E4%B8%AA%E6%97%B6%E5%80%99%E8%BF%98%E7%94%A8%E4%B8%80%E5%A0%86if%EF%BC%8Delse%E6%9D%A5%E6%A3%80%E6%B5%8B%E7%A2%B0%E6%92%9E%EF%BC%8C%E9%82%A3%E7%9C%9F%E6%98%AF">http://yulingtianxia.qiniudn.com/%E6%83%85%E5%BD%A2%EF%BC%88%E4%B8%80%E6%9E%9A%E5%AF%BC%E5%BC%B9%E6%92%9E%E4%B8%8A%E5%8F%A6%E4%B8%80%E6%9E%9A%E5%AF%BC%E5%BC%B9%EF%BC%89%E3%80%82%E8%BF%99%E7%A7%8D%E6%8E%92%E5%88%97%E7%BB%84%E5%90%88%E8%AE%A1%E7%AE%97%E5%87%BA%E7%9A%84%E7%BB%93%E6%9E%9C%E4%BC%9A%E9%9A%8F%E7%9D%80%E7%89%A9%E4%BD%93%E7%A7%8D%E7%B1%BBN%E7%9A%84%E5%A2%9E%E5%A4%9A%E7%88%86%E7%82%B8%E6%80%A7%E5%A2%9E%E9%95%BF%EF%BC%8C%E5%A6%82%E6%9E%9C%E8%BF%99%E4%B8%AA%E6%97%B6%E5%80%99%E8%BF%98%E7%94%A8%E4%B8%80%E5%A0%86if%EF%BC%8Delse%E6%9D%A5%E6%A3%80%E6%B5%8B%E7%A2%B0%E6%92%9E%EF%BC%8C%E9%82%A3%E7%9C%9F%E6%98%AF</a><code>Naive</code>了。这时我们可以利用面向对象语言的多态性质来在程序运行时动态绑定，因为碰撞检测是一种“双向选择”，所以我们需要<code>double dispatch</code>（双分派），<code>Visitor</code>模式就是<code>double dispatch</code>的一种应用。<br/>
 <img src="http://yulingtianxia.qiniudn.com/14035338896.jpg" alt="Visitor模式" /></p>
@@ -371,118 +446,121 @@
 </ul>
 
 
-</div>
+
+		
+		<a href="/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
   
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/">阅读全文&rarr;</a>
-    </footer>
-  
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/09/iosde-dot-gitignore/">iOS的.gitignore</a></h1>
-    
-    
-      <p class="meta">
-        
+<time datetime="2014-04-09T16:59:19+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
 
 
+	<a class='category' href='/blog/categories/github/'>github</a>, <a class='category' href='/blog/categories/ios/'>ios</a>
 
-
-<time class='entry-date' datetime='2014-04-09T16:59:19+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:59 pm</span></time>
-        
-           | <a href="/blog/2014/04/09/iosde-dot-gitignore/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/09/iosde-dot-gitignore/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在多人一起开发XCode项目的时候，很多中间生成的临时文件并不需要加入到版本控制当中，所以记录下XCode需要用到的<code>.gitignore</code>文件</p>
 
 </div>
+		
+			<span class="comments"><a href="/blog/2014/04/09/iosde-dot-gitignore/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/09/iosde-dot-gitignore/" itemprop="url">iOS的.gitignore</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>在多人一起开发XCode项目的时候，很多中间生成的临时文件并不需要加入到版本控制当中，所以记录下XCode需要用到的<code>.gitignore</code>文件</p>
+
+
+		
+		<a href="/blog/2014/04/09/iosde-dot-gitignore/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
   
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/09/iosde-dot-gitignore/">阅读全文&rarr;</a>
-    </footer>
-  
 
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/">iOS刮刮卡的实现</a></h1>
-    
-    
-      <p class="meta">
-        
+<time datetime="2014-04-09T15:38:52+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
 
 
+	<a class='category' href='/blog/categories/ios/'>ios</a>
 
 
-<time class='entry-date' datetime='2014-04-09T15:38:52+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:38 pm</span></time>
-        
-           | <a href="/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>前言</h2>
+</div>
+		
+			<span class="comments"><a href="/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/" itemprop="url">iOS刮刮卡的实现</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>前言</h2>
 
 <p>去年在实习的期间，需要写一个类似刮刮乐的小功能，当时是从网上下载的demo，后来经过自己研读代码和debug后，终于整理出了一套比较easy的实现方法</p>
 
+
+		
+		<a href="/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-08T16:41:39+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/zhuan-zai/'>转载</a>
+
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/09/iosgua-gua-qia-de-shi-xian/">阅读全文&rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/08/block/">初识block</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-08T16:41:39+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:41 pm</span></time>
-        
-           | <a href="/blog/2014/04/08/block/#disqus_thread"
-             data-disqus-identifier="http://yulingtianxia.com/blog/2014/04/08/block/">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2><strong><span style="color: #339966;">前言</span></strong></h2>
+		
+			<span class="comments"><a href="/blog/2014/04/08/block/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/04/08/block/" itemprop="url">初识block</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2><strong><span style="color: #339966;">前言</span></strong></h2>
 
 <p>本文是小弟从<strong><span style="color: #339966;">破船</span></strong>大哥那转载来的，感觉比较经典，所以就收藏了，原文<a href="http://beyondvincent.com/blog/2013/07/08/98/">出处</a></p>
 
@@ -494,116 +572,44 @@
 
 <p>本文由<strong><span style="color: #339966;">破船</span></strong>译自<strong><span style="text-decoration: underline;"><span style="color: #339966;"><a href="http://rypress.com/tutorials/objective-c/blocks.html" target="_blank"><span style="color: #339966; text-decoration: underline;">rypress</span></a></span></span></strong></p>
 
+
+		
+		<a href="/blog/2014/04/08/block/" class="more-link">阅读全文&rarr;</a>
+	</div>
+
+</article>
+
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/08/block/">阅读全文&rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  <div class="pagination">
+<nav id="pagenavi">
     
-      <a class="prev" href="/posts/5">&larr; Older</a>
+        <a href="3" class="prev">Prev</a>
     
-    <a href="/blog/archives">Blog Archives</a>
     
-    <a class="next" href="/posts/3">Newer &rarr;</a>
+        <a href="5" class="next">Next</a>
     
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2014/09/07/zai-macshang-yong-wifigong-xiang-xiao-yuan-wang/">在Mac上用WiFi共享校园网</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/19/best-practices-for-building-spritekit-games/">创建SpriteKit游戏的最佳范例</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/17/New-in-Table-and-Collection-Views/">iOS8自动调整UITableView和UICollectionView布局</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/">SpriteKit在iOS8和OSX10.10中的新特性</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/05/coredatachu-li-hai-liang-shu-ju/">CoreData处理海量数据</a>
-      </li>
-    
-  </ul>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  
-  <a href="https://github.com/yulingtianxia">@yulingtianxia</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'yulingtianxia',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
-
-
-<section class="googleplus">
-  <h1>
-    <a href="https://plus.google.com/106642427004837273341/?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
-
-
-
-<section>
-  <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#f2f2f2' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Falgorithm%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ealgorithm%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Farc%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Earc%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Ec%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcocoapods%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ecocoapods%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Ecore+data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Egcd%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Egithub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3Eios%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Ejava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+15.714285714285715%25%27%3Emacosx%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+32.85714285714286%25%27%3Eobjective-c%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Eoctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Frac%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Erac%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Esocial+framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+30.0%25%27%3Espritekit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fswift%27+style%3D%27font-size%3A+32.85714285714286%25%27%3Eswift%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fvpn%27+style%3D%27font-size%3A+12.857142857142858%25%27%3Evpn%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+21.42857142857143%25%27%3Excode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+21.42857142857143%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+12.857142857142858%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+32.85714285714286%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
-</section>
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo">Copyright &copy; 2014
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner"><!-- AdSense BEGIN -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- myAd -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-4671213864485232"
+     data-ad-slot="3844861505"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- AdSense END -->
+<br>
+Copyright &copy; 2014
 
     玉令天下
 
 
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
 </footer>
-  
+			
 
 <script type="text/javascript">
       var disqus_shortname = 'yulingtianxia';
@@ -613,28 +619,13 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
 
 
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
-      script.src = 'https://apis.google.com/js/plusone.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
-    })();
-  </script>
-
-
-
-
-
-
-
+		</div>
+	</div>
 </body>
 </html>

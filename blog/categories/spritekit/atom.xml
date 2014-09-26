@@ -4,7 +4,7 @@
   <title><![CDATA[Category: spritekit | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/spritekit/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-26T18:30:58+08:00</updated>
+  <updated>2014-09-26T18:38:38+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -60,7 +60,7 @@
 
 <p>在MyScene.m文件中使用下面的模板来加载MyScene.sks中设计好的场景结构，然后你就可以接着写游戏的逻辑了：</p>
 
-<p><code>swift
+<p><code>js
 let path = NSBundle.mainBundle().pathForResource(file, ofType: "sks")       
 var sceneData = NSData.dataWithContentsOfFile(path, options: .DataReadingMappedIfSafe, error: nil)
 var archiver = NSKeyedUnarchiver(forReadingWithData: sceneData)
