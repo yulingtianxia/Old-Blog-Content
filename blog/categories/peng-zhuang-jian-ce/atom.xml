@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 碰撞检测 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/peng-zhuang-jian-ce/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-23T20:38:24+08:00</updated>
+  <updated>2014-09-26T18:30:58+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -42,7 +42,7 @@
 <p>本节内容摘自<a href="http://www.cnblogs.com/west-link/archive/2011/07/26/2116887.html">这里</a><br/>
 我们先从字面上去理解它吧，直观地说，它指的是两次dispatch。这里的dispatch指的是什么呢？举个例子：</p>
 
-<p>``` cpp
+<p>&#8220;` cpp
 class Event
    {</p>
 
@@ -78,78 +78,125 @@ class Event
 </code></pre>
 
 <p>   }
-```</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>多态性是动态的，被调用的方法由对象的真正类型确定，这个过程就被称之为dispatch。例如在C++中，每个对象都有一个虚函数表，当用基类的类型引用子类对象时，虚函数指针指向的是子类的虚函数表，调用的虚函数都是子类中的版本，所以下面代码输出的是：“我是按键事件”，这就算是一次dispatch的过程，即根据对象类型来动态确定调用哪个函数的过程。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;code&gt;
+</span><span class='line'>Event* pEvent = new KeyEvent();
+</span><span class='line'>pEvent-&gt;PrintName();
+</span><span class='line'>&lt;/code&gt;
+</span><span class='line'>什么时候会用到两次dispatch呢? 继续往下看：&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;```
+</span><span class='line'>class EventRecorder
+</span><span class='line'>   {&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;   public:
+</span><span class='line'>       virtual void RecordEvent(Event* event)
+</span><span class='line'>       {
+</span><span class='line'>           cout&lt;&lt;"使用EventRecorder记录通用事件"&lt;&lt; endl;           
+</span><span class='line'>       }
+</span><span class='line'>
+</span><span class='line'>       virtual void RecordEvent(KeyEvent* event)
+</span><span class='line'>       {
+</span><span class='line'>           cout&lt;&lt;"使用EventRecorder记录按键事件"&lt;&lt; endl;           
+</span><span class='line'>       }
+</span><span class='line'>
+</span><span class='line'>       virtual void RecordEvent(ClickEvent* event)
+</span><span class='line'>       {
+</span><span class='line'>           cout&lt;&lt;"使用EventRecorder记录单击事件"&lt;&lt; endl;           
+</span><span class='line'>       }
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;   }&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;   class AdvanceEventRecorder:public EventRecorder
+</span><span class='line'>   {&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;   public:
+</span><span class='line'>       virtual void RecordEvent(Event* event)
+</span><span class='line'>       {
+</span><span class='line'>           cout&lt;&lt;"使用高级EventRecorder记录通用事件"&lt;&lt; endl;           
+</span><span class='line'>       }
+</span><span class='line'>
+</span><span class='line'>       virtual void RecordEvent(KeyEvent* event)
+</span><span class='line'>       {
+</span><span class='line'>           cout&lt;&lt;"使用高级EventRecorder记录按键事件"&lt;&lt; endl;           
+</span><span class='line'>       }
+</span><span class='line'>
+</span><span class='line'>       virtual void RecordEvent(ClickEvent* event)
+</span><span class='line'>       {
+</span><span class='line'>           cout&lt;&lt;"使用高级EventRecorder记录单击事件"&lt;&lt; endl;           
+</span><span class='line'>       }
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;   }</span></code></pre></td></tr></table></div></figure>
+这两个类中分别包含三个重载函数，多态是动态的，而函数重载则是静态的，它在编译时期就确定下来了，所以，下面代码片段的运行结果并不是我们所期望的:</p>
 
-<p>多态性是动态的，被调用的方法由对象的真正类型确定，这个过程就被称之为dispatch。例如在C++中，每个对象都有一个虚函数表，当用基类的类型引用子类对象时，虚函数指针指向的是子类的虚函数表，调用的虚函数都是子类中的版本，所以下面代码输出的是：“我是按键事件”，这就算是一次dispatch的过程，即根据对象类型来动态确定调用哪个函数的过程。</p>
-
-<p><code>
-Event* pEvent = new KeyEvent();
-pEvent-&gt;PrintName();
-</code></p>
-
-<p>什么时候会用到两次dispatch呢? 继续往下看：</p>
-
-<p>```
-class EventRecorder
-   {</p>
-
-<pre><code>   public:
-       virtual void RecordEvent(Event* event)
-       {
-           cout&lt;&lt;"使用EventRecorder记录通用事件"&lt;&lt; endl;           
-       }
-
-       virtual void RecordEvent(KeyEvent* event)
-       {
-           cout&lt;&lt;"使用EventRecorder记录按键事件"&lt;&lt; endl;           
-       }
-
-       virtual void RecordEvent(ClickEvent* event)
-       {
-           cout&lt;&lt;"使用EventRecorder记录单击事件"&lt;&lt; endl;           
-       }
-</code></pre>
-
-<p>   }</p>
-
-<p>   class AdvanceEventRecorder:public EventRecorder
-   {</p>
-
-<pre><code>   public:
-       virtual void RecordEvent(Event* event)
-       {
-           cout&lt;&lt;"使用高级EventRecorder记录通用事件"&lt;&lt; endl;           
-       }
-
-       virtual void RecordEvent(KeyEvent* event)
-       {
-           cout&lt;&lt;"使用高级EventRecorder记录按键事件"&lt;&lt; endl;           
-       }
-
-       virtual void RecordEvent(ClickEvent* event)
-       {
-           cout&lt;&lt;"使用高级EventRecorder记录单击事件"&lt;&lt; endl;           
-       }
-</code></pre>
-
-<p>   }
-```</p>
-
-<p>这两个类中分别包含三个重载函数，多态是动态的，而函数重载则是静态的，它在编译时期就确定下来了，所以，下面代码片段的运行结果并不是我们所期望的:</p>
-
-<p>```</p>
+<p>&#8220;`</p>
 
 <pre><code>EventRecorder* pRecorder = new AdvanceEventRecorder();
 Event* pEvent = new KeyEvent();
 pRecorder-&gt;RecordEvent(pEvent);
 </code></pre>
 
-<p>```
+<p>&#8220;`
 输出内容为：使用高级EventRecorder记录通用事件<br/>
 实际上，在这个场景中，我们期望调用的是：AdvanceEventRecorder::RecordEvent(KeyEvent* event)<br/>
 下面我们使用Double Dispatch设计模式来达到上面的代码片段的目的，在所有Event对象中增加下面的函数：</p>
 
-<p>```
+<p>&#8220;`
    virtual void RecordEvent(EventRecorder* recorder)
    {</p>
 
@@ -157,270 +204,519 @@ pRecorder-&gt;RecordEvent(pEvent);
 </code></pre>
 
 <p>   }
-```
-下面的代码片段将输出：使用高级EventRecorder记录按键事件</p>
-
-<p>```</p>
-
-<pre><code>EventRecorder* pRecorder = new AdvanceEventRecorder();
-Event* pEvent = new KeyEvent();
-pEvent-&gt;RecordEvent(pRecorder);
-</code></pre>
-
-<p><code>``
-可以看出，第一次dispatch正确地找到了</code>KeyEvent<code>的</code>RecordEvent(EventRecorder<em> recorder)<code>，第二次dispatch找到了</code>AdvanceEventRecorder<code>的</code>RecordEvent(KeyEvent</em> event)`。
-   Visitor模式就是对Double Dispatch的应用，另外，在碰撞检测算法中也会经常用到。</p>
-
-<h2>Java中的Double Dispatch实例</h2>
-
-<p>本节参考自<a href="http://www.blogjava.net/chaocai/archive/2009/02/19/255640.html">这里</a>
-相对于C++中使用继承来说，Java提供的接口和函数重载让Double Dispatch模式更容易实现</p>
-
-<h3>1 根据对象来选择行为问题</h3>
-
-<p><code>java
-public interface Event {
-}
-public class BlueEvent implements Event {
-}
-public class RedEvent implements Event {
-}
-public class Handler {
-public void handle(Event event){
-System.out.println("It is event");
-}
-public void handle(RedEvent event){
-System.out.println("It is RedEvent");
-}
-public void handle(BlueEvent event){
-System.out.println("It is BlueEvent");
-}
-}
-public class Main {
-public static void main(String[] args) {
-Event evt=new BlueEvent();
-new Handler().handle(evt);
-}
-}
-</code></p>
-
-<p>你认为运行结果是什么呢？<br/>
-结果：It is event<br/>
-是不是有点出乎意料，不是It is BlueEvent，<strong>这是因为Overload并不支持在运行时根据参数的运行时类型来绑定方法</strong>，所以要执行哪个方法是在编译时就选定了的。</p>
-
-<h3>2 Double Dispatch Pattern</h3>
-
-<p>由于Java,C++及C#都具有上述局限，通常我们只能通过Switch或if结构来实现，当然这种实现方式既不优雅而且影响代码的可维护性。<br/>
-通过以下的Double Dispatch Pattern便可以优雅的实现。</p>
-
-<p><code>
-public interface Event {
-public void injectHandler(EventHandler v);
-}
-public class BlueEvent implements Event {
-public void injectHandler(EventHandler v) {
-v.handle(this);
-}
-}
-public class RedEvent implements Event {
-public void injectHandler(EventHandler v) {
-v.handle(this);
-}
-}
-public class EventHandler {
-public void handle(BlueEvent e){
-System.out.println("It is BlueEvent");
-}
-public void handle(RedEvent e){
-System.out.println("It is RedEvent");
-}
-}
-public class Main {
-public static void main(String[] args) {
-Event evt=new BlueEvent();
-evt.injectHandler(new EventHandler());
-}
-}
-</code></p>
-
-<h2>Objective-C中实现碰撞检测用到的Visitor模式</h2>
-
-<p>虽然OC不支持函数重载，但是我们可以老老实实的用方法名来区分类似<code>visitXXX</code>的访问方法，并利用OC其独有的SEL类型可以很好的在运行时判断该调用哪个方法</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353389425.jpg" alt="" /></p>
-
-<p>感谢kouky提供的iOS上碰撞检测的<a href="https://github.com/kouky/iOS-SpriteKit-Pong">Demo</a>，这里他用到了Visitor模式<br/>
-由于判断物体类型是用一个32位掩码来标记，所以这里不可避免的要用到if语句，这不代表它不是动态绑定，因为if语句是在初始化方法<code>+ (id)contactVisitorWithBody:(SKPhysicsBody *)body forContact:(SKPhysicsContact *)contact</code>中其作用的，只是为了判断物体类型，而不是判断碰撞两者的组合类型<br/>
-可以参考我写的例子<a href="https://github.com/yulingtianxia/MyFirstGame/tree/master/ColorAtom">ColorAtom</a></p>
-
-<p>首先新建一个访问者基本类<code>ContactVisitor</code>，其本质为对SKPhysicsBody和SKPhysicsContact对象的封装，而SKPhysicsContact在本例中虽未用到（因为碰撞检测后啥也没干，只输出了碰撞双方name），但其保存着碰撞坐标等信息，也很重要。两次dispatch都是在访问者基本类实现的，而碰撞后具体操作则卸载了访问者具体类（如AtomNodeContactVisitor）</p>
-
-<p>``` objc</p>
-
-<p>//  ContactVisitor.h
-//  ColorAtom
-//
-//  Created by 杨萧玉 on 14-4-13.
-//  Copyright &copy; 2014年 杨萧玉. All rights reserved.
-//</p>
-
-<h1>import &lt;Foundation/Foundation.h></h1>
-
-<h1>import &lt;SpriteKit/SpriteKit.h></h1>
-
-<p>@interface ContactVisitor : NSObject</p>
-
-<p>@property (nonatomic,readonly, strong) SKPhysicsBody <em>body;
-@property (nonatomic, readonly, strong) SKPhysicsContact </em>contact;</p>
-
-<ul>
-<li>(id)contactVisitorWithBody:(SKPhysicsBody <em>)body forContact:(SKPhysicsContact </em>)contact;</li>
-<li>(void)visit:(SKPhysicsBody *)body;</li>
-</ul>
-
-
-<p>@end
-```</p>
-
-<p>属性body即为访问者的SKPhysicsBody，而方法<code>visit:</code>的参数为被访问者的SKPhysicsBody<br/>
-<code>contactVisitorWithBody:forContact:</code>方法的作用是根据掩码类型初始化对应类型的访问者具体类</p>
-
-<p>```
-//
-//  ContactVisitor.m
-//  ColorAtom
-//
-//  Created by 杨萧玉 on 14-4-13.
-//  Copyright &copy; 2014年 杨萧玉. All rights reserved.
-//</p>
-
-<h1>import &ldquo;ContactVisitor.h&rdquo;</h1>
-
-<h1>import &lt;objc/runtime.h></h1>
-
-<h1>import &ldquo;NodeCategories.h&rdquo;</h1>
-
-<h1>import &ldquo;AtomNodeContactVisitor.h&rdquo;</h1>
-
-<h1>import &ldquo;PlayFieldSceneContactVisitor.h&rdquo;</h1>
-
-<p>@implementation ContactVisitor
-+ (id)contactVisitorWithBody:(SKPhysicsBody <em>)body forContact:(SKPhysicsContact </em>)contact
-{</p>
-
-<pre><code>//第一次dispatch，通过node类别返回对应的实例
-if ((body.categoryBitMask&amp;AtomCategory)!=0) {
-    return [[AtomNodeContactVisitor alloc] initWithBody:body forContact:contact];
-}
-if ((body.categoryBitMask&amp;PlayFieldCategory)!=0) {
-    return [[PlayFieldSceneContactVisitor alloc] initWithBody:body forContact:contact];
-}
-else{
-    return nil;
-}
-</code></pre>
-
-<p>}</p>
-
-<ul>
-<li><p>(id)initWithBody:(SKPhysicsBody <em>)body forContact:(SKPhysicsContact </em>)contact
-{
-  self = [super init];
-  if (self) {
-      <em>contact = contact;
-      </em>body = body;
-  }
-  return self;
-}</p></li>
-<li><p>(void)visit:(SKPhysicsBody <em>)body
-{
-  //第二次dispatch，通过构造方法名来执行对应方法
-  // 生成node的名字，比如"AtomNode"
-  NSString </em>bodyClassName = [NSString stringWithUTF8String:class_getName(body.node.class)];</p>
-
-<p>  // 生成方法名，比如"visitAtomBody"
-  NSMutableString *contactSelectorString = [NSMutableString stringWithFormat:@&ldquo;visit&rdquo;];
-  [contactSelectorString appendString:bodyClassName];
-  [contactSelectorString appendString:@&ldquo;:&rdquo;];</p>
-
-<p>  SEL selector = NSSelectorFromString(contactSelectorString);
-  //判断是否存在此方法
-  if ([self respondsToSelector:selector]) {
-      [self performSelector:selector withObject:body];
-  }</p></li>
-</ul>
-
-
-<p>}</p>
-
-<p>```</p>
-
-<p>以访问者具体类以<code>AtomNodeContactVisitor</code>类为例，它继承自访问者基本类ContactVisitor</p>
-
-<p>```</p>
-
-<p>//
-//  AtomNodeContactVisitor.h
-//  ColorAtom
-//
-//  Created by 杨萧玉 on 14-4-13.
-//  Copyright &copy; 2014年 杨萧玉. All rights reserved.
-//</p>
-
-<h1>import &ldquo;ContactVisitor.h&rdquo;</h1>
-
-<p>@interface AtomNodeContactVisitor : ContactVisitor</p>
-
-<p>/<em>Atom访问了Atom，同类碰撞</em>/
-&ndash;(void) visitAtomNode:(SKPhysicsBody<em>) anotherAtomBody;
-/</em>Atom访问了边界，也就是球撞墙上了<em>/
-&ndash;(void) visitPlayFieldScene:(SKPhysicsBody</em>) playfieldBody;
-@end</p>
-
-<p>```</p>
-
-<p>在处理碰撞后的visitXXX方法中，我将碰撞双方的访问者和被访问者的关系输出</p>
-
-<p>```
-//
-//  AtomNodeContactVisitor.m
-//  ColorAtom
-//
-//  Created by 杨萧玉 on 14-4-13.
-//  Copyright &copy; 2014年 杨萧玉. All rights reserved.
-//</p>
-
-<h1>import &ldquo;AtomNodeContactVisitor.h&rdquo;</h1>
-
-<h1>import &ldquo;AtomNode.h&rdquo;</h1>
-
-<h1>import &ldquo;PlayFieldScene.h&rdquo;</h1>
-
-<p>@implementation AtomNodeContactVisitor
-&ndash;(void) visitAtomNode:(SKPhysicsBody*) anotherAtomBody
-{</p>
-
-<pre><code>AtomNode *thisAtom = (AtomNode*)self.body.node;
-AtomNode *anotherAtom = (AtomNode*)anotherAtomBody.node;
-//处理碰撞后的结果
-NSLog(@"%@-&gt;%@",thisAtom.name,anotherAtom.name);
-</code></pre>
-
-<p>}
-&ndash;(void) visitPlayFieldScene:(SKPhysicsBody*) playfieldBody
-{</p>
-
-<pre><code>AtomNode *atom = (AtomNode*)self.body.node;
-PlayFieldScene *playfield = (PlayFieldScene*) playfieldBody.node;
-NSLog(@"%@-&gt;%@",atom.name,playfield.name);
-</code></pre>
-
-<p>}
-@end
-```
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+<span class='line-number'>223</span>
+<span class='line-number'>224</span>
+<span class='line-number'>225</span>
+<span class='line-number'>226</span>
+<span class='line-number'>227</span>
+<span class='line-number'>228</span>
+<span class='line-number'>229</span>
+<span class='line-number'>230</span>
+<span class='line-number'>231</span>
+<span class='line-number'>232</span>
+<span class='line-number'>233</span>
+<span class='line-number'>234</span>
+<span class='line-number'>235</span>
+<span class='line-number'>236</span>
+<span class='line-number'>237</span>
+<span class='line-number'>238</span>
+<span class='line-number'>239</span>
+<span class='line-number'>240</span>
+<span class='line-number'>241</span>
+<span class='line-number'>242</span>
+<span class='line-number'>243</span>
+<span class='line-number'>244</span>
+<span class='line-number'>245</span>
+<span class='line-number'>246</span>
+<span class='line-number'>247</span>
+<span class='line-number'>248</span>
+<span class='line-number'>249</span>
+<span class='line-number'>250</span>
+<span class='line-number'>251</span>
+<span class='line-number'>252</span>
+<span class='line-number'>253</span>
+<span class='line-number'>254</span>
+<span class='line-number'>255</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>下面的代码片段将输出：使用高级EventRecorder记录按键事件&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;```&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;EventRecorder* pRecorder = new AdvanceEventRecorder();
+</span><span class='line'>Event* pEvent = new KeyEvent();
+</span><span class='line'>pEvent-&gt;RecordEvent(pRecorder);
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;code&gt;``
+</span><span class='line'>可以看出，第一次dispatch正确地找到了&lt;/code&gt;KeyEvent&lt;code&gt;的&lt;/code&gt;RecordEvent(EventRecorder&lt;em&gt; recorder)&lt;code&gt;，第二次dispatch找到了&lt;/code&gt;AdvanceEventRecorder&lt;code&gt;的&lt;/code&gt;RecordEvent(KeyEvent&lt;/em&gt; event)`。
+</span><span class='line'>   Visitor模式就是对Double Dispatch的应用，另外，在碰撞检测算法中也会经常用到。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2&gt;Java中的Double Dispatch实例&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;本节参考自&lt;a href="http://www.blogjava.net/chaocai/archive/2009/02/19/255640.html"&gt;这里&lt;/a&gt;
+</span><span class='line'>相对于C++中使用继承来说，Java提供的接口和函数重载让Double Dispatch模式更容易实现&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h3&gt;1 根据对象来选择行为问题&lt;/h3&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;code&gt;java
+</span><span class='line'>public interface Event {
+</span><span class='line'>}
+</span><span class='line'>public class BlueEvent implements Event {
+</span><span class='line'>}
+</span><span class='line'>public class RedEvent implements Event {
+</span><span class='line'>}
+</span><span class='line'>public class Handler {
+</span><span class='line'>public void handle(Event event){
+</span><span class='line'>System.out.println("It is event");
+</span><span class='line'>}
+</span><span class='line'>public void handle(RedEvent event){
+</span><span class='line'>System.out.println("It is RedEvent");
+</span><span class='line'>}
+</span><span class='line'>public void handle(BlueEvent event){
+</span><span class='line'>System.out.println("It is BlueEvent");
+</span><span class='line'>}
+</span><span class='line'>}
+</span><span class='line'>public class Main {
+</span><span class='line'>public static void main(String[] args) {
+</span><span class='line'>Event evt=new BlueEvent();
+</span><span class='line'>new Handler().handle(evt);
+</span><span class='line'>}
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;
+</span><span class='line'>你认为运行结果是什么呢？&lt;br/&gt;
+</span><span class='line'>结果：It is event&lt;br/&gt;
+</span><span class='line'>是不是有点出乎意料，不是It is BlueEvent，&lt;strong&gt;这是因为Overload并不支持在运行时根据参数的运行时类型来绑定方法&lt;/strong&gt;，所以要执行哪个方法是在编译时就选定了的。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h3&gt;2 Double Dispatch Pattern&lt;/h3&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;由于Java,C++及C#都具有上述局限，通常我们只能通过Switch或if结构来实现，当然这种实现方式既不优雅而且影响代码的可维护性。&lt;br/&gt;
+</span><span class='line'>通过以下的Double Dispatch Pattern便可以优雅的实现。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;code&gt;
+</span><span class='line'>public interface Event {
+</span><span class='line'>public void injectHandler(EventHandler v);
+</span><span class='line'>}
+</span><span class='line'>public class BlueEvent implements Event {
+</span><span class='line'>public void injectHandler(EventHandler v) {
+</span><span class='line'>v.handle(this);
+</span><span class='line'>}
+</span><span class='line'>}
+</span><span class='line'>public class RedEvent implements Event {
+</span><span class='line'>public void injectHandler(EventHandler v) {
+</span><span class='line'>v.handle(this);
+</span><span class='line'>}
+</span><span class='line'>}
+</span><span class='line'>public class EventHandler {
+</span><span class='line'>public void handle(BlueEvent e){
+</span><span class='line'>System.out.println("It is BlueEvent");
+</span><span class='line'>}
+</span><span class='line'>public void handle(RedEvent e){
+</span><span class='line'>System.out.println("It is RedEvent");
+</span><span class='line'>}
+</span><span class='line'>}
+</span><span class='line'>public class Main {
+</span><span class='line'>public static void main(String[] args) {
+</span><span class='line'>Event evt=new BlueEvent();
+</span><span class='line'>evt.injectHandler(new EventHandler());
+</span><span class='line'>}
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h2&gt;Objective-C中实现碰撞检测用到的Visitor模式&lt;/h2&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;虽然OC不支持函数重载，但是我们可以老老实实的用方法名来区分类似&lt;code&gt;visitXXX&lt;/code&gt;的访问方法，并利用OC其独有的SEL类型可以很好的在运行时判断该调用哪个方法&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;img src="http://yulingtianxia.qiniudn.com/140353389425.jpg" alt="" /&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;感谢kouky提供的iOS上碰撞检测的&lt;a href="https://github.com/kouky/iOS-SpriteKit-Pong"&gt;Demo&lt;/a&gt;，这里他用到了Visitor模式&lt;br/&gt;
+</span><span class='line'>由于判断物体类型是用一个32位掩码来标记，所以这里不可避免的要用到if语句，这不代表它不是动态绑定，因为if语句是在初始化方法&lt;code&gt;+ (id)contactVisitorWithBody:(SKPhysicsBody *)body forContact:(SKPhysicsContact *)contact&lt;/code&gt;中其作用的，只是为了判断物体类型，而不是判断碰撞两者的组合类型&lt;br/&gt;
+</span><span class='line'>可以参考我写的例子&lt;a href="https://github.com/yulingtianxia/MyFirstGame/tree/master/ColorAtom"&gt;ColorAtom&lt;/a&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;首先新建一个访问者基本类&lt;code&gt;ContactVisitor&lt;/code&gt;，其本质为对SKPhysicsBody和SKPhysicsContact对象的封装，而SKPhysicsContact在本例中虽未用到（因为碰撞检测后啥也没干，只输出了碰撞双方name），但其保存着碰撞坐标等信息，也很重要。两次dispatch都是在访问者基本类实现的，而碰撞后具体操作则卸载了访问者具体类（如AtomNodeContactVisitor）&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;``` objc&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;//  ContactVisitor.h
+</span><span class='line'>//  ColorAtom
+</span><span class='line'>//
+</span><span class='line'>//  Created by 杨萧玉 on 14-4-13.
+</span><span class='line'>//  Copyright &copy; 2014年 杨萧玉. All rights reserved.
+</span><span class='line'>//&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &lt;Foundation/Foundation.h&gt;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &lt;SpriteKit/SpriteKit.h&gt;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;@interface ContactVisitor : NSObject&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;@property (nonatomic,readonly, strong) SKPhysicsBody &lt;em&gt;body;
+</span><span class='line'>@property (nonatomic, readonly, strong) SKPhysicsContact &lt;/em&gt;contact;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;ul&gt;
+</span><span class='line'>&lt;li&gt;(id)contactVisitorWithBody:(SKPhysicsBody &lt;em&gt;)body forContact:(SKPhysicsContact &lt;/em&gt;)contact;&lt;/li&gt;
+</span><span class='line'>&lt;li&gt;(void)visit:(SKPhysicsBody *)body;&lt;/li&gt;
+</span><span class='line'>&lt;/ul&gt;
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;@end
+</span><span class='line'>&lt;code&gt;``
+</span><span class='line'>属性body即为访问者的SKPhysicsBody，而方法&lt;/code&gt;visit:&lt;code&gt;的参数为被访问者的SKPhysicsBody  
+</span><span class='line'>&lt;/code&gt;contactVisitorWithBody:forContact:`方法的作用是根据掩码类型初始化对应类型的访问者具体类&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;```
+</span><span class='line'>//
+</span><span class='line'>//  ContactVisitor.m
+</span><span class='line'>//  ColorAtom
+</span><span class='line'>//
+</span><span class='line'>//  Created by 杨萧玉 on 14-4-13.
+</span><span class='line'>//  Copyright &copy; 2014年 杨萧玉. All rights reserved.
+</span><span class='line'>//&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &ldquo;ContactVisitor.h&rdquo;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &lt;objc/runtime.h&gt;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &ldquo;NodeCategories.h&rdquo;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &ldquo;AtomNodeContactVisitor.h&rdquo;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &ldquo;PlayFieldSceneContactVisitor.h&rdquo;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;@implementation ContactVisitor
+</span><span class='line'>+ (id)contactVisitorWithBody:(SKPhysicsBody &lt;em&gt;)body forContact:(SKPhysicsContact &lt;/em&gt;)contact
+</span><span class='line'>{&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;//第一次dispatch，通过node类别返回对应的实例
+</span><span class='line'>if ((body.categoryBitMask&amp;AtomCategory)!=0) {
+</span><span class='line'>    return [[AtomNodeContactVisitor alloc] initWithBody:body forContact:contact];
+</span><span class='line'>}
+</span><span class='line'>if ((body.categoryBitMask&amp;PlayFieldCategory)!=0) {
+</span><span class='line'>    return [[PlayFieldSceneContactVisitor alloc] initWithBody:body forContact:contact];
+</span><span class='line'>}
+</span><span class='line'>else{
+</span><span class='line'>    return nil;
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;ul&gt;
+</span><span class='line'>&lt;li&gt;&lt;p&gt;(id)initWithBody:(SKPhysicsBody &lt;em&gt;)body forContact:(SKPhysicsContact &lt;/em&gt;)contact
+</span><span class='line'>{
+</span><span class='line'>  self = [super init];
+</span><span class='line'>  if (self) {
+</span><span class='line'>      &lt;em&gt;contact = contact;
+</span><span class='line'>      &lt;/em&gt;body = body;
+</span><span class='line'>  }
+</span><span class='line'>  return self;
+</span><span class='line'>}&lt;/p&gt;&lt;/li&gt;
+</span><span class='line'>&lt;li&gt;&lt;p&gt;(void)visit:(SKPhysicsBody &lt;em&gt;)body
+</span><span class='line'>{
+</span><span class='line'>  //第二次dispatch，通过构造方法名来执行对应方法
+</span><span class='line'>  // 生成node的名字，比如"AtomNode"
+</span><span class='line'>  NSString &lt;/em&gt;bodyClassName = [NSString stringWithUTF8String:class_getName(body.node.class)];&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  // 生成方法名，比如"visitAtomBody"
+</span><span class='line'>  NSMutableString *contactSelectorString = [NSMutableString stringWithFormat:@&ldquo;visit&rdquo;];
+</span><span class='line'>  [contactSelectorString appendString:bodyClassName];
+</span><span class='line'>  [contactSelectorString appendString:@&ldquo;:&rdquo;];&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  SEL selector = NSSelectorFromString(contactSelectorString);
+</span><span class='line'>  //判断是否存在此方法
+</span><span class='line'>  if ([self respondsToSelector:selector]) {
+</span><span class='line'>      [self performSelector:selector withObject:body];
+</span><span class='line'>  }&lt;/p&gt;&lt;/li&gt;
+</span><span class='line'>&lt;/ul&gt;
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;code&gt;``
+</span><span class='line'>以访问者具体类以&lt;/code&gt;AtomNodeContactVisitor`类为例，它继承自访问者基本类ContactVisitor&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;```&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;//
+</span><span class='line'>//  AtomNodeContactVisitor.h
+</span><span class='line'>//  ColorAtom
+</span><span class='line'>//
+</span><span class='line'>//  Created by 杨萧玉 on 14-4-13.
+</span><span class='line'>//  Copyright &copy; 2014年 杨萧玉. All rights reserved.
+</span><span class='line'>//&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &ldquo;ContactVisitor.h&rdquo;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;@interface AtomNodeContactVisitor : ContactVisitor&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;/&lt;em&gt;Atom访问了Atom，同类碰撞&lt;/em&gt;/
+</span><span class='line'>&ndash;(void) visitAtomNode:(SKPhysicsBody&lt;em&gt;) anotherAtomBody;
+</span><span class='line'>/&lt;/em&gt;Atom访问了边界，也就是球撞墙上了&lt;em&gt;/
+</span><span class='line'>&ndash;(void) visitPlayFieldScene:(SKPhysicsBody&lt;/em&gt;) playfieldBody;
+</span><span class='line'>@end&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;```
+</span><span class='line'>在处理碰撞后的visitXXX方法中，我将碰撞双方的访问者和被访问者的关系输出&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;```
+</span><span class='line'>//
+</span><span class='line'>//  AtomNodeContactVisitor.m
+</span><span class='line'>//  ColorAtom
+</span><span class='line'>//
+</span><span class='line'>//  Created by 杨萧玉 on 14-4-13.
+</span><span class='line'>//  Copyright &copy; 2014年 杨萧玉. All rights reserved.
+</span><span class='line'>//&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &ldquo;AtomNodeContactVisitor.h&rdquo;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &ldquo;AtomNode.h&rdquo;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;import &ldquo;PlayFieldScene.h&rdquo;&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;@implementation AtomNodeContactVisitor
+</span><span class='line'>&ndash;(void) visitAtomNode:(SKPhysicsBody*) anotherAtomBody
+</span><span class='line'>{&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;AtomNode *thisAtom = (AtomNode*)self.body.node;
+</span><span class='line'>AtomNode *anotherAtom = (AtomNode*)anotherAtomBody.node;
+</span><span class='line'>//处理碰撞后的结果
+</span><span class='line'>NSLog(@"%@-&gt;%@",thisAtom.name,anotherAtom.name);
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;}
+</span><span class='line'>&ndash;(void) visitPlayFieldScene:(SKPhysicsBody*) playfieldBody
+</span><span class='line'>{&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;AtomNode *atom = (AtomNode*)self.body.node;
+</span><span class='line'>PlayFieldScene *playfield = (PlayFieldScene*) playfieldBody.node;
+</span><span class='line'>NSLog(@"%@-&gt;%@",atom.name,playfield.name);
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;}
+</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
 下面建立被访问者类，其本质就是对SKPhysicsBody的封装，并接受Visitor的注入</p>
 
-<p>```
+<p>&#8220;`
 //
 //  VisitablePhysicsBody.h
 //  ColorAtom
@@ -443,11 +739,10 @@ NSLog(@"%@-&gt;%@",atom.name,playfield.name);
 
 
 <p>@end
-```</p>
+<code>``
+关键的一步：在</code>acceptVisitor:<code>方法中调用访问者的</code>visit:`方法</p>
 
-<p>关键的一步：在<code>acceptVisitor:</code>方法中调用访问者的<code>visit:</code>方法</p>
-
-<p>```
+<p>&#8220;`
 //
 //  VisitablePhysicsBody.m
 //  ColorAtom
@@ -481,12 +776,11 @@ return self;
 
 <p>@end</p>
 
-<p>```</p>
-
-<p>可能有人会有疑问，<code>visit:</code>方法穿入的参数类型永远是<code>SKPhysicsBody</code>，这哪里是动态绑定啊，其实是由于本例的特殊性，碰撞检测时区分物体类型不是靠<code>SKPhysicsBody</code>子类化来区分和绑定，而是靠SKPhysicsBody类中的<code>categoryBitMask</code>属性来区分，这也就免不了需要在<code>ContactVisitor</code>初始化的时候通过if语句来判断具体初始化哪个子类<br/>
+<p><code>``
+可能有人会有疑问，</code>visit:<code>方法穿入的参数类型永远是</code>SKPhysicsBody<code>，这哪里是动态绑定啊，其实是由于本例的特殊性，碰撞检测时区分物体类型不是靠</code>SKPhysicsBody<code>子类化来区分和绑定，而是靠SKPhysicsBody类中的</code>categoryBitMask<code>属性来区分，这也就免不了需要在</code>ContactVisitor`初始化的时候通过if语句来判断具体初始化哪个子类<br/>
 最后，在Scene实现SKPhysicsContactDelegate协议</p>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <h1>pragma mark SKPhysicsContactDelegate</h1>
 
@@ -504,7 +798,7 @@ VisitablePhysicsBody *visitableBodyA = [[VisitablePhysicsBody alloc] initWithBod
 </code></pre>
 
 <p>}
-```
+&#8220;`
 物理老师总说力的作用时相互的，所以我们需要两次访问：A访问B和B访问A，但是这样会调用两次visitXXX方法，原则上这两个逻辑上对称的方法我们只需要实现其中一个就可以，但必须得像上面代码一样，A->B和B->A缺一不可，因为碰撞的时候我们不知道bodyA和bodyB的类型，也就无法判断visitXXX方法是A->B时能调用还是B->A时能调用到<br/>
 当然，你也可以两个visit方法都实现，但只对visitor的node做操作，或只对visitable的node操作，总之仁者见仁智者见智啦</p>
 ]]></content>

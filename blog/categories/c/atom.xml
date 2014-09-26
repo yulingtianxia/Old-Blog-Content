@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: C | 玉令天下的Blog]]></title>
+  <title><![CDATA[Category: c | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-23T20:38:24+08:00</updated>
+  <updated>2014-09-26T18:30:58+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -31,31 +31,31 @@
 <p>其中，后缀运算符括号“()”表示这是一个函数，其前缀运算符星号“*”表示此函数为指针型函数，其函数值为指针，即它带回来的值的类型为指针，当调用这个函数后，将得到一个“指向返回值为…的指针（地址），“类型名”表示函数返回的指针指向的类型”。<br/>
  “(函数参数表列)”中的括号为函数调用运算符，在调用语句中，即使函数不带参数，其参数表的一对括号也不能省略。其示例如下：</p>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <pre><code>int *pfun(int, int);
 </code></pre>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <pre><code>由于“\*”的优先级低于“()”的优先级，因而pfun首先和后面的“()”结合，也就意味着，pfun是一个函数。即：
 </code></pre>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <pre><code>int *(pfun(int, int));
 </code></pre>
 
-<p>```
+<p>&#8220;`
 接着再和前面的“*”结合，说明这个函数的返回值是一个指针。由于前面还有一个int，也就是说，pfun是一个返回值为整型指针的函数。<br/>
 我们不妨来再看一看，指针函数与函数指针有什么区别？</p>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <pre><code>int (*pfun)(int, int);
 </code></pre>
 
-<p>```
+<p>&#8220;`
 通过括号强行将pfun首先与“*”结合，也就意味着，pfun是一个指针，接着与后面的“()”结合，说明该指针指向的是一个函数，然后再与前面的int结合，也就是说，该函数的返回值是int。由此可见，pfun是一个指向返回值为int的函数的指针。<br/>
 虽然它们只有一个括号的差别，但是表示的意义却截然不同。函数指针的本身是一个指针，指针指向的是一个函数。指针函数的本身是一个函数，其函数的返回值是一个指针。</p>
 
@@ -102,33 +102,51 @@ PF ff(int);
 <!--more-->
 
 
-<p>```
+<p>&#8220;`
 typedef &lt;#returnType#>(^&lt;#name#>)(&lt;#arguments#>);//typedefBlock Code Snippets</p>
 
 <p>typedef void (^RWAlertViewCompletionBlock)(UIAlertView *alertView, NSInteger buttonIndex);
-```</p>
-
-<p>然后就可以把<code>RWAlertViewCompletionBlock</code>当成一个Block的类型大摇大摆的使用啦<br/>
-在这之前楼主心目中的typedef一般都是这样的</p>
-
-<p>```
-typedef int INT32;
-typedef char Line[81];//表示使用Line代表具有81个元素的char类型数组。</p>
-
-<p>```
-甚至有时候是这样的</p>
-
-<p>```
-typedef struct tagPOINT
-{</p>
-
-<pre><code>int x;
-int y;
-</code></pre>
-
-<p>}POINT;
-POINT p1;//在C++中即使不用typedef也可直接中tagPOINT声明变量，但在旧的C中就需要typedef来省略struct关键字
-```
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">然后就可以把</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">RWAlertViewCompletionBlock</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">当成一个</span><span class="n">Block</span><span class="err">的类型大摇大摆的使用啦</span><span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'><span class="err">在这之前楼主心目中的</span><span class="k">typedef</span><span class="err">一般都是这样的</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="k">typedef</span> <span class="kt">int</span> <span class="n">INT32</span><span class="p">;</span>
+</span><span class='line'><span class="k">typedef</span> <span class="kt">char</span> <span class="n">Line</span><span class="p">[</span><span class="mi">81</span><span class="p">];</span><span class="c1">//表示使用Line代表具有81个元素的char类型数组。&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="err">甚至有时候是这样的</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">tagPOINT</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">y</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="n">POINT</span><span class="p">;</span>
+</span><span class='line'><span class="n">POINT</span> <span class="n">p1</span><span class="p">;</span><span class="c1">//在C++中即使不用typedef也可直接中tagPOINT声明变量，但在旧的C中就需要typedef来省略struct关键字</span>
+</span></code></pre></td></tr></table></div></figure>
 如今遇到的Block其实可以当作函数指针啦</p>
 
 <p><code>

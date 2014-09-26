@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: SpriteKit | 玉令天下的Blog]]></title>
+  <title><![CDATA[Category: spritekit | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/spritekit/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-23T20:38:24+08:00</updated>
+  <updated>2014-09-26T18:30:58+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -60,7 +60,7 @@
 
 <p>在MyScene.m文件中使用下面的模板来加载MyScene.sks中设计好的场景结构，然后你就可以接着写游戏的逻辑了：</p>
 
-<p><code>js
+<p><code>swift
 let path = NSBundle.mainBundle().pathForResource(file, ofType: "sks")       
 var sceneData = NSData.dataWithContentsOfFile(path, options: .DataReadingMappedIfSafe, error: nil)
 var archiver = NSKeyedUnarchiver(forReadingWithData: sceneData)
@@ -512,7 +512,7 @@ textureNoiseWithSmoothness:size:grayscale:</code><br/>
 
 <p>SpriteKit是苹果iOS7新推出的2D游戏引擎，这里不再过多介绍。我们新建工程的时候选取iOS中的Game，然后选择SpriteKit作为游戏引擎，语言选择Swift，Xcode6会为我们自动创建一个游戏场景<code>GameScene</code>，它包含<code>GameScene.swift</code>和<code>GameScene.sks</code>两个文件，<code>sks</code>文件可以让我们可视化拖拽游戏控件到场景上，然后再代码中加载<code>sks</code>文件来完成场景的初始化：</p>
 
-<p>``` js</p>
+<p>&#8220;` js</p>
 
 <p>extension SKNode {</p>
 
@@ -531,80 +531,149 @@ textureNoiseWithSmoothness:size:grayscale:</code><br/>
 </code></pre>
 
 <p>}
-```</p>
-
-<p>但我比较喜欢纯写代码的方式来搭接面，因为<code>sks</code>文件作为游戏场景布局还不成熟，它是iOS8新加入的功能，以前在iOS7的时候<code>sks</code>文件只是作为粒子系统的可视化编辑文件。</p>
-
-<p>所以我们修改<code>GameViewController.swift</code>文件的<code>viewDidLoad()</code>函数，像以前那样直接用代码加载游戏场景：</p>
-
-<p>```
-override func viewDidLoad() {</p>
-
-<pre><code>    super.viewDidLoad()
-    // Configure the view.
-    let skView = self.view as SKView
-    /* Sprite Kit applies additional optimizations to improve rendering performance */
-    skView.ignoresSiblingOrder = true
-    let scene = GameScene(size: skView.bounds.size)
-    /* Set the scale mode to scale to fit the window */
-    scene.scaleMode = .AspectFill
-    skView.presentScene(scene)
-
-}
-</code></pre>
-
-<p>```</p>
-
-<p><code>GameScene</code>虽然是Xcode自动生成的，但是只是个空架子，我们需要把它生成的没用的代码删掉，比如初始化函数里内容为“HelloWorld”的<code>SKLabelNode</code>，还有<code>touchesBegan(touches: NSSet, withEvent event: UIEvent)</code>方法中绘制飞船的代码。把这些删光后，我们还需要有图片素材来绘制这四类精灵节点：<code>Player</code>（五角星），<code>Killer</code>（红色旋风），<code>Score</code>（绿色旋风）和<code>Shield</code>（紫色三角）。我是用Sketch来绘制这些矢量图形的，文件名为<code>spiral.sketch</code>，随同工程文件一同放到GitHub上了。当然你不需要手动导出图片到工程，直接下载工程文件就好了：</p>
-
-<p><a href="https://github.com/yulingtianxia/Spiral">https://github.com/yulingtianxia/Spiral</a></p>
-
-<h2>绘制基本界面</h2>
-
-<p>这部分的工作主要是绘制出螺旋线作为地图，并让四种精灵节点动起来。</p>
-
-<h3>螺旋线的绘制</h3>
-
-<p><code>SKNode</code>有一个子类<code>SKShapeNode</code>，专门用于绘制线条的，我们新建一个<code>Map</code>类，继承<code>SKShapeNode</code>。下面我们需要生成一个<code>CGPath</code>来赋值给<code>Map</code>的<code>path</code>属性：</p>
-
-<p>```
-import UIKit
-import SpriteKit
-class Map: SKShapeNode {</p>
-
-<pre><code>let spacing:CGFloat = 35
-var points:[CGPoint] = []
-convenience init(origin:CGPoint,layer:CGFloat){
-
-    var x:CGFloat = origin.x
-    var y:CGFloat = origin.y
-    var path = CGPathCreateMutable()
-    self.init()
-    CGPathMoveToPoint(path, nil, x, y)
-    points.append(CGPointMake(x, y))
-    for index in 1..&lt;layer{
-        y-=spacing*(2*index-1)
-        CGPathAddLineToPoint(path, nil , x, y)
-        points.append(CGPointMake(x, y))
-        x-=spacing*(2*index-1)
-        CGPathAddLineToPoint(path, nil , x, y)
-        points.append(CGPointMake(x, y))
-        y+=spacing*2*index
-        CGPathAddLineToPoint(path, nil , x, y)
-        points.append(CGPointMake(x, y))
-        x+=spacing*2*index
-        CGPathAddLineToPoint(path, nil , x, y)
-        points.append(CGPointMake(x, y))
-    }
-    self.path = path
-    self.glowWidth = 1
-    self.antialiased = true
-    CGPathGetCurrentPoint(path)
-}
-</code></pre>
-
-<p>}
-```</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">但我比较喜欢纯写代码的方式来搭接面，因为</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">sks</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">文件作为游戏场景布局还不成熟，它是</span><span class="n">iOS8</span><span class="err">新加入的功能，以前在</span><span class="n">iOS7</span><span class="err">的时候</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">sks</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">文件只是作为粒子系统的可视化编辑文件。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">所以我们修改</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">GameViewController</span><span class="p">.</span><span class="n">swift</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">文件的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">viewDidLoad</span><span class="p">()</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">函数，像以前那样直接用代码加载游戏场景：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="n">override</span> <span class="n">func</span> <span class="n">viewDidLoad</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="nb">super</span><span class="p">.</span><span class="n">viewDidLoad</span><span class="p">()</span>
+</span><span class='line'>    <span class="c1">// Configure the view.</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">skView</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="n">as</span> <span class="bp">SKView</span>
+</span><span class='line'>    <span class="cm">/* Sprite Kit applies additional optimizations to improve rendering performance */</span>
+</span><span class='line'>    <span class="n">skView</span><span class="p">.</span><span class="n">ignoresSiblingOrder</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">scene</span> <span class="o">=</span> <span class="n">GameScene</span><span class="p">(</span><span class="nl">size</span><span class="p">:</span> <span class="n">skView</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">)</span>
+</span><span class='line'>    <span class="cm">/* Set the scale mode to scale to fit the window */</span>
+</span><span class='line'>    <span class="n">scene</span><span class="p">.</span><span class="n">scaleMode</span> <span class="o">=</span> <span class="p">.</span><span class="n">AspectFill</span>
+</span><span class='line'>    <span class="n">skView</span><span class="p">.</span><span class="n">presentScene</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">GameScene</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">虽然是</span><span class="n">Xcode</span><span class="err">自动生成的，但是只是个空架子，我们需要把它生成的没用的代码删掉，比如初始化函数里内容为“</span><span class="n">HelloWorld</span><span class="err">”的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKLabelNode</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">，还有</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">touchesBegan</span><span class="p">(</span><span class="nl">touches</span><span class="p">:</span> <span class="bp">NSSet</span><span class="p">,</span> <span class="n">withEvent</span> <span class="nl">event</span><span class="p">:</span> <span class="bp">UIEvent</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法中绘制飞船的代码。把这些删光后，我们还需要有图片素材来绘制这四类精灵节点：</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Player</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">（五角星），</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Killer</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">（红色旋风），</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Score</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">（绿色旋风）和</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Shield</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">（紫色三角）。我是用</span><span class="n">Sketch</span><span class="err">来绘制这些矢量图形的，文件名为</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">spiral</span><span class="p">.</span><span class="n">sketch</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">，随同工程文件一同放到</span><span class="n">GitHub</span><span class="err">上了。当然你不需要手动导出图片到工程，直接下载工程文件就好了：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;https://github.com/yulingtianxia/Spiral&quot;</span><span class="o">&gt;</span><span class="nl">https</span><span class="p">:</span><span class="c1">//github.com/yulingtianxia/Spiral&lt;/a&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="err">绘制基本界面</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">这部分的工作主要是绘制出螺旋线作为地图，并让四种精灵节点动起来。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="err">螺旋线的绘制</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKNode</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">有一个子类</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKShapeNode</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">，专门用于绘制线条的，我们新建一个</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Map</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">类，继承</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKShapeNode</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">。下面我们需要生成一个</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">CGPath</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">来赋值给</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Map</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">path</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">属性：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="n">import</span> <span class="n">UIKit</span>
+</span><span class='line'><span class="n">import</span> <span class="n">SpriteKit</span>
+</span><span class='line'><span class="k">class</span> <span class="nl">Map</span><span class="p">:</span> <span class="bp">SKShapeNode</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">let</span> <span class="nl">spacing</span><span class="p">:</span><span class="n">CGFloat</span> <span class="o">=</span> <span class="mi">35</span>
+</span><span class='line'><span class="n">var</span> <span class="nl">points</span><span class="p">:[</span><span class="bp">CGPoint</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="n">convenience</span> <span class="n">init</span><span class="p">(</span><span class="nl">origin</span><span class="p">:</span><span class="bp">CGPoint</span><span class="p">,</span><span class="nl">layer</span><span class="p">:</span><span class="n">CGFloat</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">var</span> <span class="nl">x</span><span class="p">:</span><span class="n">CGFloat</span> <span class="o">=</span> <span class="n">origin</span><span class="p">.</span><span class="n">x</span>
+</span><span class='line'>    <span class="n">var</span> <span class="nl">y</span><span class="p">:</span><span class="n">CGFloat</span> <span class="o">=</span> <span class="n">origin</span><span class="p">.</span><span class="n">y</span>
+</span><span class='line'>    <span class="n">var</span> <span class="n">path</span> <span class="o">=</span> <span class="n">CGPathCreateMutable</span><span class="p">()</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">init</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">CGPathMoveToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">nil</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">points</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">index</span> <span class="k">in</span> <span class="mf">1.</span><span class="p">.</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">layer</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">y</span><span class="o">-=</span><span class="n">spacing</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">CGPathAddLineToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">nil</span> <span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">points</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">x</span><span class="o">-=</span><span class="n">spacing</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">CGPathAddLineToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">nil</span> <span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">points</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">y</span><span class="o">+=</span><span class="n">spacing</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">index</span>
+</span><span class='line'>        <span class="n">CGPathAddLineToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">nil</span> <span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">points</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">x</span><span class="o">+=</span><span class="n">spacing</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">index</span>
+</span><span class='line'>        <span class="n">CGPathAddLineToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">nil</span> <span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">points</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">glowWidth</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">antialiased</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'>    <span class="n">CGPathGetCurrentPoint</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>算法很简单，就是顺时针计算点坐标然后画线，这里把每一步的坐标都存入了<code>points</code>数组里，是为了以后计算其他数据时方便。因为这部分算法不难而且不是我们的重点，这里不过多介绍了。</p>
 
@@ -612,7 +681,7 @@ convenience init(origin:CGPoint,layer:CGFloat){
 
 <p>因为四种精灵都是沿着<code>Map</code>类的路径来顺时针运动，它们的动画绘制是相似的，所以我建立了一个<code>Shape</code>类作为基类来绘制动画，它继承于<code>SKSpriteKit</code>类，并拥有半径（<code>radius</code>）、移动速度（<code>moveSpeed</code>）和线段计数（<code>lineNum</code>）这三个属性。其中<code>lineNum</code>是用于标记精灵在螺旋线第几条线段上的，这样比较方便计算动画的参数。</p>
 
-<p>```
+<p>&#8220;`
 class Shape: SKSpriteNode {</p>
 
 <pre><code>let radius:CGFloat = 10
@@ -632,117 +701,219 @@ init(name:String,imageName:String){
 </code></pre>
 
 <p>}
-```</p>
-
-<p>构造函数中设定了<code>Shape</code>类的一些物理参数，比如物理体的形状大小，碰撞检测掩码等。这里设定<code>usesPreciseCollisionDetection</code>为<code>true</code>是为了增加碰撞检测的精度，常用于体积小速度快的物体。<code>collisionBitMask</code>属性标记了需要模拟物理碰撞的类别，<code>contactTestBitMask</code>属性标记了需要检测到碰撞的类别。这里说的“类别”指的是物体的类别：</p>
-
-<p><code>
-let playerCategory:UInt32      =  0x1 &lt;&lt; 0;
-let killerCategory:UInt32      =  0x1 &lt;&lt; 1;
-let scoreCategory:UInt32       =  0x1 &lt;&lt; 2;
-let shieldCategory:UInt32      =  0x1 &lt;&lt; 3;
-</code>
-这种用位运算来判断和存储物体类别的方式很常用，上面这段代码写在了<code>NodeCategories.swift</code>文件中。</p>
-
-<p>为了描述<code>Shape</code>的速度随着游戏等级上升而增加，这里速度的计算公式含有<code>Data.speedScale</code>作为参数，关于<code>Data</code>“类”在后面会讲到。</p>
-
-<p>为了让精灵动起来，需要知道动画的移动目的地是什么。虽然<code>SKAction</code>有<code>followPath(path: CGPath?, speed: CGFloat)</code>方法，但是在这里并不实用，因为<code>Player</code>会经常改变路线，所以我写了一个<code>runInMap(map:Map)</code>方法让精灵每次只移动到路径上的下一个节点（之前<code>Map</code>类存储的<code>points</code>属性用到了吧！嘿嘿）</p>
-
-<p>```
-func runInMap(map:Map){</p>
-
-<pre><code>    let distance = calDistanceInMap(map)
-    let duration = distance/moveSpeed
-    let rotate = SKAction.rotateByAngle(distance/10, duration: duration)
-    let move = SKAction.moveTo(map.points[lineNum+1], duration: duration)
-    let group = SKAction.group([rotate,move])
-    self.runAction(group, completion: {
-        self.lineNum++
-        if self.lineNum==map.points.count-1 {
-            if self is Player{
-                Data.gameOver = true
-            }
-            if self is Killer{
-                self.removeFromParent()
-            }
-            if self is Score{
-                self.removeFromParent()
-            }
-            if self is Shield{
-                self.removeFromParent()
-            }
-        }
-        else {
-            self.runInMap(map)
-        }
-        })
-}
-</code></pre>
-
-<p>```</p>
-
-<p>上面的代码先是调用<code>calDistanceInMap(map:Map)-&gt;CGFloat</code>方法计算精灵距离下一个节点的距离（也就是需要移动的距离），然后计算精灵需要旋转动画时间和移动动画时间，最后将两个动画作为一个<code>group</code>来运行，在动画运行结束后判断精灵是否运行到了最后一个节点，也就是螺旋线的终点：如果到终点了则移除精灵，否则开始递归调用方法，来开始下一段动画（奔向下一个节点）。</p>
-
-<p>计算距离的<code>calDistanceInMap(map:Map)-&gt;CGFloat</code>方法代码如下：</p>
-
-<p>```
-func calDistanceInMap(map:Map)&ndash;>CGFloat{</p>
-
-<pre><code>    if self.lineNum==map.points.count {
-        return 0
-    }
-    switch lineNum%4{
-    case 0:
-        return position.y-map.points[lineNum+1].y
-    case 1:
-        return position.x-map.points[lineNum+1].x
-    case 2:
-        return map.points[lineNum+1].y-position.y
-    case 3:
-        return map.points[lineNum+1].x-position.x
-    default:
-        return 0
-    }
-}
-</code></pre>
-
-<p>```</p>
-
-<p>到此为止<code>Shape</code>类完成了，<code>Killer</code>、<code>Score</code>和<code>Shield</code>类比较简单，继承<code>Shape</code>类并设置自身纹理和类别即可：</p>
-
-<p>```
-class Killer: Shape {</p>
-
-<pre><code>convenience init() {
-    self.init(name:"Killer",imageName:"killer")
-    self.physicsBody.categoryBitMask = killerCategory
-}
-</code></pre>
-
-<p>}
-class Score: Shape {</p>
-
-<pre><code>convenience init() {
-    self.init(name:"Score",imageName:"score")
-    self.physicsBody.categoryBitMask = scoreCategory
-}
-</code></pre>
-
-<p>}
-class Shield: Shape {</p>
-
-<pre><code>convenience init() {
-    self.init(name:"Shield",imageName:"shield")
-    self.physicsBody.categoryBitMask = shieldCategory
-}
-</code></pre>
-
-<p>}
-```</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">构造函数中设定了</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Shape</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">类的一些物理参数，比如物理体的形状大小，碰撞检测掩码等。这里设定</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">usesPreciseCollisionDetection</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">为</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nb">true</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">是为了增加碰撞检测的精度，常用于体积小速度快的物体。</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">collisionBitMask</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">属性标记了需要模拟物理碰撞的类别，</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">contactTestBitMask</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">属性标记了需要检测到碰撞的类别。这里说的“类别”指的是物体的类别：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="n">let</span> <span class="nl">playerCategory</span><span class="p">:</span><span class="kt">UInt32</span>      <span class="o">=</span>  <span class="mh">0x1</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="n">let</span> <span class="nl">killerCategory</span><span class="p">:</span><span class="kt">UInt32</span>      <span class="o">=</span>  <span class="mh">0x1</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="n">let</span> <span class="nl">scoreCategory</span><span class="p">:</span><span class="kt">UInt32</span>       <span class="o">=</span>  <span class="mh">0x1</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'><span class="n">let</span> <span class="nl">shieldCategory</span><span class="p">:</span><span class="kt">UInt32</span>      <span class="o">=</span>  <span class="mh">0x1</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="err">这种用位运算来判断和存储物体类别的方式很常用，上面这段代码写在了</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NodeCategories</span><span class="p">.</span><span class="n">swift</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">文件中。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">为了描述</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Shape</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">的速度随着游戏等级上升而增加，这里速度的计算公式含有</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Data</span><span class="p">.</span><span class="n">speedScale</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">作为参数，关于</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Data</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">“类”在后面会讲到。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">为了让精灵动起来，需要知道动画的移动目的地是什么。虽然</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKAction</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">有</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">followPath</span><span class="p">(</span><span class="nl">path</span><span class="p">:</span> <span class="bp">CGPath</span><span class="o">?</span><span class="p">,</span> <span class="nl">speed</span><span class="p">:</span> <span class="n">CGFloat</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法，但是在这里并不实用，因为</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Player</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">会经常改变路线，所以我写了一个</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">runInMap</span><span class="p">(</span><span class="nl">map</span><span class="p">:</span><span class="n">Map</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法让精灵每次只移动到路径上的下一个节点（之前</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Map</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">类存储的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">points</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">属性用到了吧！嘿嘿）</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="n">func</span> <span class="n">runInMap</span><span class="p">(</span><span class="nl">map</span><span class="p">:</span><span class="n">Map</span><span class="p">){</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="n">let</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">calDistanceInMap</span><span class="p">(</span><span class="n">map</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">duration</span> <span class="o">=</span> <span class="n">distance</span><span class="o">/</span><span class="n">moveSpeed</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">rotate</span> <span class="o">=</span> <span class="bp">SKAction</span><span class="p">.</span><span class="n">rotateByAngle</span><span class="p">(</span><span class="n">distance</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span> <span class="nl">duration</span><span class="p">:</span> <span class="n">duration</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">move</span> <span class="o">=</span> <span class="bp">SKAction</span><span class="p">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">map</span><span class="p">.</span><span class="n">points</span><span class="p">[</span><span class="n">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="nl">duration</span><span class="p">:</span> <span class="n">duration</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">group</span> <span class="o">=</span> <span class="bp">SKAction</span><span class="p">.</span><span class="n">group</span><span class="p">([</span><span class="n">rotate</span><span class="p">,</span><span class="n">move</span><span class="p">])</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">runAction</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nl">completion</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">lineNum</span><span class="o">++</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">self</span><span class="p">.</span><span class="n">lineNum</span><span class="o">==</span><span class="n">map</span><span class="p">.</span><span class="n">points</span><span class="p">.</span><span class="n">count</span><span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nb">self</span> <span class="n">is</span> <span class="n">Player</span><span class="p">{</span>
+</span><span class='line'>                <span class="n">Data</span><span class="p">.</span><span class="n">gameOver</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nb">self</span> <span class="n">is</span> <span class="n">Killer</span><span class="p">{</span>
+</span><span class='line'>                <span class="nb">self</span><span class="p">.</span><span class="n">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nb">self</span> <span class="n">is</span> <span class="n">Score</span><span class="p">{</span>
+</span><span class='line'>                <span class="nb">self</span><span class="p">.</span><span class="n">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nb">self</span> <span class="n">is</span> <span class="n">Shield</span><span class="p">{</span>
+</span><span class='line'>                <span class="nb">self</span><span class="p">.</span><span class="n">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">runInMap</span><span class="p">(</span><span class="n">map</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="p">})</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">上面的代码先是调用</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">calDistanceInMap</span><span class="p">(</span><span class="nl">map</span><span class="p">:</span><span class="n">Map</span><span class="p">)</span><span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">CGFloat</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法计算精灵距离下一个节点的距离（也就是需要移动的距离），然后计算精灵需要旋转动画时间和移动动画时间，最后将两个动画作为一个</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">group</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">来运行，在动画运行结束后判断精灵是否运行到了最后一个节点，也就是螺旋线的终点：如果到终点了则移除精灵，否则开始递归调用方法，来开始下一段动画（奔向下一个节点）。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">计算距离的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">calDistanceInMap</span><span class="p">(</span><span class="nl">map</span><span class="p">:</span><span class="n">Map</span><span class="p">)</span><span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">CGFloat</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法代码如下：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="n">func</span> <span class="n">calDistanceInMap</span><span class="p">(</span><span class="nl">map</span><span class="p">:</span><span class="n">Map</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ndash</span><span class="p">;</span><span class="o">&gt;</span><span class="n">CGFloat</span><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="k">if</span> <span class="nb">self</span><span class="p">.</span><span class="n">lineNum</span><span class="o">==</span><span class="n">map</span><span class="p">.</span><span class="n">points</span><span class="p">.</span><span class="n">count</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">switch</span> <span class="n">lineNum</span><span class="o">%</span><span class="mi">4</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="o">-</span><span class="n">map</span><span class="p">.</span><span class="n">points</span><span class="p">[</span><span class="n">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">y</span>
+</span><span class='line'>    <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="o">-</span><span class="n">map</span><span class="p">.</span><span class="n">points</span><span class="p">[</span><span class="n">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">x</span>
+</span><span class='line'>    <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">map</span><span class="p">.</span><span class="n">points</span><span class="p">[</span><span class="n">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">y</span><span class="o">-</span><span class="n">position</span><span class="p">.</span><span class="n">y</span>
+</span><span class='line'>    <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">map</span><span class="p">.</span><span class="n">points</span><span class="p">[</span><span class="n">lineNum</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">x</span><span class="o">-</span><span class="n">position</span><span class="p">.</span><span class="n">x</span>
+</span><span class='line'>    <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">到此为止</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Shape</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">类完成了，</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Killer</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">、</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Score</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">和</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Shield</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">类比较简单，继承</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Shape</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">类并设置自身纹理和类别即可：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="k">class</span> <span class="nl">Killer</span><span class="p">:</span> <span class="n">Shape</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">convenience</span> <span class="n">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="nl">name</span><span class="p">:</span><span class="s">&quot;Killer&quot;</span><span class="p">,</span><span class="nl">imageName</span><span class="p">:</span><span class="s">&quot;killer&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">physicsBody</span><span class="p">.</span><span class="n">categoryBitMask</span> <span class="o">=</span> <span class="n">killerCategory</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span><span class='line'><span class="k">class</span> <span class="nl">Score</span><span class="p">:</span> <span class="n">Shape</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">convenience</span> <span class="n">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="nl">name</span><span class="p">:</span><span class="s">&quot;Score&quot;</span><span class="p">,</span><span class="nl">imageName</span><span class="p">:</span><span class="s">&quot;score&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">physicsBody</span><span class="p">.</span><span class="n">categoryBitMask</span> <span class="o">=</span> <span class="n">scoreCategory</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span><span class='line'><span class="k">class</span> <span class="nl">Shield</span><span class="p">:</span> <span class="n">Shape</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">convenience</span> <span class="n">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="nl">name</span><span class="p">:</span><span class="s">&quot;Shield&quot;</span><span class="p">,</span><span class="nl">imageName</span><span class="p">:</span><span class="s">&quot;shield&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">physicsBody</span><span class="p">.</span><span class="n">categoryBitMask</span> <span class="o">=</span> <span class="n">shieldCategory</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>而<code>Player</code>因为有护盾状态并可以在螺旋线上跳跃到内层，所以稍微复杂些：</p>
 
-<p>```
+<p>&#8220;`
 class Player: Shape {</p>
 
 <pre><code>var jump = false
@@ -775,36 +946,57 @@ func restart(map:Map) {
 </code></pre>
 
 <p>}
-```</p>
-
-<p><code>Player</code>类的初始位置是螺旋线第四个节点，而且移动速度要略快于其他三种精灵，所以在这里设置为70（<code>Shape</code>默认速度50）。<code>jump</code>和<code>shield</code>是用来标记<code>Player</code>当前状态的属性，其中<code>shield</code>属性还定义了属性监察器，这是Swift中存储属性具有的响应机制，类似于<code>KVO</code>。在<code>shield</code>状态改变时也同时改变<code>Player</code>的纹理。<strong>需要注意的是构造器中对属性的改变并不会调用属性检查器，在<code>willSet</code>和<code>didSet</code>中改变自身属性也不会调用属性检查器，因为那样会造成死循环。</strong></p>
-
-<p><code>restart(map:Map)</code>方法用于在游戏重新开始时重置<code>Player</code>的相关数据。</p>
-
-<h2>Swift中用访问者模式处理碰撞</h2>
-
-<p>访问者模式是双分派（Double Dispatch）模式的一种实现，关于双分派模式的详细解释，参考我的另一篇文章：<a href="http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/">Double Dispatch模式及其在iOS开发中实践</a>，里面包含了C++，Java和Obje-C的实现，这次我们用Swift实现访问者模式。</p>
-
-<p>因为SpriteKit中物理碰撞检测到的都是<code>SKPhysicsBody</code>，所以我们的被访问者需要包含一个<code>SKPhysicsBody</code>对象：</p>
-
-<p>```
-class VisitablePhysicsBody{</p>
-
-<pre><code>let body:SKPhysicsBody
-init(body:SKPhysicsBody){
-    self.body = body
-}
-func acceptVisitor(visitor:ContactVisitor){
-    visitor.visitBody(body)
-}
-</code></pre>
-
-<p>}
-```</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Player</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">类的初始位置是螺旋线第四个节点，而且移动速度要略快于其他三种精灵，所以在这里设置为</span><span class="mi">70</span><span class="err">（</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Shape</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">默认速度</span><span class="mi">50</span><span class="err">）。</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">jump</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">和</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">shield</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">是用来标记</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Player</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">当前状态的属性，其中</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">shield</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">属性还定义了属性监察器，这是</span><span class="n">Swift</span><span class="err">中存储属性具有的响应机制，类似于</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">KVO</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">。在</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">shield</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">状态改变时也同时改变</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Player</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">的纹理。</span><span class="o">&lt;</span><span class="k">strong</span><span class="o">&gt;</span><span class="err">需要注意的是构造器中对属性的改变并不会调用属性检查器，在</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">willSet</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">和</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">didSet</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">中改变自身属性也不会调用属性检查器，因为那样会造成死循环。</span><span class="o">&lt;/</span><span class="k">strong</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">restart</span><span class="p">(</span><span class="nl">map</span><span class="p">:</span><span class="n">Map</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法用于在游戏重新开始时重置</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Player</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">的相关数据。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="n">Swift</span><span class="err">中用访问者模式处理碰撞</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">访问者模式是双分派（</span><span class="n">Double</span> <span class="n">Dispatch</span><span class="err">）模式的一种实现，关于双分派模式的详细解释，参考我的另一篇文章：</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/&quot;</span><span class="o">&gt;</span><span class="n">Double</span> <span class="n">Dispatch</span><span class="err">模式及其在</span><span class="n">iOS</span><span class="err">开发中实践</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="err">，里面包含了</span><span class="n">C</span><span class="o">++</span><span class="err">，</span><span class="n">Java</span><span class="err">和</span><span class="n">Obje</span><span class="o">-</span><span class="n">C</span><span class="err">的实现，这次我们用</span><span class="n">Swift</span><span class="err">实现访问者模式。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">因为</span><span class="n">SpriteKit</span><span class="err">中物理碰撞检测到的都是</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKPhysicsBody</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">，所以我们的被访问者需要包含一个</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKPhysicsBody</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">对象：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="k">class</span> <span class="n">VisitablePhysicsBody</span><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">let</span> <span class="nl">body</span><span class="p">:</span><span class="bp">SKPhysicsBody</span>
+</span><span class='line'><span class="n">init</span><span class="p">(</span><span class="nl">body</span><span class="p">:</span><span class="bp">SKPhysicsBody</span><span class="p">){</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">body</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">func</span> <span class="n">acceptVisitor</span><span class="p">(</span><span class="nl">visitor</span><span class="p">:</span><span class="n">ContactVisitor</span><span class="p">){</span>
+</span><span class='line'>    <span class="n">visitor</span><span class="p">.</span><span class="n">visitBody</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p><code>acceptVisitor</code>方法传入的是一个<code>ContactVisitor</code>类，它是访问者的基类（也相当于接口），访问者的<code>visitBody(body:SKPhysicsBody)</code>方法会根据传入的<code>body</code>实例来推断出被访问者的真实类别，然后调用对应的方法来处理碰撞：</p>
 
-<p>```
+<p>&#8220;`
 func visitBody(body:SKPhysicsBody){</p>
 
 <pre><code>    //第二次dispatch，通过构造方法名来执行对应方法
@@ -820,13 +1012,13 @@ func visitBody(body:SKPhysicsBody){</p>
 }
 </code></pre>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <p>Swift废弃了<code>performSelector</code>方法，所以这里耍了个小聪明来将消息传给具体的访问者。有关Swift中替代<code>performSelector</code>的方案，参见<a href="http://www.cnblogs.com/yangzhou1030/p/3830592.html">这里</a></p>
 
 <p>下面让<code>GameScene</code>实现<code>SKPhysicsContactDelegate</code>协议：</p>
 
-<p>```
+<p>&#8220;`
 func didBeginContact(contact:SKPhysicsContact){</p>
 
 <pre><code>    //A-&gt;B
@@ -843,7 +1035,7 @@ func didBeginContact(contact:SKPhysicsContact){</p>
 <p><code>``
 跟Objective-C中实现访问者模式类似，也是通过</code>ContactVisitor<code>类的工厂方法返回一个对应的子类实例来作为访问者，然后实例化一个被访问者，被访问者接受访问者的访问。A访问B和B访问A在大多数场合是相同的，但是你不知道谁是A谁是B，所以需要两种情况都调用。下面是</code>ContactVisitor`类的工厂方法和构造器：</p>
 
-<p>```
+<p>&#8220;`
 class ContactVisitor:NSObject{</p>
 
 <pre><code>let body:SKPhysicsBody!
@@ -874,74 +1066,133 @@ init(body:SKPhysicsBody, forContact contact:SKPhysicsContact){
 </code></pre>
 
 <p>}
-```</p>
-
-<p>PS：上面的代码省略了已经提到过的<code>visitBody(body:SKPhysicsBody)</code>方法</p>
-
-<p>因为这个游戏逻辑比较简单，所有碰撞后的逻辑都写到了<code>PlayerContactVisitor</code>类里：</p>
-
-<p>```
-func visitKiller(body:SKPhysicsBody){</p>
-
-<pre><code>    let thisNode = self.body.node as Player
-    let otherNode = body.node
-</code></pre>
-
-<p>//        println(thisNode.name+&ldquo;&ndash;>&rdquo;+otherNode.name)</p>
-
-<pre><code>    if thisNode.shield {
-        otherNode.removeFromParent()
-        thisNode.shield = false
-    }
-    else {
-        Data.gameOver = true
-    }
-}
-func visitScore(body:SKPhysicsBody){
-    let thisNode = self.body.node
-    let otherNode = body.node
-</code></pre>
-
-<p>//        println(thisNode.name+&ldquo;&ndash;>&rdquo;+otherNode.name)</p>
-
-<pre><code>    otherNode.removeFromParent()
-    Data.score += 2
-}
-func visitShield(body:SKPhysicsBody){
-    let thisNode = self.body.node as Player
-    let otherNode = body.node
-    otherNode.removeFromParent()
-    thisNode.shield = true
-    Data.score++
-    //        println(thisNode.name+"-&gt;"+otherNode.name)
-}
-</code></pre>
-
-<p>```</p>
-
-<p>上面的方法都是“visit+类名”格式的，处理的是<code>Player</code>碰撞到其他三种精灵的逻辑。而其他三种精灵之间的碰撞不需要处理，所以<code>KillerContactVisitor</code>、<code>ScoreContactVisitor</code>和<code>ShieldContactVisitor</code>这三个<code>ContactVisitor</code>的子类很空旷，这里不再赘述。</p>
-
-<p>我们设置<code>Player</code>碰撞到<code>Killer</code>游戏结束，碰撞到<code>Score</code>加两分，碰撞到<code>Shield</code>加一分并获得护甲（shield属性设为true）。可以看到这里大量用到了<code>Data</code>“类“”，它其实是一个存储并管理全局数据的结构体，它里面存储了一些静态的成员属性，也可看做非线程安全的单例。</p>
-
-<h2>界面数据显示</h2>
-
-<p>这部分很简单，主要是将<code>Data</code>结构体中存储的分数和等级等数据通过<code>SKLabelNode</code>显示在界面上，只不过我封装了一个<code>Display</code>类来将所有的<code>SKLabelNode</code>统一管理，并让其实现我定义的<code>DisplayData</code>协议来让<code>Data</code>中的数据变化驱动界面更新：</p>
-
-<p>```
-protocol DisplayData{</p>
-
-<pre><code>func updateData()
-func levelUp()
-func gameOver()
-func restart()
-</code></pre>
-
-<p>}
-```</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">PS</span><span class="err">：上面的代码省略了已经提到过的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">visitBody</span><span class="p">(</span><span class="nl">body</span><span class="p">:</span><span class="bp">SKPhysicsBody</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">因为这个游戏逻辑比较简单，所有碰撞后的逻辑都写到了</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">PlayerContactVisitor</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">类里：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="n">func</span> <span class="n">visitKiller</span><span class="p">(</span><span class="nl">body</span><span class="p">:</span><span class="bp">SKPhysicsBody</span><span class="p">){</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="n">let</span> <span class="n">thisNode</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">body</span><span class="p">.</span><span class="n">node</span> <span class="n">as</span> <span class="n">Player</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">otherNode</span> <span class="o">=</span> <span class="n">body</span><span class="p">.</span><span class="n">node</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//        println(thisNode.name+&amp;ldquo;&amp;ndash;&gt;&amp;rdquo;+otherNode.name)&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="k">if</span> <span class="n">thisNode</span><span class="p">.</span><span class="n">shield</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">otherNode</span><span class="p">.</span><span class="n">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">thisNode</span><span class="p">.</span><span class="n">shield</span> <span class="o">=</span> <span class="nb">false</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">Data</span><span class="p">.</span><span class="n">gameOver</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">func</span> <span class="n">visitScore</span><span class="p">(</span><span class="nl">body</span><span class="p">:</span><span class="bp">SKPhysicsBody</span><span class="p">){</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">thisNode</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">body</span><span class="p">.</span><span class="n">node</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">otherNode</span> <span class="o">=</span> <span class="n">body</span><span class="p">.</span><span class="n">node</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//        println(thisNode.name+&amp;ldquo;&amp;ndash;&gt;&amp;rdquo;+otherNode.name)&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="n">otherNode</span><span class="p">.</span><span class="n">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">Data</span><span class="p">.</span><span class="n">score</span> <span class="o">+=</span> <span class="mi">2</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">func</span> <span class="n">visitShield</span><span class="p">(</span><span class="nl">body</span><span class="p">:</span><span class="bp">SKPhysicsBody</span><span class="p">){</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">thisNode</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">body</span><span class="p">.</span><span class="n">node</span> <span class="n">as</span> <span class="n">Player</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">otherNode</span> <span class="o">=</span> <span class="n">body</span><span class="p">.</span><span class="n">node</span>
+</span><span class='line'>    <span class="n">otherNode</span><span class="p">.</span><span class="n">removeFromParent</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">thisNode</span><span class="p">.</span><span class="n">shield</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'>    <span class="n">Data</span><span class="p">.</span><span class="n">score</span><span class="o">++</span>
+</span><span class='line'>    <span class="c1">//        println(thisNode.name+&quot;-&amp;gt;&quot;+otherNode.name)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">上面的方法都是“</span><span class="n">visit</span><span class="o">+</span><span class="err">类名”格式的，处理的是</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Player</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">碰撞到其他三种精灵的逻辑。而其他三种精灵之间的碰撞不需要处理，所以</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">KillerContactVisitor</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">、</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ScoreContactVisitor</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">和</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ShieldContactVisitor</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">这三个</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ContactVisitor</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">的子类很空旷，这里不再赘述。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">我们设置</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Player</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">碰撞到</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Killer</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">游戏结束，碰撞到</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Score</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">加两分，碰撞到</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Shield</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">加一分并获得护甲（</span><span class="n">shield</span><span class="err">属性设为</span><span class="nb">true</span><span class="err">）。可以看到这里大量用到了</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Data</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">“类“”，它其实是一个存储并管理全局数据的结构体，它里面存储了一些静态的成员属性，也可看做非线程安全的单例。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="err">界面数据显示</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">这部分很简单，主要是将</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Data</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">结构体中存储的分数和等级等数据通过</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKLabelNode</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">显示在界面上，只不过我封装了一个</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Display</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">类来将所有的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKLabelNode</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">统一管理，并让其实现我定义的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">DisplayData</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">协议来让</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Data</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">中的数据变化驱动界面更新：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="n">protocol</span> <span class="n">DisplayData</span><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">func</span> <span class="n">updateData</span><span class="p">()</span>
+</span><span class='line'><span class="n">func</span> <span class="n">levelUp</span><span class="p">()</span>
+</span><span class='line'><span class="n">func</span> <span class="n">gameOver</span><span class="p">()</span>
+</span><span class='line'><span class="n">func</span> <span class="n">restart</span><span class="p">()</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>下面是Data结构体代码，大量使用了存储属性的监察器来响应数据变化：</p>
 
-<p>```
+<p>&#8220;`
 struct Data{</p>
 
 <pre><code>static var display:DisplayData?
@@ -1007,82 +1258,153 @@ static func restart(){
 </code></pre>
 
 <p>}
-```</p>
-
-<p>这里不得不提到一个更新界面时遇到的一个坑，当我想通过名字遍历<code>GameScene</code>子节点的时候，一般会用到<code>enumerateChildNodesWithName(name: String?, usingBlock: ((SKNode!, UnsafePointer&lt;ObjCBool&gt;) -&gt; Void)?)</code>方法，但是这个方法在Xcode6Beta3更新后经常会抛异常强退，这让我很费解，恰巧遇到此问题的不只是我一个人，所以还是老老实实的自己写循环遍历加判断吧。</p>
-
-<h2>按钮的绘制和截图分享</h2>
-
-<p>参考我的另外两篇文章：<a href="http://yulingtianxia.com/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/">在游戏的SKScene中添加Button</a>和<a href="http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/">SpriteKit截屏并分享至社交网络</a></p>
-
-<p>在本工程中只有<code>ShareButton</code>和<code>ReplayButton</code>两个按钮，Swift版本的代码很简洁，而我通过<code>Social.Framework</code>中的<code>UIActivityViewController</code>来分享得分，这部分代码写在了<code>ShareButton.swift</code>中：</p>
-
-<p>```
-let scene = self.scene as GameScene</p>
-
-<pre><code>    let image = scene.imageFromNode(scene)
-    let text = "我在Spiral游戏中得了\(Data.score)分，快来追逐我的步伐吧！"
-    let activityItems = [image,text]
-    let activityController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-    (scene.view.nextResponder() as UIViewController).presentViewController(activityController, animated: true, completion: nil)
-</code></pre>
-
-<p>```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[SpriteKit坐标系]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/05/04/spritekitzuo-biao-xi/"/>
-    <updated>2014-05-04T19:36:26+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/05/04/spritekitzuo-biao-xi</id>
-    <content type="html"><![CDATA[<p>前一阵子在用SpriteKit写一个小游戏的时候，因为对坐标系系统不是很熟悉，结果耽误了不少时间，现在将这些SKNode(及其子类)中常用的部分记下来，以利于以后快速查找</p>
-
-<p>本文测试用到的工程代码可以在<a href="https://github.com/yulingtianxia/NodesCoordinates/tree/master">这里</a>下载</p>
-
-<p><strong>一般来说，SpriteKit中所有坐标系都是x轴正方向向右，y轴正方向向上的，后面不再重复</strong></p>
-
-<!--more-->
-
-
-<h2>SKScene</h2>
-
-<p>虽然是<code>SKNode</code>的子类的子类，但是因为所有<code>SKNode</code>都需要在场景上构建布局，所以比较重要，其原点在左下角，y轴向上，x轴向右；正是因为UIView的原点在左上角，y轴向下，x轴向右，所以在<code>SKScene</code>中判别手势坐标的时候需要将y轴反向：</p>
-
-<p>``` objc
-&ndash; (void)handlePanFrom:(UIPanGestureRecognizer *)recognizer {</p>
-
-<pre><code>if (recognizer.state == UIGestureRecognizerStateBegan) {
-    CGPoint touchLocation = [recognizer locationInView:recognizer.view];
-    touchLocation = [self convertPointFromView:touchLocation];
-    AtomNode *touchedNode = (AtomNode *)[self nodeAtPoint:touchLocation];
-    if (isAllAtomStatic&amp;&amp;[touchedNode.name isEqualToString:AtomName]) {
-        touchedAtom = touchedNode;
-        isPanningAtom = YES;
-    }
-
-
-} else if (recognizer.state == UIGestureRecognizerStateChanged) {
-
-    CGPoint translation = [recognizer translationInView:recognizer.view];
-    translation = CGPointMake(translation.x, -translation.y);
-    if (isPanningAtom==YES) {
-        touchedAtom.position = CGPointMake(touchedAtom.position.x+translation.x, touchedAtom.position.y+translation.y);
-    }
-    [recognizer setTranslation:CGPointZero inView:recognizer.view];
-
-} else if (recognizer.state == UIGestureRecognizerStateEnded) {
-
-    if (isPanningAtom==YES) {
-        CGPoint velocity = [recognizer velocityInView:recognizer.view];
-        touchedAtom.physicsBody.velocity =CGVectorMake(velocity.x, -velocity.y);
-        isPanningAtom = NO;
-    }
-}
-</code></pre>
-
-<p>}
-```</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">这里不得不提到一个更新界面时遇到的一个坑，当我想通过名字遍历</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">GameScene</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">子节点的时候，一般会用到</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">enumerateChildNodesWithName</span><span class="p">(</span><span class="nl">name</span><span class="p">:</span> <span class="n">String</span><span class="o">?</span><span class="p">,</span> <span class="nl">usingBlock</span><span class="p">:</span> <span class="p">((</span><span class="bp">SKNode</span><span class="o">!</span><span class="p">,</span> <span class="n">UnsafePointer</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ObjCBool</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;)</span> <span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">Void</span><span class="p">)</span><span class="o">?</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法，但是这个方法在</span><span class="n">Xcode6Beta3</span><span class="err">更新后经常会抛异常强退，这让我很费解，恰巧遇到此问题的不只是我一个人，所以还是老老实实的自己写循环遍历加判断吧。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="err">按钮的绘制和截图分享</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">参考我的另外两篇文章：</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://yulingtianxia.com/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/&quot;</span><span class="o">&gt;</span><span class="err">在游戏的</span><span class="bp">SKScene</span><span class="err">中添加</span><span class="n">Button</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="err">和</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/&quot;</span><span class="o">&gt;</span><span class="n">SpriteKit</span><span class="err">截屏并分享至社交网络</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">在本工程中只有</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ShareButton</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">和</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ReplayButton</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">两个按钮，</span><span class="n">Swift</span><span class="err">版本的代码很简洁，而我通过</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Social</span><span class="p">.</span><span class="n">Framework</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">中的</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">UIActivityViewController</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">来分享得分，这部分代码写在了</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ShareButton</span><span class="p">.</span><span class="n">swift</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">中：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="n">let</span> <span class="n">scene</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">scene</span> <span class="n">as</span> <span class="n">GameScene</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="n">let</span> <span class="n">image</span> <span class="o">=</span> <span class="n">scene</span><span class="p">.</span><span class="n">imageFromNode</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">text</span> <span class="o">=</span> <span class="s">&quot;我在Spiral游戏中得了\(Data.score)分，快来追逐我的步伐吧！&quot;</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">activityItems</span> <span class="o">=</span> <span class="p">[</span><span class="n">image</span><span class="p">,</span><span class="n">text</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">let</span> <span class="n">activityController</span> <span class="o">=</span> <span class="bp">UIActivityViewController</span><span class="p">(</span><span class="nl">activityItems</span><span class="p">:</span> <span class="n">activityItems</span><span class="p">,</span> <span class="nl">applicationActivities</span><span class="p">:</span> <span class="nb">nil</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">(</span><span class="n">scene</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">nextResponder</span><span class="p">()</span> <span class="n">as</span> <span class="bp">UIViewController</span><span class="p">).</span><span class="n">presentViewController</span><span class="p">(</span><span class="n">activityController</span><span class="p">,</span> <span class="nl">animated</span><span class="p">:</span> <span class="nb">true</span><span class="p">,</span> <span class="nl">completion</span><span class="p">:</span> <span class="nb">nil</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'><span class="p">]]</span><span class="o">&gt;&lt;/</span><span class="n">content</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;/</span><span class="n">entry</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">&lt;</span><span class="n">entry</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">title</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;html&quot;</span><span class="o">&gt;&lt;!</span><span class="p">[</span><span class="n">CDATA</span><span class="p">[</span><span class="n">SpriteKit</span><span class="err">坐标系</span><span class="p">]]</span><span class="o">&gt;&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">link</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://yulingtianxia.com/blog/2014/05/04/spritekitzuo-biao-xi/&quot;</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">updated</span><span class="o">&gt;</span><span class="mi">2014</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mo">04</span><span class="nl">T19</span><span class="p">:</span><span class="mi">36</span><span class="o">:</span><span class="mi">26</span><span class="o">+</span><span class="mi">08</span><span class="o">:</span><span class="mo">00</span><span class="o">&lt;/</span><span class="n">updated</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="kt">id</span><span class="o">&gt;</span><span class="nl">http</span><span class="p">:</span><span class="c1">//yulingtianxia.com/blog/2014/05/04/spritekitzuo-biao-xi&lt;/id&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">content</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;html&quot;</span><span class="o">&gt;&lt;!</span><span class="p">[</span><span class="n">CDATA</span><span class="p">[</span><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">前一阵子在用</span><span class="n">SpriteKit</span><span class="err">写一个小游戏的时候，因为对坐标系系统不是很熟悉，结果耽误了不少时间，现在将这些</span><span class="bp">SKNode</span><span class="p">(</span><span class="err">及其子类</span><span class="p">)</span><span class="err">中常用的部分记下来，以利于以后快速查找</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">本文测试用到的工程代码可以在</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;https://github.com/yulingtianxia/NodesCoordinates/tree/master&quot;</span><span class="o">&gt;</span><span class="err">这里</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="err">下载</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="k">strong</span><span class="o">&gt;</span><span class="err">一般来说，</span><span class="n">SpriteKit</span><span class="err">中所有坐标系都是</span><span class="n">x</span><span class="err">轴正方向向右，</span><span class="n">y</span><span class="err">轴正方向向上的，后面不再重复</span><span class="o">&lt;/</span><span class="k">strong</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;!--</span><span class="n">more</span><span class="o">--&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="bp">SKScene</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">虽然是</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKNode</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">的子类的子类，但是因为所有</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKNode</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">都需要在场景上构建布局，所以比较重要，其原点在左下角，</span><span class="n">y</span><span class="err">轴向上，</span><span class="n">x</span><span class="err">轴向右；正是因为</span><span class="bp">UIView</span><span class="err">的原点在左上角，</span><span class="n">y</span><span class="err">轴向下，</span><span class="n">x</span><span class="err">轴向右，所以在</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKScene</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">中判别手势坐标的时候需要将</span><span class="n">y</span><span class="err">轴反向：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span> <span class="n">objc</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="p">;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">handlePanFrom</span><span class="p">:(</span><span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="n">recognizer</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="n">recognizer</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateBegan</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">touchLocation</span> <span class="o">=</span> <span class="p">[</span><span class="n">recognizer</span> <span class="nl">locationInView</span><span class="p">:</span><span class="n">recognizer</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">touchLocation</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">convertPointFromView</span><span class="p">:</span><span class="n">touchLocation</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">AtomNode</span> <span class="o">*</span><span class="n">touchedNode</span> <span class="o">=</span> <span class="p">(</span><span class="n">AtomNode</span> <span class="o">*</span><span class="p">)[</span><span class="nb">self</span> <span class="nl">nodeAtPoint</span><span class="p">:</span><span class="n">touchLocation</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isAllAtomStatic</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;[</span><span class="n">touchedNode</span><span class="p">.</span><span class="n">name</span> <span class="nl">isEqualToString</span><span class="p">:</span><span class="n">AtomName</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">touchedAtom</span> <span class="o">=</span> <span class="n">touchedNode</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">isPanningAtom</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">recognizer</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateChanged</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">translation</span> <span class="o">=</span> <span class="p">[</span><span class="n">recognizer</span> <span class="nl">translationInView</span><span class="p">:</span><span class="n">recognizer</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">translation</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">translation</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">translation</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isPanningAtom</span><span class="o">==</span><span class="nb">YES</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">touchedAtom</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">touchedAtom</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="o">+</span><span class="n">translation</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">touchedAtom</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="o">+</span><span class="n">translation</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">recognizer</span> <span class="nl">setTranslation</span><span class="p">:</span><span class="n">CGPointZero</span> <span class="nl">inView</span><span class="p">:</span><span class="n">recognizer</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">recognizer</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateEnded</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isPanningAtom</span><span class="o">==</span><span class="nb">YES</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">CGPoint</span> <span class="n">velocity</span> <span class="o">=</span> <span class="p">[</span><span class="n">recognizer</span> <span class="nl">velocityInView</span><span class="p">:</span><span class="n">recognizer</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">touchedAtom</span><span class="p">.</span><span class="n">physicsBody</span><span class="p">.</span><span class="n">velocity</span> <span class="o">=</span><span class="n">CGVectorMake</span><span class="p">(</span><span class="n">velocity</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">velocity</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">isPanningAtom</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>在第一个判断分支中，因为用了<code>convertPointFromView</code>方法，已经将<code>CGPoint</code>从<code>UIView</code>坐标系转为<code>SKScene</code>坐标系，所以不用反转，其余两个分支中的代码均需要反转y轴。</p>
 
@@ -1096,7 +1418,7 @@ let scene = self.scene as GameScene</p>
 
 <p>如果想填充些东西来证明SKNode的坐标系原点的确在其中央，将下面代码注释部分取消注释即可：</p>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <h1>import &ldquo;NodeButton.h&rdquo;</h1>
 
@@ -1119,44 +1441,77 @@ return self;
 
 <p>}
 @end
-```</p>
-
-<h2>SKEmitterNode</h2>
-
-<p>粒子系统比较有趣，它从原点发射大量粒子，不同的粒子系统也会构筑不同的效果，因为它没有边界，还可调节发射粒子的数量方向速度等，这也使得原点在整个粒子系统中的位置有了错觉，但其本质还是(0.5,0.5)，也就是在中心</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353410978.png" alt="" /></p>
-
-<p>这个火苗看起来中心在哪呢？当然在圆圈处！因为粒子是从圆圈处的区域产生的，然后向上发射</p>
-
-<h2>SKLabelNode</h2>
-
-<p>label比较特殊，可能是因为需要现实文字的关系吧，其坐标原点在中下方，但不是(0.5,0)，因为如果文字包含y，p之类的“带尾巴”的字符，那么将会突出十字线下方，可以理解为写英文用的四线本的第三条线？因为字号大小不同或者提子不同，也会影响到原点位置。</p>
-
-<p>知道其原点精确位置对于编程来说意义不大，以后有时间会深究下</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353410886.png" alt="" /></p>
-
-<h2>SKShapeNode</h2>
-
-<p>这个类也很特殊，因为其frame是根据path填充内容来确定的，而原点又是其在父坐标的position处，那么<code>SKShapeNode</code>的原点具体位置在哪也就没意义了，只要按照其position的位置当作原点建立坐标系就好</p>
-
-<p>```
-@implementation ShapeButton
-&ndash;(id)init{</p>
-
-<pre><code>if (self = [super initWithName:@"SKShapeNode"]) {
-    SKShapeNode *shape = (SKShapeNode *)self.node;
-    shape.path = CGPathCreateWithRect(CGRectMake(-50,-50, 100, 100), NULL);
-    shape.strokeColor = [UIColor redColor];
-
-}
-return self;
-</code></pre>
-
-<p>}
-@end
-```</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="bp">SKEmitterNode</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">粒子系统比较有趣，它从原点发射大量粒子，不同的粒子系统也会构筑不同的效果，因为它没有边界，还可调节发射粒子的数量方向速度等，这也使得原点在整个粒子系统中的位置有了错觉，但其本质还是</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span><span class="err">，也就是在中心</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">&quot;http://yulingtianxia.qiniudn.com/140353410978.png&quot;</span> <span class="n">alt</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="o">/&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">这个火苗看起来中心在哪呢？当然在圆圈处！因为粒子是从圆圈处的区域产生的，然后向上发射</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="bp">SKLabelNode</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">label</span><span class="err">比较特殊，可能是因为需要现实文字的关系吧，其坐标原点在中下方，但不是</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="err">，因为如果文字包含</span><span class="n">y</span><span class="err">，</span><span class="n">p</span><span class="err">之类的“带尾巴”的字符，那么将会突出十字线下方，可以理解为写英文用的四线本的第三条线？因为字号大小不同或者提子不同，也会影响到原点位置。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">知道其原点精确位置对于编程来说意义不大，以后有时间会深究下</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">&quot;http://yulingtianxia.qiniudn.com/140353410886.png&quot;</span> <span class="n">alt</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="o">/&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="bp">SKShapeNode</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">这个类也很特殊，因为其</span><span class="n">frame</span><span class="err">是根据</span><span class="n">path</span><span class="err">填充内容来确定的，而原点又是其在父坐标的</span><span class="n">position</span><span class="err">处，那么</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="bp">SKShapeNode</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">的原点具体位置在哪也就没意义了，只要按照其</span><span class="n">position</span><span class="err">的位置当作原点建立坐标系就好</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ShapeButton</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="p">;(</span><span class="kt">id</span><span class="p">)</span><span class="n">init</span><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithName</span><span class="p">:</span><span class="s">@&quot;SKShapeNode&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">SKShapeNode</span> <span class="o">*</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">SKShapeNode</span> <span class="o">*</span><span class="p">)</span><span class="nb">self</span><span class="p">.</span><span class="n">node</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">shape</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">CGPathCreateWithRect</span><span class="p">(</span><span class="n">CGRectMake</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">shape</span><span class="p">.</span><span class="n">strokeColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>下图是我故意画了个正方形使其居中：</p>
 
@@ -1207,7 +1562,7 @@ button.position = CGPointMake(self.size.width/2, self.size.height/2);
 
 <p><strong>在<code>SKScene</code>重写<code>touchesEnded: withEvent:</code>方法，并在方法中判断触摸到哪个<code>SKNode</code></strong></p>
 
-<p>```
+<p>&#8220;`
 &ndash;(void)touchesEnded:(NSSet <em>)touches withEvent:(UIEvent </em>)event{</p>
 
 <pre><code>UITouch * touch = [touches anyObject];
@@ -1228,7 +1583,7 @@ if ([touchedNode.name isEqualToString:@"button"]) {
 下面添加一个用于跳转到主菜单场景页面的Button为例：<br/>
 <strong>新建一个类，名字叫MainSceneButton，继承<code>SKLabelNode</code>，并构造出时候方法</strong></p>
 
-<p>```
+<p>&#8220;`
 &ndash;(id)init{</p>
 
 <pre><code>if (self = [super initWithFontNamed:@"Chalkduster"]) {
@@ -1244,7 +1599,7 @@ return self;
 <p><code>``
 这里碰到一个问题：如果用上面的代码初始化，将会出现</code>EXC_BAD_ACCESS` 错误，问题的解决方法是在超类初始化时用init方法代替，然后再设置字体：</p>
 
-<p>```
+<p>&#8220;`
 &ndash;(id)init{</p>
 
 <pre><code>if (self = [super init]) {
@@ -1261,7 +1616,7 @@ return self;
 至于原因，我也没弄清楚，估计是</code>SKLabelNode<code>的bug吧，因为初始化</code>SKSpriteNode<code>时用</code>initWithTexture: color: size:<code>方法就不会报错  
 **在MainSceneButton中重写</code>touchesEnded: withEvent: `方法**</p>
 
-<p>```
+<p>&#8220;`
 &ndash;(void)touchesEnded:(NSSet <em>)touches withEvent:(UIEvent </em>)event{</p>
 
 <pre><code>SKTransition *reveal = [SKTransition flipHorizontalWithDuration:0.5];
@@ -1270,7 +1625,7 @@ SKScene * myScene = [[MainScene alloc] initWithSize:self.scene.size];
 </code></pre>
 
 <p>}
-```
+&#8220;`
 MainScene是我的一个SKScene，通过点击MainSceneButton来切换到MainScene<br/>
 <strong>最后在某个场景中将button添加上去，跟之前的类似</strong></p>
 

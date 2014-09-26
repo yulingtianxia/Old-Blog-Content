@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Java | 玉令天下的Blog]]></title>
+  <title><![CDATA[Category: java | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-23T20:38:24+08:00</updated>
+  <updated>2014-09-26T18:30:58+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -134,14 +134,14 @@ System.out.println(beverage3.getDescription()
 
 <p>输出结果：</p>
 
-<p>```
+<p>&#8220;`
 % java StarbuzzCoffee<br/>
 Espresso $1.99<br/>
 Dark Roast Coffee, Mocha, Mocha, Whip $1.49<br/>
 House Blend Coffee, Soy, Mocha, Whip $1.34<br/>
 %</p>
 
-<p>```
+<p>&#8220;`
 果然是一层套一层吧：</p>
 
 <p><img src="http://yulingtianxia.qiniudn.com/140353407345.png" alt="" /></p>
@@ -180,7 +180,7 @@ House Blend Coffee, Soy, Mocha, Whip $1.34<br/>
 
 <p>UIImage(BaseFilter)中的方法定义，用户绘制图像，相当于装饰者抽象类，而UIImage则是被装饰的组件:</p>
 
-<p>``` objc</p>
+<p>&#8220;` objc</p>
 
 <h1>import &ldquo;UIImage+BaseFilter.h&rdquo;</h1>
 
@@ -212,42 +212,71 @@ return context;
   UIGraphicsEndImageContext();
 }
 @end
-```</p></li>
-</ul>
-
-
-<p>Transform类别定义了一个<code>imageWithTransform:transform</code>方法，接受一个转换引用，然后把应用于内部的图像引用，并让它把自己画出来，然后返回变换后的图像:</p>
-
-<p>```</p>
-
-<h1>import &ldquo;UIImage+Transform.h&rdquo;</h1>
-
-<h1>import &ldquo;UIImage+BaseFilter.h&rdquo;</h1>
-
-<p>@implementation UIImage (Transform)
-&ndash; (UIImage *) imageWithTransform:(CGAffineTransform)transform
-{</p>
-
-<pre><code>CGContextRef context = [self beginContext];
-
-// setup transformation
-CGContextConcatCTM(context, transform);
-
-// Draw the original image to the context
-UIImage *imageOut = [self getImageFromCurrentImageContext];
-
-[self endContext];
-
-return imageOut;
-</code></pre>
-
-<p>}
-@end
-```</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">Transform</span><span class="err">类别定义了一个</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nl">imageWithTransform</span><span class="p">:</span><span class="n">transform</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="err">方法，接受一个转换引用，然后把应用于内部的图像引用，并让它把自己画出来，然后返回变换后的图像</span><span class="o">:&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="bp">UIImage</span><span class="o">+</span><span class="n">Transform</span><span class="p">.</span><span class="n">h</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="bp">UIImage</span><span class="o">+</span><span class="n">BaseFilter</span><span class="p">.</span><span class="n">h</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="bp">UIImage</span> <span class="nl">(Transform)</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="p">;</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span> <span class="nl">imageWithTransform</span><span class="p">:(</span><span class="bp">CGAffineTransform</span><span class="p">)</span><span class="n">transform</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">CGContextRef</span> <span class="n">context</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="n">beginContext</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// setup transformation</span>
+</span><span class='line'><span class="n">CGContextConcatCTM</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">transform</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Draw the original image to the context</span>
+</span><span class='line'><span class="bp">UIImage</span> <span class="o">*</span><span class="n">imageOut</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="n">getImageFromCurrentImageContext</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="nb">self</span> <span class="n">endContext</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">imageOut</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>Shadow类别定义了一个<code>imageWithDropShadow</code>方法，向图像的内部引用添加阴影效果，并返回应用效果之后的最终图像。</p>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <h1>import &ldquo;UIImage+Shadow.h&rdquo;</h1>
 
@@ -273,29 +302,49 @@ return imageOut;
 
 <p>}
 @end
-```
-最后在ViewController中加载图像：</p>
-
-<p>```
-&ndash; (void)viewDidLoad
-{</p>
-
-<pre><code>[super viewDidLoad];
-// Do any additional setup after loading the view, typically from a nib.
-UIImage *image = imageView.image;
-
-
-// create a transformation
-CGAffineTransform rotateTransform = CGAffineTransformMakeRotation(-M_PI / 4.0);
-CGAffineTransform translateTransform = CGAffineTransformMakeTranslation(-image.size.width / 2.0,
-                                                                        image.size.height / 8.0);
-CGAffineTransform finalTransform = CGAffineTransformConcat(rotateTransform, translateTransform);
-UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropShadow];
-[imageView setImage:finalImage];
-</code></pre>
-
-<p>}
-```</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="err">最后在</span><span class="n">ViewController</span><span class="err">中加载图像：</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">```</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">ndash</span><span class="p">;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'><span class="c1">// Do any additional setup after loading the view, typically from a nib.</span>
+</span><span class='line'><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="n">imageView</span><span class="p">.</span><span class="n">image</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// create a transformation</span>
+</span><span class='line'><span class="bp">CGAffineTransform</span> <span class="n">rotateTransform</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeRotation</span><span class="p">(</span><span class="o">-</span><span class="n">M_PI</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">);</span>
+</span><span class='line'><span class="bp">CGAffineTransform</span> <span class="n">translateTransform</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeTranslation</span><span class="p">(</span><span class="o">-</span><span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+</span><span class='line'>                                                                        <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">/</span> <span class="mf">8.0</span><span class="p">);</span>
+</span><span class='line'><span class="bp">CGAffineTransform</span> <span class="n">finalTransform</span> <span class="o">=</span> <span class="n">CGAffineTransformConcat</span><span class="p">(</span><span class="n">rotateTransform</span><span class="p">,</span> <span class="n">translateTransform</span><span class="p">);</span>
+</span><span class='line'><span class="bp">UIImage</span><span class="o">*</span> <span class="n">finalImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">image</span> <span class="nl">imageWithTransform</span><span class="p">:</span><span class="n">finalTransform</span><span class="p">]</span> <span class="n">imageWithDropShadow</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">imageView</span> <span class="nl">setImage</span><span class="p">:</span><span class="n">finalImage</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>因为类别只能拓展方法，不能在原有类的基础上添加属性，但是我们依然可以通过下面的方式向类中动态添加属性，来弥补类别的不足：</p>
 
@@ -310,7 +359,7 @@ UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropSh
 </code>
 <code>UIImage+Title.m</code>:</p>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <h1>import &ldquo;UIImage+Title.h&rdquo;</h1>
 
@@ -331,7 +380,7 @@ UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropSh
   objc_setAssociatedObject(self, &amp;titleKey, title, OBJC_ASSOCIATION_COPY);
 }
 @end
-```
+&#8220;`
 可以看到关键是用到了runtime的两个函数：</li>
 <li><code>id objc_getAssociatedObject(id object, void *key)</code></li>
 <li><code>void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)</code></li>
