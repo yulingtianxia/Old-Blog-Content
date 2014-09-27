@@ -13,11 +13,12 @@ footer: true
 
 - [这里](http://about.me/yulingtianxia/)有我的名片  
 
-- [我的兴趣展示](http://yulingtianxia.com/about/aboutme.html)  
+- [我想说的话](http://yulingtianxia.com/about/aboutme.html)  
 
-- 	[畅游导航](http://changyou.yulingtianxia.com)  
-	[ColorAtom](http://coloratom.yulingtianxia.com)  
-	[Spiral](https://github.com/yulingtianxia/Spiral)  
+- 我的APP
+	- [畅游导航](http://changyou.yulingtianxia.com)  
+	- [ColorAtom](https://itunes.apple.com/cn/app/coloratom/id918469696?mt=8)  
+	- [Spiral](https://itunes.apple.com/us/app/square-spiral/id920811081?l=zh&ls=1&mt=8)  
 
 - 在手机上查看我的博客：
 	- [Android](/download/blog_android.apk)  
