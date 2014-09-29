@@ -5,14 +5,11 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>深入理解typedef - 玉令天下的Blog</title>
+	<title>UIAlertController in iOS8 - 玉令天下的Blog</title>
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="深入理解typedef 第一次对typedef语法产生疑惑是在大一使用struct的时候，而在使用Objective－C对Block进行操作的时候，再一次困惑 1
-2
-3
-typedef &lt;#returnType#&gt;(^&lt;#name#&gt;)(&lt;#arguments#& &hellip;">
+	<meta name="description" content="UIAlertController in iOS8 iOS8新推出的UIAlertController究竟是为了什么？已有的UIActionSheet和UIAlertView就这样被打酱油了么？其实不然。。。 UIAlertController是什么 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -22,7 +19,7 @@ typedef &lt;#returnType#&gt;(^&lt;#name#&gt;)(&lt;#arguments#& &hellip;">
 
 	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
 	
-	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/04/17/shen-ru-li-jie-typedef/">
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/09/29/uialertcontroller-in-ios8/">
 	<link href="/favicon.png" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -136,146 +133,138 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 			
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">深入理解typedef</h1>
-	<div class="entry-content" itemprop="articleBody"><p>第一次对typedef语法产生疑惑是在大一使用struct的时候，而在使用Objective－C对Block进行操作的时候，再一次困惑</p>
+	<h1 class="title" itemprop="name">UIAlertController in iOS8</h1>
+	<div class="entry-content" itemprop="articleBody"><p>iOS8新推出的UIAlertController究竟是为了什么？已有的UIActionSheet和UIAlertView就这样被打酱油了么？其实不然。。。</p>
 
 <!--more-->
 
 
+<h2>UIAlertController是什么</h2>
 
+<p>UIAlertController是iOS8中新加入的一个ViewController，其主要功能是提醒（Alert），并取代 UIActionSheet和UIAlertView向用户展示提醒消息。因为它是一个ViewController，所以可以同<code>presentViewController:animated:completion:</code>方法来弹出它。</p>
+
+<h2>为什么不直接使用UIActionSheet和UIAlertView</h2>
+
+<ol>
+<li>UIAlertController采用block异步回调的形式来代理按钮的动作和文本框的配置，这样显得更加代码紧凑，可读性高。这样就不用通过协议代理给其他类，使得同一个逻辑下本应在一起的代码分离开。</li>
+<li>UIActionSheet和UIAlertView执行的都是提醒功能，只是展现的位置略有不同，合并相似功能并上升到Controller的级别，这是一种进步。</li>
+<li>UIAlertController在添加按钮和文本框时更加灵活，而UIAlertView只提供了四种Style，局限性太大。</li>
+<li>UIAlertController在增加拓展性的基础上也限定了一些风格来进行约束，不过新增加的风格比UIAlertView更贴合实际应用。</li>
+</ol>
+
+
+<p>PS：其实最直接的原因就是博主想弹出个Alert，有俩文本框的（不要密码输入框），可惜UIAlertView做不到啊！！！</p>
+
+<h2>创建一个UIAlertController</h2>
+
+<p>创建很简单有木有：</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>typedef &lt;#returnType#&gt;(^&lt;#name#&gt;)(&lt;#arguments#&gt;);//typedefBlock Code Snippets
-</span><span class='line'>
-</span><span class='line'>typedef void (^RWAlertViewCompletionBlock)(UIAlertView *alertView, NSInteger buttonIndex);</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>convenience init(title title: String?,
+</span><span class='line'>         message message: String?,
+</span><span class='line'>  preferredStyle preferredStyle: UIAlertControllerStyle)</span></code></pre></td></tr></table></div></figure>
 
 
-<p></p>
+<p>举个栗子：</p>
 
-<p>然后就可以把<code>RWAlertViewCompletionBlock</code>当成一个Block的类型大摇大摆的使用啦<br/>
-在这之前楼主心目中的typedef一般都是这样的</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>typedef int INT32;
-</span><span class='line'>typedef char Line[81];//表示使用Line代表具有81个元素的char类型数组。
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">title</span> <span class="o">=</span> <span class="s2">&quot;Enter Choices of the Trouble&quot;</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">detailItem</span><span class="o">?</span><span class="p">.</span><span class="nx">content</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">alert</span> <span class="o">=</span> <span class="nx">UIAlertController</span><span class="p">(</span><span class="nx">title</span><span class="o">:</span> <span class="nx">title</span><span class="p">,</span> <span class="nx">message</span><span class="o">:</span> <span class="nx">message</span><span class="p">,</span> <span class="nx">preferredStyle</span><span class="o">:</span> <span class="nx">UIAlertControllerStyle</span><span class="p">.</span><span class="nx">Alert</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>
-甚至有时候是这样的</p>
+<code>title</code>和<code>message</code>自然不用说了吧，需要注意的是<code>preferredStyle</code>一旦设定好以后就不能改了哦，因为它就是区分UIAlertController到底是对应着UIActionSheet还是UIAlertView，一共就这两种Style：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>typedef struct tagPOINT
-</span><span class='line'>{
-</span><span class='line'>    int x;
-</span><span class='line'>    int y;
-</span><span class='line'>}POINT;
-</span><span class='line'>POINT p1;//在C++中即使不用typedef也可直接中tagPOINT声明变量，但在旧的C中就需要typedef来省略struct关键字</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-如今遇到的Block其实可以当作函数指针啦</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>int (*PF)(int *, int);
-</span><span class='line'>//也就是说，PF是一个函数指针“变量”。当使用typedef声明后，则PF就成为了一个函数指针“类型”，即：
-</span><span class='line'>typedef int (*PF)(int *, int);</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">enum</span> <span class="nx">UIAlertControllerStyle</span> <span class="o">:</span> <span class="nx">Int</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nx">ActionSheet</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nx">Alert</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
-<p><strong>typedef的语法规则其实很简单，一句话来说就是定义对象的语法前加关键字typedef，剩下的不变，原本定义的对象标识符换成类型标识符，对应语义从定义一个对象改成定义一个类型别名。typedef看起来复杂根本原因是对象定义的语法比较复杂，例如分隔符*和[]的用法。</strong></p>
+<h2>添加动作</h2>
 
-<p>针对经典的const来个例子</p>
+<p>以前的做法是给个按钮标题数组然后在实现协议的代理方法中判断下按钮序列，然后对应给出不同的处理流程。分散的逻辑和代码无疑增加了开发者的工作量，还要求对应的类实现代理协议，真是out了。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p>这里介绍一个新的类：UIAlertAction，UIAlertController弱化了以前添加Button的概念，而是添加UIAlertAction。其实说白了就是将按钮和处理方法捏到一起成为一个“动作”：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">convenience</span> <span class="nx">init</span><span class="p">(</span><span class="nx">title</span> <span class="nx">title</span><span class="o">:</span> <span class="nb">String</span><span class="p">,</span>
+</span><span class='line'>           <span class="nx">style</span> <span class="nx">style</span><span class="o">:</span> <span class="nx">UIAlertActionStyle</span><span class="p">,</span>
+</span><span class='line'>         <span class="nx">handler</span> <span class="nx">handler</span><span class="o">:</span> <span class="p">((</span><span class="nx">UIAlertAction</span><span class="o">!</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+<code>title</code>就是按钮的文本内容；<code>style</code>是按钮的风格，一共有三种风格：Default，Cancel和Destructive，其中Destructive会使按钮文字变成红色；<code>handler</code>是处理按钮按下后的一个block，这段代码块与添加的按钮紧密结合成“动作”，最后通过<code>addAction:</code>方法将UIAlertAction添加到UIAlertController中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">cancelbtn</span> <span class="o">=</span> <span class="s2">&quot;Cancel&quot;</span>
+</span><span class='line'><span class="kd">let</span> <span class="nx">cancelAction</span> <span class="o">=</span> <span class="nx">UIAlertAction</span><span class="p">(</span><span class="nx">title</span><span class="o">:</span> <span class="nx">cancelbtn</span><span class="p">,</span> <span class="nx">style</span><span class="o">:</span> <span class="p">.</span><span class="nx">Cancel</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nx">action</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Void</span> <span class="k">in</span>
+</span><span class='line'><span class="c1">//add some code...            </span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">alert</span><span class="p">.</span><span class="nx">addAction</span><span class="p">(</span><span class="nx">cancelAction</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h2>添加文本框</h2>
+
+<p>这也是最令博主激动的地方，最然不能自定义Alert中的内容，但起码添加UITextField不受限制了。添加文本框的方法实在是简洁：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">func</span> <span class="nx">addTextFieldWithConfigurationHandler</span><span class="p">(</span><span class="nx">_</span> <span class="nx">configurationHandler</span><span class="o">:</span> <span class="p">((</span><span class="nx">UITextField</span><span class="o">!</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+一个block就解决了！你只需要在block中配置下文本框的字体、键盘、代理等即可，举个栗子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>typedef char * pStr;
-</span><span class='line'>char string[4] = "abc";
-</span><span class='line'>const char *p1 = string;
-</span><span class='line'>const pStr p2 = string;
-</span><span class='line'>p1++;
-</span><span class='line'>p2++;//error</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">alert</span><span class="p">.</span><span class="nx">addTextFieldWithConfigurationHandler</span> <span class="p">{</span> <span class="p">(</span><span class="nx">choiceNameTF</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nx">Void</span> <span class="k">in</span>
+</span><span class='line'>    <span class="nx">choiceNameTF</span><span class="p">.</span><span class="nx">borderStyle</span> <span class="o">=</span> <span class="p">.</span><span class="nx">None</span>
+</span><span class='line'>    <span class="nx">choiceNameTF</span><span class="p">.</span><span class="nx">placeholder</span> <span class="o">=</span> <span class="s2">&quot;An answer of your trouble&quot;</span>
+</span><span class='line'>    <span class="nx">choiceNameTF</span><span class="p">.</span><span class="nx">delegate</span> <span class="o">=</span> <span class="nx">self</span>
+</span><span class='line'>    <span class="nx">choiceNameTF</span><span class="p">.</span><span class="nx">becomeFirstResponder</span><span class="p">()</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<p>
-<code>p2++</code>这句会报错的.<br/>
-<code>const char *p1 = string;</code>你可以这样理解：<code>(const char) *p1 = string</code>, <code>p1</code>是一个指针，指向<code>const char</code>的东西，这个东西就是<code>string</code>(string是一个字符数组的首地址，它的地址声明后肯定是<code>const</code>的，除非该数组销毁)，但是<code>p1</code>是一个指针变量，它是可以递增的，即你看到的<code>p1++</code>，它可以完成从数组的来遍历数组的目的。<br/>
-而<code>const pStr p2 = string;</code>是这样的：由于<code>p2</code>不是指针，<code>const</code>直接修饰到了<code>p2</code>,即现在的<code>p2</code>是常量了，它的类型是<code>pStr</code>(我们自己定义的类型)，相当于<code>const int p2</code>, <code>const long p2</code>等等，<code>const</code>都是直接修饰<code>p2</code>的，只不过<code>int</code>，<code>long</code>是系统类型，而<code>pStr</code>是我们定义的类型。为什么会出现这种效果了，就是因为<code>typedef</code>,它把<code>char *</code>定义成一个复合的类型，要从整体上来理解语义，而不是字符替换后来理解语义。</p>
+<p>美中不足的是文本框的代理还需要在另外一个地方写代码来实现协议，这种历史遗留问题终将被block统统解决！</p>
 
-<p>最后作死下，引入非人类的案例：</p>
+<h2>总结</h2>
 
-<p>为复杂的声明定义一个新的简单的别名。方法是：在原来的声明里逐步用别名替换一部分复杂声明，如此循环，把带变量名的部分留到最后替换，得到的就是原声明的最简化版。举例：</p>
+<p>UIAlertController的确是方便多了，无论是代码的简洁性还是可读性，都有了较大的提升。不过也有缺点，就是动用Controller的层级略显麻烦，尤其是使用<code>presentViewController:animated:completion:</code>方法来弹出Alert界面与之前的一个潇洒的<code>show</code>相比真是有些“霸气”。看个人喜好了，只要满足需求，咋方便咋用。</p>
 
-<p>原声明：<code>void (*b[10]) (void (*)());</code></p>
+<p>最后，贴上一张效果图：</p>
 
-<p>变量名为b，先替换右边部分括号里的，pFunParam为别名一：</p>
+<p><img src="http://yulingtianxia.qiniudn.com/IMG_0906.PNG" alt="" /></p>
 
-<p><code>typedef void (*pFunParam)();</code></p>
-
-<p>再替换左边的变量b，pFunx为别名二：</p>
-
-<p><code>typedef void (*pFunx)(pFunParam);</code></p>
-
-<p>原声明的最简化版：</p>
-
-<p><code>pFunx b[10];</code></p>
-
-<p>原声明：<code>doube(*)() (*e)[9];</code></p>
-
-<p>变量名为e，先替换左边部分，pFuny为别名一：</p>
-
-<p><code>typedef double(*pFuny)();</code></p>
-
-<p>再替换右边的变量e，pFunParamy为别名二</p>
-
-<p><code>typedef pFuny (*pFunParamy)[9];</code></p>
-
-<p>原声明的最简化版：</p>
-
-<p><code>pFunParamy e;</code></p>
-
-<p>理解复杂声明可用的“右左法则”：从变量名看起，先往右，再往左，碰到一个圆括号</p>
-
-<p>就调转阅读的方向；括号内分析完就跳出括号，还是按先右后左的顺序，如此循环，直</p>
-
-<p>到整个声明分析完。举例：</p>
-
-<p><code>int (*func)(int *p);</code></p>
-
-<p>首先找到变量名func，外面有一对圆括号，而且左边是一个*号，这说明func是一个指针</p>
-
-<p>；然后跳出这个圆括号，先看右边，又遇到圆括号，这说明(*func)是一个函数，所以</p>
-
-<p>func是一个指向这类函数的指针，即函数指针，这类函数具有int*类型的形参，返回值</p>
-
-<p>类型是int。</p>
-
-<p><code>int (*func[5])(int *);</code></p>
-
-<p>func右边是一个[]运算符，说明func是具有5个元素的数组；func的左边有一个*，说明</p>
-
-<p>func的元素是指针（注意这里的*不是修饰func，而是修饰func[5]的，原因是[]运算符</p>
-
-<p>优先级比*高，func先跟[]结合）。跳出这个括号，看右边，又遇到圆括号，说明func数</p>
-
-<p>组的元素是函数类型的指针，它指向的函数具有int*类型的形参，返回值类型为int。</p>
-
-<p>这种用法是比较复杂的，出现的频率也不少，往往在看到这样的用法却不能理解，相信以上的解释能有所帮助。</p>
+<p>图片截取自<a href="https://github.com/yulingtianxia/HardChoice">HardChoice</a></p>
 </div>
 
 </article>
@@ -363,8 +352,8 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/04/17/shen-ru-li-jie-typedef/';
-        var disqus_url = 'http://yulingtianxia.com/blog/2014/04/17/shen-ru-li-jie-typedef/';
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/09/29/uialertcontroller-in-ios8/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/09/29/uialertcontroller-in-ios8/';
         var disqus_script = 'embed.js';
       
     (function () {
