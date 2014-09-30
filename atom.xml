@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-09-29T21:55:19+08:00</updated>
+  <updated>2014-09-30T17:03:10+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -25,7 +25,7 @@
 
 <h2>UIAlertController是什么</h2>
 
-<p><code>UIAlertController</code>是iOS8中新加入的一个ViewController，其主要功能是提醒（Alert），并取代 <code>UIActionSheet</code>和<code>UIAlertView</code>向用户展示提醒消息。因为它是一个ViewController，所以可以同<code>presentViewController:animated:completion:</code>方法来弹出它。</p>
+<p><code>UIAlertController</code>是iOS8中新加入的一个ViewController，其主要功能是提醒（Alert），并取代 <code>UIActionSheet</code>和<code>UIAlertView</code>向用户展示提醒消息。因为它是一个ViewController，所以可以用<code>presentViewController:animated:completion:</code>方法来弹出它。</p>
 
 <h2>为什么不直接使用<code>UIActionSheet</code>和<code>UIAlertView</code></h2>
 
