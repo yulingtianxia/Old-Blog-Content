@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 设计模式 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/she-ji-mo-shi/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-10-09T11:30:38+08:00</updated>
+  <updated>2014-10-10T22:14:31+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -393,7 +393,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#x6f;&#58;&#x65;&#x6d;&#x70;&#x6c;&#111;&#121;&#x65;&#101;&#115;&#46;&#64;&#x73;&#x75;&#x6d;&#x2e;&#x73;&#x61;&#x6c;&#x61;&#114;&#x79;">&#x65;&#x6d;&#112;&#x6c;&#111;&#121;&#101;&#x65;&#x73;&#x2e;&#64;&#115;&#117;&#109;&#46;&#115;&#x61;&#x6c;&#97;&#114;&#x79;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x65;&#x6d;&#x70;&#108;&#111;&#x79;&#x65;&#x65;&#x73;&#x2e;&#x40;&#115;&#x75;&#109;&#x2e;&#x73;&#97;&#x6c;&#x61;&#114;&#121;">&#x65;&#x6d;&#112;&#x6c;&#111;&#121;&#101;&#101;&#x73;&#x2e;&#64;&#x73;&#117;&#109;&#x2e;&#x73;&#x61;&#108;&#x61;&#114;&#121;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 

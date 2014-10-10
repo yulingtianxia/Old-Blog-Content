@@ -5,22 +5,13 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>iOS7字体汇总 - 玉令天下的Blog</title>
+	<title>iOS添加字体汇总 - 玉令天下的Blog</title>
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="iOS7字体汇总 本文列举了iOS7所有字体以及获取字体的方式 运行下面的代码可以获得所有的字体样式 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12 NSArray *familyNames = [UIFont familyNames]; for( NSString *familyName &hellip;">
+	<meta name="description" content="iOS添加字体汇总 向iOS中添加第三方字体并获取其名称。 将字体文件加入工程中
+在XXX-Info.plist文件中（XXX为工程名）加入新的键“Fonts provided by application”，其值为一个数组，并在数组中添加字体文件的名称。
+在工程->Targets( &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -144,13 +135,19 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 			
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">iOS7字体汇总</h1>
-	<div class="entry-content" itemprop="articleBody"><p>本文列举了iOS7所有字体以及获取字体的方式</p>
+	<h1 class="title" itemprop="name">iOS添加字体汇总</h1>
+	<div class="entry-content" itemprop="articleBody"><p>向iOS中添加第三方字体并获取其名称。</p>
 
 <!--more-->
 
 
-<p>运行下面的代码可以获得所有的字体样式</p>
+<ol>
+<li>将字体文件加入工程中</li>
+<li>在XXX-Info.plist文件中（XXX为工程名）加入新的键“Fonts provided by application”，其值为一个数组，并在数组中添加字体文件的名称。</li>
+<li>在工程->Targets(选一个target)&ndash;>Build Phases->Copy Bundle Resources中加入字体文件</li>
+<li>运行下面的代码可以获得所有的字体样式</li>
+</ol>
+
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -160,28 +157,20 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="n">NSArray</span> <span class="o">*</span><span class="n">familyNames</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIFont</span> <span class="n">familyNames</span><span class="p">];</span>
-</span><span class='line'>
 </span><span class='line'>    <span class="k">for</span><span class="p">(</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">familyName</span> <span class="k">in</span> <span class="n">familyNames</span> <span class="p">){</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Family: %@&quot;</span><span class="p">,</span><span class="n">familyName</span><span class="p">);</span>
-</span><span class='line'>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span> <span class="s">&quot;Family: %s </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">familyName</span> <span class="n">UTF8String</span><span class="p">]</span> <span class="p">);</span>
 </span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">fontNames</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIFont</span> <span class="nl">fontNamesForFamilyName:</span><span class="n">familyName</span><span class="p">];</span>
 </span><span class='line'>        <span class="k">for</span><span class="p">(</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">fontName</span> <span class="k">in</span> <span class="n">fontNames</span> <span class="p">){</span>
-</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Font: %@&quot;</span><span class="p">,</span><span class="n">fontName</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">printf</span><span class="p">(</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">Font: %s </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">fontName</span> <span class="n">UTF8String</span><span class="p">]</span> <span class="p">);</span>
 </span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
 </span><span class='line'>    <span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
 
-<p>在iOS7运行，获得结果如下：</p>
+<p>在iOS7运行，获得结果如下，从中找出你新添加的字体名吧：</p>
 
 <p> Family: Marion<br/>
  Font: Marion-Italic<br/>

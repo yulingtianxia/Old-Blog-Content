@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 字体 | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/zi-ti/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-10-09T11:30:38+08:00</updated>
+  <updated>2014-10-10T22:14:31+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -14,36 +14,38 @@
 
   
   <entry>
-    <title type="html"><![CDATA[iOS7字体汇总]]></title>
+    <title type="html"><![CDATA[iOS添加字体汇总]]></title>
     <link href="http://yulingtianxia.com/blog/2014/04/24/ios7zi-ti-hui-zong/"/>
     <updated>2014-04-24T18:12:43+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/04/24/ios7zi-ti-hui-zong</id>
-    <content type="html"><![CDATA[<p>本文列举了iOS7所有字体以及获取字体的方式</p>
+    <content type="html"><![CDATA[<p>向iOS中添加第三方字体并获取其名称。</p>
 
 <!--more-->
 
 
-<p>运行下面的代码可以获得所有的字体样式</p>
+<ol>
+<li>将字体文件加入工程中</li>
+<li>在XXX-Info.plist文件中（XXX为工程名）加入新的键“Fonts provided by application”，其值为一个数组，并在数组中添加字体文件的名称。</li>
+<li>在工程->Targets(选一个target)&ndash;>Build Phases->Copy Bundle Resources中加入字体文件</li>
+<li>运行下面的代码可以获得所有的字体样式</li>
+</ol>
+
 
 <p>``` objc</p>
 
 <pre><code>    NSArray *familyNames = [UIFont familyNames];
-
     for( NSString *familyName in familyNames ){
-
-        NSLog(@"Family: %@",familyName);
-
+        printf( "Family: %s \n", [familyName UTF8String] );
         NSArray *fontNames = [UIFont fontNamesForFamilyName:familyName];
         for( NSString *fontName in fontNames ){
-            NSLog(@"Font: %@",fontName);
-        }
-
-    } 
+            printf( "\tFont: %s \n", [fontName UTF8String] );
+        }  
+    }
 </code></pre>
 
 <p>```</p>
 
-<p>在iOS7运行，获得结果如下：</p>
+<p>在iOS7运行，获得结果如下，从中找出你新添加的字体名吧：</p>
 
 <p> Family: Marion<br/>
  Font: Marion-Italic<br/>
