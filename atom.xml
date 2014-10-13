@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-10-10T22:14:31+08:00</updated>
+  <updated>2014-10-13T23:58:23+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -862,7 +862,7 @@ Swift的<code>assert()</code>函数第二个参数是一个供你指明的可选
 </ul>
 
 
-<p>下面我给出了一个用Swift语言写的Demo-<a href="https://github.com/yulingtianxia/HardChoice">HardChoice</a>，使用自动布局来调整<code>UITableViewCell</code>的高度。我通过实现一个<code>UITableViewCell</code>的子类<code>DynamicCell</code>来实现自动布局，你可以再GitHub上下载<a href="https://github.com/yulingtianxia/HardChoice">源码</a>：</p>
+<p>下面我给出了一个用Swift语言写的Demo-<a href="http://hardchoice.yulingtianxia.com">HardChoice</a>，使用自动布局来调整<code>UITableViewCell</code>的高度。我通过实现一个<code>UITableViewCell</code>的子类<code>DynamicCell</code>来实现自动布局，你可以再GitHub上下载<a href="https://github.com/yulingtianxia/HardChoice">源码</a>：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
