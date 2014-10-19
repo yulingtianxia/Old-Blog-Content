@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Core Data | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/core-data/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-10-13T23:58:23+08:00</updated>
+  <updated>2014-10-19T10:00:19+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -114,7 +114,7 @@ progress.cancel()
     <link href="http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3/"/>
     <updated>2014-07-03T10:28:28+08:00</updated>
     <id>http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3</id>
-    <content type="html"><![CDATA[<p>在Swift发布后，我尝试用Swift和Core Data做了一个小Demo，名字叫“HardChoice”。它用于帮助人们随机生成一个问题的结果，当然结果是预设好的，并可以加入权值。本文将通过这个Demo来进一步阐述Core Data的知识。</p>
+    <content type="html"><![CDATA[<p>在Swift发布后，我尝试用Swift和Core Data做了一个小Demo，名字叫“<a href="http://hardchoice.yulingtianxia.com">HardChoice</a>”。它用于帮助人们随机生成一个问题的结果，当然结果是预设好的，并可以加入权值。本文将通过这个Demo来进一步阐述Core Data的知识。</p>
 
 <p>本文包含以下内容：</p>
 
@@ -556,7 +556,7 @@ override func motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!) {</
 
 <p><strong>文章所使用的项目代码可以到<a href="https://github.com/yulingtianxia/MyCDDemo">这里</a>下载</strong></p>
 
-<p>在<a href="http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3/">下一篇文章</a>里，我将会通过教程的方式，讲述如何用Swift结合CoreData的NSFetchedResultsController写一个小Demo-<a href="https://github.com/yulingtianxia/HardChoice">HardChoice</a></p>
+<p>在<a href="http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3/">下一篇文章</a>里，我将会通过教程的方式，讲述如何用Swift结合CoreData的NSFetchedResultsController写一个小Demo-<a href="http://hardchoice.yulingtianxia.com">HardChoice</a></p>
 
 <!--more-->
 
