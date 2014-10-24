@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-10-24T18:36:38+08:00</updated>
+  <updated>2014-10-24T18:53:44+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -4130,7 +4130,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p></p>
 
-<h2>可失败构造器</h2>
+<h2>可失败构造器(Failable Initializers)</h2>
 
 <p>有时候定义一个构造器可以失败的类，结构体或枚举是很有用的。这样的失败可能被非法的初始化参数，所需外部资源的缺失或一些其他阻止初始化成功的情况触发。</p>
 
@@ -4511,7 +4511,7 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p>你可以从<code>init?</code>代理到<code>init!</code>，反之亦然；你可以用<code>init!</code>重载<code>init?</code>，反之亦然。你也可以从<code>init</code>代理到<code>init!</code>，不过这么做将会在<code>init!</code>发生构造过程失败时触发一个断言。</p>
 
-<h2>必需构造器</h2>
+<h2>必需构造器(Required Initializers)</h2>
 
 <p>当你想让一个类的某个构造器被所有子类都实现，你可以在定义这个构造器时在前面用<code>required</code>修饰：</p>
 
