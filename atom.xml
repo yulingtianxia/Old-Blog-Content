@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-10-19T10:00:19+08:00</updated>
+  <updated>2014-10-24T18:23:34+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -3639,16 +3639,19 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
     <content type="html"><![CDATA[<p>本文参考自Swift文档，主要包括以下内容：</p>
 
 <ul>
-<li>简介</li>
-<li>自定义构造过程</li>
+<li><a href="#%E7%AE%80%E4%BB%8B">简介</a></li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9E%84%E9%80%A0%E8%BF%87%E7%A8%8B">自定义构造过程</a></li>
 <li>默认构造器</li>
 <li>值类型的构造器代理</li>
 <li>类的继承和构造过程</li>
+<li>可失败构造器</li>
+<li>必需构造器</li>
 <li>通过闭包和函数来设置属性的默认值</li>
 </ul>
 
 
-<p>(2014-8-8更新至beta5语法)</p>
+<p>(2014-8-8更新至beta5语法)<br/>
+(2014-10-24更新至Swift1.1)</p>
 
 <!--more-->
 
@@ -4127,7 +4130,388 @@ PS：除此之外RACSubscriber还有<code>sendError:</code>和<code>didSubscribe
 
 <p></p>
 
-<h3>必需构造器</h3>
+<h2>可失败构造器</h2>
+
+<p>有时候定义一个构造器可以失败的类，结构体或枚举是很有用的。这样的失败可能被非法的初始化参数，所需外部资源的缺失或一些其他阻止初始化成功的情况触发。</p>
+
+<p>为了应付初始化可能失败的情形，需要在定义类，结构体或枚举时再定义一个或多个可失败构造器。在<code>init</code>关键字后面放一个问号(<code>init?</code>)即可写出一个可失败构造器。</p>
+
+<p><strong>你不能定义具有相同参数类型和参数名称的可失败构造器和非可失败构造器</strong></p>
+
+<p>可失败构造器返回它初始化类型的可选值。你要在可失败构造器中可能触发失败的地方返回<code>nil</code>。</p>
+
+<p><strong>严格的来说，构造器不返回值。更确切地说，它们的角色是确保<code>self</code>在构造过程结束时被完整正确的初始化。虽然你写下<code>return nil</code>来触发一个构造过程的失败，但你不要使用<code>return</code>关键字来指明构造过程的成功。</strong></p>
+
+<p>下面的例子定义了一个叫做<code>Animal</code>的结构体，它有一个叫做<code>species</code>的<code>String</code>常量属性。<code>Animal</code>结构体还定义了一个可失败构造器，它只接收一个<code>species</code>参数。这个构造器检查被传递过来的<code>species</code>参数是否为空字符串：如果是空字符串那就触发构造过程失败，否则<code>species</code>属性会被赋值，构造过程成功：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">struct</span> <span class="nx">Animal</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">species</span><span class="o">:</span> <span class="nb">String</span>
+</span><span class='line'>    <span class="nx">init</span><span class="o">?</span><span class="p">(</span><span class="nx">species</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">species</span><span class="p">.</span><span class="nx">isEmpty</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">nil</span> <span class="p">}</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">species</span> <span class="o">=</span> <span class="nx">species</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+你可以试着使用可失败构造器来初始化一个<code>Animal</code>对象来检验构造过程是否成功：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">someCreature</span> <span class="o">=</span> <span class="nx">Animal</span><span class="p">(</span><span class="nx">species</span><span class="o">:</span> <span class="s2">&quot;Giraffe&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1">// someCreature is of type Animal?, not Animal</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">giraffe</span> <span class="o">=</span> <span class="nx">someCreature</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;An animal was initialized with a species of \(giraffe.species)&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;An animal was initialized with a species of Giraffe&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+如果你给可失败构造器传递一个空字符串作为参数，那么将会触发构造过程失败：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">anonymousCreature</span> <span class="o">=</span> <span class="nx">Animal</span><span class="p">(</span><span class="nx">species</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1">// anonymousCreature is of type Animal?, not Animal</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="nx">anonymousCreature</span> <span class="o">==</span> <span class="nx">nil</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;The anonymous creature could not be initialized&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;The anonymous creature could not be initialized&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>这里注意下空字符串与<code>nil</code>的区别。空字符串是合法的，它并不像<code>nil</code>那样代表了某种类型值得缺失。但在<code>Animal</code>中我们必须设定一个有意义的<code>species</code>属性，它不能是空字符串。</strong></p>
+
+<h3>枚举的可失败构造器</h3>
+
+<p>你可以使用可失败构造器根据一或多个参数来选择合适的枚举成员。如果传入的参数没能匹配到合适的枚举成员，构造就会失败。</p>
+
+<p>下面的例子定义了一个叫做<code>TemperatureUnit</code>的枚举，有三个可能的情况 (<code>Kelvin</code>, <code>Celsius</code>, 和 <code>Fahrenheit</code>)。可失败构造器用于在表现一个温度符号字符时找到一个合适的枚举成员：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">enum</span> <span class="nx">TemperatureUnit</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nx">Kelvin</span><span class="p">,</span> <span class="nx">Celsius</span><span class="p">,</span> <span class="nx">Fahrenheit</span>
+</span><span class='line'>    <span class="nx">init</span><span class="o">?</span><span class="p">(</span><span class="nx">symbol</span><span class="o">:</span> <span class="nx">Character</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">switch</span> <span class="nx">symbol</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="s2">&quot;K&quot;</span><span class="o">:</span>
+</span><span class='line'>            <span class="nx">self</span> <span class="o">=</span> <span class="p">.</span><span class="nx">Kelvin</span>
+</span><span class='line'>        <span class="k">case</span> <span class="s2">&quot;C&quot;</span><span class="o">:</span>
+</span><span class='line'>            <span class="nx">self</span> <span class="o">=</span> <span class="p">.</span><span class="nx">Celsius</span>
+</span><span class='line'>        <span class="k">case</span> <span class="s2">&quot;F&quot;</span><span class="o">:</span>
+</span><span class='line'>            <span class="nx">self</span> <span class="o">=</span> <span class="p">.</span><span class="nx">Fahrenheit</span>
+</span><span class='line'>        <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">nil</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可以使用这个可失败构造器来为三种可能的状况选择合适的枚举成员，也可在参数不能匹配任何状况时让构造过程失败：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">let</span> <span class="nx">fahrenheitUnit</span> <span class="o">=</span> <span class="nx">TemperatureUnit</span><span class="p">(</span><span class="nx">symbol</span><span class="o">:</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">if</span> <span class="nx">fahrenheitUnit</span> <span class="o">!=</span> <span class="nx">nil</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;This is a defined temperature unit, so initialization succeeded.&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;This is a defined temperature unit, so initialization succeeded.&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">let</span> <span class="nx">unknownUnit</span> <span class="o">=</span> <span class="nx">TemperatureUnit</span><span class="p">(</span><span class="nx">symbol</span><span class="o">:</span> <span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">if</span> <span class="nx">unknownUnit</span> <span class="o">==</span> <span class="nx">nil</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;This is not a defined temperature unit, so initialization failed.&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;This is not a defined temperature unit, so initialization failed.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>带有原始值枚举的可失败构造器</h3>
+
+<p>带有原始值的枚举会自动得到一个可失败构造器：<code>init?(rawValue:)</code>，它接受<code>rawValue</code>参数来匹配一个枚举成员，如果无法匹配就出发构造过程失败。</p>
+
+<p>发挥<code>init?(rawValue:)</code>的优势将上面的例子<code>TemperatureUnit</code>重写：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">enum</span> <span class="nx">TemperatureUnit</span><span class="o">:</span> <span class="nx">Character</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nx">Kelvin</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="nx">Celsius</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="nx">Fahrenheit</span> <span class="o">=</span> <span class="s2">&quot;F&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">let</span> <span class="nx">fahrenheitUnit</span> <span class="o">=</span> <span class="nx">TemperatureUnit</span><span class="p">(</span><span class="nx">rawValue</span><span class="o">:</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">if</span> <span class="nx">fahrenheitUnit</span> <span class="o">!=</span> <span class="nx">nil</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;This is a defined temperature unit, so initialization succeeded.&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;This is a defined temperature unit, so initialization succeeded.&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">let</span> <span class="nx">unknownUnit</span> <span class="o">=</span> <span class="nx">TemperatureUnit</span><span class="p">(</span><span class="nx">rawValue</span><span class="o">:</span> <span class="s2">&quot;X&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">if</span> <span class="nx">unknownUnit</span> <span class="o">==</span> <span class="nx">nil</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;This is not a defined temperature unit, so initialization failed.&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;This is not a defined temperature unit, so initialization failed.&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>类的可失败构造器</h3>
+
+<p>值类型的可失败构造器可以在任何地方触发构造过程失败。在上面的<code>Animal</code>结构体例子中，构造器在<code>species</code>属性被赋值前就触发了构造过程失败，位置很靠前。</p>
+
+<p>对于类，可失败构造器只能在所有存储型属性被赋初值并且任意构造器代理发生后才触发构造过程失败。</p>
+
+<p>下面给出的例子展现了如何使用隐式解析可选属性来满足这个可失败类构造器的需求：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">Product</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="o">!</span>
+</span><span class='line'>    <span class="nx">init</span><span class="o">?</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">name</span><span class="p">.</span><span class="nx">isEmpty</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">nil</span> <span class="p">}</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面定义的<code>Product</code>类非常类似之前见过的<code>Animal</code>结构体。<code>Product</code>类有一个不能为空值的字符串常量属性<code>name</code>。为了强制满足这个要求，<code>Product</code>类使用可失败构造器来确保<code>name</code>属性值在构造过程成功前不为空。</p>
+
+<p>然而<code>Product</code>是一个类而不是结构体。这意味着它不像<code>Animal</code>，任何<code>Product</code>类的可失败构造器都必须在触发构造过程失败之前为<code>name</code>属性提供一个初值。</p>
+
+<p>在上面的例子中，<code>Product</code>类的<code>name</code>属性被定义成隐式解析可选的字符串类型(<code>String!</code>)。因为它是一个可选类型，这意味着构造过程中<code>name</code>属性在被赋值前有一个默认值<code>nil</code>。这个默认值<code>nil</code>意味着<code>Product</code>类中所有属性都有一个合法的初值。结果就是<code>Product</code>类的可失败构造器如果被传递的是一个空字符串，它能在构造器开始时就触发一个构造过程失败。</p>
+
+<p>因为<code>name</code>属性是常量，你可以确信在构造过程成功后它将永远不是<code>nil</code>。尽管它被定义为隐式解析可选类型，你可以永远自信地获取它的隐式解析值，而不用检验是否为<code>nil</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">bowTie</span> <span class="o">=</span> <span class="nx">Product</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;bow tie&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// no need to check if bowTie.name == nil</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;The product&#39;s name is \(bowTie.name)&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;The product&#39;s name is bow tie&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>可失败构造器的传播</h3>
+
+<p>类，结构体或枚举的可失败构造器可以横向代理给同一个的类，结构体或枚举中的另一个可失败构造器。类似的，子类的可失败构造器也能向上代理到超类的可失败构造器。</p>
+
+<p>不论发生何种情况，如果你代理给的另一个构造器发生了构造过程失败，整个构造过程程序立刻失败，后续的构造过程代码也不会执行。</p>
+
+<p><strong>可失败构造器也可代理给非可失败构造器。如果你想在一个已经存在的不会失败的构造过程中添加一个可能失败的状况时可以用到这招</strong></p>
+
+<p>下面的例子定义了一个<code>Product</code>的子类<code>CartItem</code>。<code>CartItem</code>类模拟了在线购物车中的一件物品。<code>CartItem</code>包含一个叫做<code>quantity</code>的常量属性并确保这个属性总是不小于1：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">CartItem</span><span class="o">:</span> <span class="nx">Product</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">quantity</span><span class="o">:</span> <span class="nx">Int</span><span class="o">!</span>
+</span><span class='line'>    <span class="nx">init</span><span class="o">?</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">,</span> <span class="nx">quantity</span><span class="o">:</span> <span class="nx">Int</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kr">super</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nx">name</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">quantity</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">nil</span> <span class="p">}</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">quantity</span> <span class="o">=</span> <span class="nx">quantity</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>quantity</code>属性类型为隐式解析整型(<code>Int!</code>)。就像<code>Product</code>类的<code>name</code>属性一样，这意味着<code>quantity</code>属性在构造过程中被赋值前有一个默认值<code>nil</code>。</p>
+
+<p><code>CartItem</code>的可失败构造器开始于向上代理到超类<code>Product</code>的<code>init(name:)</code>构造器。这满足了要求&mdash;可失败构造器必需总是在构造过程失败被触发之前完成构造器代理。</p>
+
+<p>如果超类的构造过程由于空的<code>name</code>值而失败，整个构造过程程序立刻失败，后续的构造过程代码也不会执行。如果超类构造过程成功，<code>CartItem</code>构造器会验证获取到的<code>quantity</code>值是否大于等于1。</p>
+
+<p>如果你用非空的<code>name</code>和大等于1的<code>quantity</code>创建一个<code>CartItem</code>实例，构造过程会成功：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">twoSocks</span> <span class="o">=</span> <span class="nx">CartItem</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;sock&quot;</span><span class="p">,</span> <span class="nx">quantity</span><span class="o">:</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;Item: \(twoSocks.name), quantity: \(twoSocks.quantity)&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;Item: sock, quantity: 2&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你试着用值为0的<code>quantity</code>创建一个<code>CartItem</code>实例，构造器将会导致构造过程失败：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">zeroShirts</span> <span class="o">=</span> <span class="nx">CartItem</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;shirt&quot;</span><span class="p">,</span> <span class="nx">quantity</span><span class="o">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;Item: \(zeroShirts.name), quantity: \(zeroShirts.quantity)&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;Unable to initialize zero shirts&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;Unable to initialize zero shirts&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+同样地，如果你尝试用空的<code>name</code>值创建一个<code>CartItem</code>实例，超类<code>Product</code>构造器会导致构造过程失败：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="kd">let</span> <span class="nx">oneUnnamed</span> <span class="o">=</span> <span class="nx">CartItem</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">quantity</span><span class="o">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;Item: \(oneUnnamed.name), quantity: \(oneUnnamed.quantity)&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">println</span><span class="p">(</span><span class="s2">&quot;Unable to initialize one unnamed product&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// prints &quot;Unable to initialize one unnamed product&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>可失败构造器的重载</h3>
+
+<p>你可以在子类中重载超类的可失败构造器，就像重载其他任意构造器那样。另外，你还可以用子类的非可失败构造器重载超类的可失败构造器。这让你能定义一个构造过程不能失败的子类，尽管超类的构造过程是允许失败的。</p>
+
+<p>注意如果你用子类的非可失败构造器重载了超类的可失败构造器，子类构造器不能向上代理到超类构造器。非可失败构造器庸官都不能代理给可失败构造器。</p>
+
+<p><strong>注意：你可以用非可失败构造器重载可失败构造器，但是不能倒过来</strong></p>
+
+<p>下面的例子定义了一个叫做<code>Document</code>的类。这个类模拟了一个用<code>name</code>属性初始化的文档，<code>name</code>属性是非空字符串或者是<code>nil</code>，但不能是空字符串：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">Document</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="o">?</span>
+</span><span class='line'>    <span class="c1">// this initializer creates a document with a nil name value</span>
+</span><span class='line'>    <span class="nx">init</span><span class="p">()</span> <span class="p">{}</span>
+</span><span class='line'>    <span class="c1">// this initializer creates a document with a non-empty name value</span>
+</span><span class='line'>    <span class="nx">init</span><span class="o">?</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">name</span><span class="p">.</span><span class="nx">isEmpty</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">nil</span> <span class="p">}</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下一个例子定义了一个<code>Document</code>的子类<code>AutomaticallyNamedDocument</code>。子类<code>AutomaticallyNamedDocument</code>重载了两个<code>Document</code>添加的指定构造器。这些重载确保<code>AutomaticallyNamedDocument</code>实例在不用<code>name</code>初始化或传入<code>init(name:)</code>的值是空字符串时将“[Untitled]”作为<code>name</code>的初值：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kr">class</span> <span class="nx">AutomaticallyNamedDocument</span><span class="o">:</span> <span class="nx">Document</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">override</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kr">super</span><span class="p">.</span><span class="nx">init</span><span class="p">()</span>
+</span><span class='line'>        <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;[Untitled]&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">override</span> <span class="nx">init</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kr">super</span><span class="p">.</span><span class="nx">init</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nx">name</span><span class="p">.</span><span class="nx">isEmpty</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;[Untitled]&quot;</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">self</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>AutomaticallyNamedDocument</code>用非可失败的<code>init(name:)</code>构造器重载了它超类的可失败的<code>init?(name:)</code>构造器。因为<code>AutomaticallyNamedDocument</code>应付空字符串情形的方式与它的超类不同，它的构造器不需要失败，所以它提供了一个非可失败版本的构造器来替代。</p>
+
+<h3>init!可失败构造器</h3>
+
+<p>你一贯地通过在<code>init</code>关键字后放置问号(<code>init?</code>)来定义一个创建可选值类型实例的可失败构造器。另外，你还可以定义一个创建隐式解析可选类型实例的可失败构造器。在<code>init</code>关键字后放置一个叹号来替代问号(<code>init!</code>)就可以啦。</p>
+
+<p>你可以从<code>init?</code>代理到<code>init!</code>，反之亦然；你可以用<code>init!</code>重载<code>init?</code>，反之亦然。你也可以从<code>init</code>代理到<code>init!</code>，不过这么做将会在<code>init!</code>发生构造过程失败时触发一个断言。</p>
+
+<h2>必需构造器</h2>
 
 <p>当你想让一个类的某个构造器被所有子类都实现，你可以在定义这个构造器时在前面用<code>required</code>修饰：</p>
 
