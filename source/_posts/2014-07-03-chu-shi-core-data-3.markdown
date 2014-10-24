@@ -8,7 +8,7 @@ categories:
 - Core Data
 
 ---
-在Swift发布后，我尝试用Swift和Core Data做了一个小Demo，名字叫“HardChoice”。它用于帮助人们随机生成一个问题的结果，当然结果是预设好的，并可以加入权值。本文将通过这个Demo来进一步阐述Core Data的知识。  
+在Swift发布后，我尝试用Swift和Core Data做了一个小Demo，名字叫“[HardChoice](http://hardchoice.yulingtianxia.com)”。它用于帮助人们随机生成一个问题的结果，当然结果是预设好的，并可以加入权值。本文将通过这个Demo来进一步阐述Core Data的知识。  
 
 本文包含以下内容：  
 

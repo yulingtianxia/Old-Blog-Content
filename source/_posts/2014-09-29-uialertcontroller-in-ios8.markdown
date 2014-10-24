@@ -10,7 +10,7 @@ categories:
 iOS8新推出的UIAlertController究竟是为了什么？已有的`UIActionSheet`和`UIAlertView`就这样被打酱油了么？其实不然。。。  
 <!--more-->
 ##UIAlertController是什么
-`UIAlertController`是iOS8中新加入的一个ViewController，其主要功能是提醒（Alert），并取代 `UIActionSheet`和`UIAlertView`向用户展示提醒消息。因为它是一个ViewController，所以可以同`presentViewController:animated:completion:`方法来弹出它。  
+`UIAlertController`是iOS8中新加入的一个ViewController，其主要功能是提醒（Alert），并取代 `UIActionSheet`和`UIAlertView`向用户展示提醒消息。因为它是一个ViewController，所以可以用`presentViewController:animated:completion:`方法来弹出它。  
 ##为什么不直接使用`UIActionSheet`和`UIAlertView`
 1. `UIAlertController`采用block异步回调的形式来代理按钮的动作和文本框的配置，这样显得更加代码紧凑，可读性高。这样就不用通过协议代理给其他类，使得同一个逻辑下本应在一起的代码分离开。  
 2. `UIActionSheet`和`UIAlertView`执行的都是提醒功能，只是展现的位置略有不同，合并相似功能并上升到Controller的级别，这是一种进步。  
@@ -85,4 +85,4 @@ alert.addTextFieldWithConfigurationHandler { (choiceNameTF) -> Void in
 
 ![](http://yulingtianxia.qiniudn.com/IMG_0906.PNG)  
 
-图片截取自[HardChoice](https://github.com/yulingtianxia/HardChoice)  
+图片截取自[HardChoice](https://itunes.apple.com/cn/app/hardchoice/id923977271?mt=8)  

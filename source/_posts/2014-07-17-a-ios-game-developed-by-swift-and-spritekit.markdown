@@ -9,7 +9,7 @@ categories:
 - iOS
 
 ---
-之前用SpriteKit做过一个叫做[ColorAtom](https://github.com/yulingtianxia/ColorAtom)的小游戏，用了访问者模式处理碰撞检测，还用了SpriteKit中的粒子系统、连接体、力场和动画等，可以说是一个学习SpriteKit比较不错的Demo，随着Swift的火热，我也用Swift和SpriteKit写了一个更为简单的小游戏[Spiral](https://github.com/yulingtianxia/Spiral)  
+之前用SpriteKit做过一个叫做[ColorAtom](http://coloratom.yulingtianxia.com)的小游戏，用了访问者模式处理碰撞检测，还用了SpriteKit中的粒子系统、连接体、力场和动画等，可以说是一个学习SpriteKit比较不错的Demo，随着Swift的火热，我也用Swift和SpriteKit写了一个更为简单的小游戏[Spiral](http://spiral.yulingtianxia.com)  
 
 <!--more-->
 附上Spiral的动图：  

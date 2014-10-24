@@ -186,7 +186,7 @@ PS：IK（Inverse Kinematics）也能在SceneKit上运行。
 - **`enabled`** 场的“开关”
 - **`exclusive`** 唯我独尊，这个场的地盘内，别的场的影响被无视。别让两个唯我独尊的场影响区域重叠，那样会出乱子的。默认为`NO`。
 
-我用SpriteKit的力场中的噪声场和辐射重力场做了一个小游戏[ColorAtom](https://github.com/yulingtianxia/ColorAtom)，有兴趣的可以去看看。应用了很多粒子系统和碰撞检测知识，把SpriteKit之前的内容能加的都加进去了，欢迎指正。    
+我用SpriteKit的力场中的噪声场和辐射重力场做了一个小游戏[ColorAtom](http://coloratom.yulingtianxia.com)，有兴趣的可以去看看。应用了很多粒子系统和碰撞检测知识，把SpriteKit之前的内容能加的都加进去了，欢迎指正。    
 
 ##Integration with SceneKit
 

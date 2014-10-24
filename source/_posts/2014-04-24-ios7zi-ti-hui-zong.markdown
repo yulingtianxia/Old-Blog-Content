@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "iOS7字体汇总"
+title: "iOS添加字体汇总"
 date: 2014-04-24 18:12:43 +0800
 comments: true
 categories: 
@@ -8,26 +8,25 @@ categories:
 - 字体
 
 ---
-本文列举了iOS7所有字体以及获取字体的方式  
+向iOS中添加第三方字体并获取其名称。    
 <!--more-->
-运行下面的代码可以获得所有的字体样式  
+1. 将字体文件加入工程中  
+2. 在XXX-Info.plist文件中（XXX为工程名）加入新的键“Fonts provided by application”，其值为一个数组，并在数组中添加字体文件的名称。  
+3. 在工程->Targets(选一个target)->Build Phases->Copy Bundle Resources中加入字体文件  
+4. 运行下面的代码可以获得所有的字体样式  
 
 ``` objc
 		NSArray *familyNames = [UIFont familyNames];
-        
         for( NSString *familyName in familyNames ){
-            
-            NSLog(@"Family: %@",familyName);
-            
+            printf( "Family: %s \n", [familyName UTF8String] );
             NSArray *fontNames = [UIFont fontNamesForFamilyName:familyName];
             for( NSString *fontName in fontNames ){
-                NSLog(@"Font: %@",fontName);
-            }
-            
-        } 
+                printf( "\tFont: %s \n", [fontName UTF8String] );
+            }  
+        }
 ``` 
 
-在iOS7运行，获得结果如下：  
+在iOS7运行，获得结果如下，从中找出你新添加的字体名吧：  
 
  Family: Marion  
  Font: Marion-Italic  

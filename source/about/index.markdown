@@ -17,9 +17,10 @@ footer: true
 
 - 我的APP
 	- [畅游导航](http://changyou.yulingtianxia.com)  
-	- [ColorAtom](https://itunes.apple.com/cn/app/coloratom/id918469696?mt=8)  
-	- [Spiral](https://itunes.apple.com/us/app/square-spiral/id920811081?l=zh&ls=1&mt=8)  
-
+	- [ColorAtom](http://coloratom.yulingtianxia.com)  
+	- [Spiral](https:spiral.yulingtianxia.com)  
+	- [HardChoice](http://hardchoice.yulingtianxia.com)  
+	
 - 在手机上查看我的博客：
 	- [Android](/download/blog_android.apk)  
 	![](http://yulingtianxia.qiniudn.com/qrcode-android.png)  

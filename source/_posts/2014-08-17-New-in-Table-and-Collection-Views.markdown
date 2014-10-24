@@ -65,7 +65,7 @@ iOS会根据样式的用途来合理调整字体。
 - 人工代码
 	我们可以重写`sizeThatFits:`方法来自己定义新的Size，这样我们就不必学习约束相关的知识了。  
 	
-下面我给出了一个用Swift语言写的Demo-[HardChoice](https://github.com/yulingtianxia/HardChoice)，使用自动布局来调整`UITableViewCell`的高度。我通过实现一个`UITableViewCell`的子类`DynamicCell`来实现自动布局，你可以再GitHub上下载[源码](https://github.com/yulingtianxia/HardChoice)：  
+下面我给出了一个用Swift语言写的Demo-[HardChoice](http://hardchoice.yulingtianxia.com)，使用自动布局来调整`UITableViewCell`的高度。我通过实现一个`UITableViewCell`的子类`DynamicCell`来实现自动布局，你可以再GitHub上下载[源码](https://github.com/yulingtianxia/HardChoice)：  
 
 ``` 
 import UIKit

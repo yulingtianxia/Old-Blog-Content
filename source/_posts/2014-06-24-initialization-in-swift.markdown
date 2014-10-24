@@ -9,14 +9,17 @@ categories:
 ---
 本文参考自Swift文档，主要包括以下内容：  
 
-- 简介
-- 自定义构造过程
+- [简介](#简介)
+- [自定义构造过程](#自定义构造过程)
 - 默认构造器
 - 值类型的构造器代理
 - 类的继承和构造过程
+- 可失败构造器
+- 必需构造器
 - 通过闭包和函数来设置属性的默认值  
 
-(2014-8-8更新至beta5语法)
+(2014-8-8更新至beta5语法)  
+(2014-10-24更新至Swift1.1)
 <!--more-->
 
 ##简介
@@ -306,8 +309,235 @@ for item in breakfastList {
 // 1 x bacon ✘
 // 6 x eggs ✘
 ``` 
+##可失败构造器
 
-###必需构造器
+有时候定义一个构造器可以失败的类，结构体或枚举是很有用的。这样的失败可能被非法的初始化参数，所需外部资源的缺失或一些其他阻止初始化成功的情况触发。  
+
+为了应付初始化可能失败的情形，需要在定义类，结构体或枚举时再定义一个或多个可失败构造器。在`init`关键字后面放一个问号(`init?`)即可写出一个可失败构造器。  
+
+**你不能定义具有相同参数类型和参数名称的可失败构造器和非可失败构造器**
+
+可失败构造器返回它初始化类型的可选值。你要在可失败构造器中可能触发失败的地方返回`nil`。  
+
+**严格的来说，构造器不返回值。更确切地说，它们的角色是确保`self`在构造过程结束时被完整正确的初始化。虽然你写下`return nil`来触发一个构造过程的失败，但你不要使用`return`关键字来指明构造过程的成功。**  
+
+下面的例子定义了一个叫做`Animal`的结构体，它有一个叫做`species`的`String`常量属性。`Animal`结构体还定义了一个可失败构造器，它只接收一个`species`参数。这个构造器检查被传递过来的`species`参数是否为空字符串：如果是空字符串那就触发构造过程失败，否则`species`属性会被赋值，构造过程成功：  
+
+``` 
+struct Animal {
+    let species: String
+    init?(species: String) {
+        if species.isEmpty { return nil }
+        self.species = species
+    }
+}
+``` 
+你可以试着使用可失败构造器来初始化一个`Animal`对象来检验构造过程是否成功：
+``` 
+let someCreature = Animal(species: "Giraffe")
+// someCreature is of type Animal?, not Animal
+ 
+if let giraffe = someCreature {
+    println("An animal was initialized with a species of \(giraffe.species)")
+}
+// prints "An animal was initialized with a species of Giraffe"
+``` 
+如果你给可失败构造器传递一个空字符串作为参数，那么将会触发构造过程失败：
+```
+let anonymousCreature = Animal(species: "")
+// anonymousCreature is of type Animal?, not Animal
+ 
+if anonymousCreature == nil {
+    println("The anonymous creature could not be initialized")
+}
+// prints "The anonymous creature could not be initialized"
+```
+**这里注意下空字符串与`nil`的区别。空字符串是合法的，它并不像`nil`那样代表了某种类型值得缺失。但在`Animal`中我们必须设定一个有意义的`species`属性，它不能是空字符串。**  
+###枚举的可失败构造器
+
+你可以使用可失败构造器根据一或多个参数来选择合适的枚举成员。如果传入的参数没能匹配到合适的枚举成员，构造就会失败。  
+
+下面的例子定义了一个叫做`TemperatureUnit`的枚举，有三个可能的情况 (`Kelvin`, `Celsius`, 和 `Fahrenheit`)。可失败构造器用于在表现一个温度符号字符时找到一个合适的枚举成员：
+```
+enum TemperatureUnit {
+    case Kelvin, Celsius, Fahrenheit
+    init?(symbol: Character) {
+        switch symbol {
+        case "K":
+            self = .Kelvin
+        case "C":
+            self = .Celsius
+        case "F":
+            self = .Fahrenheit
+        default:
+            return nil
+        }
+    }
+}
+```
+你可以使用这个可失败构造器来为三种可能的状况选择合适的枚举成员，也可在参数不能匹配任何状况时让构造过程失败：
+```
+let fahrenheitUnit = TemperatureUnit(symbol: "F")
+if fahrenheitUnit != nil {
+    println("This is a defined temperature unit, so initialization succeeded.")
+}
+// prints "This is a defined temperature unit, so initialization succeeded."
+ 
+let unknownUnit = TemperatureUnit(symbol: "X")
+if unknownUnit == nil {
+    println("This is not a defined temperature unit, so initialization failed.")
+}
+// prints "This is not a defined temperature unit, so initialization failed."
+
+```
+###带有原始值枚举的可失败构造器
+
+带有原始值的枚举会自动得到一个可失败构造器：`init?(rawValue:)`，它接受`rawValue`参数来匹配一个枚举成员，如果无法匹配就出发构造过程失败。  
+
+发挥`init?(rawValue:)`的优势将上面的例子`TemperatureUnit`重写：
+```
+enum TemperatureUnit: Character {
+    case Kelvin = "K", Celsius = "C", Fahrenheit = "F"
+}
+ 
+let fahrenheitUnit = TemperatureUnit(rawValue: "F")
+if fahrenheitUnit != nil {
+    println("This is a defined temperature unit, so initialization succeeded.")
+}
+// prints "This is a defined temperature unit, so initialization succeeded."
+ 
+let unknownUnit = TemperatureUnit(rawValue: "X")
+if unknownUnit == nil {
+    println("This is not a defined temperature unit, so initialization failed.")
+}
+// prints "This is not a defined temperature unit, so initialization failed."
+```
+###类的可失败构造器
+
+值类型的可失败构造器可以在任何地方触发构造过程失败。在上面的`Animal`结构体例子中，构造器在`species`属性被赋值前就触发了构造过程失败，位置很靠前。  
+
+对于类，可失败构造器只能在所有存储型属性被赋初值并且任意构造器代理发生后才触发构造过程失败。  
+
+下面给出的例子展现了如何使用隐式解析可选属性来满足这个可失败类构造器的需求：
+```
+class Product {
+    let name: String!
+    init?(name: String) {
+        if name.isEmpty { return nil }
+        self.name = name
+    }
+}
+```
+上面定义的`Product`类非常类似之前见过的`Animal`结构体。`Product`类有一个不能为空值的字符串常量属性`name`。为了强制满足这个要求，`Product`类使用可失败构造器来确保`name`属性值在构造过程成功前不为空。  
+
+然而`Product`是一个类而不是结构体。这意味着它不像`Animal`，任何`Product`类的可失败构造器都必须在触发构造过程失败之前为`name`属性提供一个初值。  
+
+在上面的例子中，`Product`类的`name`属性被定义成隐式解析可选的字符串类型(`String!`)。因为它是一个可选类型，这意味着构造过程中`name`属性在被赋值前有一个默认值`nil`。这个默认值`nil`意味着`Product`类中所有属性都有一个合法的初值。结果就是`Product`类的可失败构造器如果被传递的是一个空字符串，它能在构造器开始时就触发一个构造过程失败。  
+
+因为`name`属性是常量，你可以确信在构造过程成功后它将永远不是`nil`。尽管它被定义为隐式解析可选类型，你可以永远自信地获取它的隐式解析值，而不用检验是否为`nil`：  
+```
+if let bowTie = Product(name: "bow tie") {
+    // no need to check if bowTie.name == nil
+    println("The product's name is \(bowTie.name)")
+}
+// prints "The product's name is bow tie"
+```
+###可失败构造器的传播
+
+类，结构体或枚举的可失败构造器可以横向代理给同一个的类，结构体或枚举中的另一个可失败构造器。类似的，子类的可失败构造器也能向上代理到超类的可失败构造器。  
+
+不论发生何种情况，如果你代理给的另一个构造器发生了构造过程失败，整个构造过程程序立刻失败，后续的构造过程代码也不会执行。  
+
+**可失败构造器也可代理给非可失败构造器。如果你想在一个已经存在的不会失败的构造过程中添加一个可能失败的状况时可以用到这招**  
+
+下面的例子定义了一个`Product`的子类`CartItem`。`CartItem`类模拟了在线购物车中的一件物品。`CartItem`包含一个叫做`quantity`的常量属性并确保这个属性总是不小于1：
+```
+class CartItem: Product {
+    let quantity: Int!
+    init?(name: String, quantity: Int) {
+        super.init(name: name)
+        if quantity < 1 { return nil }
+        self.quantity = quantity
+    }
+}
+```
+`quantity`属性类型为隐式解析整型(`Int!`)。就像`Product`类的`name`属性一样，这意味着`quantity`属性在构造过程中被赋值前有一个默认值`nil`。  
+
+`CartItem`的可失败构造器开始于向上代理到超类`Product`的`init(name:)`构造器。这满足了要求--可失败构造器必需总是在构造过程失败被触发之前完成构造器代理。  
+
+如果超类的构造过程由于空的`name`值而失败，整个构造过程程序立刻失败，后续的构造过程代码也不会执行。如果超类构造过程成功，`CartItem`构造器会验证获取到的`quantity`值是否大于等于1。  
+
+如果你用非空的`name`和大等于1的`quantity`创建一个`CartItem`实例，构造过程会成功：  
+```
+if let twoSocks = CartItem(name: "sock", quantity: 2) {
+    println("Item: \(twoSocks.name), quantity: \(twoSocks.quantity)")
+}
+// prints "Item: sock, quantity: 2"
+```
+如果你试着用值为0的`quantity`创建一个`CartItem`实例，构造器将会导致构造过程失败：  
+```
+if let zeroShirts = CartItem(name: "shirt", quantity: 0) {
+    println("Item: \(zeroShirts.name), quantity: \(zeroShirts.quantity)")
+} else {
+    println("Unable to initialize zero shirts")
+}
+// prints "Unable to initialize zero shirts"
+``` 
+同样地，如果你尝试用空的`name`值创建一个`CartItem`实例，超类`Product`构造器会导致构造过程失败：  
+```
+if let oneUnnamed = CartItem(name: "", quantity: 1) {
+    println("Item: \(oneUnnamed.name), quantity: \(oneUnnamed.quantity)")
+} else {
+    println("Unable to initialize one unnamed product")
+}
+// prints "Unable to initialize one unnamed product"
+```
+###可失败构造器的重载
+
+你可以在子类中重载超类的可失败构造器，就像重载其他任意构造器那样。另外，你还可以用子类的非可失败构造器重载超类的可失败构造器。这让你能定义一个构造过程不能失败的子类，尽管超类的构造过程是允许失败的。  
+
+注意如果你用子类的非可失败构造器重载了超类的可失败构造器，子类构造器不能向上代理到超类构造器。非可失败构造器庸官都不能代理给可失败构造器。  
+
+**注意：你可以用非可失败构造器重载可失败构造器，但是不能倒过来**  
+
+下面的例子定义了一个叫做`Document`的类。这个类模拟了一个用`name`属性初始化的文档，`name`属性是非空字符串或者是`nil`，但不能是空字符串：  
+```
+class Document {
+    var name: String?
+    // this initializer creates a document with a nil name value
+    init() {}
+    // this initializer creates a document with a non-empty name value
+    init?(name: String) {
+        if name.isEmpty { return nil }
+        self.name = name
+    }
+}
+```
+下一个例子定义了一个`Document`的子类`AutomaticallyNamedDocument`。子类`AutomaticallyNamedDocument`重载了两个`Document`添加的指定构造器。这些重载确保`AutomaticallyNamedDocument`实例在不用`name`初始化或传入`init(name:)`的值是空字符串时将“[Untitled]”作为`name`的初值：  
+```
+class AutomaticallyNamedDocument: Document {
+    override init() {
+        super.init()
+        self.name = "[Untitled]"
+    }
+    override init(name: String) {
+        super.init()
+        if name.isEmpty {
+            self.name = "[Untitled]"
+        } else {
+            self.name = name
+        }
+    }
+}
+```
+`AutomaticallyNamedDocument`用非可失败的`init(name:)`构造器重载了它超类的可失败的`init?(name:)`构造器。因为`AutomaticallyNamedDocument`应付空字符串情形的方式与它的超类不同，它的构造器不需要失败，所以它提供了一个非可失败版本的构造器来替代。  
+
+###init!可失败构造器
+你一贯地通过在`init`关键字后放置问号(`init?`)来定义一个创建可选值类型实例的可失败构造器。另外，你还可以定义一个创建隐式解析可选类型实例的可失败构造器。在`init`关键字后放置一个叹号来替代问号(`init!`)就可以啦。  
+
+你可以从`init?`代理到`init!`，反之亦然；你可以用`init!`重载`init?`，反之亦然。你也可以从`init`代理到`init!`，不过这么做将会在`init!`发生构造过程失败时触发一个断言。  
+
+##必需构造器
 
 当你想让一个类的某个构造器被所有子类都实现，你可以在定义这个构造器时在前面用`required`修饰：  
 

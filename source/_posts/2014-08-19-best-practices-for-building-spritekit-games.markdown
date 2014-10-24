@@ -127,7 +127,7 @@ profile：检测硬件使用情况。
 ![](http://yulingtianxia.qiniudn.com/140845151467.png)
 ![](http://yulingtianxia.qiniudn.com/140845150994.png)  
 
-上面两个场景是我的一个SpriteKit游戏[ColorAtom](https://github.com/yulingtianxia/ColorAtom)中的秘密模式和黑洞模式截图，欢迎Star和Follow。  
+上面两个场景是我的一个SpriteKit游戏[ColorAtom](http://coloratom.yulingtianxia.com)中的秘密模式和黑洞模式截图，欢迎Star和Follow。  
 ###Shapes
 
 `SKShapeNode`的耗能层级图如下：  
