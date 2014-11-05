@@ -247,7 +247,7 @@ PS:这里说的分发表其实就是`Class`中的方法列表，它将方法选�
 ```
 struct objc_super { id receiver; Class class; };
 ```
-这个结构体指明了消息应该被传递给特定超类的定义。  
+这个结构体指明了消息应该被传递给特定超类的定义。但`receiver`仍然是`self`本身，这点需要注意，因为当我们想通过`[super class]`获取超类时，编译器只是将指向`self`的`id`指针和`class`的SEL传递给了`objc_msgSendSuper`函数，因为只有在`NSObject`类找到`class`方法，然后`class`方法调用`object_getClass()`，传入参数是指向`self`的`id`指针，所以我们得到的永远都是`self`的类型。    
 
 ###获取方法地址
 在IMP那节提到过可以避开消息绑定而直接获取方法的地址并调用方法。这种做法很少用，除非是需要持续大量重复调用某方法的极端情况，避开消息发送泛滥而直接调用该方法会更高效。  
