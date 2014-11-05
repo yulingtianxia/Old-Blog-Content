@@ -9,11 +9,13 @@
 	<meta name="author" content="玉令天下">
 
 	
-	<meta name="description" content="Objective-C Runtime 本文详细整理了 Cocoa 的 Runtime 系统的知识，它使得 Objective-C 如虎添翼，具备了灵活的动态特性，使这门古老的语言焕发生机。主要内容如下：
-&ndash; 引言
-&ndash; 简介
-&ndash; 与Runtime交互
-& &hellip;">
+	<meta name="description" content="Objective-C Runtime 本文详细整理了 Cocoa 的 Runtime 系统的知识，它使得 Objective-C 如虎添翼，具备了灵活的动态特性，使这门古老的语言焕发生机。主要内容如下： 引言
+简介
+与Runtime交互
+Runtime术语
+消息
+动态方法解析
+消息转发 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -138,17 +140,21 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 	<h1 class="title" itemprop="name">Objective-C Runtime</h1>
-	<div class="entry-content" itemprop="articleBody"><p>本文详细整理了 Cocoa 的 Runtime 系统的知识，它使得 Objective-C 如虎添翼，具备了灵活的动态特性，使这门古老的语言焕发生机。主要内容如下：<br/>
-&ndash; 引言
-&ndash; 简介
-&ndash; 与Runtime交互
-&ndash; Runtime术语
-&ndash; 消息
-&ndash; 动态方法解析
-&ndash; 消息转发
-&ndash; 壮的实例变量(Non Fragile ivars)
-&ndash; Objective-C Associated Objects
-&ndash; 总结</p>
+	<div class="entry-content" itemprop="articleBody"><p>本文详细整理了 Cocoa 的 Runtime 系统的知识，它使得 Objective-C 如虎添翼，具备了灵活的动态特性，使这门古老的语言焕发生机。主要内容如下：</p>
+
+<ul>
+<li>引言</li>
+<li>简介</li>
+<li>与Runtime交互</li>
+<li>Runtime术语</li>
+<li>消息</li>
+<li>动态方法解析</li>
+<li>消息转发</li>
+<li>壮的实例变量(Non Fragile ivars)</li>
+<li>Objective-C Associated Objects</li>
+<li>总结</li>
+</ul>
+
 
 <!--more-->
 
@@ -769,7 +775,7 @@ sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选�
 
 <p>参考链接：<br/>
 &ndash; <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048">Objective-C Runtime Programming Guide</a><br/>
-&ndash; <a href="http://blog.csdn.net/wzzvictory/article/details/8615569">Objective-C runtime之运行时的基本特点</a>
+&ndash; <a href="http://blog.csdn.net/wzzvictory/article/details/8615569">Objective-C runtime之运行时的基本特点</a><br/>
 &ndash; <a href="http://cocoasamurai.blogspot.jp/2010/01/understanding-objective-c-runtime.html">Understanding the Objective-C Runtime</a></p>
 </div>
 
