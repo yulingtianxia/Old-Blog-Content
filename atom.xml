@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-05T17:38:23+08:00</updated>
+  <updated>2014-11-05T17:46:28+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -43,14 +43,16 @@
 
 <p>曾经觉得OC特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把<code>[receiver message]</code>当成简单的方法调用，而无视了<strong>“发送消息”</strong>这句话的深刻含义。于是<code>[receiver message]</code>会被编译器转化为：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>objc_msgSend(receiver, selector)</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">objc_msgSend</span><span class="p">(</span><span class="n">receiver</span><span class="p">,</span> <span class="n">selector</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>如果消息含有参数，则为：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>objc_msgSend(receiver, selector, arg1, arg2, ...)</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">objc_msgSend</span><span class="p">(</span><span class="n">receiver</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="p">...)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>如果消息的接收者能够找到对应的<code>selector</code>，那么就相当于直接执行了接收者这个对象的特定方法；否则，消息要么被转发，或是临时向接收者动态添加这个<code>selector</code>对应的实现内容，要么就干脆玩完崩溃掉。</p>
