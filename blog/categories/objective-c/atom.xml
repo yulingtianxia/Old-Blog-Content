@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-02T15:09:33+08:00</updated>
+  <updated>2014-11-05T17:30:42+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -12,6 +12,516 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Objective-C Runtime]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/"/>
+    <updated>2014-11-05T17:28:27+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime</id>
+    <content type="html"><![CDATA[<p>本文详细整理了 Cocoa 的 Runtime 系统的知识，它使得 Objective-C 如虎添翼，具备了灵活的动态特性，使这门古老的语言焕发生机。主要内容如下：<br/>
+&ndash; 引言
+&ndash; 简介
+&ndash; 与Runtime交互
+&ndash; Runtime术语
+&ndash; 消息
+&ndash; 动态方法解析
+&ndash; 消息转发
+&ndash; 壮的实例变量(Non Fragile ivars)
+&ndash; Objective-C Associated Objects
+&ndash; 总结</p>
+
+<!--more-->
+
+
+<p></p>
+
+<h2>引言</h2>
+
+<p>曾经觉得OC特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把<code>[receiver message]</code>当成简单的方法调用，而无视了<strong>“发送消息”</strong>这句话的深刻含义。于是<code>[receiver message]</code>会被编译器转化为：<br/>
+<code>
+objc_msgSend(receiver, selector)
+</code>
+如果消息含有参数，则为：<br/>
+<code>
+objc_msgSend(receiver, selector, arg1, arg2, ...)
+</code>
+如果消息的接收者能够找到对应的<code>selector</code>，那么就相当于直接执行了接收者这个对象的特定方法；否则，消息要么被转发，或是临时向接收者动态添加这个<code>selector</code>对应的实现内容，要么就干脆玩完崩溃掉。</p>
+
+<p>现在可以看出<code>[receiver message]</code>真的不是一个简简单单的方法调用。因为这只是在编译阶段确定了要向接收者发送<code>message</code>这条消息，而<code>receive</code>将要如何响应这条消息，那就要看运行时发生的情况来决定了。</p>
+
+<p>Objective-C 的 Runtime 铸就了它动态语言的特性，这些深层次的知识虽然平时写代码用的少一些，但是却是每个 OC 程序员需要了解的。</p>
+
+<h2>简介</h2>
+
+<p>因为OC是一门动态语言，所以它总是想办法把一些决定工作从编译连接推迟到运行时。也就是说只有编译器是不够的，还需要一个运行时系统 (runtime system) 来执行编译后的代码。这就是 Objective-C Runtime 系统存在的意义，它是整个OC运行框架的一块基石。</p>
+
+<p>Runtime其实有两个版本:“modern”和 “legacy”。我们现在用的 Objective-C 2.0 采用的是现行(Modern)版的Runtime系统，只能运行在 iOS 和 OS X 10.5 之后的64位程序中。而OS X较老的32位程序仍采用 Objective-C 1中的（早期）Legacy 版本的 Runtime 系统。这两个版本最大的区别在于当你更改一个类的实例变量的布局时，在早期版本中你需要重新编译它的子类，而现行版就不需要。</p>
+
+<p>Runtime基本是用C和汇编写的，可见苹果为了动态系统的高效而作出的努力。你可以在<a href="http://www.opensource.apple.com/source/objc4/">这里</a>下到苹果维护的开源代码。苹果和GNU各自维护一个开源的runtime版本，这两个版本之间都在努力的保持一致。</p>
+
+<h2>与Runtime交互</h2>
+
+<p>OC 从三种不同的层级上与 Runtime 系统进行交互，分别是通过 Objective-C 源代码，通过 Foundation 框架的<code>NSObject</code>类定义的方法，通过对 runtime 函数的直接调用。</p>
+
+<h3>Objective-C源代码</h3>
+
+<p>大部分情况下你就只管写你的OC代码就行，runtime 系统自动在幕后辛勤劳作着。<br/>
+还记得引言中举的例子吧，消息的执行会使用到一些编译器为实现动态语言特性而创建的数据结构和函数，OC中的类、方法和协议等在 runtime 中都由一些数据结构来定义，这些内容在后面会讲到。（比如<code>objc_msgSend</code>函数及其参数列表中的<code>id</code>和<code>SEL</code>都是啥）</p>
+
+<h3>NSObject的方法</h3>
+
+<p>Cocoa 中大多数类都继承于<code>NSObject</code>类，也就自然继承了它的方法。最特殊的例外是<code>NSProxy</code>，它十个抽象超类，它实现了一些消息转发有关的方法，可以通过继承它来实现一个其他类的替身类或是虚拟出一个不存在的类，说白了就是领导把自己展现给大家风光无限，但是把活儿都交给幕后小弟去干。</p>
+
+<p>有的<code>NSObject</code>中的方法起到了抽象接口的作用，比如<code>description</code>方法需要你重载它并为你定义的类提供描述内容。<code>NSObject</code>还有些方法能在运行时获得类的信息，并检查一些特性，比如<code>class</code>返回对象的类；<code>isKindOfClass:</code>和<code>isMemberOfClass:</code>则检查对象是否在指定的类继承体系中；<code>respondsToSelector:</code>检查对象能否响应指定的消息；<code>conformsToProtocol:</code>检查对象是否实现了指定协议类的方法；<code>methodForSelector:</code>则返回指定方法实现的地址。</p>
+
+<h3>Runtime的函数</h3>
+
+<p>Runtime 系统是一个由一系列函数和数据结构组成，具有公共接口的动态共享库。头文件存放于<code>/usr/include/objc</code>目录下。许多函数允许你用纯C代码来重复实现 OC 中同样的功能。虽然有一些方法构成了<code>NSObject</code>类的基础，但是你在写 OC 代码时一般不会直接用到这些函数的，除非是写一些 OC 与其他语言的桥接或是底层的debug工作。在<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/index.html">Objective-C Runtime Reference</a>中有对 Runtime 函数的详细文档。</p>
+
+<h2>Runtime术语</h2>
+
+<p>还记得引言中的<code>objc_msgSend:</code>方法吧，它的真身是这样的：<br/>
+<code>objc
+id objc_msgSend ( id self, SEL op, ... );
+</code>
+下面将会逐渐展开介绍一些术语，其实它们都对应着数据结构。</p>
+
+<h3>SEL</h3>
+
+<p><code>objc_msgSend</code>函数第二个参数类型为<code>SEL</code>，它是<code>selector</code>在OC中的表示类型（Swift中是Selector类）。<code>selector</code>是方法选择器，可以理解为区分方法的 ID，而这个 ID 的数据结构是<code>SEL</code>:<br/>
+<code>
+typedef struct objc_selector *SEL;
+</code>
+其实它就是个映射到方法的C字符串，你可以用 OC 编译器命令<code>@selector()</code>或者 Runtime 系统的<code>
+sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选择器。</p>
+
+<p>不同类中相同名字的方法所对应的方法选择器是相同的，即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择器，于是 OC 中方法命名有时会带上参数类型(<code>NSNumber</code>一堆抽象工厂方法拿走不谢)，Cocoa 中有好多长长的方法哦。</p>
+
+<h3>id</h3>
+
+<p><code>objc_msgSend</code>第一个参数类型为<code>id</code>，大家对它都不陌生，它是一个指向类实例的指针：<br/>
+<code>
+typedef struct objc_object *id;
+</code>
+那<code>objc_object</code>又是啥呢：<br/>
+<code>
+struct objc_object { Class isa; };
+</code>
+<code>objc_object</code>结构体包含一个<code>isa</code>指针，根据<code>isa</code>指针就可以顺藤摸瓜找到对象所属的类。</p>
+
+<h3>Class</h3>
+
+<p>之所以说<code>isa</code>是指针是因为<code>Class</code>其实是一个指向<code>objc_class</code>结构体的指针：<br/>
+<code>
+typedef struct objc_class *Class;
+</code>
+而<code>objc_class</code>就是我们摸到的那个瓜，里面的东西多着呢：<br/>
+```
+struct objc_class {</p>
+
+<pre><code>Class isa  OBJC_ISA_AVAILABILITY;
+</code></pre>
+
+<h1>if !<strong>OBJC2</strong></h1>
+
+<pre><code>Class super_class                                        OBJC2_UNAVAILABLE;
+const char *name                                         OBJC2_UNAVAILABLE;
+long version                                             OBJC2_UNAVAILABLE;
+long info                                                OBJC2_UNAVAILABLE;
+long instance_size                                       OBJC2_UNAVAILABLE;
+struct objc_ivar_list *ivars                             OBJC2_UNAVAILABLE;
+struct objc_method_list **methodLists                    OBJC2_UNAVAILABLE;
+struct objc_cache *cache                                 OBJC2_UNAVAILABLE;
+struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;
+</code></pre>
+
+<h1>endif</h1>
+
+<p>} OBJC2_UNAVAILABLE;
+<code>
+可以看到运行时一个类还关联了它的超类指针，类名，成员变量，方法，缓存，还有附属的协议。   
+其中`objc_ivar_list`和`objc_method_list`分别是成员变量列表和方法列表：  
+</code>
+struct objc_ivar_list {</p>
+
+<pre><code>int ivar_count                                           OBJC2_UNAVAILABLE;
+</code></pre>
+
+<h1>ifdef <strong>LP64</strong></h1>
+
+<pre><code>int space                                                OBJC2_UNAVAILABLE;
+</code></pre>
+
+<h1>endif</h1>
+
+<pre><code>/* variable length structure */
+struct objc_ivar ivar_list[1]                            OBJC2_UNAVAILABLE;
+</code></pre>
+
+<p>}                                                            OBJC2_UNAVAILABLE;</p>
+
+<p>struct objc_method_list {</p>
+
+<pre><code>struct objc_method_list *obsolete                        OBJC2_UNAVAILABLE;
+
+int method_count                                         OBJC2_UNAVAILABLE;
+</code></pre>
+
+<h1>ifdef <strong>LP64</strong></h1>
+
+<pre><code>int space                                                OBJC2_UNAVAILABLE;
+</code></pre>
+
+<h1>endif</h1>
+
+<pre><code>/* variable length structure */
+struct objc_method method_list[1]                        OBJC2_UNAVAILABLE;
+</code></pre>
+
+<p>}
+<code>``
+如果你C语言不是特别好，可以直接理解为</code>objc_ivar_list<code>结构体存储着</code>objc_ivar<code>数组列表，而</code>objc_ivar<code>结构体存储了类的单个成员变量的信息；同理</code>objc_method_list<code>结构体存储着</code>objc_method<code>数组列表，而</code>objc_method`结构体存储了类的某个方法的信息。</p>
+
+<p>最后要提到的还有一个<code>objc_cache</code>，顾名思义它是缓存，它在<code>objc_class</code>的作用很重要，在后面会讲到。</p>
+
+<p>一个 ObjC 类同时也是一个对象，为了处理类和对象的关系，runtime 库创建了一种叫做元类 (Meta Class) 的东西。当你发出一个类似<code>[NSObject alloc]</code>的消息时，你事实上是把这个消息发给了一个类对象 (Class Object) ，这个类对象必须是一个元类的实例，而这个元类同时也是一个根元类 (root meta class) 的实例。你会说 <code>NSObject</code> 的子类时，你的类就会指向 <code>NSObject</code> 做为其超类。但是所有的元类都指向根元类为其超类。所有的元类的方法列表都有能够响应消息的类方法。所以当 <code>[NSObject alloc]</code> 这条消息发给类对象的时候，<code>objc_msgSend()</code>会去它的元类里面去查找能够响应消息的方法，如果找到了，然后对这个类对象执行方法调用。</p>
+
+<h4>Method</h4>
+
+<p><code>Method</code>是一种代表类中的某个方法的类型。<br/>
+<code>
+typedef struct objc_method *Method;
+</code>
+而<code>objc_method</code>在上面的方法列表中提到过，它存储了方法名，方法类型和方法实现：<br/>
+```
+struct objc_method {</p>
+
+<pre><code>SEL method_name                                          OBJC2_UNAVAILABLE;
+char *method_types                                       OBJC2_UNAVAILABLE;
+IMP method_imp                                           OBJC2_UNAVAILABLE;
+</code></pre>
+
+<p>}                                                            OBJC2_UNAVAILABLE;
+<code>``
+- 方法名类型为</code>SEL<code>，前面提到过相同名字的方法即使在不同类中定义，它们的方法选择器也相同。  
+- 方法类型</code>method_types<code>是个</code>char<code>指针，其实存储着方法的参数类型和返回值类型。
+-</code>method_imp`指向了方法的实现，本质上是一个函数指针，后面会详细讲到。</p>
+
+<h4>Ivar</h4>
+
+<p><code>Ivar</code>是一种代表类中实例变量的类型。<br/>
+<code>
+typedef struct objc_ivar *Ivar;
+</code>
+而<code>objc_ivar</code>在上面的成员变量列表中也提到过：<br/>
+```
+truct objc_ivar {</p>
+
+<pre><code>char *ivar_name                                          OBJC2_UNAVAILABLE;
+char *ivar_type                                          OBJC2_UNAVAILABLE;
+int ivar_offset                                          OBJC2_UNAVAILABLE;
+</code></pre>
+
+<h1>ifdef <strong>LP64</strong></h1>
+
+<pre><code>int space                                                OBJC2_UNAVAILABLE;
+</code></pre>
+
+<h1>endif</h1>
+
+<p>}                                                            OBJC2_UNAVAILABLE;
+```</p>
+
+<p>PS:<code>OBJC2_UNAVAILABLE</code>之类的宏定义是苹果在  OC  中对系统运行版本进行约束的黑魔法，有兴趣的可以查看源代码。</p>
+
+<h3>IMP</h3>
+
+<p><code>IMP</code>在<code>objc.h</code>中的定义是：<br/>
+<code>
+typedef id (*IMP)(id, SEL, ...);
+</code>
+它就是一个<a href="http://yulingtianxia.com/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/">函数指针</a>，这是由编译器生成的。当你发起一个 ObjC 消息之后，最终它会执行的那段代码，就是由这个函数指针指定的。而IMP这个函数指针就指向了这个方法的实现。既然得到了执行某个实例某个方法的入口，我们就可以绕开消息传递阶段，直接执行方法，这在后面会提到。</p>
+
+<p>你会发现<code>IMP</code>指向的方法与<code>objc_msgSend</code>函数类型相同，参数都包含<code>id</code>和<code>SEL</code>类型。每个方法名都对应一个<code>SEL</code>类型的方法选择器，而每个实例对象中的<code>SEL</code>对应的方法实现肯定是唯一的，通过一组<code>id</code>和<code>SEL</code>参数就能确定唯一的方法实现地址；反之亦然。</p>
+
+<h3>Cache</h3>
+
+<p>在<code>runtime.h</code>中Cache的定义如下：<br/>
+<code>
+typedef struct objc_cache *Cache
+</code>
+还记得之前<code>objc_class</code>结构体中有一个<code>struct objc_cache *cache</code>吧，它到底是缓存啥的呢，先看看<code>objc_cache</code>的实现：<br/>
+```
+struct objc_cache {</p>
+
+<pre><code>unsigned int mask /* total = mask + 1 */                 OBJC2_UNAVAILABLE;
+unsigned int occupied                                    OBJC2_UNAVAILABLE;
+Method buckets[1]                                        OBJC2_UNAVAILABLE;
+</code></pre>
+
+<p>};
+<code>``
+</code>Cache<code>为方法调用的性能进行优化，通俗地讲，每当实例对象接收到一个消息时，它不会直接在</code>isa<code>指向的类的方法列表中遍历查找能够响应消息的方法，因为这样效率太低了，而是优先在</code>Cache<code>中查找。Runtime 系统会把被调用的方法存到</code>Cache<code>中（理论上讲一个方法如果被调用，那么它有可能今后还会被调用），下次查找的时候效率更高。这根计算机组成原理中学过的 CPU 绕过主存先访问</code>Cache<code>的道理挺像，而我猜苹果为提高</code>Cache`命中率应该也做了努力吧。</p>
+
+<h2>消息</h2>
+
+<p>前面做了这么多铺垫，现在终于说到了消息了。OC 中发送消息是用中括号（<code>[]</code>）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。</p>
+
+<h3>objc_msgSend函数</h3>
+
+<p>在引言中已经对<code>objc_msgSend</code>进行了一点介绍，看起来像是<code>objc_msgSend</code>返回了数据，其实<code>objc_msgSend</code>从不返回数据而是你的方法被调用后返回了数据。下面详细叙述下消息发送步骤：</p>
+
+<ol>
+<li>检测这个 <code>selector</code> 是不是要忽略的。比如 Mac OS X 开发，有了垃圾回收就不理会 <code>retain</code>, <code>release</code> 这些函数了。</li>
+<li>检测这个 target 是不是 <code>nil</code> 对象。ObjC 的特性是允许对一个 <code>nil</code> 对象执行任何一个方法不会 Crash，因为会被忽略掉。</li>
+<li>如果上面两个都过了，那就开始查找这个类的 <code>IMP</code>，先从 <code>cache</code> 里面找，完了找得到就跳到对应的函数去执行。</li>
+<li>如果 <code>cache</code> 找不到就找一下方法分发表。</li>
+<li>如果分发表找不到就到超类的分发表去找，一直找，直到找到<code>NSObject</code>类为止。</li>
+<li>如果还找不到就要开始进入<strong>动态方法</strong>解析了，后面会提到。</li>
+</ol>
+
+
+<p>PS:这里说的分发表其实就是<code>Class</code>中的方法列表，它将方法选择器和方法实现地质联系起来。</p>
+
+<p><img src="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/messaging1.gif" alt="" /></p>
+
+<p>其实编译器会根据情况在<code>objc_msgSend</code>, <code>objc_msgSend_stret</code>, <code>objc_msgSendSuper</code>, 或 <code>objc_msgSendSuper_stret</code>四个方法中选择一个来调用。如果消息是传递给超类，那么会调用名字带有"Super"的函数；如果消息返回值是数据结构而不是简单值时，那么会调用名字带有"stret"的函数。排列组合正好四个方法。</p>
+
+<h3>方法中的隐藏参数</h3>
+
+<p>我们经常在方法中使用<code>self</code>关键字来引用实例本身，但从没有想过为什么<code>self</code>就能取到调用当前方法的对象吧。其实<code>self</code>的内容是在方法运行时被偷偷的动态传入的。</p>
+
+<p>当<code>objc_msgSend</code>找到方法对应的实现时，它将直接调用该方法实现，并将消息中所有的参数都传递给方法实现,同时,它还将传递两个隐藏的参数:<br/>
+&ndash; 接收消息的对象（也就是<code>self</code>指向的内容）
+&ndash; 方法选择器（<code>_cmd</code>指向的内容）
+之所以说它们是隐藏的是因为在源代码方法的定义中并没有声明这两个参数。它们是在代码被编译时被插入实现中的。尽管这些参数没有被明确声明，在源代码中我们仍然可以引用它们。在下面的例子中，<code>self</code>引用了接收者对象，而<code>_cmd</code>引用了方法本身的选择器：<br/>
+```
+&ndash; strange
+{</p>
+
+<pre><code>id  target = getTheReceiver();
+SEL method = getTheMethod();
+
+if ( target == self || method == _cmd )
+    return nil;
+return [target performSelector:method];
+</code></pre>
+
+<p>}
+<code>``
+在这两个参数中，</code>self` 更有用。实际上,它是在方法实现中访问消息接收者对象的实例变量的途径。</p>
+
+<p>而当方法中的<code>super</code>关键字接收到消息时，编译器会创建一个<code>objc_super</code>结构体：<br/>
+<code>
+struct objc_super { id receiver; Class class; };
+</code>
+这个结构体指明了消息应该被传递给特定超类的定义。</p>
+
+<h3>获取方法地址</h3>
+
+<p>在IMP那节提到过可以避开消息绑定而直接获取方法的地址并调用方法。这种做法很少用，除非是需要持续大量重复调用某方法的极端情况，避开消息发送泛滥而直接调用该方法会更高效。</p>
+
+<p><code>NSObject</code>类中有个<code>methodForSelector:</code>实例方法，你可以用它来获取某个方法选择器对应的<code>IMP</code>，举个栗子：<br/>
+```
+void (*setter)(id, SEL, BOOL);
+int i;</p>
+
+<p>setter = (void (*)(id, SEL, BOOL))[target</p>
+
+<pre><code>methodForSelector:@selector(setFilled:)];
+</code></pre>
+
+<p>for ( i = 0 ; i &lt; 1000 ; i++ )</p>
+
+<pre><code>setter(targetList[i], @selector(setFilled:), YES);
+</code></pre>
+
+<p><code>``
+当方法被当做函数调用时，上节提到的两个隐藏参数就需要我们明确给出了。上面的例子调用了1000次函数，你可以试试直接给</code>target<code>发送1000次</code>setFilled:`消息会花多久。</p>
+
+<p>PS：<code>methodForSelector:</code>方法是由 Cocoa 的 Runtime 系统提供的，而不是 OC 自身的特性。</p>
+
+<h2>动态方法解析</h2>
+
+<p>你可以动态地提供一个方法的实现。例如我们可以用<code>@dynamic</code>关键字在类的实现文件中修饰一个属性：<br/>
+<code>
+@dynamic propertyName;
+</code>
+这表明我们会为这个属性动态提供存取方法，也就是说编译器不会再默认为我们生成<code>setPropertyName:</code>和<code>propertyName</code>方法，而需要我们动态提供。我们可以通过分别重载<code>resolveInstanceMethod:</code>和<code>resolveClassMethod:</code>方法分别添加实例方法实现和类方法实现。因为当 Runtime 系统在<code>Cache</code>和方法分发表中（包括超类）找不到要执行的方法时，Runtime会调用<code>resolveInstanceMethod:</code>或<code>resolveClassMethod:</code>来给程序员一次动态添加方法实现的机会。我们需要用<code>class_addMethod</code>函数完成向特定类添加特定方法实现的操作：
+```
+void dynamicMethodIMP(id self, SEL _cmd) {</p>
+
+<pre><code>// implementation ....
+</code></pre>
+
+<p>}
+@implementation MyClass
++ (BOOL)resolveInstanceMethod:(SEL)aSEL
+{</p>
+
+<pre><code>if (aSEL == @selector(resolveThisMethodDynamically)) {
+      class_addMethod([self class], aSEL, (IMP) dynamicMethodIMP, "v@:");
+      return YES;
+}
+return [super resolveInstanceMethod:aSEL];
+</code></pre>
+
+<p>}
+@end
+<code>``
+上面的例子为</code>resolveThisMethodDynamically<code>方法添加了实现内容，也就是</code>dynamicMethodIMP<code>方法中的代码。其中 “</code>v@:`” 表示返回值和参数，这个符号涉及 <a href="https://developer.apple.com/library/mac/DOCUMENTATION/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html">Type Encoding</a></p>
+
+<p>PS：动态方法解析会在消息转发机制浸入前执行。如果 <code>respondsToSelector:</code> 或 <code>instancesRespondToSelector:</code>方法被执行，动态方法解析器将会被首先给予一个提供该方法选择器对应的IMP的机会。如果你想让该方法选择器被传送到转发机制，那么就让<code>resolveInstanceMethod:</code>返回<code>NO</code>。</p>
+
+<h2>消息转发</h2>
+
+<h3>重定向</h3>
+
+<p>在消息转发机制执行前，Runtime 系统会再给我们一次偷梁换柱的机会，即通过重载<code>- (id)forwardingTargetForSelector:(SEL)aSelector</code>方法替换消息的接受者为其他对象：<br/>
+```
+&ndash; (id)forwardingTargetForSelector:(SEL)aSelector
+{</p>
+
+<pre><code>if(aSelector == @selector(mysteriousMethod:)){
+    return alternateObject;
+}
+return [super forwardingTargetForSelector:aSelector];
+</code></pre>
+
+<p>}
+<code>``
+毕竟消息转发要耗费更多时间，抓住这次机会将消息重定向给别人是个不错的选择，不过千万别返回</code>self`，因为那样会死循环。</p>
+
+<h3>转发</h3>
+
+<p>当动态方法解析不作处理返回<code>NO</code>时，消息转发机制会被触发，这时<code>forwardInvocation:</code>方法会被执行，我们可以重载这个方法来定义我们的转发逻辑：<br/>
+```
+&ndash; (void)forwardInvocation:(NSInvocation *)anInvocation
+{</p>
+
+<pre><code>if ([someOtherObject respondsToSelector:
+        [anInvocation selector]])
+    [anInvocation invokeWithTarget:someOtherObject];
+else
+    [super forwardInvocation:anInvocation];
+</code></pre>
+
+<p>}
+<code>``
+该消息的唯一参数是个</code>NSInvocation<code>类型的对象——该对象封装了原始的消息和消息的参数。我们可以实现</code>forwardInvocation:`方法来对不能处理的消息做一些默认的处理，也可以将消息转发给其他对象来处理，而不抛出错误。</p>
+
+<p>当一个对象由于没有相应的方法实现而无法响应某消息时，运行时系统将通过<code>forwardInvocation:</code>消息通知该对象。每个对象都从<code>NSObject</code>类中继承了<code>forwardInvocation:</code>方法。然而，NSObject中的方法实现只是简单地调用了<code>doesNotRecognizeSelector:</code>。通过实现我们自己的<code>forwardInvocation:</code>方法，我们可以在该方法实现中将消息转发给其它对象。</p>
+
+<p><code>forwardInvocation:</code>方法就像一个不能识别的消息的分发中心，将这些消息转发给不同接收对象。或者它也可以象一个运输站将所有的消息都发送给同一个接收对象。它可以将一个消息翻译成另外一个消息，或者简单的"吃掉“某些消息，因此没有响应也没有错误。<code>forwardInvocation:</code>方法也可以对不同的消息提供同样的响应，这一切都取决于方法的具体实现。该方法所提供是将不同的对象链接到消息链的能力。</p>
+
+<p>注意： <code>forwardInvocation:</code>方法只有在消息接收对象中无法正常响应消息时才会被调用。 所以，如果我们希望一个对象将<code>negotiate</code>消息转发给其它对象，则这个对象不能有<code>negotiate</code>方法。否则，<code>forwardInvocation:</code>将不可能会被调用。</p>
+
+<h3>转发和多继承</h3>
+
+<p>转发和继承相似，可以用于为OC编程添加一些多继承的效果。就像下图那样，一个对象把消息转发出去，就好似它把另一个对象中的方法借过来或是“继承”过来一样。</p>
+
+<p><img src="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/forwarding.gif" alt="" /></p>
+
+<p>这使得不同继承体系分支下的两个类可以“继承”对方的方法，在上图中<code>Warrior</code>和<code>Diplomat</code>没有继承关系，但是<code>Warrior</code>将<code>negotiate</code>消息转发给了<code>Diplomat</code>后，就好似<code>Diplomat</code>是<code>Warrior</code>的超类一样。</p>
+
+<p>消息转发弥补了 OC 不支持多继承的性质，也避免了因为多继承导致单个类变得臃肿复杂。它将问题分解得很细，只针对想要借鉴的方法才转发，而且转发机制是透明的。</p>
+
+<h3>替代者对象(Surrogate Objects)</h3>
+
+<p>转发不仅能模拟多继承，也能使轻量级对象代表重量级对象。弱小的女人背后是强大的男人，毕竟女人遇到难题都把它们转发给男人来做了。这里有一些适用案例，可以参看<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-SW11">官方文档</a>。</p>
+
+<h3>转发与继承</h3>
+
+<p>尽管转发很像继承，但是<code>NSObject</code>类不会将两者混淆。像<code>respondsToSelector:</code> 和 <code>isKindOfClass:</code>这类方法只会考虑继承体系，不会考虑转发链。比如上图中一个<code>Warrior</code>对象如果被问到是否能响应<code>negotiate</code>消息：<br/>
+```
+if ( [aWarrior respondsToSelector:@selector(negotiate)] )</p>
+
+<pre><code>...
+</code></pre>
+
+<p><code>``
+结果是</code>NO<code>，尽管它能够接受</code>negotiate<code>消息而不报错，因为它靠转发消息给</code>Diplomat`类来响应消息。</p>
+
+<p>如果你为了某些意图偏要“弄虚作假”让别人以为<code>Warrior</code>继承到了<code>Diplomat</code>的<code>negotiate</code>方法，你得重新实现 <code>respondsToSelector:</code> 和 <code>isKindOfClass:</code>来加入你的转发算法：<br/>
+```
+&ndash; (BOOL)respondsToSelector:(SEL)aSelector
+{</p>
+
+<pre><code>if ( [super respondsToSelector:aSelector] )
+    return YES;
+else {
+    /* Here, test whether the aSelector message can     *
+     * be forwarded to another object and whether that  *
+     * object can respond to it. Return YES if it can.  */
+}
+return NO;
+</code></pre>
+
+<p>}
+<code>
+除了`respondsToSelector:` 和 `isKindOfClass:`之外，`instancesRespondToSelector:`中也应该写一份转发算法。如果使用了协议，`conformsToProtocol:`同样也要加入到这一行列中。类似地，如果一个对象转发它接受的任何远程消息，它得给出一个`methodSignatureForSelector:`来返回准确的方法描述，这个方法会最终响应被转发的消息。比如一个对象能给它的替代者对象转发消息，它需要像下面这样实现`methodSignatureForSelector:`：  
+</code>
+&ndash; (NSMethodSignature*)methodSignatureForSelector:(SEL)selector
+{</p>
+
+<pre><code>NSMethodSignature* signature = [super methodSignatureForSelector:selector];
+if (!signature) {
+   signature = [surrogate methodSignatureForSelector:selector];
+}
+return signature;
+</code></pre>
+
+<p>}
+```</p>
+
+<h2>健壮的实例变量(Non Fragile ivars)</h2>
+
+<p>在 Runtime 的现行版本中，最大的特点就是健壮的实例变量。当一个类被编译时，实例变量的布局也就形成了，它表明访问类的实例变量的位置。从对象头部开始，实例变量依次根据自己所占空间而产生位移：</p>
+
+<p><img src="http://lh6.ggpht.com/_bMMRN3vt0x0/S1eCgoEotAI/AAAAAAAAAxg/mnW4VTLQOnk/nf1.png?imgmax=800" alt="" /></p>
+
+<p>上图左边是<code>NSObject</code>类的实例变量布局，右边是我们写的类的布局，也就是在超类后面加上我们自己类的实例变量，看起来不错。但试想如果那天苹果更新了<code>NSObject</code>类，发布新版本的系统的话，那就悲剧了：</p>
+
+<p><img src="http://lh5.ggpht.com/_bMMRN3vt0x0/S1eCmurL90I/AAAAAAAAAxk/LfEs0PxKwX8/nf2.png?imgmax=800" alt="" /></p>
+
+<p>我们自定义的类被划了两道线，那是因为那块区域跟超类重叠了。唯有苹果将超类改为以前的布局才能拯救我们，但这样也导致它们不能再拓展它们的框架了，因为成员变量布局被死死地固定了。在脆弱的实例变量(Fragile ivars) 环境下我们需要重新编译继承自 Apple 的类来恢复兼容性。那么在健壮的实例变量下回发生什么呢？</p>
+
+<p><img src="http://lh4.ggpht.com/_bMMRN3vt0x0/S1eCrkwWDII/AAAAAAAAAxo/lKC8NQl6rQE/nf3.png?imgmax=800" alt="" /></p>
+
+<p>在健壮的实例变量下编译器生成的实例变量布局跟以前一样，但是当 runtime 系统检测到与超类有部分重叠时它会调整你新添加的实例变量的位移，那样你在子类中新添加的成员就被保护起来了。</p>
+
+<p>需要注意的是在健壮的实例变量下，不要使用<code>sizeof(SomeClass)</code>，而是用<code>class_getInstanceSize([SomeClass class])</code>代替；也不要使用<code>offsetof(SomeClass, SomeIvar)</code>，而要用<code>ivar_getOffset(class_getInstanceVariable([SomeClass class], "SomeIvar"))</code>来代替。</p>
+
+<h2>Objective-C Associated Objects</h2>
+
+<p>在 OS X 10.6 之后，Runtime系统让OC支持向对象动态添加变量。涉及到的函数有以下三个：<br/>
+<code>
+void objc_setAssociatedObject ( id object, const void *key, id value, objc_AssociationPolicy policy );
+id objc_getAssociatedObject ( id object, const void *key );
+void objc_removeAssociatedObjects ( id object );
+</code>
+这些方法以键值对的形式动态地向对象添加、获取或删除关联值。其中关联政策是一组枚举常量：<br/>
+<code>
+enum {
+   OBJC_ASSOCIATION_ASSIGN  = 0,
+   OBJC_ASSOCIATION_RETAIN_NONATOMIC  = 1,
+   OBJC_ASSOCIATION_COPY_NONATOMIC  = 3,
+   OBJC_ASSOCIATION_RETAIN  = 01401,
+   OBJC_ASSOCIATION_COPY  = 01403
+};
+</code>
+这些常量对应着引用关联值的政策，也就是 OC 内存管理的引用计数机制。</p>
+
+<h2>总结</h2>
+
+<p>我们之所以让自己的类继承<code>NSObject</code>不仅仅因为苹果帮我们完成了复杂的内存分配问题，更是因为这使得我们能够用上 Runtime 系统带来的便利。可能我们平时写代码时可能很少会考虑一句简单的<code>[receiver message]</code>背后发生了什么，而只是当做方法或函数调用。深入理解 Runtime 系统的细节更有利于我们利用消息机制写出功能更强大的代码，比如 Method Swizzling 等。</p>
+
+<p>参考链接：<br/>
+&ndash; <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048">Objective-C Runtime Programming Guide</a><br/>
+&ndash; <a href="http://blog.csdn.net/wzzvictory/article/details/8615569">Objective-C runtime之运行时的基本特点</a>
+&ndash; <a href="http://cocoasamurai.blogspot.jp/2010/01/understanding-objective-c-runtime.html">Understanding the Objective-C Runtime</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[NSPredicate]]></title>
@@ -698,7 +1208,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#101;&#x6d;&#x70;&#x6c;&#111;&#121;&#x65;&#x65;&#115;&#46;&#x40;&#115;&#x75;&#x6d;&#x2e;&#x73;&#97;&#108;&#97;&#x72;&#121;">&#101;&#109;&#112;&#108;&#111;&#x79;&#x65;&#x65;&#x73;&#x2e;&#x40;&#115;&#117;&#109;&#46;&#115;&#x61;&#x6c;&#x61;&#114;&#x79;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#101;&#x6d;&#x70;&#x6c;&#x6f;&#121;&#101;&#x65;&#115;&#x2e;&#x40;&#115;&#x75;&#109;&#x2e;&#115;&#x61;&#x6c;&#97;&#114;&#121;">&#x65;&#109;&#112;&#x6c;&#111;&#121;&#x65;&#x65;&#115;&#x2e;&#x40;&#x73;&#117;&#x6d;&#x2e;&#115;&#x61;&#108;&#x61;&#114;&#121;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 
@@ -1567,521 +2077,6 @@ if (![context save:&amp;error]) {
 <p>这次一目了然了：</p>
 
 <p>ZPERSON表存储了子类所有字段数据，其Z_ENT字段标志着这条数据的类型，Z_ENT与类型名Z_NAME的映射关系储存在Z_PRIMARYKEY表中，而Z_3TEACHERS存储的则是ZPERSON表中数据项之间的关系，也就是之前我们建立的学生和老师的对应关系，其原理是将ZPERSON表中的Z_PK字段内容两个一组对应起来，这样就相当于把ZPERSON表中两条数据项关联起来了。之前我们在代码中只将LiLei同学添加到了MissGao老师的学生列表中，但是Core Data已经自动维护起了关系，让MissGao也存在于LiLei的老师列表中。Core Data把底层的数据库封装起来，通过简单的操作让程序员更高校的管理数据，所以SQLite这部分我们只是了解下就可以了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[初识Core Data(1)]]></title>
-    <link href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/"/>
-    <updated>2014-05-01T19:58:00+08:00</updated>
-    <id>http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1</id>
-    <content type="html"><![CDATA[<p>本文内容：</p>
-
-<ul>
-<li>Core Data概述</li>
-<li>新建一个Core Data工程</li>
-<li>总结</li>
-</ul>
-
-
-<hr />
-
-<!--more-->
-
-
-<h2>Core Data概述</h2>
-
-<p>Core Data本身既不是数据库也不是数据库访问框架。相反，Core Data是一个完整的数据模型解决方案。我简单理解为对持久层的封装，使得我们可以通过可视化建立数据模型，简化数据存取。有人会联想到Hibernate，其实Core Data比Hibernate强大得多，它不仅支持SQLite数据库，还能对XML文件、二进制文件、用户自定义文件进行操作。</p>
-
-<p>即使不懂SQL语句，也依然可以使用Core Data。因为Core Data将底层的数据库SQL语句封装成了一套API，并可通过可视化操作来建立数据库的模型和表之间的关系，它甚至在数据变化时会帮你自动处理关系（比如删除了一门课程，所有选这门课程的学生也会自动解除与此门课程的关系），Core Data还能对非法数据进行过滤，还支持对数据操作的Undo/Redo功能。更重要的是，Core Data的<code>NSFetchRequest</code>类可以替代SQL中的Select语句，并提供了更高效的方法将查询结果显示在UITableView中。</p>
-
-<p>iOS 3.0和Mac OS X10.5都支持Core Data，但iOS上不支持XML文件存储。Core Data对读取性能做了大量优化，其中惰性加载（Faulting）就是一个例子，毕竟设备的内存是有限切珍贵的。<br/>
-在OSX上可以绑定利用KVO和KVC保持UI项与模型对象或属性之间的连接，无需编写任何代码，通过对象和数组控制器自动从Core Data存储区分批提取<code>NSManagedObject</code>对象。这就像在VS中用.Net构建基于SQLServer的桌面程序。<br/>
-苹果公司单独为iOS平台的Core Data引入了<code>NSFetchedResultsController</code>类帮助视图与从持久化存储文件提取的数据之间的交互。它主要是用来充当<code>UITableiView</code>的数据源，负责调整<code>UITableiView</code>行与节（section）的显示数目，以及为各表格行提供内容。</p>
-
-<h2>新建一个Core Data工程</h2>
-
-<p>在Xcode5中，只有Master-Detail Application，Utility Application以及Empty Application支持创建时使用Core Data模板，我们选择带有UITableView的Master-Detail Application吧。</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/14035339677.png" alt="" /></p>
-
-<p>一定要勾选Core Data选项，项目名称就叫MyCDDemo吧，嘿嘿</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353396978.png" alt="" /></p>
-
-<p>项目建立后会发现Frameworks中已经有了<code>CoreData.framework</code>一项，并且还多了一个MyCDDemo.xcdatamodeld文件，该文件定义了数据模型结构，你可以使用XCode内置的可视化建模工具进行构建。点开它你会发现左侧有三项：Entities，Fetch Request、Configurations。</p>
-
-<p><strong>Entities</strong></p>
-
-<p>在系统的学习Core Data前，可以简单的将Entity理解为数据库中的一张表，在代码中一个<code>NSEntityDescription</code>类的对象就代表了一个Entity。Entity也像类一样可以继承，如果你有若干个相似的实体，就可以抽离出它们的共有特性作为一个“父实体”，就省去了在多个实体中都指定相同的属性。甚至可以勾选Abstract Entitiy让其成为抽象实体，就像抽象类一样。</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353414584.png" alt="" /></p>
-
-<p>现在已经有了一个现成的实体：Event，也就是在SQLite中有了一张叫做Event的表：</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353397403.png" alt="" /></p>
-
-<p>Attributes就相当于一张表的列属性，可以设置其数据类型，默认值，最大最小值等，类似数据库可视化建表。需要注意的是这里的空值是NULL，不等同于OC中的nil，更不等同于0和空字符串@“”。Event实体中已经有了一个叫timeStamp的属性，类型为Date，这是模版自动生成的，暂且别修改它。</p>
-
-<p>Relationships描述了Entity间的关系：多对一，一对一等。当你指定了一个关系后，苹果推荐我们也指定一个反转关系。比如A和B是多对多的关系，那么A指向B的关系Type为To Many，同时设定B指向A的关系Type为To Many。</p>
-
-<p>Fetched Property表示了一种弱的、单向的关系。因为Core Data不支持在persistent store之间建立Relationships，所以Fetched Property可用于建立cross-store关系，还用于建立“松耦合”关系，相似暂时的分组。（a fetched property of a department might be &ldquo;recent hires&rdquo; (employees do not have an inverse to the recent hires relationship)）</p>
-
-<p><strong>Fetch Request</strong></p>
-
-<p>我们使用<code>NSFetchRequest</code>类来描述数据请求，利用数据请求从持久存储（persistent store）中获取对象。经常碰到的情形是你经常需要多次执行同样的请求，或是执行遵循一个给定模式的请求，但是其中包含变量（如查找条件）——这些变量经常由用户提供。例如，在运行程序的时候，你要根据用户需要获取某个作者在用户指定日期后出版的所有出版物。</p>
-
-<p>你可以预定义请求，把它们作为模板存储在被管理对象模型中。预定义的模板在你需要的时候就可以取出使用。通常情况下，我们通过Xcode的data modeling tool工具创建请求模板。模板可以包含变量：</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353412465.png" alt="" /></p>
-
-<p><strong>Configurations</strong></p>
-
-<p>配置包含了一个名称和若干个相关的实体。实体的集合是可以重叠的——这就是说，一个实体可以出现在多个配置中。在代码中，我们使用<code>setEntities: forConfiguration:</code>的方法来指定配置。也可以用Xcode的建模工具来指定。要获取某项配置的实体，需要用<code>entitiesForConfiguration:</code>的方法。</p>
-
-<p>一般说来，如果你想把不同的实体存放在不同的存储中去，就可能用到配置。一个持久化存储协调器（persistent store coordinator，你暂且理解为负责数据库连接的东东）只能有一个被管理对象模型（managed object model，也就是把xcdatamodeld文件加载到代码中的内容啦）。所以，默认情况下，和协调器关联的某个存储必须包含同样的实体。要想绕过这个限制，你可以创建一个包含所有实体并集的模型，然后在模型中为每一个你想使用的实体子集创建配置，这样一来，使用这个模型创建协调器，当你需要添加存储（persistent store）时，可根据不同的配置来指定对应的存储属性。当你创建配置的时候，需要记住，不能创建跨存储的关系（cross-store relationships）。</p>
-
-<p>模版已经生成了一个叫Default的配置，但是在程序中并没有用到它（这在之后的内容会阐述）。</p>
-
-<p>在了解了xcdatamodeld类型文件之后，你可能对Core Data如何描述一个数据库有了一定的概念，下一步我们准备阅读模版自动生成的代码，你会体会到xcdatamodeld文件在程序中是如何被加载和使用的。</p>
-
-<p>先看看AppDelegate.h</p>
-
-<p>``` objc</p>
-
-<h1>import &lt;UIKit/UIKit.h></h1>
-
-<p>@interface AppDelegate : UIResponder <UIApplicationDelegate></p>
-
-<p>@property (strong, nonatomic) UIWindow *window;</p>
-
-<p>@property (readonly, strong, nonatomic) NSManagedObjectContext <em>managedObjectContext;
-@property (readonly, strong, nonatomic) NSManagedObjectModel </em>managedObjectModel;
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;</p>
-
-<ul>
-<li>(void)saveContext;</li>
-<li>(NSURL *)applicationDocumentsDirectory;</li>
-</ul>
-
-
-<p>@end
-```
-嗯，比平时的程序多出了三个属性嘛，而且后两个属性之前还提到过，这“三剑客“是Core Data中非常重要的三个类：</p>
-
-<ul>
-<li>Managed Object Model（管理数据模型）: 你可以将这个东西看作是数据库的轮廓，或者结构。这里包含了各个实体的定义信息，一般来说，你会使用我们刚刚看过的视觉编辑器来操作这个物体，添加属性，建立属性之间的关系等等，当然你也可以使用代码。</li>
-<li>Persistent Store Coordinator （持久性数据协调器）： 你可以将这个东西看作是数据库连接库，在这里，你将设置数据存储的名字和位置，以及数据存储的时机。</li>
-<li>Managed Object Context （管理数据内容）：你可以将这一部分看作是数据的实际内容，这也是整个数据库中对我们而言最重要的部分（这还用说），基本上，插入数据，查询数据，删除数据的工作都在这里完成。</li>
-</ul>
-
-
-<p>如果你还是不好理解，那么简单的把这“三剑客”理解为：数据定义语言 (DDL)、数据库连接（DBC）、数据操作语言 (DML)在Core Data中的另一种存在吧！</p>
-
-<p>下面该看看AppDelegate.m，了解下“三剑客”实例化的过程：
-首先是程序加载完毕的代理方法：</p>
-
-<p>```
-&ndash; (BOOL)application:(UIApplication <em>)application didFinishLaunchingWithOptions:(NSDictionary </em>)launchOptions
-{</p>
-
-<pre><code>// Override point for customization after application launch.
-UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-MasterViewController *controller = (MasterViewController *)navigationController.topViewController;
-controller.managedObjectContext = self.managedObjectContext;
-return YES;
-</code></pre>
-
-<p>}
-<code>``
-我们暂且只看</code>controller.managedObjectContext = self.managedObjectContext;<code>这句，调用</code>managedObjectContext<code>的getter方法并赋给程序启动后出现的</code>MasterViewController<code>，那么我们就看一下</code>managedObjectContext`的getter方法：</p>
-
-<p>```
-// Returns the managed object context for the application.
-// If the context doesn&rsquo;t already exist, it is created and bound to the persistent store coordinator for the application.
-&ndash; (NSManagedObjectContext *)managedObjectContext
-{</p>
-
-<pre><code>if (_managedObjectContext != nil) {
-    return _managedObjectContext;
-}
-
-NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-if (coordinator != nil) {
-    _managedObjectContext = [[NSManagedObjectContext alloc] init];
-    [_managedObjectContext setPersistentStoreCoordinator:coordinator];
-}
-return _managedObjectContext;
-</code></pre>
-
-<p>}
-```</p>
-
-<p>嗯，英文注释不错，第一次调用的时候会实例化一个<code>NSManagedObjectContext</code>对象，并使用<code>persistentStoreCoordinator</code>方法返回的<code>NSPersistentStoreCoordinator</code>对象配置上下文，最后返回新实例化的<code>NSManagedObjectContext</code>对象。<br/>
-顺藤摸瓜，我们再看看<code>persistentStoreCoordinator</code>的getter：</p>
-
-<p>```
-// Returns the persistent store coordinator for the application.
-// If the coordinator doesn&rsquo;t already exist, it is created and the application&rsquo;s store added to it.
-&ndash; (NSPersistentStoreCoordinator *)persistentStoreCoordinator
-{</p>
-
-<pre><code>if (_persistentStoreCoordinator != nil) {
-    return _persistentStoreCoordinator;
-}
-
-NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"MyCDDemo.sqlite"];
-
-NSError *error = nil;
-_persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&amp;error]) {
-    /*
-     Replace this implementation with code to handle the error appropriately.
-
-     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-
-     Typical reasons for an error here include:
-     * The persistent store is not accessible;
-     * The schema for the persistent store is incompatible with current managed object model.
-     Check the error message to determine what the actual problem was.
-
-
-     If the persistent store is not accessible, there is typically something wrong with the file path. Often, a file URL is pointing into the application's resources directory instead of a writeable directory.
-
-     If you encounter schema incompatibility errors during development, you can reduce their frequency by:
-     * Simply deleting the existing store:
-     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil]
-
-     * Performing automatic lightweight migration by passing the following dictionary as the options parameter:
-     @{NSMigratePersistentStoresAutomaticallyOption:@YES, NSInferMappingModelAutomaticallyOption:@YES}
-
-     Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
-
-     */
-    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-    abort();
-}    
-
-return _persistentStoreCoordinator;
-</code></pre>
-
-<p>}
-<code>``
-为了访问documents目录中的SQLite存储文件MyCDDemo.sqlite，还定义了一个</code>applicationDocumentsDirectory`方法，它的作用是获取程序documents的路径，代码如下：</p>
-
-<p>```
-// Returns the URL to the application&rsquo;s Documents directory.
-&ndash; (NSURL *)applicationDocumentsDirectory
-{</p>
-
-<pre><code>return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-</code></pre>
-
-<p>}
-<code>``
-MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生成的还有MyCDDemo.momd文件，后面会提到。
-</code>NSPersistentStoreCoordinator<code>初始化时需要传入</code>managedObjectModel<code>。</code>NSPersistentStoreCoordinator<code>对象在添加持久存储的时候不仅需要传入存储类型，还有配置，存储文件URL，选项以及错误类型。我们使用sqlite作为存储类型，配置为nil，还记得之前叫做default的配置么？这里我们只有一个持久存储，所以配置一项不需要。如果添加存储的时候出现错误，就会进入if判断，具体处理错误的细节可以看看模版生成的注释。  
-既然</code>NSPersistentStoreCoordinator<code>又用到了</code>managedObjectModel<code>，我们再看看</code>managedObjectModel`方法吧：</p>
-
-<p>```
-// Returns the managed object model for the application.
-// If the model doesn&rsquo;t already exist, it is created from the application&rsquo;s model.
-&ndash; (NSManagedObjectModel *)managedObjectModel
-{</p>
-
-<pre><code>if (_managedObjectModel != nil) {
-    return _managedObjectModel;
-}
-NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"MyCDDemo" withExtension:@"momd"];
-_managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-return _managedObjectModel;
-</code></pre>
-
-<p>}
-<code>``
-依然是跟之前一样的代码风格，这次</code>NSManagedObjectModel`类在初始化的时候用到了MyCDDemo.momd文件，前面提到过，当你编译项目时，MyCDDemo.xcdatamodeld数据模型将被编译成MyCDDemo.momd资源，并且保存到app的Bundle目录。</p>
-
-<p>最后，在程序退出时，会调用代理<code>applicationWillTerminate:</code></p>
-
-<p>```
-&ndash; (void)applicationWillTerminate:(UIApplication *)application
-{</p>
-
-<pre><code>// Saves changes in the application's managed object context before the application terminates.
-[self saveContext];
-</code></pre>
-
-<p>}
-<code>``
-它调用了</code>saveContext`方法：</p>
-
-<p>```
-&ndash; (void)saveContext
-{</p>
-
-<pre><code>NSError *error = nil;
-NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-if (managedObjectContext != nil) {
-    if ([managedObjectContext hasChanges] &amp;&amp; ![managedObjectContext save:&amp;error]) {
-         // Replace this implementation with code to handle the error appropriately.
-         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    } 
-}
-</code></pre>
-
-<p>}
-<code>``
-</code>managedObjectContext<code>对象中的数据无论怎么修改，都是发生在内存中的，需要调用</code>save`方法来保存到存储文件当中。</p>
-
-<p>按理说接下来应该看看<code>MasterViewController中</code>被传入的<code>managedObjectContext</code>对象是如何使用的，但在这之前，我们先运行下程序，看看这个App有什么功能：</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353397837.png" alt="" /></p>
-
-<p>再普通不过的tableview了，点击加号便可添加一条记录，内容为时间戳，回想起之前看的名称为Event的Entity，是不是想起了什么，嘿嘿。再添加了四条记录后，不妨打开sqlite文件查看下，路径为<code>~/Library/Application Support/iPhone Simulator/[OS version]/Applications/[appGUID]/Documents/</code>，目录内包含了三个文件MyCDDemo.sqlite、MyCDDemo.sqlite-shm、MyCDDemo.sqlite-wal。如上文所述，根据AppDelegate.m文件中的<code>persistentStoreCoordinator</code>方法可知，时间戳记录被存储在MyCDDemo.sqlite文件中。我用Navicat Premium将其打开：</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/14035339876.png" alt="" /></p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353398727.png" alt="" /></p>
-
-<p>相信你对“三剑客”有了更深的理解，再附上一张图加深下印象：</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353388879.png" alt="" /></p>
-
-<p>一个<code>NSManagedObjectModel</code>对象处在<code>NSPersistentStoreCoordinator</code>对象和<code>NSManagedObjectContext</code>对象之间。Core Data根据<code>NSManagedObjectModel</code>对象确定如何将底层的持久化文件中的数据映射为<code>NSManagedObject</code>对象。一个<code>NSManagedObjectModel</code>对象用于表示数据的结构。<code>NSManagedObjectModel</code>对象也被称为对象图(object graph)。你可以简单的理解为：<strong>在数据库sqlite文件中，一张表中的一条数据（table row）就相当于代码中的一个NSManagedObject对象，他们之间的映射是通过<code>NSManagedObjectModel</code>对象完成的</strong></p>
-
-<p>下面让我们进入到<code>MasterViewController</code>中来认识一下这个新出现的<code>NSManagedObject</code>“小弟”</p>
-
-<p>既然数据库中的数据最终显示在了<code>UITableView</code>上，我们撇开<code>MasterViewController</code>中其他的方法，直奔<code>UITableViewDataSource</code>协议中已经实现的那几个方法：</p>
-
-<p>```
-&ndash; (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{</p>
-
-<pre><code>return [[self.fetchedResultsController sections] count];
-</code></pre>
-
-<p>}</p>
-
-<ul>
-<li><p>(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-  id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
-  return [sectionInfo numberOfObjects];
-}</p></li>
-<li><p>(UITableViewCell <em>)tableView:(UITableView </em>)tableView cellForRowAtIndexPath:(NSIndexPath <em>)indexPath
-{
-  UITableViewCell </em>cell = [tableView dequeueReusableCellWithIdentifier:@&ldquo;Cell&rdquo; forIndexPath:indexPath];
-  [self configureCell:cell atIndexPath:indexPath];
-  return cell;
-}</p></li>
-<li><p>(BOOL)tableView:(UITableView <em>)tableView canEditRowAtIndexPath:(NSIndexPath </em>)indexPath
-{
-  // Return NO if you do not want the specified item to be editable.
-  return YES;
-}</p></li>
-<li><p>(void)tableView:(UITableView <em>)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath </em>)indexPath
-{
-  if (editingStyle == UITableViewCellEditingStyleDelete) {
-      NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-      [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];</p>
-
-<pre><code>  NSError *error = nil;
-  if (![context save:&amp;error]) {
-       // Replace this implementation with code to handle the error appropriately.
-       // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-      NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-      abort();
-  }
-</code></pre>
-
-<p>  } <br/>
-}</p></li>
-<li><p>(BOOL)tableView:(UITableView <em>)tableView canMoveRowAtIndexPath:(NSIndexPath </em>)indexPath
-{
-  // The table view should not be re-orderable.
-  return NO;
-}
-```</p></li>
-</ul>
-
-
-<p>如果你对<code>UITableView</code>的使用很有经验，一眼就可看出数据是由<code>fetchedResultsController</code>对象提供的。即使在<code>tableView: cellForRowAtIndexPath:</code>方法中没出现<code>fetchedResultsController</code>，但是在其调用的<code>configureCell: atIndexPath:</code>方法中依然用到了<code>fetchedResultsController</code>：</p>
-
-<p>```
-&ndash; (void)configureCell:(UITableViewCell <em>)cell atIndexPath:(NSIndexPath </em>)indexPath
-{</p>
-
-<pre><code>NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
-</code></pre>
-
-<p>}
-```
-嗯看来NSManagedObject对象全都由这个fetchedResultsController提供咯，下面揭开它神秘的面纱：</p>
-
-<p>```
-&ndash; (NSFetchedResultsController *)fetchedResultsController
-{</p>
-
-<pre><code>if (_fetchedResultsController != nil) {
-    return _fetchedResultsController;
-}
-
-NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-// Edit the entity name as appropriate.
-NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
-[fetchRequest setEntity:entity];
-
-// Set the batch size to a suitable number.
-[fetchRequest setFetchBatchSize:20];
-
-// Edit the sort key as appropriate.
-NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
-NSArray *sortDescriptors = @[sortDescriptor];
-
-[fetchRequest setSortDescriptors:sortDescriptors];
-
-// Edit the section name key path and cache name if appropriate.
-// nil for section name key path means "no sections".
-NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
-aFetchedResultsController.delegate = self;
-self.fetchedResultsController = aFetchedResultsController;
-
-NSError *error = nil;
-if (![self.fetchedResultsController performFetch:&amp;error]) {
-     // Replace this implementation with code to handle the error appropriately.
-     // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-    abort();
-}
-
-return _fetchedResultsController;
-</code></pre>
-
-<p>}
-```</p>
-
-<p>嗯，之前提到过，Core Data在iOS平台使用了<code>NSFetchedResultsController</code>对象来简化对提取结果和表格视图的处理。<code>NSFetchedResultsController</code>对象被惰性创建并只在表格视图数据源方法有需要时才提取数据。你会看到在<code>NSFetchRequest</code>对象的配置中，使用了Event实体，并提供了一个<code>NSSortDescriptor</code>对象以让提取结果按timeStamp进行排序。最后通过<code>NSFetchRequest</code>对象和<code>managedObjectContext</code>（在AppDelegate中传入的<code>NSManagedObjectContext</code>实例）作为参数传入<code>NSFetchedResultsController</code>的初始化方法。（<code>sectionNameKeyPath</code>参数传入nil时表示只有一个section，你会发现<code>NSFetchedResultsController</code>从数据库获取的结果跟<code>UITableView</code>需要的数据格式相同，都通过<code>NSIndexPath</code>地址来获取一条数据的内容）<br/>
-<code>NSFetchedResultsController</code>也有它的代理，将<code>MasterViewController</code>设置为其代理，这样在fetched results 发生变化时，<code>MasterViewController</code>中实现的<code>NSFetchedResultsControllerDelegate</code>方法会被调用：</p>
-
-<p>```
-&ndash; (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-{</p>
-
-<pre><code>[self.tableView beginUpdates];
-</code></pre>
-
-<p>}</p>
-
-<ul>
-<li><p>(void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-         atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
-{
-  switch(type) {
-      case NSFetchedResultsChangeInsert:
-          [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-          break;</p>
-
-<pre><code>  case NSFetchedResultsChangeDelete:
-      [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-      break;
-</code></pre>
-
-<p>  }
-}</p></li>
-<li><p>(void)controller:(NSFetchedResultsController <em>)controller didChangeObject:(id)anObject
-     atIndexPath:(NSIndexPath </em>)indexPath forChangeType:(NSFetchedResultsChangeType)type
-    newIndexPath:(NSIndexPath <em>)newIndexPath
-{
-  UITableView </em>tableView = self.tableView;</p>
-
-<p>  switch(type) {
-      case NSFetchedResultsChangeInsert:
-          [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-          break;</p>
-
-<pre><code>  case NSFetchedResultsChangeDelete:
-      [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-      break;
-
-  case NSFetchedResultsChangeUpdate:
-      [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-      break;
-
-  case NSFetchedResultsChangeMove:
-      [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-      [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-      break;
-</code></pre>
-
-<p>  }
-}</p></li>
-<li><p>(void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-  [self.tableView endUpdates];
-}</p></li>
-</ul>
-
-
-<p>/*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.</p>
-
-<ul>
-<li>(void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
- // In the simplest, most efficient, case, reload the table view.
- [self.tableView reloadData];
-}</li>
-</ul>
-
-
-<p>```</p>
-
-<p>相对于之前<code>UITableViewDataSource</code>协议方法对<code>NSFetchedResultsController</code>对象中数据的修改（通过<code>NSManagedObject</code>对象做载体），<code>NSFetchedResultsControllerDelegate</code>协议方法会在察觉到数据修改后被调用，用于产生tableview操作数据后对应的动画效果。</p>
-
-<p>可能你会觉得有些混乱，这里贴上几张图梳理下各个类的关系和结构：</p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353388301.png" alt="" /></p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353389167.png" alt="" /></p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353388423.png" alt="" /></p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353389646.png" alt="" /></p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353389047.png" alt="" /></p>
-
-<p><img src="http://yulingtianxia.qiniudn.com/140353388523.jpg" alt="" /></p>
-
-<p>最后，找到<code>insertNewObject</code>方法，当用户尝试加入一个对象到表视图时，该方法将被调用。接着你将看到如下的处理过程：</p>
-
-<ul>
-<li>获得一个<code>NSManagedObjectContext</code>对象；</li>
-<li>决定创建新对象的实体；</li>
-<li>根据实体名称创建一个新的<code>NSManagedObject</code>对象并将其插入到<code>NSManagedObjectContext</code>对象；</li>
-<li>对新创建的<code>NSManagedObject</code>对象设置timeStamp属性值</li>
-<li><code>NSManagedObjectContext</code>对象执行保存。</li>
-</ul>
-
-
-<p>当上下文执行保存，新的对象将被写到持久存储区中。这是如此简单！</p>
-
-<p>DetailViewController的内容比较简单，不在叙述，到此结束，新建Core Data的模版工程代码已经解析完毕了。在下一期文章中将会亲手修改代码，探索Core Data更多的使用技巧。</p>
-
-<h2>总结</h2>
-
-<p>Core Data框架基本的5个类：：NSPersistentStoreCoordinator、NSManagedObjectContext、NSManagedObjectModel、NSEntityDescription、NSManagedObject。</p>
-
-<ul>
-<li><p>NSPersistentStoreCoordinator持久化存储协调器（简称协调器）：负责从磁盘加载数据和将数据写入磁盘。协调器可以处理多种格式的数据库文件（NSPersistentStore），如二进制文件，XML文件、SQLite文件。你也可以实现自己的数据库文件格式（使用NSAtomicStore和NSIncrementalStore类），理论上你可以实现打开World或Photoshop文件的协调器。</p></li>
-<li><p>NSEntityDescription实体描述（简称实体）：实体可以被看做是NSManagedObject对象的“class”。实体定义了一个NSManagedObject对象所拥有的所有属性（NSAttributeDescription）,关系（NSRelationshipDescription），提取属性（NSFetchedPropertyDescription）。</p></li>
-<li><p>NSManagedObjectContext托管对象上下文（简称上下文）：上下文是内存中的一块暂存区域。查询对象（使用NSFetchRequest），创建对象，删除对象等操作都是在上下文中进行。在上下文没有保存之前，对数据的任何修改都只记录在暂存区中，不会影响磁盘上的数据。你可以创建多个上下文，但整个程序只能创建一个NSPersstentStoreCoordinator对象。</p></li>
-<li><p>NSManagedObject托管对象：Core Data的核心单元。模型对象的数据被持有在NSManagedObject对象中。每一个NSManagedObject对象都对应一个实体（就像每一个对象都有一个类）</p></li>
-<li><p>NSManagedObjectModel托管对象模型：NSManagedObjectModel通常被定义在一个.mom文件中，文件中保存了所有实体的定义。NSManagedObjectModel and the NS*Description 类完整定义了Core Data模型应该/可以包含的内容。</p></li>
-</ul>
-
 ]]></content>
   </entry>
   

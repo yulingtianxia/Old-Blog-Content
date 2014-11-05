@@ -1,0 +1,876 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Objective-C Runtime - 玉令天下的Blog</title>
+	<meta name="author" content="玉令天下">
+
+	
+	<meta name="description" content="Objective-C Runtime 本文详细整理了 Cocoa 的 Runtime 系统的知识，它使得 Objective-C 如虎添翼，具备了灵活的动态特性，使这门古老的语言焕发生机。主要内容如下：
+&ndash; 引言
+&ndash; 简介
+&ndash; 与Runtime交互
+& &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="玉令天下的Blog" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.useso.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.useso.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-49704553-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("yulingtianxia@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<h1><a href="/">玉令天下的Blog</a></h1>
+<p class="subtitle">I'm not a hacker.</p>
+<nav id="main-nav"><ul class="main">
+    <li><a href="/search">博客搜索</a></li>
+    <li><a href="/blog/archives">所有文章</a></li>
+    <li><a href="/about">关于我</a></li>
+
+</ul>
+
+
+<section class="aboutme">
+  <p>
+    小熊是只大老鼠
+  </p>
+</section>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:yulingtianxia@gmail.com" title="Email">Email</a>
+		
+		
+			<a class="weibo" href="http://www.weibo.com/yulingtianxia" title="Weibo">Weibo</a>
+		
+		
+			<a class="facebook" href="http://www.facebook.com/yulingtianxia" title="Facebook">Facebook</a>
+		
+		
+			<a class="google" href="https://plus.google.com/106642427004837273341/" rel="author" title="Google+">Google+</a>
+		
+		
+			<a class="twitter" href="http://twitter.com/yulingtianxia" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/yulingtianxia" title="GitHub">GitHub</a>
+		
+		
+		
+		  <a class="stackoverflow" href="http://stackoverflow.com/users/2374982/yangxiaoyu" title="StackOverflow"></a>
+		
+		
+		
+		
+		
+		
+			<a class="douban" href="https://www.douban.com/people/53279288" title="Douban">Douban</a>
+		
+		
+		
+			<a class="instagram" href="https://instagram.com/yulingtianxia" title="Instagram">Instagram</a>
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+
+<span id="tag-cloud"><embed type='application/x-shockwave-flash' src='/javascripts/tagcloud.swf'width='100%' height='250' bgcolor='#3D4349' id='tagcloudflash' name='tagcloudflash' quality='high' allowscriptaccess='always'flashvars="tcolor=0x8B85C3&amp;tcolor2=0xC03999&amp;hicolor=0xffffff&amp;tspeed=100&amp;distr=true&amp;mode=tags&amp;tagcloud=%3Ctags%3E%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Falgorithm%27+style%3D%27font-size%3A+12.666666666666666%25%27%3EAlgorithm%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Farc%27+style%3D%27font-size%3A+12.666666666666666%25%27%3EARC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fc%27+style%3D%27font-size%3A+15.333333333333332%25%27%3EC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcocoapods%27+style%3D%27font-size%3A+12.666666666666666%25%27%3ECocoaPods%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fcore-data%27+style%3D%27font-size%3A+20.666666666666664%25%27%3ECore+Data%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgcd%27+style%3D%27font-size%3A+15.333333333333332%25%27%3EGCD%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fgithub%27+style%3D%27font-size%3A+20.666666666666664%25%27%3EGitHub%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fios%27+style%3D%27font-size%3A+50.0%25%27%3EiOS%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fjava%27+style%3D%27font-size%3A+12.666666666666666%25%27%3EJava%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fmacosx%27+style%3D%27font-size%3A+15.333333333333332%25%27%3EMacOSX%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fobjective-c%27+style%3D%27font-size%3A+34.0%25%27%3EObjective-C%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Foctopress%27+style%3D%27font-size%3A+12.666666666666666%25%27%3EOctopress%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Frac%27+style%3D%27font-size%3A+12.666666666666666%25%27%3ERAC%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fruntime%27+style%3D%27font-size%3A+12.666666666666666%25%27%3ERuntime%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fsocial-framework%27+style%3D%27font-size%3A+12.666666666666666%25%27%3ESocial+Framework%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fspritekit%27+style%3D%27font-size%3A+28.666666666666668%25%27%3ESpriteKit%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fswift%27+style%3D%27font-size%3A+36.66666666666667%25%27%3ESwift%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fvpn%27+style%3D%27font-size%3A+12.666666666666666%25%27%3EVPN%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+20.666666666666664%25%27%3EXcode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fxcode%27+style%3D%27font-size%3A+12.666666666666666%25%27%3EXCode%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzi-ti%27+style%3D%27font-size%3A+12.666666666666666%25%27%3E%E5%AD%97%E4%BD%93%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fben-di-hua%27+style%3D%27font-size%3A+12.666666666666666%25%27%3E%E6%9C%AC%E5%9C%B0%E5%8C%96%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fpeng-zhuang-jian-ce%27+style%3D%27font-size%3A+12.666666666666666%25%27%3E%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fshe-ji-mo-shi%27+style%3D%27font-size%3A+20.666666666666664%25%27%3E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fdiao-shi%27+style%3D%27font-size%3A+12.666666666666666%25%27%3E%E8%B0%83%E8%AF%95%3C%2Fa%3E+%3Ca+href%3D%27http%3A%2F%2Fyulingtianxia.com%2Fblog%2Fcategories%2Fzhuan-zai%27+style%3D%27font-size%3A+31.333333333333332%25%27%3E%E8%BD%AC%E8%BD%BD%3C%2Fa%3E+%3C%2Ftags%3E"></span>
+<script charset="Shift_JIS" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_tr.js"></script>
+<br>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb5cb508df15ee6247a8c32c64eadb075' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Objective-C Runtime</h1>
+	<div class="entry-content" itemprop="articleBody"><p>本文详细整理了 Cocoa 的 Runtime 系统的知识，它使得 Objective-C 如虎添翼，具备了灵活的动态特性，使这门古老的语言焕发生机。主要内容如下：<br/>
+&ndash; 引言
+&ndash; 简介
+&ndash; 与Runtime交互
+&ndash; Runtime术语
+&ndash; 消息
+&ndash; 动态方法解析
+&ndash; 消息转发
+&ndash; 壮的实例变量(Non Fragile ivars)
+&ndash; Objective-C Associated Objects
+&ndash; 总结</p>
+
+<!--more-->
+
+
+<p></p>
+
+<h2>引言</h2>
+
+<p>曾经觉得OC特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把<code>[receiver message]</code>当成简单的方法调用，而无视了<strong>“发送消息”</strong>这句话的深刻含义。于是<code>[receiver message]</code>会被编译器转化为：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>objc_msgSend(receiver, selector)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果消息含有参数，则为：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>objc_msgSend(receiver, selector, arg1, arg2, ...)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果消息的接收者能够找到对应的<code>selector</code>，那么就相当于直接执行了接收者这个对象的特定方法；否则，消息要么被转发，或是临时向接收者动态添加这个<code>selector</code>对应的实现内容，要么就干脆玩完崩溃掉。</p>
+
+<p>现在可以看出<code>[receiver message]</code>真的不是一个简简单单的方法调用。因为这只是在编译阶段确定了要向接收者发送<code>message</code>这条消息，而<code>receive</code>将要如何响应这条消息，那就要看运行时发生的情况来决定了。</p>
+
+<p>Objective-C 的 Runtime 铸就了它动态语言的特性，这些深层次的知识虽然平时写代码用的少一些，但是却是每个 OC 程序员需要了解的。</p>
+
+<h2>简介</h2>
+
+<p>因为OC是一门动态语言，所以它总是想办法把一些决定工作从编译连接推迟到运行时。也就是说只有编译器是不够的，还需要一个运行时系统 (runtime system) 来执行编译后的代码。这就是 Objective-C Runtime 系统存在的意义，它是整个OC运行框架的一块基石。</p>
+
+<p>Runtime其实有两个版本:“modern”和 “legacy”。我们现在用的 Objective-C 2.0 采用的是现行(Modern)版的Runtime系统，只能运行在 iOS 和 OS X 10.5 之后的64位程序中。而OS X较老的32位程序仍采用 Objective-C 1中的（早期）Legacy 版本的 Runtime 系统。这两个版本最大的区别在于当你更改一个类的实例变量的布局时，在早期版本中你需要重新编译它的子类，而现行版就不需要。</p>
+
+<p>Runtime基本是用C和汇编写的，可见苹果为了动态系统的高效而作出的努力。你可以在<a href="http://www.opensource.apple.com/source/objc4/">这里</a>下到苹果维护的开源代码。苹果和GNU各自维护一个开源的runtime版本，这两个版本之间都在努力的保持一致。</p>
+
+<h2>与Runtime交互</h2>
+
+<p>OC 从三种不同的层级上与 Runtime 系统进行交互，分别是通过 Objective-C 源代码，通过 Foundation 框架的<code>NSObject</code>类定义的方法，通过对 runtime 函数的直接调用。</p>
+
+<h3>Objective-C源代码</h3>
+
+<p>大部分情况下你就只管写你的OC代码就行，runtime 系统自动在幕后辛勤劳作着。<br/>
+还记得引言中举的例子吧，消息的执行会使用到一些编译器为实现动态语言特性而创建的数据结构和函数，OC中的类、方法和协议等在 runtime 中都由一些数据结构来定义，这些内容在后面会讲到。（比如<code>objc_msgSend</code>函数及其参数列表中的<code>id</code>和<code>SEL</code>都是啥）</p>
+
+<h3>NSObject的方法</h3>
+
+<p>Cocoa 中大多数类都继承于<code>NSObject</code>类，也就自然继承了它的方法。最特殊的例外是<code>NSProxy</code>，它十个抽象超类，它实现了一些消息转发有关的方法，可以通过继承它来实现一个其他类的替身类或是虚拟出一个不存在的类，说白了就是领导把自己展现给大家风光无限，但是把活儿都交给幕后小弟去干。</p>
+
+<p>有的<code>NSObject</code>中的方法起到了抽象接口的作用，比如<code>description</code>方法需要你重载它并为你定义的类提供描述内容。<code>NSObject</code>还有些方法能在运行时获得类的信息，并检查一些特性，比如<code>class</code>返回对象的类；<code>isKindOfClass:</code>和<code>isMemberOfClass:</code>则检查对象是否在指定的类继承体系中；<code>respondsToSelector:</code>检查对象能否响应指定的消息；<code>conformsToProtocol:</code>检查对象是否实现了指定协议类的方法；<code>methodForSelector:</code>则返回指定方法实现的地址。</p>
+
+<h3>Runtime的函数</h3>
+
+<p>Runtime 系统是一个由一系列函数和数据结构组成，具有公共接口的动态共享库。头文件存放于<code>/usr/include/objc</code>目录下。许多函数允许你用纯C代码来重复实现 OC 中同样的功能。虽然有一些方法构成了<code>NSObject</code>类的基础，但是你在写 OC 代码时一般不会直接用到这些函数的，除非是写一些 OC 与其他语言的桥接或是底层的debug工作。在<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/index.html">Objective-C Runtime Reference</a>中有对 Runtime 函数的详细文档。</p>
+
+<h2>Runtime术语</h2>
+
+<p>还记得引言中的<code>objc_msgSend:</code>方法吧，它的真身是这样的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">id</span> <span class="nf">objc_msgSend</span> <span class="p">(</span> <span class="kt">id</span> <span class="n">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">op</span><span class="p">,</span> <span class="p">...</span> <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面将会逐渐展开介绍一些术语，其实它们都对应着数据结构。</p>
+
+<h3>SEL</h3>
+
+<p><code>objc_msgSend</code>函数第二个参数类型为<code>SEL</code>，它是<code>selector</code>在OC中的表示类型（Swift中是Selector类）。<code>selector</code>是方法选择器，可以理解为区分方法的 ID，而这个 ID 的数据结构是<code>SEL</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">objc_selector</span> <span class="o">*</span><span class="kt">SEL</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其实它就是个映射到方法的C字符串，你可以用 OC 编译器命令<code>@selector()</code>或者 Runtime 系统的<code>
+sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选择器。</p>
+
+<p>不同类中相同名字的方法所对应的方法选择器是相同的，即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择器，于是 OC 中方法命名有时会带上参数类型(<code>NSNumber</code>一堆抽象工厂方法拿走不谢)，Cocoa 中有好多长长的方法哦。</p>
+
+<h3>id</h3>
+
+<p><code>objc_msgSend</code>第一个参数类型为<code>id</code>，大家对它都不陌生，它是一个指向类实例的指针：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">objc_object</span> <span class="o">*</span><span class="kt">id</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那<code>objc_object</code>又是啥呢：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">struct</span> <span class="n">objc_object</span> <span class="p">{</span> <span class="n">Class</span> <span class="n">isa</span><span class="p">;</span> <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>objc_object</code>结构体包含一个<code>isa</code>指针，根据<code>isa</code>指针就可以顺藤摸瓜找到对象所属的类。</p>
+
+<h3>Class</h3>
+
+<p>之所以说<code>isa</code>是指针是因为<code>Class</code>其实是一个指向<code>objc_class</code>结构体的指针：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">objc_class</span> <span class="o">*</span><span class="n">Class</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>而<code>objc_class</code>就是我们摸到的那个瓜，里面的东西多着呢：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">struct</span> <span class="n">objc_class</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Class</span> <span class="n">isa</span>  <span class="n">OBJC_ISA_AVAILABILITY</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#if !__OBJC2__</span>
+</span><span class='line'>    <span class="n">Class</span> <span class="n">super_class</span>                                        <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span>                                         <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">long</span> <span class="n">version</span>                                             <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">long</span> <span class="n">info</span>                                                <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">long</span> <span class="n">instance_size</span>                                       <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">objc_ivar_list</span> <span class="o">*</span><span class="n">ivars</span>                             <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">objc_method_list</span> <span class="o">**</span><span class="n">methodLists</span>                    <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">objc_cache</span> <span class="o">*</span><span class="n">cache</span>                                 <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">objc_protocol_list</span> <span class="o">*</span><span class="n">protocols</span>                     <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span> <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到运行时一个类还关联了它的超类指针，类名，成员变量，方法，缓存，还有附属的协议。 <br/>
+其中<code>objc_ivar_list</code>和<code>objc_method_list</code>分别是成员变量列表和方法列表：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">struct</span> <span class="n">objc_ivar_list</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">ivar_count</span>                                           <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#ifdef __LP64__</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">space</span>                                                <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'>    <span class="cm">/* variable length structure */</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">objc_ivar</span> <span class="n">ivar_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                            <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>                                                            <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">struct</span> <span class="n">objc_method_list</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">objc_method_list</span> <span class="o">*</span><span class="n">obsolete</span>                        <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">method_count</span>                                         <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#ifdef __LP64__</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">space</span>                                                <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'>    <span class="cm">/* variable length structure */</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">objc_method</span> <span class="n">method_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                        <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你C语言不是特别好，可以直接理解为<code>objc_ivar_list</code>结构体存储着<code>objc_ivar</code>数组列表，而<code>objc_ivar</code>结构体存储了类的单个成员变量的信息；同理<code>objc_method_list</code>结构体存储着<code>objc_method</code>数组列表，而<code>objc_method</code>结构体存储了类的某个方法的信息。</p>
+
+<p>最后要提到的还有一个<code>objc_cache</code>，顾名思义它是缓存，它在<code>objc_class</code>的作用很重要，在后面会讲到。</p>
+
+<p>一个 ObjC 类同时也是一个对象，为了处理类和对象的关系，runtime 库创建了一种叫做元类 (Meta Class) 的东西。当你发出一个类似<code>[NSObject alloc]</code>的消息时，你事实上是把这个消息发给了一个类对象 (Class Object) ，这个类对象必须是一个元类的实例，而这个元类同时也是一个根元类 (root meta class) 的实例。你会说 <code>NSObject</code> 的子类时，你的类就会指向 <code>NSObject</code> 做为其超类。但是所有的元类都指向根元类为其超类。所有的元类的方法列表都有能够响应消息的类方法。所以当 <code>[NSObject alloc]</code> 这条消息发给类对象的时候，<code>objc_msgSend()</code>会去它的元类里面去查找能够响应消息的方法，如果找到了，然后对这个类对象执行方法调用。</p>
+
+<h4>Method</h4>
+
+<p><code>Method</code>是一种代表类中的某个方法的类型。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">objc_method</span> <span class="o">*</span><span class="n">Method</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+而<code>objc_method</code>在上面的方法列表中提到过，它存储了方法名，方法类型和方法实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">struct</span> <span class="n">objc_method</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">SEL</span> <span class="n">method_name</span>                                          <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="o">*</span><span class="n">method_types</span>                                       <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">IMP</span> <span class="n">method_imp</span>                                           <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>                                                            <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>方法名类型为<code>SEL</code>，前面提到过相同名字的方法即使在不同类中定义，它们的方法选择器也相同。</li>
+<li>方法类型<code>method_types</code>是个<code>char</code>指针，其实存储着方法的参数类型和返回值类型。</li>
+<li><code>method_imp</code>指向了方法的实现，本质上是一个函数指针，后面会详细讲到。</li>
+</ul>
+
+
+<h4>Ivar</h4>
+
+<p><code>Ivar</code>是一种代表类中实例变量的类型。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">objc_ivar</span> <span class="o">*</span><span class="n">Ivar</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>而<code>objc_ivar</code>在上面的成员变量列表中也提到过：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">truct</span> <span class="n">objc_ivar</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="o">*</span><span class="n">ivar_name</span>                                          <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="o">*</span><span class="n">ivar_type</span>                                          <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">ivar_offset</span>                                          <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#ifdef __LP64__</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">space</span>                                                <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'><span class="p">}</span>                                                            <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>PS:<code>OBJC2_UNAVAILABLE</code>之类的宏定义是苹果在  OC  中对系统运行版本进行约束的黑魔法，有兴趣的可以查看源代码。</p>
+
+<h3>IMP</h3>
+
+<p><code>IMP</code>在<code>objc.h</code>中的定义是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="nf">id</span> <span class="p">(</span><span class="o">*</span><span class="n">IMP</span><span class="p">)(</span><span class="kt">id</span><span class="p">,</span> <span class="kt">SEL</span><span class="p">,</span> <span class="p">...);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>它就是一个<a href="http://yulingtianxia.com/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/">函数指针</a>，这是由编译器生成的。当你发起一个 ObjC 消息之后，最终它会执行的那段代码，就是由这个函数指针指定的。而IMP这个函数指针就指向了这个方法的实现。既然得到了执行某个实例某个方法的入口，我们就可以绕开消息传递阶段，直接执行方法，这在后面会提到。</p>
+
+<p>你会发现<code>IMP</code>指向的方法与<code>objc_msgSend</code>函数类型相同，参数都包含<code>id</code>和<code>SEL</code>类型。每个方法名都对应一个<code>SEL</code>类型的方法选择器，而每个实例对象中的<code>SEL</code>对应的方法实现肯定是唯一的，通过一组<code>id</code>和<code>SEL</code>参数就能确定唯一的方法实现地址；反之亦然。</p>
+
+<h3>Cache</h3>
+
+<p>在<code>runtime.h</code>中Cache的定义如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">objc_cache</span> <span class="o">*</span><span class="n">Cache</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>还记得之前<code>objc_class</code>结构体中有一个<code>struct objc_cache *cache</code>吧，它到底是缓存啥的呢，先看看<code>objc_cache</code>的实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">struct</span> <span class="n">objc_cache</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">mask</span> <span class="cm">/* total = mask + 1 */</span>                 <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">occupied</span>                                    <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">Method</span> <span class="n">buckets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                                        <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>Cache</code>为方法调用的性能进行优化，通俗地讲，每当实例对象接收到一个消息时，它不会直接在<code>isa</code>指向的类的方法列表中遍历查找能够响应消息的方法，因为这样效率太低了，而是优先在<code>Cache</code>中查找。Runtime 系统会把被调用的方法存到<code>Cache</code>中（理论上讲一个方法如果被调用，那么它有可能今后还会被调用），下次查找的时候效率更高。这根计算机组成原理中学过的 CPU 绕过主存先访问<code>Cache</code>的道理挺像，而我猜苹果为提高<code>Cache</code>命中率应该也做了努力吧。</p>
+
+<h2>消息</h2>
+
+<p>前面做了这么多铺垫，现在终于说到了消息了。OC 中发送消息是用中括号（<code>[]</code>）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。</p>
+
+<h3>objc_msgSend函数</h3>
+
+<p>在引言中已经对<code>objc_msgSend</code>进行了一点介绍，看起来像是<code>objc_msgSend</code>返回了数据，其实<code>objc_msgSend</code>从不返回数据而是你的方法被调用后返回了数据。下面详细叙述下消息发送步骤：</p>
+
+<ol>
+<li>检测这个 <code>selector</code> 是不是要忽略的。比如 Mac OS X 开发，有了垃圾回收就不理会 <code>retain</code>, <code>release</code> 这些函数了。</li>
+<li>检测这个 target 是不是 <code>nil</code> 对象。ObjC 的特性是允许对一个 <code>nil</code> 对象执行任何一个方法不会 Crash，因为会被忽略掉。</li>
+<li>如果上面两个都过了，那就开始查找这个类的 <code>IMP</code>，先从 <code>cache</code> 里面找，完了找得到就跳到对应的函数去执行。</li>
+<li>如果 <code>cache</code> 找不到就找一下方法分发表。</li>
+<li>如果分发表找不到就到超类的分发表去找，一直找，直到找到<code>NSObject</code>类为止。</li>
+<li>如果还找不到就要开始进入<strong>动态方法</strong>解析了，后面会提到。</li>
+</ol>
+
+
+<p>PS:这里说的分发表其实就是<code>Class</code>中的方法列表，它将方法选择器和方法实现地质联系起来。</p>
+
+<p><img src="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/messaging1.gif" alt="" /></p>
+
+<p>其实编译器会根据情况在<code>objc_msgSend</code>, <code>objc_msgSend_stret</code>, <code>objc_msgSendSuper</code>, 或 <code>objc_msgSendSuper_stret</code>四个方法中选择一个来调用。如果消息是传递给超类，那么会调用名字带有&#8221;Super&#8221;的函数；如果消息返回值是数据结构而不是简单值时，那么会调用名字带有&#8221;stret&#8221;的函数。排列组合正好四个方法。</p>
+
+<h3>方法中的隐藏参数</h3>
+
+<p>我们经常在方法中使用<code>self</code>关键字来引用实例本身，但从没有想过为什么<code>self</code>就能取到调用当前方法的对象吧。其实<code>self</code>的内容是在方法运行时被偷偷的动态传入的。</p>
+
+<p>当<code>objc_msgSend</code>找到方法对应的实现时，它将直接调用该方法实现，并将消息中所有的参数都传递给方法实现,同时,它还将传递两个隐藏的参数:<br/>
+&ndash; 接收消息的对象（也就是<code>self</code>指向的内容）
+&ndash; 方法选择器（<code>_cmd</code>指向的内容）
+之所以说它们是隐藏的是因为在源代码方法的定义中并没有声明这两个参数。它们是在代码被编译时被插入实现中的。尽管这些参数没有被明确声明，在源代码中我们仍然可以引用它们。在下面的例子中，<code>self</code>引用了接收者对象，而<code>_cmd</code>引用了方法本身的选择器：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="nf">strange</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">id</span>  <span class="n">target</span> <span class="o">=</span> <span class="n">getTheReceiver</span><span class="p">();</span>
+</span><span class='line'>    <span class="kt">SEL</span> <span class="n">method</span> <span class="o">=</span> <span class="n">getTheMethod</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span> <span class="n">target</span> <span class="o">==</span> <span class="n">self</span> <span class="o">||</span> <span class="n">method</span> <span class="o">==</span> <span class="n">_cmd</span> <span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">target</span> <span class="nl">performSelector:</span><span class="n">method</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这两个参数中，<code>self</code> 更有用。实际上,它是在方法实现中访问消息接收者对象的实例变量的途径。</p>
+
+<p>而当方法中的<code>super</code>关键字接收到消息时，编译器会创建一个<code>objc_super</code>结构体：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">struct</span> <span class="n">objc_super</span> <span class="p">{</span> <span class="kt">id</span> <span class="n">receiver</span><span class="p">;</span> <span class="n">Class</span> <span class="n">class</span><span class="p">;</span> <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个结构体指明了消息应该被传递给特定超类的定义。</p>
+
+<h3>获取方法地址</h3>
+
+<p>在IMP那节提到过可以避开消息绑定而直接获取方法的地址并调用方法。这种做法很少用，除非是需要持续大量重复调用某方法的极端情况，避开消息发送泛滥而直接调用该方法会更高效。</p>
+
+<p><code>NSObject</code>类中有个<code>methodForSelector:</code>实例方法，你可以用它来获取某个方法选择器对应的<code>IMP</code>，举个栗子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">setter</span><span class="p">)(</span><span class="kt">id</span><span class="p">,</span> <span class="kt">SEL</span><span class="p">,</span> <span class="kt">BOOL</span><span class="p">);</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">setter</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">id</span><span class="p">,</span> <span class="kt">SEL</span><span class="p">,</span> <span class="kt">BOOL</span><span class="p">))[</span><span class="n">target</span>
+</span><span class='line'>    <span class="nl">methodForSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">setFilled:</span><span class="p">)];</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span>
+</span><span class='line'>    <span class="n">setter</span><span class="p">(</span><span class="n">targetList</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">setFilled:</span><span class="p">),</span> <span class="n">YES</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当方法被当做函数调用时，上节提到的两个隐藏参数就需要我们明确给出了。上面的例子调用了1000次函数，你可以试试直接给<code>target</code>发送1000次<code>setFilled:</code>消息会花多久。</p>
+
+<p>PS：<code>methodForSelector:</code>方法是由 Cocoa 的 Runtime 系统提供的，而不是 OC 自身的特性。</p>
+
+<h2>动态方法解析</h2>
+
+<p>你可以动态地提供一个方法的实现。例如我们可以用<code>@dynamic</code>关键字在类的实现文件中修饰一个属性：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@dynamic</span> <span class="n">propertyName</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这表明我们会为这个属性动态提供存取方法，也就是说编译器不会再默认为我们生成<code>setPropertyName:</code>和<code>propertyName</code>方法，而需要我们动态提供。我们可以通过分别重载<code>resolveInstanceMethod:</code>和<code>resolveClassMethod:</code>方法分别添加实例方法实现和类方法实现。因为当 Runtime 系统在<code>Cache</code>和方法分发表中（包括超类）找不到要执行的方法时，Runtime会调用<code>resolveInstanceMethod:</code>或<code>resolveClassMethod:</code>来给程序员一次动态添加方法实现的机会。我们需要用<code>class_addMethod</code>函数完成向特定类添加特定方法实现的操作：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">void</span> <span class="nf">dynamicMethodIMP</span><span class="p">(</span><span class="kt">id</span> <span class="n">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">_cmd</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// implementation ....</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">MyClass</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">resolveInstanceMethod:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSEL</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">aSEL</span> <span class="o">==</span> <span class="k">@selector</span><span class="p">(</span><span class="n">resolveThisMethodDynamically</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">class_addMethod</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">],</span> <span class="n">aSEL</span><span class="p">,</span> <span class="p">(</span><span class="n">IMP</span><span class="p">)</span> <span class="n">dynamicMethodIMP</span><span class="p">,</span> <span class="s">&quot;v@:&quot;</span><span class="p">);</span>
+</span><span class='line'>          <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">super</span> <span class="nl">resolveInstanceMethod:</span><span class="n">aSEL</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的例子为<code>resolveThisMethodDynamically</code>方法添加了实现内容，也就是<code>dynamicMethodIMP</code>方法中的代码。其中 “<code>v@:</code>” 表示返回值和参数，这个符号涉及 <a href="https://developer.apple.com/library/mac/DOCUMENTATION/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html">Type Encoding</a></p>
+
+<p>PS：动态方法解析会在消息转发机制浸入前执行。如果 <code>respondsToSelector:</code> 或 <code>instancesRespondToSelector:</code>方法被执行，动态方法解析器将会被首先给予一个提供该方法选择器对应的IMP的机会。如果你想让该方法选择器被传送到转发机制，那么就让<code>resolveInstanceMethod:</code>返回<code>NO</code>。</p>
+
+<h2>消息转发</h2>
+
+<h3>重定向</h3>
+
+<p>在消息转发机制执行前，Runtime 系统会再给我们一次偷梁换柱的机会，即通过重载<code>- (id)forwardingTargetForSelector:(SEL)aSelector</code>方法替换消息的接受者为其他对象：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">forwardingTargetForSelector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSelector</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">aSelector</span> <span class="o">==</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">mysteriousMethod:</span><span class="p">)){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">alternateObject</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">super</span> <span class="nl">forwardingTargetForSelector:</span><span class="n">aSelector</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>毕竟消息转发要耗费更多时间，抓住这次机会将消息重定向给别人是个不错的选择，不过千万别返回<code>self</code>，因为那样会死循环。</p>
+
+<h3>转发</h3>
+
+<p>当动态方法解析不作处理返回<code>NO</code>时，消息转发机制会被触发，这时<code>forwardInvocation:</code>方法会被执行，我们可以重载这个方法来定义我们的转发逻辑：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">forwardInvocation:</span><span class="p">(</span><span class="n">NSInvocation</span> <span class="o">*</span><span class="p">)</span><span class="nv">anInvocation</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">someOtherObject</span> <span class="nl">respondsToSelector:</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">anInvocation</span> <span class="n">selector</span><span class="p">]])</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">anInvocation</span> <span class="nl">invokeWithTarget:</span><span class="n">someOtherObject</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">super</span> <span class="nl">forwardInvocation:</span><span class="n">anInvocation</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>该消息的唯一参数是个<code>NSInvocation</code>类型的对象——该对象封装了原始的消息和消息的参数。我们可以实现<code>forwardInvocation:</code>方法来对不能处理的消息做一些默认的处理，也可以将消息转发给其他对象来处理，而不抛出错误。</p>
+
+<p>当一个对象由于没有相应的方法实现而无法响应某消息时，运行时系统将通过<code>forwardInvocation:</code>消息通知该对象。每个对象都从<code>NSObject</code>类中继承了<code>forwardInvocation:</code>方法。然而，NSObject中的方法实现只是简单地调用了<code>doesNotRecognizeSelector:</code>。通过实现我们自己的<code>forwardInvocation:</code>方法，我们可以在该方法实现中将消息转发给其它对象。</p>
+
+<p><code>forwardInvocation:</code>方法就像一个不能识别的消息的分发中心，将这些消息转发给不同接收对象。或者它也可以象一个运输站将所有的消息都发送给同一个接收对象。它可以将一个消息翻译成另外一个消息，或者简单的&#8221;吃掉“某些消息，因此没有响应也没有错误。<code>forwardInvocation:</code>方法也可以对不同的消息提供同样的响应，这一切都取决于方法的具体实现。该方法所提供是将不同的对象链接到消息链的能力。</p>
+
+<p>注意： <code>forwardInvocation:</code>方法只有在消息接收对象中无法正常响应消息时才会被调用。 所以，如果我们希望一个对象将<code>negotiate</code>消息转发给其它对象，则这个对象不能有<code>negotiate</code>方法。否则，<code>forwardInvocation:</code>将不可能会被调用。</p>
+
+<h3>转发和多继承</h3>
+
+<p>转发和继承相似，可以用于为OC编程添加一些多继承的效果。就像下图那样，一个对象把消息转发出去，就好似它把另一个对象中的方法借过来或是“继承”过来一样。</p>
+
+<p><img src="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/forwarding.gif" alt="" /></p>
+
+<p>这使得不同继承体系分支下的两个类可以“继承”对方的方法，在上图中<code>Warrior</code>和<code>Diplomat</code>没有继承关系，但是<code>Warrior</code>将<code>negotiate</code>消息转发给了<code>Diplomat</code>后，就好似<code>Diplomat</code>是<code>Warrior</code>的超类一样。</p>
+
+<p>消息转发弥补了 OC 不支持多继承的性质，也避免了因为多继承导致单个类变得臃肿复杂。它将问题分解得很细，只针对想要借鉴的方法才转发，而且转发机制是透明的。</p>
+
+<h3>替代者对象(Surrogate Objects)</h3>
+
+<p>转发不仅能模拟多继承，也能使轻量级对象代表重量级对象。弱小的女人背后是强大的男人，毕竟女人遇到难题都把它们转发给男人来做了。这里有一些适用案例，可以参看<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-SW11">官方文档</a>。</p>
+
+<h3>转发与继承</h3>
+
+<p>尽管转发很像继承，但是<code>NSObject</code>类不会将两者混淆。像<code>respondsToSelector:</code> 和 <code>isKindOfClass:</code>这类方法只会考虑继承体系，不会考虑转发链。比如上图中一个<code>Warrior</code>对象如果被问到是否能响应<code>negotiate</code>消息：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">if</span> <span class="p">(</span> <span class="p">[</span><span class="n">aWarrior</span> <span class="nl">respondsToSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">negotiate</span><span class="p">)]</span> <span class="p">)</span>
+</span><span class='line'>    <span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>结果是<code>NO</code>，尽管它能够接受<code>negotiate</code>消息而不报错，因为它靠转发消息给<code>Diplomat</code>类来响应消息。</p>
+
+<p>如果你为了某些意图偏要“弄虚作假”让别人以为<code>Warrior</code>继承到了<code>Diplomat</code>的<code>negotiate</code>方法，你得重新实现 <code>respondsToSelector:</code> 和 <code>isKindOfClass:</code>来加入你的转发算法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">respondsToSelector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSelector</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span> <span class="p">[</span><span class="n">super</span> <span class="nl">respondsToSelector:</span><span class="n">aSelector</span><span class="p">]</span> <span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/* Here, test whether the aSelector message can     *</span>
+</span><span class='line'><span class="cm">         * be forwarded to another object and whether that  *</span>
+</span><span class='line'><span class="cm">         * object can respond to it. Return YES if it can.  */</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>除了<code>respondsToSelector:</code> 和 <code>isKindOfClass:</code>之外，<code>instancesRespondToSelector:</code>中也应该写一份转发算法。如果使用了协议，<code>conformsToProtocol:</code>同样也要加入到这一行列中。类似地，如果一个对象转发它接受的任何远程消息，它得给出一个<code>methodSignatureForSelector:</code>来返回准确的方法描述，这个方法会最终响应被转发的消息。比如一个对象能给它的替代者对象转发消息，它需要像下面这样实现<code>methodSignatureForSelector:</code>：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSMethodSignature</span><span class="o">*</span><span class="p">)</span><span class="nf">methodSignatureForSelector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSMethodSignature</span><span class="o">*</span> <span class="n">signature</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">methodSignatureForSelector:</span><span class="n">selector</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">signature</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="n">signature</span> <span class="o">=</span> <span class="p">[</span><span class="n">surrogate</span> <span class="nl">methodSignatureForSelector:</span><span class="n">selector</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">signature</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>健壮的实例变量(Non Fragile ivars)</h2>
+
+<p>在 Runtime 的现行版本中，最大的特点就是健壮的实例变量。当一个类被编译时，实例变量的布局也就形成了，它表明访问类的实例变量的位置。从对象头部开始，实例变量依次根据自己所占空间而产生位移：</p>
+
+<p><img src="http://lh6.ggpht.com/_bMMRN3vt0x0/S1eCgoEotAI/AAAAAAAAAxg/mnW4VTLQOnk/nf1.png?imgmax=800" alt="" /></p>
+
+<p>上图左边是<code>NSObject</code>类的实例变量布局，右边是我们写的类的布局，也就是在超类后面加上我们自己类的实例变量，看起来不错。但试想如果那天苹果更新了<code>NSObject</code>类，发布新版本的系统的话，那就悲剧了：</p>
+
+<p><img src="http://lh5.ggpht.com/_bMMRN3vt0x0/S1eCmurL90I/AAAAAAAAAxk/LfEs0PxKwX8/nf2.png?imgmax=800" alt="" /></p>
+
+<p>我们自定义的类被划了两道线，那是因为那块区域跟超类重叠了。唯有苹果将超类改为以前的布局才能拯救我们，但这样也导致它们不能再拓展它们的框架了，因为成员变量布局被死死地固定了。在脆弱的实例变量(Fragile ivars) 环境下我们需要重新编译继承自 Apple 的类来恢复兼容性。那么在健壮的实例变量下回发生什么呢？</p>
+
+<p><img src="http://lh4.ggpht.com/_bMMRN3vt0x0/S1eCrkwWDII/AAAAAAAAAxo/lKC8NQl6rQE/nf3.png?imgmax=800" alt="" /></p>
+
+<p>在健壮的实例变量下编译器生成的实例变量布局跟以前一样，但是当 runtime 系统检测到与超类有部分重叠时它会调整你新添加的实例变量的位移，那样你在子类中新添加的成员就被保护起来了。</p>
+
+<p>需要注意的是在健壮的实例变量下，不要使用<code>sizeof(SomeClass)</code>，而是用<code>class_getInstanceSize([SomeClass class])</code>代替；也不要使用<code>offsetof(SomeClass, SomeIvar)</code>，而要用<code>ivar_getOffset(class_getInstanceVariable([SomeClass class], "SomeIvar"))</code>来代替。</p>
+
+<h2>Objective-C Associated Objects</h2>
+
+<p>在 OS X 10.6 之后，Runtime系统让OC支持向对象动态添加变量。涉及到的函数有以下三个：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">void</span> <span class="nf">objc_setAssociatedObject</span> <span class="p">(</span> <span class="kt">id</span> <span class="n">object</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">id</span> <span class="n">value</span><span class="p">,</span> <span class="n">objc_AssociationPolicy</span> <span class="n">policy</span> <span class="p">);</span>
+</span><span class='line'><span class="kt">id</span> <span class="nf">objc_getAssociatedObject</span> <span class="p">(</span> <span class="kt">id</span> <span class="n">object</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">key</span> <span class="p">);</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">objc_removeAssociatedObjects</span> <span class="p">(</span> <span class="kt">id</span> <span class="n">object</span> <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这些方法以键值对的形式动态地向对象添加、获取或删除关联值。其中关联政策是一组枚举常量：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">enum</span> <span class="p">{</span>
+</span><span class='line'>   <span class="n">OBJC_ASSOCIATION_ASSIGN</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>   <span class="n">OBJC_ASSOCIATION_RETAIN_NONATOMIC</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>   <span class="n">OBJC_ASSOCIATION_COPY_NONATOMIC</span>  <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class='line'>   <span class="n">OBJC_ASSOCIATION_RETAIN</span>  <span class="o">=</span> <span class="mo">01401</span><span class="p">,</span>
+</span><span class='line'>   <span class="n">OBJC_ASSOCIATION_COPY</span>  <span class="o">=</span> <span class="mo">01403</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这些常量对应着引用关联值的政策，也就是 OC 内存管理的引用计数机制。</p>
+
+<h2>总结</h2>
+
+<p>我们之所以让自己的类继承<code>NSObject</code>不仅仅因为苹果帮我们完成了复杂的内存分配问题，更是因为这使得我们能够用上 Runtime 系统带来的便利。可能我们平时写代码时可能很少会考虑一句简单的<code>[receiver message]</code>背后发生了什么，而只是当做方法或函数调用。深入理解 Runtime 系统的细节更有利于我们利用消息机制写出功能更强大的代码，比如 Method Swizzling 等。</p>
+
+<p>参考链接：<br/>
+&ndash; <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048">Objective-C Runtime Programming Guide</a><br/>
+&ndash; <a href="http://blog.csdn.net/wzzvictory/article/details/8615569">Objective-C runtime之运行时的基本特点</a>
+&ndash; <a href="http://cocoasamurai.blogspot.jp/2010/01/understanding-objective-c-runtime.html">Understanding the Objective-C Runtime</a></p>
+</div>
+
+</article>
+
+<DIV style="font-size:12px;BORDER-BOTTOM: #bbbbbb 1px solid; BORDER-LEFT: #bbbbbb 1px solid; BACKGROUND: #f6f6f6; HEIGHT: 90px; BORDER-TOP: #bbbbbb 1px solid; BORDER-RIGHT: #bbbbbb 1px solid" class=yulingtianxiaright>
+<DIV style="LINE-HEIGHT: 200%; MARGIN-TOP: 10px; COLOR: #000000">
+如本文图片不能正常显示，请科学上网。云梯VPN优惠链接：<A href="http://tizipro.com/?r=ee0508bc191f5651">http://tizipro.com/?r=ee0508bc191f5651</A>
+<BR>如未特殊说明，文章均为原创，转载请注明出处： <A href="http://yulingtianxia.com">http://yulingtianxia.com</A>
+<BR>本文基于<a target="_blank" title="Creative Commons Attribution 2.5 China Mainland License" href="http://creativecommons.org/licenses/by/2.5/cn/">
+署名 2.5 中国大陆</a>许可协议发布，欢迎转载，演绎或用于商业目的，但是必须保留本文的署名
+<a href="http://yulingtianxia.com">杨萧玉</a>（包含链接）。
+</DIV>
+</DIV>
+
+
+
+	<div class="share">
+	<!--div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script-->
+  	
+     <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_xiaoyou"></a>
+	<a href="http://www.jiathis.com/share?uid=1912336" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1912336" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1912336"></script>
+<!-- UY END -->
+<script>document.write(unescape('%3Cdiv id="hm_t_33672"%3E%3C/div%3E%3Cscript charset="utf-8" src="http://crs.baidu.com/t.js?siteId=b5cb508df15ee6247a8c32c64eadb075&planId=33672&async=0&referer=') + encodeURIComponent(document.referrer) + '&title=' + encodeURIComponent(document.title) + '&rnd=' + (+new Date) + unescape('"%3E%3C/script%3E'));</script>
+
+ 	
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner"><!-- AdSense BEGIN -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- myAd -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-4671213864485232"
+     data-ad-slot="3844861505"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- AdSense END -->
+<br>
+Copyright &copy; 2014
+
+    玉令天下
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
+</footer>
+			
+
+<script type="text/javascript">
+      var disqus_shortname = 'yulingtianxia';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/';
+        var disqus_url = 'http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+		</div>
+	</div>
+</body>
+</html>
