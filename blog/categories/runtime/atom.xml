@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Runtime | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/runtime/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-05T21:14:37+08:00</updated>
+  <updated>2014-11-05T21:22:10+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -319,7 +319,7 @@ return [target performSelector:method];
 <code>
 struct objc_super { id receiver; Class class; };
 </code>
-这个结构体指明了消息应该被传递给特定超类的定义。但<code>receiver</code>仍然是<code>self</code>本身，这点需要注意，因为当我们想通过<code>[super class]</code>获取超类时，编译器只是将<code>self</code>指针和<code>class</code>的SEL传递给了<code>objc_msgSendSuper</code>函数，因为子类对象有<code>class</code>方法，所以我们得到的是子类的类型而不是超类的类型。</p>
+这个结构体指明了消息应该被传递给特定超类的定义。但<code>receiver</code>仍然是<code>self</code>本身，这点需要注意，因为当我们想通过<code>[super class]</code>获取超类时，编译器只是将指向<code>self</code>的<code>id</code>指针和<code>class</code>的SEL传递给了<code>objc_msgSendSuper</code>函数，因为只有在<code>NSObject</code>类找到<code>class</code>方法，然后<code>class</code>方法调用<code>object_getClass()</code>，传入参数是指向<code>self</code>的<code>id</code>指针，所以我们得到的永远都是<code>self</code>的类型。</p>
 
 <h3>获取方法地址</h3>
 
