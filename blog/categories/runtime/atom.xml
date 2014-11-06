@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Runtime | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/runtime/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-06T10:19:10+08:00</updated>
+  <updated>2014-11-06T15:54:04+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -28,7 +28,7 @@
 <li>消息</li>
 <li>动态方法解析</li>
 <li>消息转发</li>
-<li>壮的实例变量(Non Fragile ivars)</li>
+<li>健壮的实例变量(Non Fragile ivars)</li>
 <li>Objective-C Associated Objects</li>
 <li>总结</li>
 </ul>
