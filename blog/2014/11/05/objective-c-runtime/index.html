@@ -615,7 +615,7 @@ sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选�
 
 <h3>转发</h3>
 
-<p>当动态方法解析不作处理返回<code>NO</code>时，消息转发机制会被触发，这时<code>forwardInvocation:</code>方法会被执行，我们可以重载这个方法来定义我们的转发逻辑：</p>
+<p>当动态方法解析不作处理返回<code>NO</code>时，消息转发机制会被触发。在这时<code>forwardInvocation:</code>方法会被执行，我们可以重写这个方法来定义我们的转发逻辑：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -637,6 +637,8 @@ sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选�
 
 
 <p>该消息的唯一参数是个<code>NSInvocation</code>类型的对象——该对象封装了原始的消息和消息的参数。我们可以实现<code>forwardInvocation:</code>方法来对不能处理的消息做一些默认的处理，也可以将消息转发给其他对象来处理，而不抛出错误。</p>
+
+<p>这里需要注意的是参数<code>anInvocation</code>是从哪的来的呢？其实在<code>forwardInvocation:</code>消息发送前，Runtime系统会向对象发送<code>methodSignatureForSelector:</code>消息，并取到返回的方法签名用于生成<code>NSInvocation</code>对象。所以我们在重写<code>forwardInvocation:</code>的同时也要重写<code>methodSignatureForSelector:</code>方法，否则会抛异常。</p>
 
 <p>当一个对象由于没有相应的方法实现而无法响应某消息时，运行时系统将通过<code>forwardInvocation:</code>消息通知该对象。每个对象都从<code>NSObject</code>类中继承了<code>forwardInvocation:</code>方法。然而，NSObject中的方法实现只是简单地调用了<code>doesNotRecognizeSelector:</code>。通过实现我们自己的<code>forwardInvocation:</code>方法，我们可以在该方法实现中将消息转发给其它对象。</p>
 
