@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Runtime | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/runtime/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-06T15:54:04+08:00</updated>
+  <updated>2014-11-06T17:39:58+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -41,7 +41,7 @@
 
 <h2>引言</h2>
 
-<p>曾经觉得OC特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把<code>[receiver message]</code>当成简单的方法调用，而无视了<strong>“发送消息”</strong>这句话的深刻含义。于是<code>[receiver message]</code>会被编译器转化为：<br/>
+<p>曾经觉得Objc特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把<code>[receiver message]</code>当成简单的方法调用，而无视了<strong>“发送消息”</strong>这句话的深刻含义。于是<code>[receiver message]</code>会被编译器转化为：<br/>
 <code>objc
 objc_msgSend(receiver, selector)
 </code>
@@ -53,11 +53,11 @@ objc_msgSend(receiver, selector, arg1, arg2, ...)
 
 <p>现在可以看出<code>[receiver message]</code>真的不是一个简简单单的方法调用。因为这只是在编译阶段确定了要向接收者发送<code>message</code>这条消息，而<code>receive</code>将要如何响应这条消息，那就要看运行时发生的情况来决定了。</p>
 
-<p>Objective-C 的 Runtime 铸就了它动态语言的特性，这些深层次的知识虽然平时写代码用的少一些，但是却是每个 OC 程序员需要了解的。</p>
+<p>Objective-C 的 Runtime 铸就了它动态语言的特性，这些深层次的知识虽然平时写代码用的少一些，但是却是每个 Objc 程序员需要了解的。</p>
 
 <h2>简介</h2>
 
-<p>因为OC是一门动态语言，所以它总是想办法把一些决定工作从编译连接推迟到运行时。也就是说只有编译器是不够的，还需要一个运行时系统 (runtime system) 来执行编译后的代码。这就是 Objective-C Runtime 系统存在的意义，它是整个OC运行框架的一块基石。</p>
+<p>因为Objc是一门动态语言，所以它总是想办法把一些决定工作从编译连接推迟到运行时。也就是说只有编译器是不够的，还需要一个运行时系统 (runtime system) 来执行编译后的代码。这就是 Objective-C Runtime 系统存在的意义，它是整个Objc运行框架的一块基石。</p>
 
 <p>Runtime其实有两个版本:“modern”和 “legacy”。我们现在用的 Objective-C 2.0 采用的是现行(Modern)版的Runtime系统，只能运行在 iOS 和 OS X 10.5 之后的64位程序中。而OS X较老的32位程序仍采用 Objective-C 1中的（早期）Legacy 版本的 Runtime 系统。这两个版本最大的区别在于当你更改一个类的实例变量的布局时，在早期版本中你需要重新编译它的子类，而现行版就不需要。</p>
 
@@ -65,12 +65,12 @@ objc_msgSend(receiver, selector, arg1, arg2, ...)
 
 <h2>与Runtime交互</h2>
 
-<p>OC 从三种不同的层级上与 Runtime 系统进行交互，分别是通过 Objective-C 源代码，通过 Foundation 框架的<code>NSObject</code>类定义的方法，通过对 runtime 函数的直接调用。</p>
+<p>Objc 从三种不同的层级上与 Runtime 系统进行交互，分别是通过 Objective-C 源代码，通过 Foundation 框架的<code>NSObject</code>类定义的方法，通过对 runtime 函数的直接调用。</p>
 
 <h3>Objective-C源代码</h3>
 
-<p>大部分情况下你就只管写你的OC代码就行，runtime 系统自动在幕后辛勤劳作着。<br/>
-还记得引言中举的例子吧，消息的执行会使用到一些编译器为实现动态语言特性而创建的数据结构和函数，OC中的类、方法和协议等在 runtime 中都由一些数据结构来定义，这些内容在后面会讲到。（比如<code>objc_msgSend</code>函数及其参数列表中的<code>id</code>和<code>SEL</code>都是啥）</p>
+<p>大部分情况下你就只管写你的Objc代码就行，runtime 系统自动在幕后辛勤劳作着。<br/>
+还记得引言中举的例子吧，消息的执行会使用到一些编译器为实现动态语言特性而创建的数据结构和函数，Objc中的类、方法和协议等在 runtime 中都由一些数据结构来定义，这些内容在后面会讲到。（比如<code>objc_msgSend</code>函数及其参数列表中的<code>id</code>和<code>SEL</code>都是啥）</p>
 
 <h3>NSObject的方法</h3>
 
@@ -80,7 +80,7 @@ objc_msgSend(receiver, selector, arg1, arg2, ...)
 
 <h3>Runtime的函数</h3>
 
-<p>Runtime 系统是一个由一系列函数和数据结构组成，具有公共接口的动态共享库。头文件存放于<code>/usr/include/objc</code>目录下。许多函数允许你用纯C代码来重复实现 OC 中同样的功能。虽然有一些方法构成了<code>NSObject</code>类的基础，但是你在写 OC 代码时一般不会直接用到这些函数的，除非是写一些 OC 与其他语言的桥接或是底层的debug工作。在<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/index.html">Objective-C Runtime Reference</a>中有对 Runtime 函数的详细文档。</p>
+<p>Runtime 系统是一个由一系列函数和数据结构组成，具有公共接口的动态共享库。头文件存放于<code>/usr/include/objc</code>目录下。许多函数允许你用纯C代码来重复实现 Objc 中同样的功能。虽然有一些方法构成了<code>NSObject</code>类的基础，但是你在写 Objc 代码时一般不会直接用到这些函数的，除非是写一些 Objc 与其他语言的桥接或是底层的debug工作。在<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/index.html">Objective-C Runtime Reference</a>中有对 Runtime 函数的详细文档。</p>
 
 <h2>Runtime术语</h2>
 
@@ -92,14 +92,14 @@ id objc_msgSend ( id self, SEL op, ... );
 
 <h3>SEL</h3>
 
-<p><code>objc_msgSend</code>函数第二个参数类型为<code>SEL</code>，它是<code>selector</code>在OC中的表示类型（Swift中是Selector类）。<code>selector</code>是方法选择器，可以理解为区分方法的 ID，而这个 ID 的数据结构是<code>SEL</code>:<br/>
+<p><code>objc_msgSend</code>函数第二个参数类型为<code>SEL</code>，它是<code>selector</code>在Objc中的表示类型（Swift中是Selector类）。<code>selector</code>是方法选择器，可以理解为区分方法的 ID，而这个 ID 的数据结构是<code>SEL</code>:<br/>
 <code>
 typedef struct objc_selector *SEL;
 </code>
-其实它就是个映射到方法的C字符串，你可以用 OC 编译器命令<code>@selector()</code>或者 Runtime 系统的<code>
+其实它就是个映射到方法的C字符串，你可以用 Objc 编译器命令<code>@selector()</code>或者 Runtime 系统的<code>
 sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选择器。</p>
 
-<p>不同类中相同名字的方法所对应的方法选择器是相同的，即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择器，于是 OC 中方法命名有时会带上参数类型(<code>NSNumber</code>一堆抽象工厂方法拿走不谢)，Cocoa 中有好多长长的方法哦。</p>
+<p>不同类中相同名字的方法所对应的方法选择器是相同的，即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择器，于是 Objc 中方法命名有时会带上参数类型(<code>NSNumber</code>一堆抽象工厂方法拿走不谢)，Cocoa 中有好多长长的方法哦。</p>
 
 <h3>id</h3>
 
@@ -236,7 +236,7 @@ int ivar_offset                                          OBJC2_UNAVAILABLE;
 <p>}                                                            OBJC2_UNAVAILABLE;
 ```</p>
 
-<p>PS:<code>OBJC2_UNAVAILABLE</code>之类的宏定义是苹果在  OC  中对系统运行版本进行约束的黑魔法，有兴趣的可以查看源代码。</p>
+<p>PS:<code>OBJC2_UNAVAILABLE</code>之类的宏定义是苹果在  Objc  中对系统运行版本进行约束的黑魔法，有兴趣的可以查看源代码。</p>
 
 <h3>IMP</h3>
 
@@ -269,7 +269,7 @@ Method buckets[1]                                        OBJC2_UNAVAILABLE;
 
 <h2>消息</h2>
 
-<p>前面做了这么多铺垫，现在终于说到了消息了。OC 中发送消息是用中括号（<code>[]</code>）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。</p>
+<p>前面做了这么多铺垫，现在终于说到了消息了。Objc 中发送消息是用中括号（<code>[]</code>）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。</p>
 
 <h3>objc_msgSend函数</h3>
 
@@ -343,7 +343,7 @@ int i;</p>
 <p><code>``
 当方法被当做函数调用时，上节提到的两个隐藏参数就需要我们明确给出了。上面的例子调用了1000次函数，你可以试试直接给</code>target<code>发送1000次</code>setFilled:`消息会花多久。</p>
 
-<p>PS：<code>methodForSelector:</code>方法是由 Cocoa 的 Runtime 系统提供的，而不是 OC 自身的特性。</p>
+<p>PS：<code>methodForSelector:</code>方法是由 Cocoa 的 Runtime 系统提供的，而不是 Objc 自身的特性。</p>
 
 <h2>动态方法解析</h2>
 
@@ -424,13 +424,13 @@ else
 
 <h3>转发和多继承</h3>
 
-<p>转发和继承相似，可以用于为OC编程添加一些多继承的效果。就像下图那样，一个对象把消息转发出去，就好似它把另一个对象中的方法借过来或是“继承”过来一样。</p>
+<p>转发和继承相似，可以用于为Objc编程添加一些多继承的效果。就像下图那样，一个对象把消息转发出去，就好似它把另一个对象中的方法借过来或是“继承”过来一样。</p>
 
 <p><img src="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/forwarding.gif" alt="" /></p>
 
 <p>这使得不同继承体系分支下的两个类可以“继承”对方的方法，在上图中<code>Warrior</code>和<code>Diplomat</code>没有继承关系，但是<code>Warrior</code>将<code>negotiate</code>消息转发给了<code>Diplomat</code>后，就好似<code>Diplomat</code>是<code>Warrior</code>的超类一样。</p>
 
-<p>消息转发弥补了 OC 不支持多继承的性质，也避免了因为多继承导致单个类变得臃肿复杂。它将问题分解得很细，只针对想要借鉴的方法才转发，而且转发机制是透明的。</p>
+<p>消息转发弥补了 Objc 不支持多继承的性质，也避免了因为多继承导致单个类变得臃肿复杂。它将问题分解得很细，只针对想要借鉴的方法才转发，而且转发机制是透明的。</p>
 
 <h3>替代者对象(Surrogate Objects)</h3>
 
@@ -500,7 +500,7 @@ return signature;
 
 <h2>Objective-C Associated Objects</h2>
 
-<p>在 OS X 10.6 之后，Runtime系统让OC支持向对象动态添加变量。涉及到的函数有以下三个：<br/>
+<p>在 OS X 10.6 之后，Runtime系统让Objc支持向对象动态添加变量。涉及到的函数有以下三个：<br/>
 <code>
 void objc_setAssociatedObject ( id object, const void *key, id value, objc_AssociationPolicy policy );
 id objc_getAssociatedObject ( id object, const void *key );
@@ -516,7 +516,7 @@ enum {
    OBJC_ASSOCIATION_COPY  = 01403
 };
 </code>
-这些常量对应着引用关联值的政策，也就是 OC 内存管理的引用计数机制。</p>
+这些常量对应着引用关联值的政策，也就是 Objc 内存管理的引用计数机制。</p>
 
 <h2>总结</h2>
 
