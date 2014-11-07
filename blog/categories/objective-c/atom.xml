@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-06T22:45:19+08:00</updated>
+  <updated>2014-11-07T12:03:29+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -74,7 +74,7 @@ objc_msgSend(receiver, selector, arg1, arg2, ...)
 
 <h3>NSObject的方法</h3>
 
-<p>Cocoa 中大多数类都继承于<code>NSObject</code>类，也就自然继承了它的方法。最特殊的例外是<code>NSProxy</code>，它十个抽象超类，它实现了一些消息转发有关的方法，可以通过继承它来实现一个其他类的替身类或是虚拟出一个不存在的类，说白了就是领导把自己展现给大家风光无限，但是把活儿都交给幕后小弟去干。</p>
+<p>Cocoa 中大多数类都继承于<code>NSObject</code>类，也就自然继承了它的方法。最特殊的例外是<code>NSProxy</code>，它是个抽象超类，它实现了一些消息转发有关的方法，可以通过继承它来实现一个其他类的替身类或是虚拟出一个不存在的类，说白了就是领导把自己展现给大家风光无限，但是把活儿都交给幕后小弟去干。</p>
 
 <p>有的<code>NSObject</code>中的方法起到了抽象接口的作用，比如<code>description</code>方法需要你重载它并为你定义的类提供描述内容。<code>NSObject</code>还有些方法能在运行时获得类的信息，并检查一些特性，比如<code>class</code>返回对象的类；<code>isKindOfClass:</code>和<code>isMemberOfClass:</code>则检查对象是否在指定的类继承体系中；<code>respondsToSelector:</code>检查对象能否响应指定的消息；<code>conformsToProtocol:</code>检查对象是否实现了指定协议类的方法；<code>methodForSelector:</code>则返回指定方法实现的地址。</p>
 
@@ -1214,7 +1214,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#x65;&#x6d;&#112;&#108;&#x6f;&#121;&#101;&#101;&#x73;&#46;&#64;&#x73;&#117;&#109;&#46;&#x73;&#x61;&#108;&#x61;&#114;&#121;">&#101;&#x6d;&#x70;&#108;&#x6f;&#x79;&#101;&#x65;&#115;&#x2e;&#64;&#115;&#117;&#109;&#x2e;&#115;&#x61;&#x6c;&#x61;&#x72;&#121;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#x3a;&#x65;&#109;&#x70;&#x6c;&#x6f;&#121;&#101;&#x65;&#x73;&#x2e;&#x40;&#x73;&#x75;&#109;&#x2e;&#115;&#97;&#108;&#x61;&#x72;&#x79;">&#x65;&#109;&#x70;&#x6c;&#111;&#x79;&#101;&#101;&#x73;&#x2e;&#64;&#115;&#x75;&#x6d;&#x2e;&#x73;&#x61;&#108;&#97;&#114;&#121;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 
