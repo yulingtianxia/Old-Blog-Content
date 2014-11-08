@@ -347,7 +347,11 @@ sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选�
 
 <p>最后要提到的还有一个<code>objc_cache</code>，顾名思义它是缓存，它在<code>objc_class</code>的作用很重要，在后面会讲到。</p>
 
-<p>一个 ObjC 类同时也是一个对象，为了处理类和对象的关系，runtime 库创建了一种叫做元类 (Meta Class) 的东西。当你发出一个类似<code>[NSObject alloc]</code>的消息时，你事实上是把这个消息发给了一个类对象 (Class Object) ，这个类对象必须是一个元类的实例，而这个元类同时也是一个根元类 (root meta class) 的实例。你会说 <code>NSObject</code> 的子类时，你的类就会指向 <code>NSObject</code> 做为其超类。但是所有的元类都指向根元类为其超类。所有的元类的方法列表都有能够响应消息的类方法。所以当 <code>[NSObject alloc]</code> 这条消息发给类对象的时候，<code>objc_msgSend()</code>会去它的元类里面去查找能够响应消息的方法，如果找到了，然后对这个类对象执行方法调用。</p>
+<p>一个 ObjC 类同时也是一个对象，为了处理类和对象的关系，runtime 库创建了一种叫做元类 (Meta Class) 的东西。当你发出一个类似<code>[NSObject alloc]</code>的消息时，你事实上是把这个消息发给了一个类对象 (Class Object) ，这个类对象必须是一个元类的实例，而这个元类同时也是一个根元类 (root meta class) 的实例。你会说 <code>NSObject</code> 的子类时，你的类就会指向 <code>NSObject</code> 做为其超类。但是所有的元类最终都指向根元类为其超类。所有的元类的方法列表都有能够响应消息的类方法。所以当 <code>[NSObject alloc]</code> 这条消息发给类对象的时候，<code>objc_msgSend()</code>会去它的元类里面去查找能够响应消息的方法，如果找到了，然后对这个类对象执行方法调用。</p>
+
+<p><img src="http://cn.cocos2d-x.org/uploads/20141018/1413628797629491.png" alt="" /></p>
+
+<p>上图实线是 <code>super_class</code> 指针，虚线是<code>isa</code>指针。 有趣的是根元类的超类是<code>NSObject</code>，而<code>isa</code>指向了自己，而<code>NSObject</code>的超类为<code>nil</code>，也就是它没有超类。</p>
 
 <h4>Method</h4>
 
