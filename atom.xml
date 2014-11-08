@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-08T23:35:28+08:00</updated>
+  <updated>2014-11-09T00:02:55+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -397,7 +397,7 @@ sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选�
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>这个结构体指明了消息应该被传递给特定超类的定义。但<code>receiver</code>仍然是<code>self</code>本身，这点需要注意，因为当我们想通过<code>[super class]</code>获取超类时，编译器只是将指向<code>self</code>的<code>id</code>指针和<code>class</code>的SEL传递给了<code>objc_msgSendSuper</code>函数，因为只有在<code>NSObject</code>类找到<code>class</code>方法，然后<code>class</code>方法调用<code>object_getClass()</code>，传入参数是指向<code>self</code>的<code>id</code>指针，所以我们得到的永远都是<code>self</code>的类型。</p>
+<p>这个结构体指明了消息应该被传递给特定超类的定义。但<code>receiver</code>仍然是<code>self</code>本身，这点需要注意，因为当我们想通过<code>[super class]</code>获取超类时，编译器只是将指向<code>self</code>的<code>id</code>指针和<code>class</code>的SEL传递给了<code>objc_msgSendSuper</code>函数，因为只有在<code>NSObject</code>类找到<code>class</code>方法，然后<code>class</code>方法调用<code>object_getClass()</code>，接着调用<code>objc_msgSend(objc_super-&gt;receiver, @selector(class))</code>，传入的第一个参数是指向<code>self</code>的<code>id</code>指针，与调用<code>[self class]</code>相同，所以我们得到的永远都是<code>self</code>的类型。</p>
 
 <h3>获取方法地址</h3>
 
