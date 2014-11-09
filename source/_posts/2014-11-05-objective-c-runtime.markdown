@@ -17,14 +17,14 @@ categories:
 - 消息
 - 动态方法解析
 - 消息转发
-- 壮的实例变量(Non Fragile ivars)
+- 健壮的实例变量(Non Fragile ivars)
 - Objective-C Associated Objects
 - 总结
 
 <!--more-->  
 
 ##引言
-曾经觉得OC特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把`[receiver message]`当成简单的方法调用，而无视了**“发送消息”**这句话的深刻含义。于是`[receiver message]`会被编译器转化为：  
+曾经觉得Objc特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把`[receiver message]`当成简单的方法调用，而无视了**“发送消息”**这句话的深刻含义。于是`[receiver message]`会被编译器转化为：  
 ``` objc
 objc_msgSend(receiver, selector)
 ```
@@ -36,11 +36,11 @@ objc_msgSend(receiver, selector, arg1, arg2, ...)
 
 现在可以看出`[receiver message]`真的不是一个简简单单的方法调用。因为这只是在编译阶段确定了要向接收者发送`message`这条消息，而`receive`将要如何响应这条消息，那就要看运行时发生的情况来决定了。  
  
-Objective-C 的 Runtime 铸就了它动态语言的特性，这些深层次的知识虽然平时写代码用的少一些，但是却是每个 OC 程序员需要了解的。  
+Objective-C 的 Runtime 铸就了它动态语言的特性，这些深层次的知识虽然平时写代码用的少一些，但是却是每个 Objc 程序员需要了解的。  
 
 ##简介
 
-因为OC是一门动态语言，所以它总是想办法把一些决定工作从编译连接推迟到运行时。也就是说只有编译器是不够的，还需要一个运行时系统 (runtime system) 来执行编译后的代码。这就是 Objective-C Runtime 系统存在的意义，它是整个OC运行框架的一块基石。  
+因为Objc是一门动态语言，所以它总是想办法把一些决定工作从编译连接推迟到运行时。也就是说只有编译器是不够的，还需要一个运行时系统 (runtime system) 来执行编译后的代码。这就是 Objective-C Runtime 系统存在的意义，它是整个Objc运行框架的一块基石。  
 
 Runtime其实有两个版本:“modern”和 “legacy”。我们现在用的 Objective-C 2.0 采用的是现行(Modern)版的Runtime系统，只能运行在 iOS 和 OS X 10.5 之后的64位程序中。而OS X较老的32位程序仍采用 Objective-C 1中的（早期）Legacy 版本的 Runtime 系统。这两个版本最大的区别在于当你更改一个类的实例变量的布局时，在早期版本中你需要重新编译它的子类，而现行版就不需要。  
 
@@ -48,21 +48,21 @@ Runtime基本是用C和汇编写的，可见苹果为了动态系统的高效而
 
 ##与Runtime交互
 
-OC 从三种不同的层级上与 Runtime 系统进行交互，分别是通过 Objective-C 源代码，通过 Foundation 框架的`NSObject`类定义的方法，通过对 runtime 函数的直接调用。  
+Objc 从三种不同的层级上与 Runtime 系统进行交互，分别是通过 Objective-C 源代码，通过 Foundation 框架的`NSObject`类定义的方法，通过对 runtime 函数的直接调用。  
 
 ###Objective-C源代码
 
-大部分情况下你就只管写你的OC代码就行，runtime 系统自动在幕后辛勤劳作着。  
-还记得引言中举的例子吧，消息的执行会使用到一些编译器为实现动态语言特性而创建的数据结构和函数，OC中的类、方法和协议等在 runtime 中都由一些数据结构来定义，这些内容在后面会讲到。（比如`objc_msgSend`函数及其参数列表中的`id`和`SEL`都是啥）
+大部分情况下你就只管写你的Objc代码就行，runtime 系统自动在幕后辛勤劳作着。  
+还记得引言中举的例子吧，消息的执行会使用到一些编译器为实现动态语言特性而创建的数据结构和函数，Objc中的类、方法和协议等在 runtime 中都由一些数据结构来定义，这些内容在后面会讲到。（比如`objc_msgSend`函数及其参数列表中的`id`和`SEL`都是啥）
 
 ###NSObject的方法
 
-Cocoa 中大多数类都继承于`NSObject`类，也就自然继承了它的方法。最特殊的例外是`NSProxy`，它十个抽象超类，它实现了一些消息转发有关的方法，可以通过继承它来实现一个其他类的替身类或是虚拟出一个不存在的类，说白了就是领导把自己展现给大家风光无限，但是把活儿都交给幕后小弟去干。  
+Cocoa 中大多数类都继承于`NSObject`类，也就自然继承了它的方法。最特殊的例外是`NSProxy`，它是个抽象超类，它实现了一些消息转发有关的方法，可以通过继承它来实现一个其他类的替身类或是虚拟出一个不存在的类，说白了就是领导把自己展现给大家风光无限，但是把活儿都交给幕后小弟去干。  
 
 有的`NSObject`中的方法起到了抽象接口的作用，比如`description`方法需要你重载它并为你定义的类提供描述内容。`NSObject`还有些方法能在运行时获得类的信息，并检查一些特性，比如`class`返回对象的类；`isKindOfClass:`和`isMemberOfClass:`则检查对象是否在指定的类继承体系中；`respondsToSelector:`检查对象能否响应指定的消息；`conformsToProtocol: `检查对象是否实现了指定协议类的方法；`methodForSelector:`则返回指定方法实现的地址。   
 
 ###Runtime的函数
-Runtime 系统是一个由一系列函数和数据结构组成，具有公共接口的动态共享库。头文件存放于`/usr/include/objc`目录下。许多函数允许你用纯C代码来重复实现 OC 中同样的功能。虽然有一些方法构成了`NSObject`类的基础，但是你在写 OC 代码时一般不会直接用到这些函数的，除非是写一些 OC 与其他语言的桥接或是底层的debug工作。在[Objective-C Runtime Reference](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/index.html)中有对 Runtime 函数的详细文档。  
+Runtime 系统是一个由一系列函数和数据结构组成，具有公共接口的动态共享库。头文件存放于`/usr/include/objc`目录下。许多函数允许你用纯C代码来重复实现 Objc 中同样的功能。虽然有一些方法构成了`NSObject`类的基础，但是你在写 Objc 代码时一般不会直接用到这些函数的，除非是写一些 Objc 与其他语言的桥接或是底层的debug工作。在[Objective-C Runtime Reference](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/index.html)中有对 Runtime 函数的详细文档。  
 
 ##Runtime术语
 
@@ -73,14 +73,14 @@ id objc_msgSend ( id self, SEL op, ... );
 下面将会逐渐展开介绍一些术语，其实它们都对应着数据结构。  
 
 ###SEL
-`objc_msgSend`函数第二个参数类型为`SEL`，它是`selector`在OC中的表示类型（Swift中是Selector类）。`selector`是方法选择器，可以理解为区分方法的 ID，而这个 ID 的数据结构是`SEL`:  
+`objc_msgSend`函数第二个参数类型为`SEL`，它是`selector`在Objc中的表示类型（Swift中是Selector类）。`selector`是方法选择器，可以理解为区分方法的 ID，而这个 ID 的数据结构是`SEL`:  
 ```
 typedef struct objc_selector *SEL;
 ```
-其实它就是个映射到方法的C字符串，你可以用 OC 编译器命令`@selector()`或者 Runtime 系统的`
+其实它就是个映射到方法的C字符串，你可以用 Objc 编译器命令`@selector()`或者 Runtime 系统的`
 sel_registerName`函数来获得一个`SEL`类型的方法选择器。  
 
-不同类中相同名字的方法所对应的方法选择器是相同的，即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择器，于是 OC 中方法命名有时会带上参数类型(`NSNumber`一堆抽象工厂方法拿走不谢)，Cocoa 中有好多长长的方法哦。  
+不同类中相同名字的方法所对应的方法选择器是相同的，即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择器，于是 Objc 中方法命名有时会带上参数类型(`NSNumber`一堆抽象工厂方法拿走不谢)，Cocoa 中有好多长长的方法哦。  
 
 ###id
 `objc_msgSend`第一个参数类型为`id`，大家对它都不陌生，它是一个指向类实例的指针：  
@@ -143,7 +143,11 @@ struct objc_method_list {
 
 最后要提到的还有一个`objc_cache`，顾名思义它是缓存，它在`objc_class`的作用很重要，在后面会讲到。  
 
-一个 ObjC 类同时也是一个对象，为了处理类和对象的关系，runtime 库创建了一种叫做元类 (Meta Class) 的东西。当你发出一个类似`[NSObject alloc]`的消息时，你事实上是把这个消息发给了一个类对象 (Class Object) ，这个类对象必须是一个元类的实例，而这个元类同时也是一个根元类 (root meta class) 的实例。你会说 `NSObject` 的子类时，你的类就会指向 `NSObject` 做为其超类。但是所有的元类都指向根元类为其超类。所有的元类的方法列表都有能够响应消息的类方法。所以当 `[NSObject alloc]` 这条消息发给类对象的时候，`objc_msgSend()`会去它的元类里面去查找能够响应消息的方法，如果找到了，然后对这个类对象执行方法调用。  
+一个 ObjC 类同时也是一个对象，为了处理类和对象的关系，runtime 库创建了一种叫做元类 (Meta Class) 的东西。当你发出一个类似`[NSObject alloc]`的消息时，你事实上是把这个消息发给了一个类对象 (Class Object) ，这个类对象必须是一个元类的实例，而这个元类同时也是一个根元类 (root meta class) 的实例。你会说 `NSObject` 的子类时，你的类就会指向 `NSObject` 做为其超类。但是所有的元类最终都指向根元类为其超类。所有的元类的方法列表都有能够响应消息的类方法。所以当 `[NSObject alloc]` 这条消息发给类对象的时候，`objc_msgSend()`会去它的元类里面去查找能够响应消息的方法，如果找到了，然后对这个类对象执行方法调用。  
+
+![](http://cn.cocos2d-x.org/uploads/20141018/1413628797629491.png)  
+
+上图实线是 `super_class` 指针，虚线是`isa`指针。 有趣的是根元类的超类是`NSObject`，而`isa`指向了自己，而`NSObject`的超类为`nil`，也就是它没有超类。  
   
 ####Method
 `Method`是一种代表类中的某个方法的类型。  
@@ -179,7 +183,7 @@ truct objc_ivar {
 }                                                            OBJC2_UNAVAILABLE;
 ```
 
-PS:`OBJC2_UNAVAILABLE`之类的宏定义是苹果在  OC  中对系统运行版本进行约束的黑魔法，有兴趣的可以查看源代码。  
+PS:`OBJC2_UNAVAILABLE`之类的宏定义是苹果在  Objc  中对系统运行版本进行约束的黑魔法，有兴趣的可以查看源代码。  
 
 ###IMP
 `IMP`在`objc.h`中的定义是：  
@@ -206,7 +210,7 @@ struct objc_cache {
 `Cache`为方法调用的性能进行优化，通俗地讲，每当实例对象接收到一个消息时，它不会直接在`isa`指向的类的方法列表中遍历查找能够响应消息的方法，因为这样效率太低了，而是优先在`Cache`中查找。Runtime 系统会把被调用的方法存到`Cache`中（理论上讲一个方法如果被调用，那么它有可能今后还会被调用），下次查找的时候效率更高。这根计算机组成原理中学过的 CPU 绕过主存先访问`Cache`的道理挺像，而我猜苹果为提高`Cache`命中率应该也做了努力吧。  
 
 ##消息
-前面做了这么多铺垫，现在终于说到了消息了。OC 中发送消息是用中括号（`[]`）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。  
+前面做了这么多铺垫，现在终于说到了消息了。Objc 中发送消息是用中括号（`[]`）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。  
 ###objc_msgSend函数
 在引言中已经对`objc_msgSend`进行了一点介绍，看起来像是`objc_msgSend`返回了数据，其实`objc_msgSend`从不返回数据而是你的方法被调用后返回了数据。下面详细叙述下消息发送步骤： 
 
@@ -247,7 +251,7 @@ PS:这里说的分发表其实就是`Class`中的方法列表，它将方法选�
 ```
 struct objc_super { id receiver; Class class; };
 ```
-这个结构体指明了消息应该被传递给特定超类的定义。但`receiver`仍然是`self`本身，这点需要注意，因为当我们想通过`[super class]`获取超类时，编译器只是将指向`self`的`id`指针和`class`的SEL传递给了`objc_msgSendSuper`函数，因为只有在`NSObject`类找到`class`方法，然后`class`方法调用`object_getClass()`，传入参数是指向`self`的`id`指针，所以我们得到的永远都是`self`的类型。    
+这个结构体指明了消息应该被传递给特定超类的定义。但`receiver`仍然是`self`本身，这点需要注意，因为当我们想通过`[super class]`获取超类时，编译器只是将指向`self`的`id`指针和`class`的SEL传递给了`objc_msgSendSuper`函数，因为只有在`NSObject`类找到`class`方法，然后`class`方法调用`object_getClass()`，接着调用`objc_msgSend(objc_super->receiver, @selector(class)) `，传入的第一个参数是指向`self`的`id`指针，与调用`[self class]`相同，所以我们得到的永远都是`self`的类型。    
 
 ###获取方法地址
 在IMP那节提到过可以避开消息绑定而直接获取方法的地址并调用方法。这种做法很少用，除非是需要持续大量重复调用某方法的极端情况，避开消息发送泛滥而直接调用该方法会更高效。  
@@ -264,7 +268,7 @@ for ( i = 0 ; i < 1000 ; i++ )
 ```
 当方法被当做函数调用时，上节提到的两个隐藏参数就需要我们明确给出了。上面的例子调用了1000次函数，你可以试试直接给`target`发送1000次`setFilled:`消息会花多久。  
 
-PS：`methodForSelector:`方法是由 Cocoa 的 Runtime 系统提供的，而不是 OC 自身的特性。  
+PS：`methodForSelector:`方法是由 Cocoa 的 Runtime 系统提供的，而不是 Objc 自身的特性。  
 
 ##动态方法解析
 你可以动态地提供一个方法的实现。例如我们可以用`@dynamic`关键字在类的实现文件中修饰一个属性：  
@@ -306,7 +310,7 @@ PS：动态方法解析会在消息转发机制浸入前执行。如果 `respond
 ```
 毕竟消息转发要耗费更多时间，抓住这次机会将消息重定向给别人是个不错的选择，不过千万别返回`self`，因为那样会死循环。  
 ###转发
-当动态方法解析不作处理返回`NO`时，消息转发机制会被触发，这时`forwardInvocation:`方法会被执行，我们可以重载这个方法来定义我们的转发逻辑：  
+当动态方法解析不作处理返回`NO`时，消息转发机制会被触发。在这时`forwardInvocation:`方法会被执行，我们可以重写这个方法来定义我们的转发逻辑：  
 ```
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
@@ -319,19 +323,21 @@ PS：动态方法解析会在消息转发机制浸入前执行。如果 `respond
 ```
 该消息的唯一参数是个`NSInvocation`类型的对象——该对象封装了原始的消息和消息的参数。我们可以实现`forwardInvocation:`方法来对不能处理的消息做一些默认的处理，也可以将消息转发给其他对象来处理，而不抛出错误。  
 
+这里需要注意的是参数`anInvocation`是从哪的来的呢？其实在`forwardInvocation:`消息发送前，Runtime系统会向对象发送`methodSignatureForSelector:`消息，并取到返回的方法签名用于生成`NSInvocation`对象。所以我们在重写`forwardInvocation:`的同时也要重写`methodSignatureForSelector:`方法，否则会抛异常。  
+
 当一个对象由于没有相应的方法实现而无法响应某消息时，运行时系统将通过`forwardInvocation:`消息通知该对象。每个对象都从`NSObject`类中继承了`forwardInvocation:`方法。然而，NSObject中的方法实现只是简单地调用了`doesNotRecognizeSelector:`。通过实现我们自己的`forwardInvocation:`方法，我们可以在该方法实现中将消息转发给其它对象。  
 
 `forwardInvocation:`方法就像一个不能识别的消息的分发中心，将这些消息转发给不同接收对象。或者它也可以象一个运输站将所有的消息都发送给同一个接收对象。它可以将一个消息翻译成另外一个消息，或者简单的"吃掉“某些消息，因此没有响应也没有错误。`forwardInvocation:`方法也可以对不同的消息提供同样的响应，这一切都取决于方法的具体实现。该方法所提供是将不同的对象链接到消息链的能力。  
 
 注意： `forwardInvocation:`方法只有在消息接收对象中无法正常响应消息时才会被调用。 所以，如果我们希望一个对象将`negotiate`消息转发给其它对象，则这个对象不能有`negotiate`方法。否则，`forwardInvocation:`将不可能会被调用。  
 ###转发和多继承
-转发和继承相似，可以用于为OC编程添加一些多继承的效果。就像下图那样，一个对象把消息转发出去，就好似它把另一个对象中的方法借过来或是“继承”过来一样。    
+转发和继承相似，可以用于为Objc编程添加一些多继承的效果。就像下图那样，一个对象把消息转发出去，就好似它把另一个对象中的方法借过来或是“继承”过来一样。    
 
 ![](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/forwarding.gif)  
 
 这使得不同继承体系分支下的两个类可以“继承”对方的方法，在上图中`Warrior`和`Diplomat`没有继承关系，但是`Warrior`将`negotiate`消息转发给了`Diplomat`后，就好似`Diplomat`是`Warrior`的超类一样。  
 
-消息转发弥补了 OC 不支持多继承的性质，也避免了因为多继承导致单个类变得臃肿复杂。它将问题分解得很细，只针对想要借鉴的方法才转发，而且转发机制是透明的。  
+消息转发弥补了 Objc 不支持多继承的性质，也避免了因为多继承导致单个类变得臃肿复杂。它将问题分解得很细，只针对想要借鉴的方法才转发，而且转发机制是透明的。  
 ###替代者对象(Surrogate Objects)
 
 转发不仅能模拟多继承，也能使轻量级对象代表重量级对象。弱小的女人背后是强大的男人，毕竟女人遇到难题都把它们转发给男人来做了。这里有一些适用案例，可以参看[官方文档](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-SW11)。  
@@ -390,7 +396,7 @@ if ( [aWarrior respondsToSelector:@selector(negotiate)] )
 
 ##Objective-C Associated Objects
 
-在 OS X 10.6 之后，Runtime系统让OC支持向对象动态添加变量。涉及到的函数有以下三个：  
+在 OS X 10.6 之后，Runtime系统让Objc支持向对象动态添加变量。涉及到的函数有以下三个：  
 ```
 void objc_setAssociatedObject ( id object, const void *key, id value, objc_AssociationPolicy policy );
 id objc_getAssociatedObject ( id object, const void *key );
@@ -406,7 +412,7 @@ enum {
    OBJC_ASSOCIATION_COPY  = 01403
 };
 ```
-这些常量对应着引用关联值的政策，也就是 OC 内存管理的引用计数机制。  
+这些常量对应着引用关联值的政策，也就是 Objc 内存管理的引用计数机制。  
 
 ##总结
 我们之所以让自己的类继承`NSObject`不仅仅因为苹果帮我们完成了复杂的内存分配问题，更是因为这使得我们能够用上 Runtime 系统带来的便利。可能我们平时写代码时可能很少会考虑一句简单的`[receiver message]`背后发生了什么，而只是当做方法或函数调用。深入理解 Runtime 系统的细节更有利于我们利用消息机制写出功能更强大的代码，比如 Method Swizzling 等。
