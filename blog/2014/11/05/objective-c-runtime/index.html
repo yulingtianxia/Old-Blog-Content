@@ -456,6 +456,96 @@ sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选�
 
 <p><code>Cache</code>为方法调用的性能进行优化，通俗地讲，每当实例对象接收到一个消息时，它不会直接在<code>isa</code>指向的类的方法列表中遍历查找能够响应消息的方法，因为这样效率太低了，而是优先在<code>Cache</code>中查找。Runtime 系统会把被调用的方法存到<code>Cache</code>中（理论上讲一个方法如果被调用，那么它有可能今后还会被调用），下次查找的时候效率更高。这根计算机组成原理中学过的 CPU 绕过主存先访问<code>Cache</code>的道理挺像，而我猜苹果为提高<code>Cache</code>命中率应该也做了努力吧。</p>
 
+<h3>Property</h3>
+
+<p><code>@property</code>标记了类中的属性，这个不必多说大家都很熟悉，它是一个指向<code>objc_property</code>结构体的指针：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">objc_property</span> <span class="o">*</span><span class="n">Property</span><span class="p">;</span>
+</span><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">objc_property</span> <span class="o">*</span><span class="n">objc_property_t</span><span class="p">;</span><span class="c1">//这个更常用</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以通过<code>class_copyPropertyList</code> 和 <code>protocol_copyPropertyList</code>方法来获取类和协议中的属性：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">objc_property_t</span> <span class="o">*</span><span class="n">class_copyPropertyList</span><span class="p">(</span><span class="n">Class</span> <span class="n">cls</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">outCount</span><span class="p">)</span>
+</span><span class='line'><span class="n">objc_property_t</span> <span class="o">*</span><span class="n">protocol_copyPropertyList</span><span class="p">(</span><span class="n">Protocol</span> <span class="o">*</span><span class="n">proto</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">outCount</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>返回类型为指向指针的指针，哈哈，因为属性列表是个数组，每个元素内容都是一个<code>objc_property_t</code>指针，而这两个函数返回的值是指向这个数组的指针。</p>
+
+<p>举个栗子，先声明一个类：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">Lender</span> : <span class="nc">NSObject</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">alone</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@property</span> <span class="kt">float</span> <span class="n">alone</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可以用下面的代码获取属性列表：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">id</span> <span class="n">LenderClass</span> <span class="o">=</span> <span class="n">objc_getClass</span><span class="p">(</span><span class="s">&quot;Lender&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">outCount</span><span class="p">;</span>
+</span><span class='line'><span class="n">objc_property_t</span> <span class="o">*</span><span class="n">properties</span> <span class="o">=</span> <span class="n">class_copyPropertyList</span><span class="p">(</span><span class="n">LenderClass</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">outCount</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可以用<code>property_getName</code>函数来查找属性名称：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">property_getName</span><span class="p">(</span><span class="n">objc_property_t</span> <span class="n">property</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可以用<code>class_getProperty</code> 和 <code>protocol_getProperty</code>通过给出的名称来在类和协议中获取属性的引用：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">objc_property_t</span> <span class="n">class_getProperty</span><span class="p">(</span><span class="n">Class</span> <span class="n">cls</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'><span class="n">objc_property_t</span> <span class="n">protocol_getProperty</span><span class="p">(</span><span class="n">Protocol</span> <span class="o">*</span><span class="n">proto</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">isRequiredProperty</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">isInstanceProperty</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你可以用<code>property_getAttributes</code>函数来发掘属性的名称和<code>@encode</code>类型字符串：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">property_getAttributes</span><span class="p">(</span><span class="n">objc_property_t</span> <span class="n">property</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>把上面的代码放一起，你就能从一个类中获取它的属性啦：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">id</span> <span class="n">LenderClass</span> <span class="o">=</span> <span class="n">objc_getClass</span><span class="p">(</span><span class="s">&quot;Lender&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">outCount</span><span class="p">,</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'><span class="n">objc_property_t</span> <span class="o">*</span><span class="n">properties</span> <span class="o">=</span> <span class="n">class_copyPropertyList</span><span class="p">(</span><span class="n">LenderClass</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">outCount</span><span class="p">);</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">outCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">objc_property_t</span> <span class="n">property</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;%s %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">property_getName</span><span class="p">(</span><span class="n">property</span><span class="p">),</span> <span class="n">property_getAttributes</span><span class="p">(</span><span class="n">property</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h2>消息</h2>
 
 <p>前面做了这么多铺垫，现在终于说到了消息了。Objc 中发送消息是用中括号（<code>[]</code>）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。</p>

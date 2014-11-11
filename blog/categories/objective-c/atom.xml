@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-09T00:02:55+08:00</updated>
+  <updated>2014-11-11T22:12:09+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -270,6 +270,64 @@ Method buckets[1]                                        OBJC2_UNAVAILABLE;
 <p>};
 <code>``
 </code>Cache<code>为方法调用的性能进行优化，通俗地讲，每当实例对象接收到一个消息时，它不会直接在</code>isa<code>指向的类的方法列表中遍历查找能够响应消息的方法，因为这样效率太低了，而是优先在</code>Cache<code>中查找。Runtime 系统会把被调用的方法存到</code>Cache<code>中（理论上讲一个方法如果被调用，那么它有可能今后还会被调用），下次查找的时候效率更高。这根计算机组成原理中学过的 CPU 绕过主存先访问</code>Cache<code>的道理挺像，而我猜苹果为提高</code>Cache`命中率应该也做了努力吧。</p>
+
+<h3>Property</h3>
+
+<p><code>@property</code>标记了类中的属性，这个不必多说大家都很熟悉，它是一个指向<code>objc_property</code>结构体的指针：<br/>
+<code>
+typedef struct objc_property *Property;
+typedef struct objc_property *objc_property_t;//这个更常用
+</code>
+可以通过<code>class_copyPropertyList</code> 和 <code>protocol_copyPropertyList</code>方法来获取类和协议中的属性：<br/>
+<code>
+objc_property_t *class_copyPropertyList(Class cls, unsigned int *outCount)
+objc_property_t *protocol_copyPropertyList(Protocol *proto, unsigned int *outCount)
+</code>
+返回类型为指向指针的指针，哈哈，因为属性列表是个数组，每个元素内容都是一个<code>objc_property_t</code>指针，而这两个函数返回的值是指向这个数组的指针。</p>
+
+<p>举个栗子，先声明一个类：<br/>
+```
+@interface Lender : NSObject {</p>
+
+<pre><code>float alone;
+</code></pre>
+
+<p>}
+@property float alone;
+@end
+<code>
+你可以用下面的代码获取属性列表：  
+</code>
+id LenderClass = objc_getClass(&ldquo;Lender&rdquo;);
+unsigned int outCount;
+objc_property_t <em>properties = class_copyPropertyList(LenderClass, &amp;outCount);
+<code>
+你可以用`property_getName`函数来查找属性名称：
+</code>
+const char </em>property_getName(objc_property_t property)
+<code>
+你可以用`class_getProperty` 和 `protocol_getProperty`通过给出的名称来在类和协议中获取属性的引用：  
+</code>
+objc_property_t class_getProperty(Class cls, const char <em>name)
+objc_property_t protocol_getProperty(Protocol </em>proto, const char <em>name, BOOL isRequiredProperty, BOOL isInstanceProperty)
+<code>
+你可以用`property_getAttributes`函数来发掘属性的名称和`@encode`类型字符串：  
+</code>
+const char </em>property_getAttributes(objc_property_t property)
+<code>
+把上面的代码放一起，你就能从一个类中获取它的属性啦：  
+</code>
+id LenderClass = objc_getClass(&ldquo;Lender&rdquo;);
+unsigned int outCount, i;
+objc_property_t *properties = class_copyPropertyList(LenderClass, &amp;outCount);
+for (i = 0; i &lt; outCount; i++) {</p>
+
+<pre><code>objc_property_t property = properties[i];
+fprintf(stdout, "%s %s\n", property_getName(property), property_getAttributes(property));
+</code></pre>
+
+<p>}
+```</p>
 
 <h2>消息</h2>
 
@@ -1218,7 +1276,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x65;&#x6d;&#112;&#108;&#111;&#121;&#x65;&#101;&#115;&#46;&#x40;&#115;&#x75;&#109;&#46;&#115;&#x61;&#108;&#97;&#114;&#x79;">&#x65;&#x6d;&#x70;&#108;&#111;&#x79;&#101;&#x65;&#115;&#x2e;&#64;&#x73;&#x75;&#109;&#x2e;&#x73;&#x61;&#x6c;&#x61;&#114;&#121;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#x6d;&#97;&#105;&#108;&#x74;&#111;&#58;&#x65;&#109;&#x70;&#x6c;&#x6f;&#x79;&#101;&#101;&#x73;&#46;&#64;&#x73;&#x75;&#109;&#46;&#x73;&#x61;&#108;&#97;&#x72;&#x79;">&#101;&#x6d;&#x70;&#x6c;&#x6f;&#x79;&#x65;&#101;&#x73;&#46;&#64;&#115;&#x75;&#x6d;&#x2e;&#115;&#97;&#108;&#x61;&#114;&#121;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 
