@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-11T22:12:09+08:00</updated>
+  <updated>2014-11-13T11:24:43+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -561,6 +561,8 @@ sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选�
 <p>PS：动态方法解析会在消息转发机制浸入前执行。如果 <code>respondsToSelector:</code> 或 <code>instancesRespondToSelector:</code>方法被执行，动态方法解析器将会被首先给予一个提供该方法选择器对应的IMP的机会。如果你想让该方法选择器被传送到转发机制，那么就让<code>resolveInstanceMethod:</code>返回<code>NO</code>。</p>
 
 <h2>消息转发</h2>
+
+<p><img src="http://yulingtianxia.qiniudn.com/QQ20141113-1@2x.png" alt="" /></p>
 
 <h3>重定向</h3>
 

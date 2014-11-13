@@ -684,6 +684,8 @@ sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选�
 
 <h2>消息转发</h2>
 
+<p><img src="http://yulingtianxia.qiniudn.com/QQ20141113-1@2x.png" alt="" /></p>
+
 <h3>重定向</h3>
 
 <p>在消息转发机制执行前，Runtime 系统会再给我们一次偷梁换柱的机会，即通过重载<code>- (id)forwardingTargetForSelector:(SEL)aSelector</code>方法替换消息的接受者为其他对象：</p>
