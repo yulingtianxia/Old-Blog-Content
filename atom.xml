@@ -4,7 +4,7 @@
   <title><![CDATA[玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-13T11:24:43+08:00</updated>
+  <updated>2014-11-13T18:12:09+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -282,7 +282,7 @@ sel_registerName</code>函数来获得一个<code>SEL</code>类型的方法选�
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">truct</span> <span class="n">objc_ivar</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">struct</span> <span class="n">objc_ivar</span> <span class="p">{</span>
 </span><span class='line'>    <span class="kt">char</span> <span class="o">*</span><span class="n">ivar_name</span>                                          <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
 </span><span class='line'>    <span class="kt">char</span> <span class="o">*</span><span class="n">ivar_type</span>                                          <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
 </span><span class='line'>    <span class="kt">int</span> <span class="n">ivar_offset</span>                                          <span class="n">OBJC2_UNAVAILABLE</span><span class="p">;</span>
