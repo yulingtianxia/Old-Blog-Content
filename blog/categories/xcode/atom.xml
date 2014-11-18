@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Xcode | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/xcode/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-16T15:18:33+08:00</updated>
+  <updated>2014-11-18T14:37:00+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -668,6 +668,32 @@ Completion Scopes: All
 
 
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode,Swift和Objective-C Cheat Sheet]]></title>
+    <link href="http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet/"/>
+    <updated>2014-04-06T18:38:24+08:00</updated>
+    <id>http://yulingtianxia.com/blog/2014/04/06/xcodehe-objective-c-cheat-sheet</id>
+    <content type="html"><![CDATA[<p>关于XCode,Swift和OC的速查，方便记忆，以后会更新</p>
+
+<!-- more-->
+
+
+<p>XCode5 Cheat Sheet:(<a href="http://www.git-tower.com/blog/xcode-cheat-sheet/">作者</a>)</p>
+
+<p><img src="http://yulingtianxia.qiniudn.com/140353412989.jpg" alt="" /></p>
+
+<p><img src="http://yulingtianxia.qiniudn.com/140353414151.jpg" alt="" /></p>
+
+<p>Objective-C Cheat Sheet and Quick Reference Updated for Xcode 5:(摘自<a href="http://www.raywenderlich.com/54099/objective-c-cheat-sheet-and-quick-reference-updated-for-xcode-5">raywenderlich</a>)</p>
+
+<p><img src="http://yulingtianxia.qiniudn.com/140353409554.jpg" alt="" /></p>
+
+<p>Swift Cheat Sheet and Quick Reference:(摘自<a href="http://www.raywenderlich.com/73967/swift-cheat-sheet-and-quick-reference">raywenderlich</a>)</p>
+
+<p><img src="http://yulingtianxia.qiniudn.com/140731497003.jpg" alt="" /></p>
 ]]></content>
   </entry>
   
