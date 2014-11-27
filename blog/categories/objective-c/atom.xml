@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-18T19:36:25+08:00</updated>
+  <updated>2014-11-27T10:28:37+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -353,6 +353,10 @@ fprintf(stdout, "%s %s\n", property_getName(property), property_getAttributes(pr
 <p><img src="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/messaging1.gif" alt="" /></p>
 
 <p>其实编译器会根据情况在<code>objc_msgSend</code>, <code>objc_msgSend_stret</code>, <code>objc_msgSendSuper</code>, 或 <code>objc_msgSendSuper_stret</code>四个方法中选择一个来调用。如果消息是传递给超类，那么会调用名字带有"Super"的函数；如果消息返回值是数据结构而不是简单值时，那么会调用名字带有"stret"的函数。排列组合正好四个方法。</p>
+
+<p>值得一提的是在 i386 平台处理返回类型为浮点数的消息时，需要用到<code>objc_msgSend_fpret</code>函数来进行处理，这是因为返回类型为浮点数的函数对应的 ABI(Application Binary Interface) 与返回整型的函数的 ABI 不兼容。此时<code>objc_msgSend</code>不再适用，于是<code>objc_msgSend_fpret</code>被派上用场，它会对浮点数寄存器做特殊处理。不过在 PPC 或 PPC64 平台是不需要麻烦它的。</p>
+
+<p>PS：有木有发现这些函数的命名规律哦？带“Super”的是消息传递给超类；“stret”可分为“st”+“ret”两部分，分别代表“struct”和“return”；“fpret”就是“fp”+“ret”，分别代表“floating-point”和“return”。</p>
 
 <h3>方法中的隐藏参数</h3>
 
@@ -1376,7 +1380,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#58;&#x65;&#109;&#112;&#x6c;&#111;&#x79;&#101;&#101;&#x73;&#x2e;&#x40;&#x73;&#x75;&#109;&#x2e;&#115;&#x61;&#108;&#x61;&#114;&#121;">&#101;&#x6d;&#x70;&#x6c;&#x6f;&#121;&#x65;&#x65;&#115;&#x2e;&#64;&#x73;&#x75;&#109;&#x2e;&#115;&#97;&#108;&#x61;&#x72;&#x79;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x65;&#x6d;&#112;&#x6c;&#x6f;&#x79;&#x65;&#101;&#x73;&#x2e;&#64;&#115;&#x75;&#109;&#46;&#115;&#97;&#x6c;&#97;&#114;&#121;">&#x65;&#109;&#112;&#x6c;&#111;&#121;&#x65;&#x65;&#x73;&#46;&#64;&#115;&#117;&#109;&#46;&#x73;&#x61;&#108;&#x61;&#114;&#121;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 
