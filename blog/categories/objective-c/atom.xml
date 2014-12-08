@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-11-30T22:53:45+08:00</updated>
+  <updated>2014-12-08T13:01:50+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -1380,7 +1380,7 @@ else
 
 <ul>
 <li><p>(void)updateTotalSalary {
-  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#x6d;&#97;&#105;&#108;&#x74;&#111;&#58;&#101;&#109;&#x70;&#108;&#111;&#121;&#x65;&#101;&#x73;&#x2e;&#64;&#x73;&#117;&#109;&#x2e;&#115;&#x61;&#108;&#97;&#x72;&#121;">&#101;&#x6d;&#112;&#x6c;&#111;&#121;&#101;&#x65;&#115;&#46;&#x40;&#x73;&#x75;&#109;&#x2e;&#x73;&#x61;&#x6c;&#97;&#114;&#121;</a>&rdquo;]];
+  [self setTotalSalary:[self valueForKeyPath:@&ldquo;<a href="&#109;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#x65;&#x6d;&#112;&#x6c;&#111;&#121;&#101;&#x65;&#115;&#x2e;&#x40;&#115;&#x75;&#109;&#x2e;&#115;&#x61;&#108;&#x61;&#x72;&#x79;">&#x65;&#109;&#x70;&#x6c;&#x6f;&#x79;&#x65;&#x65;&#x73;&#46;&#x40;&#115;&#117;&#109;&#46;&#115;&#97;&#x6c;&#97;&#x72;&#x79;</a>&rdquo;]];
 }</p></li>
 <li><p>(void)setTotalSalary:(NSNumber *)newTotalSalary {</p>
 
@@ -1786,7 +1786,7 @@ UIImage* finalImage = [[image imageWithTransform:finalTransform] imageWithDropSh
 [aDepartment setValue:@1000 forKeyPath:manager.salary];
 </code></p>
 
-<p>下面我们将自定义<code>NSManagedObject</code>类，通过对它的继承拓展，使得我们有自己的Event类，并通过访问<a href="http://yulingtianxia.qiniudn.com/%E5%99%A8%E6%96%B9%E6%B3%95%E4%BB%A3%E6%9B%BFKVC%E6%96%B9%E5%BC%8F%E6%9D%A5%E8%AE%BF%E9%97%AE%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%B1%9E%E6%80%A7%E3%80%82  ">http://yulingtianxia.qiniudn.com/%E5%99%A8%E6%96%B9%E6%B3%95%E4%BB%A3%E6%9B%BFKVC%E6%96%B9%E5%BC%8F%E6%9D%A5%E8%AE%BF%E9%97%AE%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%B1%9E%E6%80%A7%E3%80%82  </a>
+<p>下面我们将自定义<code>NSManagedObject</code>类，通过对它的继承拓展，使得我们有自己的Event类，并通过访问器方法代替KVC方式来访问对象的属性。<br/>
 按CMD+N或者在可视化建模工具下选择菜单中Editor->Create NSManagedObject Subclass：</p>
 
 <p><img src="http://yulingtianxia.qiniudn.com/140353399425.png" alt="" /></p>
