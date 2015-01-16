@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Runtime | 玉令天下的Blog]]></title>
   <link href="http://yulingtianxia.com/blog/categories/runtime/atom.xml" rel="self"/>
   <link href="http://yulingtianxia.com/"/>
-  <updated>2014-12-08T13:01:50+08:00</updated>
+  <updated>2015-01-16T13:25:52+08:00</updated>
   <id>http://yulingtianxia.com/</id>
   <author>
     <name><![CDATA[玉令天下]]></name>
@@ -362,10 +362,15 @@ fprintf(stdout, "%s %s\n", property_getName(property), property_getAttributes(pr
 
 <p>我们经常在方法中使用<code>self</code>关键字来引用实例本身，但从没有想过为什么<code>self</code>就能取到调用当前方法的对象吧。其实<code>self</code>的内容是在方法运行时被偷偷的动态传入的。</p>
 
-<p>当<code>objc_msgSend</code>找到方法对应的实现时，它将直接调用该方法实现，并将消息中所有的参数都传递给方法实现,同时,它还将传递两个隐藏的参数:<br/>
-&ndash; 接收消息的对象（也就是<code>self</code>指向的内容）
-&ndash; 方法选择器（<code>_cmd</code>指向的内容）
-之所以说它们是隐藏的是因为在源代码方法的定义中并没有声明这两个参数。它们是在代码被编译时被插入实现中的。尽管这些参数没有被明确声明，在源代码中我们仍然可以引用它们。在下面的例子中，<code>self</code>引用了接收者对象，而<code>_cmd</code>引用了方法本身的选择器：<br/>
+<p>当<code>objc_msgSend</code>找到方法对应的实现时，它将直接调用该方法实现，并将消息中所有的参数都传递给方法实现,同时,它还将传递两个隐藏的参数:</p>
+
+<ul>
+<li>接收消息的对象（也就是<code>self</code>指向的内容）</li>
+<li>方法选择器（<code>_cmd</code>指向的内容）</li>
+</ul>
+
+
+<p>之所以说它们是隐藏的是因为在源代码方法的定义中并没有声明这两个参数。它们是在代码被编译时被插入实现中的。尽管这些参数没有被明确声明，在源代码中我们仍然可以引用它们。在下面的例子中，<code>self</code>引用了接收者对象，而<code>_cmd</code>引用了方法本身的选择器：<br/>
 ```
 &ndash; strange
 {</p>
